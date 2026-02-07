@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.barra_lateral')
 
 @section('content')
 
