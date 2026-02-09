@@ -173,8 +173,8 @@
          class="rounded-2xl shadow-lg w-full object-cover">
 
     {{-- Info flotante --}}
-    <div class="absolute bottom-6 left-6 w-135 bg-white/95 backdrop-blur
-                rounded-xl shadow-lg px-5 py-4 flex items-center gap-4">
+    <div class="absolute bottom-6 left-6 w-136 bg-white/95 backdrop-blur
+                rounded-xl shadow-lg px-5 py-4 flex items-center gap-4 hover:scale-105 transition-transform duration-300">
 
         {{-- Icono --}}
         <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center">
