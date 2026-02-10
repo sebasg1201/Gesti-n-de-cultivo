@@ -21,9 +21,20 @@ class EmpresaController extends Controller
             });
         }
 
-        // Filter by state if needed, for now just search
+        // Filter by status
+        if ($request->has('status')) {
+            $status = $request->input('status');
+            if ($status === 'activa') {
+                $query->where('id_estado', 3);
+            } elseif ($status === 'pendiente') {
+                $query->where('id_estado', 1);
+            } elseif ($status === 'bloqueada') {
+                $query->where('id_estado', 2);
+            }
+        }
 
-        $empresas = $query->paginate(10);
+        // Changed pagination to 4 as requested
+        $empresas = $query->paginate(4);
 
         // Calculate stats
         $stats = [
@@ -32,7 +43,7 @@ class EmpresaController extends Controller
             'activaciones' => Empresa::where('id_estado', 3)->count(),
         ];
 
-        return view('empresas.index', compact('empresas', 'stats'));
+        return view('SuperAdmin.index', compact('empresas', 'stats'));
     }
     public function activar($id)
     {

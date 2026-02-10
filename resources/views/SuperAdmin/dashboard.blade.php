@@ -16,7 +16,7 @@
 
         <!-- Licencias Por Vencer -->
         <div class="bg-red-100 p-6 rounded-lg shadow-sm border-l-4 border-red-500 relative overflow-hidden">
-             <div class="relative z-10">
+            <div class="relative z-10">
                 <p class="text-red-800 font-semibold mb-1">Licencias Por Vencer</p>
                 <h2 class="text-3xl font-bold text-red-900">{{ $licenciasPorVencer ?? 0 }}</h2>
             </div>
@@ -29,7 +29,7 @@
 
         <!-- Renovadas este mes -->
         <div class="bg-yellow-100 p-6 rounded-lg shadow-sm border-l-4 border-yellow-500 relative overflow-hidden">
-             <div class="relative z-10">
+            <div class="relative z-10">
                 <p class="text-yellow-800 font-semibold mb-1">Renovadas este mes</p>
                 <h2 class="text-3xl font-bold text-yellow-900">{{ $renovadasEsteMes ?? 0 }}</h2>
             </div>
@@ -39,16 +39,16 @@
                 </svg>
             </div>
         </div>
-        
-         <!-- Total Licencias -->
+
+        <!-- Total Licencias -->
         <div class="bg-blue-100 p-6 rounded-lg shadow-sm border-l-4 border-blue-500 relative overflow-hidden">
-             <div class="relative z-10">
+            <div class="relative z-10">
                 <p class="text-blue-800 font-semibold mb-1">Total Licencias</p>
                 <h2 class="text-3xl font-bold text-blue-900">{{ $totalLicencias ?? 0 }}</h2>
             </div>
-             <div class="absolute right-4 top-4 opacity-20">
-               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-16 h-16 text-blue-700">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
+            <div class="absolute right-4 top-4 opacity-20">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-16 h-16 text-blue-700">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
                 </svg>
             </div>
         </div>
@@ -63,7 +63,7 @@
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-lg font-bold text-gray-800">Crear empresa</h3>
                 @if(session('success') && session('form') == 'empresa')
-                    <span class="text-xs text-green-600 font-bold bg-green-100 px-2 py-1 rounded">Guardado</span>
+                <span class="text-xs text-green-600 font-bold bg-green-100 px-2 py-1 rounded">Guardado</span>
                 @endif
             </div>
 
@@ -87,24 +87,24 @@
                 </div>
 
                 <div class="grid grid-cols-2 gap-2">
-                     <div>
+                    <div>
                         <label class="block text-sm font-medium text-gray-600">Teléfono</label>
                         <input type="text" name="telefono" class="w-full border-gray-300 rounded p-2 text-sm focus:ring-green-500 focus:border-green-500" placeholder="123456789" required>
                     </div>
                     <div>
-                         <label class="block text-sm font-medium text-gray-600">Dirección</label>
-                         <input type="text" name="direccion" class="w-full border-gray-300 rounded p-2 text-sm focus:ring-green-500 focus:border-green-500" placeholder="MZ CRA #" required>
+                        <label class="block text-sm font-medium text-gray-600">Dirección</label>
+                        <input type="text" name="direccion" class="w-full border-gray-300 rounded p-2 text-sm focus:ring-green-500 focus:border-green-500" placeholder="MZ CRA #" required>
                     </div>
                 </div>
 
-                 <div>
+                <div>
                     <label class="block text-sm font-medium text-gray-600">Correo</label>
                     <input type="email" name="correo" class="w-full border-gray-300 rounded p-2 text-sm focus:ring-green-500 focus:border-green-500" placeholder="adso@sena.edu.co" required>
                 </div>
-                
+
                 <div>
-                     <label class="block text-sm font-medium text-gray-600">Estado / Fecha</label>
-                     <p class="text-xs text-gray-500 mt-1">Se creará con fecha automática y estado Pendiente.</p>
+                    <label class="block text-sm font-medium text-gray-600">Estado / Fecha</label>
+                    <p class="text-xs text-gray-500 mt-1">Se creará con fecha automática y estado Pendiente.</p>
                 </div>
 
                 <button type="submit" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition">
@@ -122,23 +122,23 @@
             <form action="{{ route('licencias.store') }}" method="POST" class="space-y-4">
                 @csrf
                 <input type="hidden" name="form" value="licencia">
-                
+
                 <div>
                     <label class="block text-sm font-medium text-gray-600">Empresa</label>
                     <select name="id_empresa" class="w-full border-gray-300 rounded p-2 text-sm focus:ring-green-500 focus:border-green-500" required>
                         <option value="">Seleccione Empresa</option>
                         @foreach($empresas as $empresa)
-                            <option value="{{ $empresa->id_empresa }}">{{ $empresa->nombre_empresa }}</option>
+                        <option value="{{ $empresa->id_empresa }}">{{ $empresa->nombre_empresa }}</option>
                         @endforeach
                     </select>
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-600">Tipo de Licencia</label>
-                     <select name="id_tipo_licencia" class="w-full border-gray-300 rounded p-2 text-sm focus:ring-green-500 focus:border-green-500" required>
+                    <select name="id_tipo_licencia" class="w-full border-gray-300 rounded p-2 text-sm focus:ring-green-500 focus:border-green-500" required>
                         <option value="">Seleccione Plan</option>
                         @foreach($tiposLicencia as $tipo)
-                            <option value="{{ $tipo->id_tipo_licencia }}">{{ $tipo->nombre_licencia }} ({{ $tipo->tiempo }})</option>
+                        <option value="{{ $tipo->id_tipo_licencia }}">{{ $tipo->nombre_licencia }} ({{ $tipo->tiempo }})</option>
                         @endforeach
                     </select>
                 </div>
@@ -147,9 +147,9 @@
                     <p>La fecha de inicio se establecerá hoy automáticamente. La fecha fin se calculará según el plan elegido.</p>
                 </div>
 
-                 <div>
-                     <label class="block text-sm font-medium text-gray-600">Estado</label>
-                     <input type="text" value="Activo" disabled class="w-full bg-gray-100 border-gray-300 rounded p-2 text-sm text-green-600">
+                <div>
+                    <label class="block text-sm font-medium text-gray-600">Estado</label>
+                    <input type="text" value="Activo" disabled class="w-full bg-gray-100 border-gray-300 rounded p-2 text-sm text-green-600">
                 </div>
 
                 <button type="submit" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition">
@@ -163,14 +163,14 @@
         <div class="bg-white p-6 rounded-lg shadow">
             <h3 class="text-lg font-bold text-gray-800 mb-4">Crear administrador</h3>
 
-             <form action="{{ route('administradores.store') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+            <form action="{{ route('administradores.store') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
                 @csrf
                 <input type="hidden" name="form" value="admin">
 
                 <!-- Imagen Upload -->
                 <div>
-                     <label class="block text-sm font-medium text-gray-600">Foto</label>
-                     <input type="file" name="imagen" accept="image/*" required class="w-full border-gray-300 rounded p-2 text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100">
+                    <label class="block text-sm font-medium text-gray-600">Foto</label>
+                    <input type="file" name="imagen" accept="image/*" required class="w-full border-gray-300 rounded p-2 text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100">
                 </div>
 
                 <div>
@@ -178,7 +178,7 @@
                     <select name="id_empresa" class="w-full border-gray-300 rounded p-2 text-sm focus:ring-green-500 focus:border-green-500" required>
                         <option value="">Seleccione Empresa</option>
                         @foreach($empresas as $empresa)
-                            <option value="{{ $empresa->id_empresa }}">{{ $empresa->nombre_empresa }}</option>
+                        <option value="{{ $empresa->id_empresa }}">{{ $empresa->nombre_empresa }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -198,14 +198,14 @@
                     <label class="block text-sm font-medium text-gray-600">Nombre</label>
                     <input type="text" name="nombre" class="w-full border-gray-300 rounded p-2 text-sm focus:ring-green-500 focus:border-green-500" placeholder="Oscar Murcia" required>
                 </div>
-                
-                 <!-- Reordered: Email First, then Password -->
+
+                <!-- Reordered: Email First, then Password -->
                 <div>
                     <label class="block text-sm font-medium text-gray-600">Correo</label>
                     <input type="email" name="correo" class="w-full border-gray-300 rounded p-2 text-sm focus:ring-green-500 focus:border-green-500" placeholder="oscar@gmail.com" required>
                 </div>
 
-                 <div>
+                <div>
                     <label class="block text-sm font-medium text-gray-600">Contraseña</label>
                     <input type="password" name="contrasena" class="w-full border-gray-300 rounded p-2 text-sm focus:ring-green-500 focus:border-green-500" placeholder="**********" required>
                 </div>
@@ -230,7 +230,7 @@
 <div class="fixed bottom-4 right-4 bg-red-500 text-white px-6 py-3 rounded shadow-lg">
     <ul class="list-disc pl-5">
         @foreach ($errors->all() as $error)
-            <li>{{ $error }}</li>
+        <li>{{ $error }}</li>
         @endforeach
     </ul>
 </div>

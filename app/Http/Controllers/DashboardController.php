@@ -45,7 +45,7 @@ class DashboardController extends Controller
         $empresas = Empresa::all(); // For dropdowns
         $tiposLicencia = TipoLicencia::all();
 
-        return view('dashboard', compact(
+        return view('SuperAdmin.dashboard', compact(
             'licenciasPorVencer', 
             'renovadasEsteMes',
             'totalLicencias',

@@ -20,22 +20,28 @@
 
             <nav class="px-4 space-y-2">
 
-                <a href="/dashboard" class="flex items-center gap-3 p-2 rounded bg-green-100">
+                <a href="{{ route('dashboard') }}"
+                    class="flex items-center gap-3 p-2 rounded
+                    {{ request()->routeIs('dashboard') ? 'bg-green-100 text-green-700' : 'hover:bg-gray-100' }}">
+
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="w-5 h-5 text-green-600">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M3 13h8V3H3v10zm10 8h8v-6h-8v6zm0-10h8V3h-8v8zM3 21h8v-6H3v6z" />
                     </svg>
-                    Dashboard
+                    Licencias
                 </a>
 
-                <a href="#" class="flex items-center gap-3 p-2 hover:bg-gray-100 rounded">
+                <a href="{{ route('SuperAdmin.index') }}"
+                    class="flex items-center gap-3 p-2 rounded
+                    {{ request()->routeIs('SuperAdmin.*') ? 'bg-green-100 text-green-700' : 'hover:bg-gray-100' }}">
+
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="w-5 h-5 text-blue-600">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M17 20h5V4H2v16h5m10 0v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6m10 0H7" />
                     </svg>
-                    Proveedores
+                    Empresas
                 </a>
 
                 <a href="#" class="flex items-center gap-3 p-2 hover:bg-gray-100 rounded">
@@ -90,7 +96,7 @@
                         class="w-10 h-10 rounded-full object-cover">
 
                     <!-- DATOS -->
-                    <div class="text-right">
+                    <div class="text-right w-20">
                         <p class="font-semibold">
                             {{ Auth::guard('superadmin')->user()->nombre ?? 'Super Admin' }}
                         </p>

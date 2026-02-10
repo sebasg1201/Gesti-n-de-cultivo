@@ -29,12 +29,12 @@ Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEm
 // Protected Routes
 Route::middleware(['auth:superadmin'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    
+
     // Dashboard Logic specific routes (created from DashboardController to keep it simple as per request)
     Route::post('/dashboard/empresas', [DashboardController::class, 'storeEmpresa'])->name('empresas.store');
     Route::post('/dashboard/licencias', [DashboardController::class, 'storeLicencia'])->name('licencias.store');
     Route::post('/dashboard/administradores', [DashboardController::class, 'storeAdministrador'])->name('administradores.store');
 
-    Route::resource('empresas', EmpresaController::class);
-    Route::put('empresas/{id}/activar', [EmpresaController::class, 'activar'])->name('empresas.activar');
+    Route::resource('SuperAdmin', EmpresaController::class);
+    Route::put('SuperAdmin/{id}/activar', [EmpresaController::class, 'activar'])->name('SuperAdmin.activar');
 });
