@@ -119,7 +119,7 @@
                 <h3 class="text-lg font-bold text-gray-800">Asignar Licencia</h3>
             </div>
 
-            <form action="{{ route('licencias.store') }}" method="POST" class="space-y-4">
+            <form action="{{ route('licencias.asignar') }}" method="POST" class="space-y-4">
                 @csrf
                 <input type="hidden" name="form" value="licencia">
 

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 11-02-2026 a las 06:03:20
+-- Tiempo de generación: 11-02-2026 a las 15:04:44
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -343,8 +343,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('bPoLgBcfkXeivXB2TcCewBiXnjZ1V3PXY1oEirih', 1006511657, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiNzhqNFdvWjRBMGpNRk1tZmw3b1RBaUpkdTZxUzR3ODJIM2hJMWtjUCI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9kYXNoYm9hcmQiO3M6NToicm91dGUiO3M6OToiZGFzaGJvYXJkIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo1NzoibG9naW5fc3VwZXJhZG1pbl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjEwMDY1MTE2NTc7fQ==', 1770780686),
-('CPURTHtionhldbXZIhwPkAfavwJiF1D9f5GCwsaL', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiYTlET0NMZkZVSXN0ZFdjWXNtTWVIekFnNzNXYmdqTmpvSVM5QXpSaSI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7czo1OiJyb3V0ZSI7Tjt9fQ==', 1770698663);
+('JXJCaANfU5e5PasYWqnHOpRR6EracaIQfYlZ6f7P', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiV2JhM3d3M0RyWEt3QkFIcG5nbzZlNGJiZ0pzbThvR3NRVTg1d0ZoSSI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7czo1OiJyb3V0ZSI7Tjt9fQ==', 1770789804);
 
 -- --------------------------------------------------------
 
@@ -412,9 +411,18 @@ CREATE TABLE `tipo_licencia` (
   `nombre_licencia` varchar(50) NOT NULL,
   `tiempo` varchar(50) NOT NULL,
   `descripcion` text NOT NULL,
-  `precio` decimal(10,2) NOT NULL,
+  `precio` decimal(15,2) NOT NULL,
   `id_estado` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `tipo_licencia`
+--
+
+INSERT INTO `tipo_licencia` (`id_tipo_licencia`, `nombre_licencia`, `tiempo`, `descripcion`, `precio`, `id_estado`) VALUES
+(1, 'Basico', '1 Mes', '24 Horas De Soporte', 50000.00, 1),
+(2, 'Medium', '6 Meses', '24 Horas De Soporte', 300000.00, 1),
+(3, 'Profesional', '1 Año', '24 Horas De Soporte', 600000.00, 1);
 
 -- --------------------------------------------------------
 
@@ -845,6 +853,12 @@ ALTER TABLE `terreno`
 --
 ALTER TABLE `tipo_cosecha`
   MODIFY `id_tipo_cosecha` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `tipo_licencia`
+--
+ALTER TABLE `tipo_licencia`
+  MODIFY `id_tipo_licencia` int(14) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `tipo_riego`

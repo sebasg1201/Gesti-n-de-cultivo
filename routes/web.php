@@ -33,6 +33,7 @@ Route::middleware(['auth:superadmin'])->group(function () {
 
     // Dashboard Logic specific routes
     Route::post('/dashboard/empresas', [DashboardController::class, 'storeEmpresa'])->name('empresas.store');
+    Route::post('/dashboard/licencias/asignar', [DashboardController::class, 'storeLicencia'])->name('licencias.asignar'); // New route
 
     // Licencias routes inside SuperAdmin area
     Route::get('/licencias', [TipoLicenciaController::class, 'index'])->name('licencias.index');
