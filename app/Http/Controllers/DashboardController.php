@@ -107,18 +107,6 @@ class DashboardController extends Controller
                  $estadoLicencia = 3;
              }
              
-             // NOTE: Previous logic forced company to Active (1). 
-             // "1" was actually Pending. So it wasn't activating it.
-             // If we want to assign AND activate immediately:
-             // $empresa->id_estado = 3; $empresa->save(); $estadoLicencia = 3;
-             // But the user complained "queda en pendiente".
-             // Let's assume the user workflow is: Assign -> Then Activate later (if not already active).
-             // So we should NOT force activation here unless requested.
-             // BUT, if I assign a license to a BLOCKED company, what happens?
-             // Let's just match the company status logic or keep it simple.
-             
-             // Current Logic: Just create the license. 
-             // If company is 3, license 3. If company is 1, license 1.
         }
 
         DB::table('venta_licencias')->insert([
@@ -130,11 +118,6 @@ class DashboardController extends Controller
             'id_estado' => $estadoLicencia
         ]);
 
-        // We do NOT force company status change here anymore, 
-        // because the user flow seems to rely on the "Activar" button to trigger the activation of both.
-        // OR: If the user wants "Assign License" to implies "Ready to go", maybe we should leave it pending until activation.
-        // The user said: "asigno la licencia... queda en pendiente".
-        // This confirms `storeLicencia` should leave it pending (1) if the company is pending.
 
         return redirect()->back()->with('success', 'Licencia asignada exitosamente.');
     }
