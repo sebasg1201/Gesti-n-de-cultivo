@@ -9,6 +9,7 @@
 
 <body class="bg-gray-100">
 
+
     <div class="flex">
 
         <!-- SIDEBAR -->
@@ -44,13 +45,14 @@
                     Empresas
                 </a>
 
-                <a href="#" class="flex items-center gap-3 p-2 hover:bg-gray-100 rounded">
+                <a href="{{ route('licencias.index') }}" class="flex items-center gap-3 p-2 rounded
+                    {{ request()->routeIs('licencias.*') ? 'bg-green-100 text-green-700' : 'hover:bg-gray-100' }}">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="w-5 h-5 text-yellow-600">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M12 8c-3 0-5 1.5-5 3s2 3 5 3 5 1.5 5 3-2 3-5 3m0-12V4m0 16v-2" />
                     </svg>
-                    Finanzas
+                    Tipo de Licencias
                 </a>
 
                 <a href="#" class="flex items-center gap-3 p-2 hover:bg-gray-100 rounded">
@@ -112,8 +114,6 @@
                             </button>
                         </form>
                     </div>
-
-
 
                 </div>
 

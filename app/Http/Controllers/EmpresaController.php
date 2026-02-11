@@ -21,6 +21,7 @@ class EmpresaController extends Controller
             });
         }
 
+<<<<<<< HEAD
         // Filter by status
         if ($request->has('status')) {
             $status = $request->input('status');
@@ -35,6 +36,11 @@ class EmpresaController extends Controller
 
         // Changed pagination to 4 as requested
         $empresas = $query->paginate(4);
+=======
+        // Filter by state if needed, for now just search
+
+        $empresas = $query->paginate(10);
+>>>>>>> ceface9825d6c91e5c11f8390b8116f462d8ff87
 
         // Calculate stats
         $stats = [
@@ -43,7 +49,11 @@ class EmpresaController extends Controller
             'activaciones' => Empresa::where('id_estado', 3)->count(),
         ];
 
+<<<<<<< HEAD
         return view('SuperAdmin.index', compact('empresas', 'stats'));
+=======
+        return view('empresas.index', compact('empresas', 'stats'));
+>>>>>>> ceface9825d6c91e5c11f8390b8116f462d8ff87
     }
     public function activar($id)
     {

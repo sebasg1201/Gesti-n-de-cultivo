@@ -32,7 +32,11 @@
 
             {{-- ACTIONS --}}
             <div class="flex items-center gap-3">
+<<<<<<< HEAD
                 <a href="{{ route('login') }}" class="px-4 py-2 rounded-xl text-gray-800 font-medium hover:bg-gray-100 transition">
+=======
+                <a href="/login" class="px-4 py-2 rounded-xl text-gray-800 font-medium hover:bg-gray-100 transition">
+>>>>>>> ceface9825d6c91e5c11f8390b8116f462d8ff87
                     Iniciar sesión
                 </a>
 

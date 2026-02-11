@@ -253,7 +253,6 @@
 </section>
 
 <section class="bg-gray-100 py-20">
-<<<<<<< HEAD
     <div class="max-w-7xl mx-auto px-6 text-center">
 
         {{-- TÍTULO --}}
@@ -277,53 +276,10 @@
 
                 <p class="mt-4 text-gray-600">
                     Ideal para fincas pequeñas que están digitalizándose.
-=======
-
-    <div class="max-w-7xl mx-auto px-6 text-center">
-
-        <h2 class="text-4xl font-bold text-gray-900">
-            Planes que Crecen Contigo
-        </h2>
-
-        <p class="mt-4 text-gray-600">
-            Transparencia total, sin costos ocultos.
-        </p>
-
-        <div class="mt-16 grid gap-8 md:grid-cols-3 text-left">
-
-            @foreach($licencias as $licencia)
-
-            <div class="relative bg-white border border-gray-200 rounded-2xl p-8 hover:shadow-lg transition">
-
-                {{-- BADGE OPCIONAL --}}
-                @if(strtolower($licencia->nombre_licencia) == 'profesional')
-                    <span class="absolute -top-4 left-1/2 -translate-x-1/2
-                                 bg-green-500 text-black text-xs font-bold
-                                 px-4 py-1 rounded-full">
-                        MÁS POPULAR
-                    </span>
-                @endif
-
-
-                {{-- TITULO --}}
-                <h3 class="font-semibold text-lg text-green-600">
-                    {{ $licencia->nombre_licencia }}
-                </h3>
-
-                {{-- PRECIO --}}
-                <p class="mt-4 text-4xl font-extrabold text-black-600">
-                    ${{ number_format($licencia->precio) }}
-                </p>
-
-                {{-- DESCRIPCION --}}
-                <p class="mt-4 text-gray-600">
-                    {{ $licencia->descripcion }}
->>>>>>> ceface9825d6c91e5c11f8390b8116f462d8ff87
                 </p>
 
                 <div class="my-6 h-px bg-gray-200/70"></div>
 
-<<<<<<< HEAD
                 <ul class="mt-6 space-y-4">
                     @foreach ([
                         'Hasta 50 hectáreas',
@@ -443,70 +399,8 @@
 
         </div>
     </div>
-=======
-                {{-- DURACION --}}
-                <p class="text-gray-500">
-                    Duración: {{ $licencia->tiempo }}
-                </p>
-
-
-                {{-- LISTA ESTETICA --}}
-                <ul class="mt-6 space-y-4">
-
-                    <li class="flex items-start gap-4">
-                        <div class="w-7 h-7 flex items-center justify-center rounded-full bg-green-100 mt-1">
-                            <svg class="w-4 h-4 text-green-600"
-                                 xmlns="http://www.w3.org/2000/svg"
-                                 fill="none" viewBox="0 0 24 24"
-                                 stroke="currentColor" stroke-width="3">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                      d="M5 13l4 4L19 7"/>
-                            </svg>
-                        </div>
-                        <span class="text-gray-700">
-                            Acceso completo al sistema
-                        </span>
-                    </li>
-
-                    <li class="flex items-start gap-4">
-                        <div class="w-7 h-7 flex items-center justify-center rounded-full bg-green-100 mt-1">
-                            <svg class="w-4 h-4 text-green-600"
-                                 xmlns="http://www.w3.org/2000/svg"
-                                 fill="none" viewBox="0 0 24 24"
-                                 stroke="currentColor" stroke-width="3">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                      d="M5 13l4 4L19 7"/>
-                            </svg>
-                        </div>
-                        <span class="text-gray-700">
-                            Soporte técnico
-                        </span>
-                    </li>
-
-                </ul>
-
-
-                {{-- BOTON --}}
-                <a href="#"
-                   class="mt-8 block text-center
-                   {{ strtolower($licencia->nombre_licencia) == 'profesional'
-                        ? 'bg-green-500 text-black hover:bg-green-600'
-                        : 'border-2 border-green-500 text-green-600 hover:bg-green-100' }}
-                   py-3 rounded-xl font-semibold transition">
-
-                    Seleccionar Plan
-                </a>
-
-            </div>
-
-            @endforeach
-
-        </div>
-
-    </div>
-
->>>>>>> ceface9825d6c91e5c11f8390b8116f462d8ff87
 </section>
 
 
 @endsection
+    
