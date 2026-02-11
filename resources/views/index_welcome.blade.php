@@ -254,6 +254,7 @@
 
 <section class="bg-gray-100 py-20">
 
+
     <div class="max-w-7xl mx-auto px-6 text-center">
 
         <h2 class="text-4xl font-bold text-gray-900">
@@ -294,8 +295,6 @@
                 <p class="mt-4 text-gray-600">
                     {{ $licencia->descripcion }}
                 </p>
-
-                <div class="my-6 h-px bg-gray-200/70"></div>
 
                 {{-- DURACION --}}
                 <p class="text-gray-500">
@@ -357,6 +356,7 @@
         </div>
 
     </div>
+
 
 </section>
 

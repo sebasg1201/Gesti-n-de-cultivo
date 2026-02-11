@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <title>AgriManager</title>
@@ -7,6 +8,7 @@
 </head>
 
 <body class="bg-gray-100">
+
 
 <div class="flex">
 
@@ -132,3 +134,4 @@ function toggleSidebar() {
 
 </body>
 </html>
+
