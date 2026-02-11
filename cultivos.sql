@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 11-02-2026 a las 15:04:44
+-- Tiempo de generación: 11-02-2026 a las 16:56:14
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -125,7 +125,7 @@ CREATE TABLE `detalle_producto_cosecha` (
 --
 
 CREATE TABLE `empresa` (
-  `id_empresa` int(11) NOT NULL,
+  `id_empresa` varchar(14) NOT NULL,
   `nombre_empresa` varchar(200) NOT NULL,
   `nombre_repre_legal` varchar(100) NOT NULL,
   `telefono` varchar(12) NOT NULL,
@@ -140,11 +140,7 @@ CREATE TABLE `empresa` (
 --
 
 INSERT INTO `empresa` (`id_empresa`, `nombre_empresa`, `nombre_repre_legal`, `telefono`, `correo`, `direccion`, `fecha_creacion`, `id_estado`) VALUES
-(13231212, 'Sena', 'Sena', '3103527239', 'johsn@gmail.com', 'MzN Casa# 1 Picaleña', '2026-02-06', 1),
-(112312542, 'Agro Cultivo', 'Sebastian Giraldo Galindez', '3202708134', 'sebastian1235@gmail.com', 'Carrera 8 Sur Barrio Villa Catalina', '2025-09-09', 3),
-(133543542, 'Valle-Huila', 'Didier ALberto Reyes', '320270812', 'didier123@gmail.com', 'Carrera 2 Barrio La Reforma', '2026-01-24', 3),
-(443323221, 'Corteva Sas', 'Julio Jaramillo', '3202708114', 'julio453@gmail.com', 'Cra 10 norte Ferrocarril', '2025-10-10', 2),
-(830045678, 'Agro Valle', 'Jose Alberto Marulanda', '3202708123', 'agrovalle123@gmail.com', 'Calle 25 # Centro Industria', '0000-00-00', 1);
+('8600050669', 'Finca La Florida', 'Dairo Moreno', '3103527239', 'dairo003@gmail.com', 'MzN Casa 1 Villa_cindy', '2026-02-11', 3);
 
 -- --------------------------------------------------------
 
@@ -343,7 +339,30 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('JXJCaANfU5e5PasYWqnHOpRR6EracaIQfYlZ6f7P', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiV2JhM3d3M0RyWEt3QkFIcG5nbzZlNGJiZ0pzbThvR3NRVTg1d0ZoSSI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7czo1OiJyb3V0ZSI7Tjt9fQ==', 1770789804);
+('2XULVkmn9iNmpC4BkfabQaJbzdjCZNUdKNIwdD3M', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36 Edg/144.0.0.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiZ1JWaHdscHFySW50S2ppaGZMZ3Z0SXR6Ym1EY3Z0ZnVYRjhhcGlGMiI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7czo1OiJyb3V0ZSI7Tjt9fQ==', 1770823460),
+('BhJR7AyqnMhfFykr4i3KNZaOdsVuoqf86qxRs3NN', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiNU5yTDhkSHhidFdCVEt2REJla2pjVkdoOThEVERNNmo2YlViS3lQOCI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7czo1OiJyb3V0ZSI7Tjt9fQ==', 1770824213),
+('I3nAswmfFTmGSxD4BNHhBeaBKpAuJgDEFBIa7IFg', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT; Windows NT 10.0; es-CO) WindowsPowerShell/5.1.26100.7705', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiWmpZaWt5VXVZWVVFU1dqWnNIMFd6Snh6bnE2aE1QY1l1Y0lUVVl5WiI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzY6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9ydW4tdGVzdC1zZXR1cCI7czo1OiJyb3V0ZSI7Tjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1770819707);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `solicitud_compra`
+--
+
+CREATE TABLE `solicitud_compra` (
+  `id_solicitud` int(11) NOT NULL,
+  `nit_empresa` varchar(20) NOT NULL,
+  `nombre_empresa` varchar(200) NOT NULL,
+  `nombre_repre_legal` varchar(150) NOT NULL,
+  `telefono` varchar(20) NOT NULL,
+  `correo` varchar(150) NOT NULL,
+  `direccion` varchar(200) NOT NULL,
+  `comprobante_pago` varchar(500) NOT NULL,
+  `id_super_admin` int(11) NOT NULL,
+  `id_estado` int(11) NOT NULL,
+  `fecha_solicitud` datetime DEFAULT current_timestamp(),
+  `fecha_revision` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -457,6 +476,15 @@ CREATE TABLE `tipo_usuario` (
   `tipo_usuario` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `tipo_usuario`
+--
+
+INSERT INTO `tipo_usuario` (`id_tipo_usuario`, `tipo_usuario`) VALUES
+(1, 'administrador'),
+(2, 'supervisor'),
+(3, 'trabajador');
+
 -- --------------------------------------------------------
 
 --
@@ -505,8 +533,15 @@ CREATE TABLE `usuario` (
   `contrasena` varchar(255) DEFAULT NULL,
   `id_tipo_usuario` int(11) DEFAULT NULL,
   `id_estado` int(11) DEFAULT NULL,
-  `id_empresa` int(11) NOT NULL
+  `id_empresa` varchar(14) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `usuario`
+--
+
+INSERT INTO `usuario` (`documento`, `imagen`, `nombre`, `telefono`, `correo`, `contrasena`, `id_tipo_usuario`, `id_estado`, `id_empresa`) VALUES
+(43211222, 'usuarios/bSbGFNQXLSvkTZAd0arvomtqqIbMSZhXZwP4No2S.png', 'Edinson Cavani', '3102102122', 'edinson03@gmail.com', '$2y$12$Drb3yPwds9eZ.DQsxhRtFeKtDfTlbOsl4ZoXyOTB2gpnih.E57FoG', 1, 3, '8600050669');
 
 -- --------------------------------------------------------
 
@@ -518,10 +553,17 @@ CREATE TABLE `venta_licencias` (
   `id_key` varchar(14) NOT NULL,
   `fecha_inicio` datetime NOT NULL,
   `observacione` text NOT NULL,
-  `id_empresa` int(11) NOT NULL,
   `id_tipo_licencia` int(11) NOT NULL,
+  `id_empresa` varchar(14) NOT NULL,
   `id_estado` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `venta_licencias`
+--
+
+INSERT INTO `venta_licencias` (`id_key`, `fecha_inicio`, `observacione`, `id_tipo_licencia`, `id_empresa`, `id_estado`) VALUES
+('nxRnZ1rZV4kzhL', '2026-02-11 15:23:37', 'Asignada desde Dashboard', 2, '8600050669', 3);
 
 --
 -- Índices para tablas volcadas
@@ -670,6 +712,14 @@ ALTER TABLE `sessions`
   ADD KEY `sessions_last_activity_index` (`last_activity`);
 
 --
+-- Indices de la tabla `solicitud_compra`
+--
+ALTER TABLE `solicitud_compra`
+  ADD PRIMARY KEY (`id_solicitud`),
+  ADD KEY `fk_solicitud_superadmin` (`id_super_admin`),
+  ADD KEY `fk_solicitud_estado` (`id_estado`);
+
+--
 -- Indices de la tabla `super_admin`
 --
 ALTER TABLE `super_admin`
@@ -744,9 +794,9 @@ ALTER TABLE `usuario`
 --
 ALTER TABLE `venta_licencias`
   ADD PRIMARY KEY (`id_key`),
-  ADD KEY `id_empresa` (`id_empresa`),
   ADD KEY `id_estado` (`id_estado`),
-  ADD KEY `id_tipo_licencia` (`id_tipo_licencia`);
+  ADD KEY `id_tipo_licencia` (`id_tipo_licencia`),
+  ADD KEY `id_empresa` (`id_empresa`);
 
 --
 -- AUTO_INCREMENT de las tablas volcadas
@@ -837,6 +887,12 @@ ALTER TABLE `riego`
   MODIFY `id_riego` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT de la tabla `solicitud_compra`
+--
+ALTER TABLE `solicitud_compra`
+  MODIFY `id_solicitud` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT de la tabla `super_admin`
 --
 ALTER TABLE `super_admin`
@@ -876,7 +932,7 @@ ALTER TABLE `tipo_semilla`
 -- AUTO_INCREMENT de la tabla `tipo_usuario`
 --
 ALTER TABLE `tipo_usuario`
-  MODIFY `id_tipo_usuario` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_tipo_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `users`
@@ -945,6 +1001,13 @@ ALTER TABLE `riego`
   ADD CONSTRAINT `riego_ibfk_1` FOREIGN KEY (`id_tipo_riego`) REFERENCES `tipo_riego` (`id_tipo_riego`);
 
 --
+-- Filtros para la tabla `solicitud_compra`
+--
+ALTER TABLE `solicitud_compra`
+  ADD CONSTRAINT `fk_solicitud_estado` FOREIGN KEY (`id_estado`) REFERENCES `estado` (`id_estado`),
+  ADD CONSTRAINT `fk_solicitud_superadmin` FOREIGN KEY (`id_super_admin`) REFERENCES `super_admin` (`id_super_admin`);
+
+--
 -- Filtros para la tabla `terreno`
 --
 ALTER TABLE `terreno`
@@ -975,9 +1038,9 @@ ALTER TABLE `usuario`
 -- Filtros para la tabla `venta_licencias`
 --
 ALTER TABLE `venta_licencias`
-  ADD CONSTRAINT `venta_licencias_ibfk_1` FOREIGN KEY (`id_empresa`) REFERENCES `empresa` (`id_empresa`),
   ADD CONSTRAINT `venta_licencias_ibfk_2` FOREIGN KEY (`id_estado`) REFERENCES `estado` (`id_estado`),
-  ADD CONSTRAINT `venta_licencias_ibfk_3` FOREIGN KEY (`id_tipo_licencia`) REFERENCES `tipo_licencia` (`id_tipo_licencia`);
+  ADD CONSTRAINT `venta_licencias_ibfk_3` FOREIGN KEY (`id_tipo_licencia`) REFERENCES `tipo_licencia` (`id_tipo_licencia`),
+  ADD CONSTRAINT `venta_licencias_ibfk_4` FOREIGN KEY (`id_empresa`) REFERENCES `empresa` (`id_empresa`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
