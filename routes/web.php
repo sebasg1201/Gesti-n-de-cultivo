@@ -9,9 +9,10 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\TipoLicenciaController;
 
 
-Route::get('/', function () {
-    return view('index_welcome');
-});
+// Solicitud Compra Routes
+use App\Http\Controllers\SolicitudCompraController;
+Route::get('/solicitud-compra/{licencia}', [SolicitudCompraController::class, 'create'])->name('solicitud.create');
+Route::post('/solicitud-compra', [SolicitudCompraController::class, 'store'])->name('solicitud.store');
 
 // Authentication Routes
 Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -39,6 +40,9 @@ Route::middleware(['auth:superadmin'])->group(function () {
     Route::delete('/licencias/{id}', [TipoLicenciaController::class, 'destroy'])->name('licencias.destroy');
 
     Route::post('/dashboard/administradores', [DashboardController::class, 'storeAdministrador'])->name('administradores.store');
+
+    Route::get('/dashboard/solicitudes', [SolicitudCompraController::class, 'index'])->name('solicitudes.index');
+    Route::put('/dashboard/solicitudes/{id}/visto', [SolicitudCompraController::class, 'markAsSeen'])->name('solicitudes.markAsSeen');
 
     Route::resource('SuperAdmin', EmpresaController::class);
     Route::put('SuperAdmin/{id}/activar', [EmpresaController::class, 'activar'])->name('SuperAdmin.activar');

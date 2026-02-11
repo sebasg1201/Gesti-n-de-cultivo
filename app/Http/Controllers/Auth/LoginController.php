@@ -21,10 +21,7 @@ class LoginController extends Controller
             'password' => 'required',
         ]);
 
-        // Attempt using the 'superadmin' guard
-        // Note: The database has 'correo' and 'password_hash'. 
-        // Laravel's attempt method expects 'password' key in credentials to match against hashed password.
-        // We need to map 'email' input to 'correo' column.
+
         $credentials = [
             'correo' => $request->email,
             'password' => $request->password

@@ -15,15 +15,15 @@ class ForgotPasswordController extends Controller
 
     public function sendResetLinkEmail(Request $request)
     {
-        $request->validate(['email' => 'required|email']);
+        $request->validate(['correo' => 'required|email']);
 
         // We use the 'superadmins' broker defined in auth.php
         $status = Password::broker('superadmins')->sendResetLink(
-            $request->only('email')
+            $request->only('correo')
         );
 
         return $status == Password::RESET_LINK_SENT
-                    ? back()->with(['status' => __($status)])
-                    : back()->withErrors(['email' => __($status)]);
+            ? back()->with(['status' => __($status)])
+            : back()->withErrors(['correo' => __($status)]);
     }
 }

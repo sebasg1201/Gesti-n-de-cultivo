@@ -29,8 +29,14 @@ class SuperAdmin extends Authenticatable
     {
         return $this->password_hash;
     }
-    
-    // Check if we need to map 'password' attribute to 'password_hash' for Laravel to interact with it seamlessly
-    // But usually getAuthPassword() is enough for login. 
-    // If we want to reset password, we might need a mutator.
+
+    /**
+     * Get the email address where password reset links are sent.
+     *
+     * @return string
+     */
+    public function getEmailForPasswordReset()
+    {
+        return $this->correo;
+    }
 }
