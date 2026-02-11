@@ -117,7 +117,7 @@
 
                         <!-- QR Code Image -->
                         <div class="bg-white p-4 rounded-xl shadow-lg border border-gray-100">
-                            <img src="{{ asset('img/qr-placeholder.png') }}" alt="Código QR Bancolombia"
+                            <img src="{{ asset('img/qrfalso.png') }}" alt="Código QR Bancolombia"
                                 class="w-64 h-64 object-contain">
                         </div>
 
@@ -134,7 +134,7 @@
                                 </div>
                                 <div class="flex justify-between">
                                     <dt class="text-gray-500">Número:</dt>
-                                    <dd class="font-medium text-gray-900">031-123456-78</dd>
+                                    <dd class="font-medium text-gray-900">302-260-9743</dd>
                                 </div>
                                 <div class="flex justify-between pt-2 border-t border-gray-200 mt-2">
                                     <dt class="font-bold text-gray-900">Total a Pagar:</dt>

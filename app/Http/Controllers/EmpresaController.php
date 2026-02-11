@@ -52,9 +52,7 @@ class EmpresaController extends Controller
         
         $empresa->id_estado = 3; // Activa
         $empresa->save();
-
-        // Activate associated License (Latest one)
-        // Find the latest license for this company
+        
         $licencia = \App\Models\VentaLicencias::where('id_empresa', $id)
                                               ->orderBy('fecha_inicio', 'desc')
                                               ->first();
@@ -65,8 +63,7 @@ class EmpresaController extends Controller
             $licencia->save();
         }
 
-        // Activate associated Users (Admins)
-        // Update all users belonging to this company to Active (3)
+
         \App\Models\Usuario::where('id_empresa', $id)->update(['id_estado' => 3]);
 
         return redirect()->back()->with('success', 'Empresa, Licencia y Usuarios activados con éxito.');

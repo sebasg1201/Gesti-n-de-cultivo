@@ -149,7 +149,7 @@
 
                 <div>
                     <label class="block text-sm font-medium text-gray-600">Estado</label>
-                    <input type="text" value="Activo" disabled class="w-full bg-gray-100 border-gray-300 rounded p-2 text-sm text-green-600">
+                    <input type="text" value="Pendiente" disabled class="w-full bg-gray-100 border-gray-300 rounded p-2 text-sm text-yellow-600">
                 </div>
 
                 <button type="submit" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition">

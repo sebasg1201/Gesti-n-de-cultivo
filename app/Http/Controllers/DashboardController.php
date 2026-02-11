@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Empresa;
-use App\Models\Usuario; // Assuming table 'usuario' is modeled as Usuario
-use App\Models\VentaLicencias; // Assuming table 'venta_licencias'
+use App\Models\Usuario;
+use App\Models\VentaLicencias;
 use App\Models\TipoLicencia;
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
@@ -16,17 +16,18 @@ class DashboardController extends Controller
     public function index()
     {
         // --- REPORTS LOGIC ---
-        
+
         // 1. Licencias Por Vencer
         $licenciasPorVencer = DB::table('venta_licencias as vl')
             ->join('tipo_licencia as tl', 'vl.id_tipo_licencia', '=', 'tl.id_tipo_licencia')
             ->where('vl.id_estado', 1) // Assuming 1 is Active
             ->get()
-            ->filter(function($licencia) {
+            ->filter(function ($licencia) {
                 // Parse duration from 'tiempo' string, e.g., "12 Meses"
                 $meses = (int) filter_var($licencia->tiempo, FILTER_SANITIZE_NUMBER_INT);
-                if ($meses == 0) $meses = 12; // Default
-                
+                if ($meses == 0)
+                    $meses = 12; // Default
+    
                 $fechaFin = Carbon::parse($licencia->fecha_inicio)->addMonths($meses);
                 return $fechaFin->diffInDays(now()) <= 30 && $fechaFin->isFuture();
             })
@@ -35,9 +36,9 @@ class DashboardController extends Controller
 
         // 2. Renovadas este mes (Purchased/Started this month)
         $renovadasEsteMes = VentaLicencias::whereMonth('fecha_inicio', Carbon::now()->month)
-                                          ->whereYear('fecha_inicio', Carbon::now()->year)
-                                          ->count();
-        
+            ->whereYear('fecha_inicio', Carbon::now()->year)
+            ->count();
+
         // 3. Total Licencias (Count of all licenses)
         $totalLicencias = DB::table('venta_licencias')->count();
 
@@ -46,7 +47,7 @@ class DashboardController extends Controller
         $tiposLicencia = TipoLicencia::all();
 
         return view('SuperAdmin.dashboard', compact(
-            'licenciasPorVencer', 
+            'licenciasPorVencer',
             'renovadasEsteMes',
             'totalLicencias',
             'empresas',
@@ -62,7 +63,7 @@ class DashboardController extends Controller
             'nombre_repre_legal' => 'required|string|max:100', // Added field
             'telefono' => 'required|string|max:12',
             'direccion' => 'required|string|max:150',
-            'correo' => 'required|email|max:100',
+            'correo' => 'required|email|max:100|unique:empresa,correo',
         ]);
 
         $empresa = new Empresa();
@@ -85,28 +86,24 @@ class DashboardController extends Controller
             'id_empresa' => 'required|exists:empresa,id_empresa',
             'id_tipo_licencia' => 'required|exists:tipo_licencia,id_tipo_licencia',
         ]);
-        
+
         // Calculate dates
         $tipoLicencia = TipoLicencia::find($request->id_tipo_licencia);
         $meses = (int) filter_var($tipoLicencia->tiempo, FILTER_SANITIZE_NUMBER_INT);
-        if ($meses == 0) $meses = 12; // Fallback
+        if ($meses == 0)
+            $meses = 12; // Fallback
 
         $fechaInicio = now();
-        
-        // Determine status based on Company status
-        // If Company is already Active (3), License should be Active (3).
-        // If Company is new/Pending (1), License should be Pending (1).
-        
+
+
         $empresa = Empresa::find($request->id_empresa);
         $estadoLicencia = 1; // Default to Pending
-        
+
         if ($empresa) {
-             // If company is already active (3), making the license active immediately.
-             // If company is pending (1), license stays pending (1).
-             if ($empresa->id_estado == 3) {
-                 $estadoLicencia = 3;
-             }
-             
+
+            if ($empresa->id_estado == 3) {
+                $estadoLicencia = 3;
+            }
         }
 
         DB::table('venta_licencias')->insert([
@@ -127,7 +124,7 @@ class DashboardController extends Controller
         $request->validate([
             'documento' => 'required|numeric|unique:usuario,documento',
             'nombre' => 'required|string',
-            'correo' => 'required|email',
+            'correo' => 'required|email|unique:usuario,correo',
             'telefono' => 'required|string',
             'contrasena' => 'required|min:6',
             'id_empresa' => 'required|exists:empresa,id_empresa',
@@ -144,7 +141,7 @@ class DashboardController extends Controller
         // Determine admin status
         $empresa = Empresa::find($request->id_empresa);
         $estadoUsuario = 1; // Default: Pending
-        
+
         if ($empresa && $empresa->id_estado == 3) {
             $estadoUsuario = 3; // Active if company is active
         }
