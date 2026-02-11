@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 09-02-2026 a las 17:30:28
+-- Tiempo de generación: 11-02-2026 a las 15:04:44
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -140,8 +140,9 @@ CREATE TABLE `empresa` (
 --
 
 INSERT INTO `empresa` (`id_empresa`, `nombre_empresa`, `nombre_repre_legal`, `telefono`, `correo`, `direccion`, `fecha_creacion`, `id_estado`) VALUES
+(13231212, 'Sena', 'Sena', '3103527239', 'johsn@gmail.com', 'MzN Casa# 1 Picaleña', '2026-02-06', 1),
 (112312542, 'Agro Cultivo', 'Sebastian Giraldo Galindez', '3202708134', 'sebastian1235@gmail.com', 'Carrera 8 Sur Barrio Villa Catalina', '2025-09-09', 3),
-(133543542, 'Valle-Huila', 'Didier ALberto Reyes', '320270812', 'didier123@gmail.com', 'Carrera 2 Barrio La Reforma', '0000-00-00', 3),
+(133543542, 'Valle-Huila', 'Didier ALberto Reyes', '320270812', 'didier123@gmail.com', 'Carrera 2 Barrio La Reforma', '2026-01-24', 3),
 (443323221, 'Corteva Sas', 'Julio Jaramillo', '3202708114', 'julio453@gmail.com', 'Cra 10 norte Ferrocarril', '2025-10-10', 2),
 (830045678, 'Agro Valle', 'Jose Alberto Marulanda', '3202708123', 'agrovalle123@gmail.com', 'Calle 25 # Centro Industria', '0000-00-00', 1);
 
@@ -163,7 +164,8 @@ CREATE TABLE `estado` (
 INSERT INTO `estado` (`id_estado`, `nombre_estado`) VALUES
 (1, 'pendiente'),
 (2, 'bloqueada'),
-(3, 'activa');
+(3, 'activa'),
+(4, 'activo');
 
 -- --------------------------------------------------------
 
@@ -341,7 +343,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('mz0CMJ6S1c1X7ZzIcsb1lQjEcMveK3yQxTMttrrd', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiYlgzMmprTmtEUUZjZVpGcWs0TDVCZHlNOHVRbkhWc1hHcW1JRE12eCI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzA6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9lbXByZXNhcyI7czo1OiJyb3V0ZSI7czoxNDoiZW1wcmVzYXMuaW5kZXgiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX19', 1770616059);
+('JXJCaANfU5e5PasYWqnHOpRR6EracaIQfYlZ6f7P', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiV2JhM3d3M0RyWEt3QkFIcG5nbzZlNGJiZ0pzbThvR3NRVTg1d0ZoSSI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7czo1OiJyb3V0ZSI7Tjt9fQ==', 1770789804);
 
 -- --------------------------------------------------------
 
@@ -360,6 +362,14 @@ CREATE TABLE `super_admin` (
   `fecha_creacion` timestamp NOT NULL DEFAULT current_timestamp(),
   `fecha_actualizacion` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `super_admin`
+--
+
+INSERT INTO `super_admin` (`id_super_admin`, `nombre`, `usuario`, `correo`, `password_hash`, `activo`, `ultimo_login`, `fecha_creacion`, `fecha_actualizacion`) VALUES
+(1006511657, 'Brayan', 'Stevan', 'bastobrayan246@gmail.com', '$2y$12$Ftsg7jbd1YPhar1DPL9z8enc6EPNO3bNjq68Hls8ArfghDROln/5G', 4, NULL, '2026-02-10 03:51:59', '2026-02-10 03:51:59'),
+(1110495789, 'Didier Reyes', 'dires123', 'didierreyes003@gmail.com', '$2y$12$8li05Gc8eFiaBGMNARXqueWI6iJ5JTayhYFoY5fo1qhMFdxEVjPEy', 4, NULL, '2026-02-09 19:43:33', '2026-02-09 19:49:39');
 
 -- --------------------------------------------------------
 
@@ -397,13 +407,22 @@ CREATE TABLE `tipo_cosecha` (
 --
 
 CREATE TABLE `tipo_licencia` (
-  `id_tipo_licencia` int(11) NOT NULL,
+  `id_tipo_licencia` int(14) NOT NULL,
   `nombre_licencia` varchar(50) NOT NULL,
   `tiempo` varchar(50) NOT NULL,
   `descripcion` text NOT NULL,
-  `precio` decimal(10,2) NOT NULL,
+  `precio` decimal(15,2) NOT NULL,
   `id_estado` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `tipo_licencia`
+--
+
+INSERT INTO `tipo_licencia` (`id_tipo_licencia`, `nombre_licencia`, `tiempo`, `descripcion`, `precio`, `id_estado`) VALUES
+(1, 'Basico', '1 Mes', '24 Horas De Soporte', 50000.00, 1),
+(2, 'Medium', '6 Meses', '24 Horas De Soporte', 300000.00, 1),
+(3, 'Profesional', '1 Año', '24 Horas De Soporte', 600000.00, 1);
 
 -- --------------------------------------------------------
 
@@ -767,7 +786,7 @@ ALTER TABLE `detalle_producto_cosecha`
 -- AUTO_INCREMENT de la tabla `estado`
 --
 ALTER TABLE `estado`
-  MODIFY `id_estado` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_estado` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `failed_jobs`
@@ -821,7 +840,7 @@ ALTER TABLE `riego`
 -- AUTO_INCREMENT de la tabla `super_admin`
 --
 ALTER TABLE `super_admin`
-  MODIFY `id_super_admin` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_super_admin` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1110495790;
 
 --
 -- AUTO_INCREMENT de la tabla `terreno`
@@ -834,6 +853,12 @@ ALTER TABLE `terreno`
 --
 ALTER TABLE `tipo_cosecha`
   MODIFY `id_tipo_cosecha` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `tipo_licencia`
+--
+ALTER TABLE `tipo_licencia`
+  MODIFY `id_tipo_licencia` int(14) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `tipo_riego`

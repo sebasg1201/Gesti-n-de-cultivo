@@ -45,7 +45,7 @@ class DashboardController extends Controller
         $empresas = Empresa::all(); // For dropdowns
         $tiposLicencia = TipoLicencia::all();
 
-        return view('dashboard', compact(
+        return view('SuperAdmin.dashboard', compact(
             'licenciasPorVencer', 
             'renovadasEsteMes',
             'totalLicencias',
@@ -92,23 +92,49 @@ class DashboardController extends Controller
         if ($meses == 0) $meses = 12; // Fallback
 
         $fechaInicio = now();
-        // fecha_fin is not stored in venta_licencias structure I saw earlier (only fecha_inicio), 
-        // but user asked to "calculate it". 
-        // If the DB doesn't have fecha_fin column, we can't save it there.
-        // Assuming we just save the start date and the type determines the end date dynamically.
-        // However, if there IS a fecha_fin column in DB (I checked sql dump, table `cultivo` has it, `cosecha` has it. `venta_licencias` check...)
-        // SQL Dump for `venta_licencias`: 
-        // CREATE TABLE `venta_licencias` ( ... `fecha_inicio` datetime NOT NULL, ... )
-        // It DOES NOT have `fecha_fin`. So we only save `fecha_inicio`.
         
+        // Determine status based on Company status
+        // If Company is already Active (3), License should be Active (3).
+        // If Company is new/Pending (1), License should be Pending (1).
+        
+        $empresa = Empresa::find($request->id_empresa);
+        $estadoLicencia = 1; // Default to Pending
+        
+        if ($empresa) {
+             // If company is already active (3), making the license active immediately.
+             // If company is pending (1), license stays pending (1).
+             if ($empresa->id_estado == 3) {
+                 $estadoLicencia = 3;
+             }
+             
+             // NOTE: Previous logic forced company to Active (1). 
+             // "1" was actually Pending. So it wasn't activating it.
+             // If we want to assign AND activate immediately:
+             // $empresa->id_estado = 3; $empresa->save(); $estadoLicencia = 3;
+             // But the user complained "queda en pendiente".
+             // Let's assume the user workflow is: Assign -> Then Activate later (if not already active).
+             // So we should NOT force activation here unless requested.
+             // BUT, if I assign a license to a BLOCKED company, what happens?
+             // Let's just match the company status logic or keep it simple.
+             
+             // Current Logic: Just create the license. 
+             // If company is 3, license 3. If company is 1, license 1.
+        }
+
         DB::table('venta_licencias')->insert([
             'id_key' => \Illuminate\Support\Str::random(14),
             'fecha_inicio' => $fechaInicio,
             'observacione' => 'Asignada desde Dashboard',
             'id_empresa' => $request->id_empresa,
             'id_tipo_licencia' => $request->id_tipo_licencia,
-            'id_estado' => 1 // Activo
+            'id_estado' => $estadoLicencia
         ]);
+
+        // We do NOT force company status change here anymore, 
+        // because the user flow seems to rely on the "Activar" button to trigger the activation of both.
+        // OR: If the user wants "Assign License" to implies "Ready to go", maybe we should leave it pending until activation.
+        // The user said: "asigno la licencia... queda en pendiente".
+        // This confirms `storeLicencia` should leave it pending (1) if the company is pending.
 
         return redirect()->back()->with('success', 'Licencia asignada exitosamente.');
     }
@@ -132,6 +158,14 @@ class DashboardController extends Controller
             $imagePath = 'default.png';
         }
 
+        // Determine admin status
+        $empresa = Empresa::find($request->id_empresa);
+        $estadoUsuario = 1; // Default: Pending
+        
+        if ($empresa && $empresa->id_estado == 3) {
+            $estadoUsuario = 3; // Active if company is active
+        }
+
         // Logic to create admin user
         DB::table('usuario')->insert([
             'documento' => $request->documento,
@@ -140,8 +174,8 @@ class DashboardController extends Controller
             'telefono' => $request->telefono,
             'contrasena' => Hash::make($request->contrasena),
             'id_empresa' => $request->id_empresa,
-            'id_tipo_usuario' => 1, // Admin
-            'id_estado' => 1, // Activo
+            'id_tipo_usuario' => 1, // Admin type
+            'id_estado' => $estadoUsuario,
             'imagen' => $imagePath
         ]);
 

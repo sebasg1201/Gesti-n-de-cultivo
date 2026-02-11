@@ -10,12 +10,12 @@ class TipoLicenciaController extends Controller
     public function index()
     {
         $licencias = TipoLicencia::all();
-        return view('licencias.index', compact('licencias'));
+        return view('SuperAdmin.tipo_licencias', compact('licencias'));
     }
 
     public function create()
     {
-        return view('licencias.create');
+        return view('SuperAdmin.create_licencia');
     }
 
     public function store(Request $request)
@@ -36,13 +36,13 @@ class TipoLicenciaController extends Controller
         ]);
 
         return redirect()->route('licencias.index')
-        ->with('success','Licencia creada correctamente');
+            ->with('success', 'Licencia creada correctamente');
     }
 
     public function edit($id)
     {
         $licencia = TipoLicencia::findOrFail($id);
-        return view('licencias.edit', compact('licencia'));
+        return view('SuperAdmin.edit_licencia', compact('licencia'));
     }
 
     public function update(Request $request, $id)
@@ -64,7 +64,7 @@ class TipoLicenciaController extends Controller
         ]);
 
         return redirect()->route('licencias.index')
-        ->with('success','Licencia actualizada correctamente');
+            ->with('success', 'Licencia actualizada correctamente');
     }
 
     public function destroy($id)
@@ -73,9 +73,6 @@ class TipoLicenciaController extends Controller
         $licencia->delete();
 
         return redirect()->route('licencias.index')
-        ->with('success','Licencia eliminada correctamente');
+            ->with('success', 'Licencia eliminada correctamente');
     }
-
-    
 }
-
