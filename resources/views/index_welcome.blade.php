@@ -32,7 +32,7 @@
                         xmlns="http://www.w3.org/2000/svg"
                         fill="currentColor"
                         viewBox="0 0 24 24">
-                        <path d="M8 5v14l11-7z"/>
+                        <path d="M8 5v14l11-7z" />
                     </svg>
                 </span>
                 Ver Demo
@@ -43,37 +43,37 @@
 
         <div class="mt-6 flex items-center gap-4">
 
-    <!-- AVATARES -->
-    <div class="flex -space-x-3 py-3">
-        <img class="w-10 h-10 rounded-full border-2 border-white object-cover hover:scale-105 transition"
-        src="{{ asset('img/users/user1.jpg') }}"
-             class="w-10 h-10 rounded-full border-2 border-white object-cover">
+            <!-- AVATARES -->
+            <div class="flex -space-x-3 py-3">
+                <img class="w-10 h-10 rounded-full border-2 border-white object-cover hover:scale-105 transition"
+                    src="{{ asset('img/users/user1.jpg') }}"
+                    class="w-10 h-10 rounded-full border-2 border-white object-cover">
 
-        <img class="w-10 h-10 rounded-full border-2 border-white object-cover hover:scale-105 transition"
-        src="{{ asset('img/users/user2.jpg') }}"
-             class="w-10 h-10 rounded-full border-2 border-white object-cover">
+                <img class="w-10 h-10 rounded-full border-2 border-white object-cover hover:scale-105 transition"
+                    src="{{ asset('img/users/user2.jpg') }}"
+                    class="w-10 h-10 rounded-full border-2 border-white object-cover">
 
-        <img class="w-10 h-10 rounded-full border-2 border-white object-cover hover:scale-105 transition"
-        src="{{ asset('img/users/user3.jpg') }}"
-             class="w-10 h-10 rounded-full border-2 border-white object-cover">
-    </div>
+                <img class="w-10 h-10 rounded-full border-2 border-white object-cover hover:scale-105 transition"
+                    src="{{ asset('img/users/user3.jpg') }}"
+                    class="w-10 h-10 rounded-full border-2 border-white object-cover">
+            </div>
 
-    <!-- TEXTO -->
-    <p class="text-sm text-gray-500">
-        <span class="font-semibold text-gray-700">+500 agricultores</span>
-        ya confían en nosotros
-    </p>
+            <!-- TEXTO -->
+            <p class="text-sm text-gray-500">
+                <span class="font-semibold text-gray-700">+500 agricultores</span>
+                ya confían en nosotros
+            </p>
 
-</div>
-
-    </div>
-
-        {{-- IMAGEN --}}
-        <div class="relative rounded-2xl overflow-hidden shadow-lg ring-7 ring-white">
-            <img src="{{ asset('img/img-agro.jpg') }}"
-                alt="Agricultura moderna"
-                class="w-full h-full object-cover">
         </div>
+
+    </div>
+
+    {{-- IMAGEN --}}
+    <div class="relative rounded-2xl overflow-hidden shadow-lg ring-7 ring-white">
+        <img src="{{ asset('img/img-agro.jpg') }}"
+            alt="Agricultura moderna"
+            class="w-full h-full object-cover">
+    </div>
 
 
 </section>
@@ -113,7 +113,7 @@
                     {{-- Gota --}}
                     <svg class="w-6 h-6 text-green-600" xmlns="http://www.w3.org/2000/svg"
                         fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path d="M12 3C12 3 5 11 5 15a7 7 0 0014 0c0-4-7-12-7-12z"/>
+                        <path d="M12 3C12 3 5 11 5 15a7 7 0 0014 0c0-4-7-12-7-12z" />
                     </svg>
                 </div>
                 <h3 class="font-bold text-lg text-gray-900">
@@ -130,8 +130,8 @@
                     {{-- Maletín --}}
                     <svg class="w-6 h-6 text-green-600" xmlns="http://www.w3.org/2000/svg"
                         fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <rect x="3" y="7" width="18" height="13" rx="2"/>
-                        <path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/>
+                        <rect x="3" y="7" width="18" height="13" rx="2" />
+                        <path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2" />
                     </svg>
                 </div>
                 <h3 class="font-bold text-lg text-gray-900">
@@ -148,10 +148,10 @@
                     {{-- Gráfico --}}
                     <svg class="w-6 h-6 text-green-600 " xmlns="http://www.w3.org/2000/svg"
                         fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path d="M4 19h16"/>
-                        <path d="M8 17V9"/>
-                        <path d="M12 17V5"/>
-                        <path d="M16 17v-3"/>
+                        <path d="M4 19h16" />
+                        <path d="M8 17V9" />
+                        <path d="M12 17V5" />
+                        <path d="M16 17v-3" />
                     </svg>
                 </div>
                 <h3 class="font-bold text-lg text-gray-900">
@@ -168,30 +168,30 @@
 
     {{-- IMAGEN --}}
     <div class="relative w-full">
-    {{-- Imagen --}}
-    <img src="{{ asset('img/agro.jpg') }}"
-         class="rounded-2xl shadow-lg w-full object-cover">
+        {{-- Imagen --}}
+        <img src="{{ asset('img/agro.jpg') }}"
+            class="rounded-2xl shadow-lg w-full object-cover">
 
-    {{-- Info flotante --}}
-    <div class="absolute bottom-6 left-6 w-136 bg-white/95 backdrop-blur
+        {{-- Info flotante --}}
+        <div class="absolute bottom-6 left-6 w-136 bg-white/95 backdrop-blur
                 rounded-xl shadow-lg px-5 py-4 flex items-center gap-4 hover:scale-105 transition-transform duration-300">
 
-        {{-- Icono --}}
-        <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white"
-                 fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M3 17l6-6 4 4 8-8" />
-            </svg>
-        </div>
+            {{-- Icono --}}
+            <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white"
+                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M3 17l6-6 4 4 8-8" />
+                </svg>
+            </div>
 
-        {{-- Texto --}}
-        <div>
-            <p class="font-semibold text-gray-900">Eficiencia</p>
-            <p class="text-sm text-gray-500">Incremento promedio en producción</p>
+            {{-- Texto --}}
+            <div>
+                <p class="font-semibold text-gray-900">Eficiencia</p>
+                <p class="text-sm text-gray-500">Incremento promedio en producción</p>
+            </div>
         </div>
     </div>
-</div>
 
 
     {{-- TEXTO --}}
@@ -206,11 +206,11 @@
             <li class="flex items-start gap-4">
                 <div class="w-7 h-7 flex items-center justify-center rounded-full bg-green-100 mt-1">
                     <svg class="w-4 h-4 text-green-600"
-                         xmlns="http://www.w3.org/2000/svg"
-                         fill="none" viewBox="0 0 24 24"
-                         stroke="currentColor" stroke-width="3">
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="3">
                         <path stroke-linecap="round" stroke-linejoin="round"
-                              d="M5 13l4 4L19 7"/>
+                            d="M5 13l4 4L19 7" />
                     </svg>
                 </div>
                 <span class="text-gray-700">
@@ -221,11 +221,11 @@
             <li class="flex items-start gap-4">
                 <div class="w-7 h-7 flex items-center justify-center rounded-full bg-green-100 mt-1">
                     <svg class="w-4 h-4 text-green-600"
-                         xmlns="http://www.w3.org/2000/svg"
-                         fill="none" viewBox="0 0 24 24"
-                         stroke="currentColor" stroke-width="3">
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="3">
                         <path stroke-linecap="round" stroke-linejoin="round"
-                              d="M5 13l4 4L19 7"/>
+                            d="M5 13l4 4L19 7" />
                     </svg>
                 </div>
                 <span class="text-gray-700">
@@ -236,11 +236,11 @@
             <li class="flex items-start gap-4">
                 <div class="w-7 h-7 flex items-center justify-center rounded-full bg-green-100 mt-1">
                     <svg class="w-4 h-4 text-green-600"
-                         xmlns="http://www.w3.org/2000/svg"
-                         fill="none" viewBox="0 0 24 24"
-                         stroke="currentColor" stroke-width="3">
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="3">
                         <path stroke-linecap="round" stroke-linejoin="round"
-                              d="M5 13l4 4L19 7"/>
+                            d="M5 13l4 4L19 7" />
                     </svg>
                 </div>
                 <span class="text-gray-700">
@@ -253,31 +253,6 @@
 </section>
 
 <section class="bg-gray-100 py-20">
-<<<<<<< HEAD
-    <div class="max-w-7xl mx-auto px-6 text-center">
-
-        {{-- TÍTULO --}}
-        <h2 class="text-4xl font-bold text-gray-900">
-            Planes que Crecen Contigo
-        </h2>
-        <p class="mt-4 text-gray-600">
-            Transparencia total, sin costos ocultos. Cancela cuando quieras.
-        </p>
-
-        {{-- PLANES --}}
-        <div class="mt-16 grid gap-8 md:grid-cols-3 text-left">
-
-            {{-- BÁSICO --}}
-            <div class="bg-white border border-gray-200 rounded-2xl p-8 hover:shadow-md transition">
-                <h3 class="font-semibold text-lg">Básico</h3>
-
-                <p class="mt-4 text-4xl font-extrabold">
-                    $29 <span class="text-sm font-normal text-gray-500">/mes</span>
-                </p>
-
-                <p class="mt-4 text-gray-600">
-                    Ideal para fincas pequeñas que están digitalizándose.
-=======
 
     <div class="max-w-7xl mx-auto px-6 text-center">
 
@@ -293,15 +268,21 @@
 
             @foreach($licencias as $licencia)
 
-            <div class="relative bg-white border border-gray-200 rounded-2xl p-8 hover:shadow-lg transition">
+            <div class="relative bg-white rounded-2xl p-8 transition
+                {{ $loop->iteration == 2 
+                ? 'border-2 border-green-500 shadow-xl scale-105' 
+                : 'border border-gray-200 hover:shadow-lg' }}">
+                @if($loop->iteration == 2)
+                <span class="absolute -top-4 left-1/2 -translate-x-1/2
+                bg-green-500 text-white text-xs font-semibold
+                px-4 py-1 rounded-full shadow-md">
+                    Más popular
+                </span>
+                @endif
 
                 {{-- BADGE OPCIONAL --}}
                 @if(strtolower($licencia->nombre_licencia) == 'profesional')
-                    <span class="absolute -top-4 left-1/2 -translate-x-1/2
-                                 bg-green-500 text-black text-xs font-bold
-                                 px-4 py-1 rounded-full">
-                        MÁS POPULAR
-                    </span>
+
                 @endif
 
 
@@ -318,132 +299,10 @@
                 {{-- DESCRIPCION --}}
                 <p class="mt-4 text-gray-600">
                     {{ $licencia->descripcion }}
->>>>>>> ceface9825d6c91e5c11f8390b8116f462d8ff87
                 </p>
 
                 <div class="my-6 h-px bg-gray-200/70"></div>
 
-<<<<<<< HEAD
-                <ul class="mt-6 space-y-4">
-                    @foreach ([
-                        'Hasta 50 hectáreas',
-                        'Control de 5 trabajadores',
-                        'App móvil básica'
-                    ] as $item)
-                        <li class="flex items-start gap-4">
-                            <div class="w-7 h-7 flex items-center justify-center rounded-full bg-green-100 mt-1">
-                                <svg class="w-4 h-4 text-green-600"
-                                     xmlns="http://www.w3.org/2000/svg"
-                                     fill="none" viewBox="0 0 24 24"
-                                     stroke="currentColor" stroke-width="3">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                          d="M5 13l4 4L19 7"/>
-                                </svg>
-                            </div>
-                            <span class="text-gray-700">{{ $item }}</span>
-                        </li>
-                    @endforeach
-                </ul>
-
-                <a href="#"
-                   class="mt-8 block text-center border-2 border-green-500 text-green-600 py-3 rounded-xl font-semibold hover:bg-green-100 transition">
-                    Seleccionar Plan
-                </a>
-            </div>
-
-            {{-- PROFESIONAL --}}
-            <div class="relative bg-white border-4 border-green-500 rounded-2xl p-8 shadow-lg">
-
-                <span class="absolute -top-4 left-1/2 -translate-x-1/2
-                             bg-green-500 text-black text-xs font-bold
-                             px-4 py-1 rounded-full">
-                    MÁS POPULAR
-                </span>
-
-                <h3 class="font-semibold text-lg mt-2">Profesional</h3>
-
-                <p class="mt-4 text-4xl font-extrabold">
-                    $79 <span class="text-sm font-normal text-gray-500">/mes</span>
-                </p>
-
-                <p class="mt-4 text-gray-600">
-                    Perfecto para productores que buscan optimizar al máximo.
-                </p>
-
-                <div class="my-6 h-px bg-gray-200/70"></div>
-
-                <ul class="mt-6 space-y-4">
-                    @foreach ([
-                        'Hectáreas ilimitadas',
-                        'Control total de personal',
-                        'Sensores en tiempo real',
-                        'Soporte prioritario 24/7'
-                    ] as $item)
-                        <li class="flex items-start gap-4">
-                            <div class="w-7 h-7 flex items-center justify-center rounded-full bg-green-100 mt-1">
-                                <svg class="w-4 h-4 text-green-600"
-                                     xmlns="http://www.w3.org/2000/svg"
-                                     fill="none" viewBox="0 0 24 24"
-                                     stroke="currentColor" stroke-width="3">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                          d="M5 13l4 4L19 7"/>
-                                </svg>
-                            </div>
-                            <span class="text-gray-700">{{ $item }}</span>
-                        </li>
-                    @endforeach
-                </ul>
-
-                <a href="#"
-                   class="mt-8 block text-center bg-green-500 text-black py-3 rounded-xl font-bold hover:bg-green-600 hover:shadow-lg hover:-translate-y-0.5 ">
-                    Comenzar Pro Ahora
-                </a>
-            </div>
-
-            {{-- EMPRESARIAL --}}
-            <div class="bg-white border border-gray-200 rounded-2xl p-8 hover:shadow-md transition">
-                <h3 class="font-semibold text-lg">Empresarial</h3>
-
-                <p class="mt-4 text-4xl font-extrabold">
-                    Custom
-                </p>
-
-                <p class="mt-4 text-gray-600">
-                    Soluciones a medida para cooperativas y grandes grupos.
-                </p>
-
-                <div class="my-6 h-px bg-gray-200/70"></div>
-
-                <ul class="mt-6 space-y-4">
-                    @foreach ([
-                        'Multi-finca centralizado',
-                        'Integración con API externa',
-                        'Gerente de cuenta dedicado'
-                    ] as $item)
-                        <li class="flex items-start gap-4">
-                            <div class="w-7 h-7 flex items-center justify-center rounded-full bg-green-100 mt-1">
-                                <svg class="w-4 h-4 text-green-600"
-                                     xmlns="http://www.w3.org/2000/svg"
-                                     fill="none" viewBox="0 0 24 24"
-                                     stroke="currentColor" stroke-width="3">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                          d="M5 13l4 4L19 7"/>
-                                </svg>
-                            </div>
-                            <span class="text-gray-700">{{ $item }}</span>
-                        </li>
-                    @endforeach
-                </ul>
-
-                <a href="#"
-                   class="mt-8 block text-center border-2 border-green-500 text-green-600 py-3 rounded-xl font-semibold hover:bg-green-100 transition">
-                    Contactar Ventas
-                </a>
-            </div>
-
-        </div>
-    </div>
-=======
                 {{-- DURACION --}}
                 <p class="text-gray-500">
                     Duración: {{ $licencia->tiempo }}
@@ -456,11 +315,11 @@
                     <li class="flex items-start gap-4">
                         <div class="w-7 h-7 flex items-center justify-center rounded-full bg-green-100 mt-1">
                             <svg class="w-4 h-4 text-green-600"
-                                 xmlns="http://www.w3.org/2000/svg"
-                                 fill="none" viewBox="0 0 24 24"
-                                 stroke="currentColor" stroke-width="3">
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" stroke-width="3">
                                 <path stroke-linecap="round" stroke-linejoin="round"
-                                      d="M5 13l4 4L19 7"/>
+                                    d="M5 13l4 4L19 7" />
                             </svg>
                         </div>
                         <span class="text-gray-700">
@@ -471,11 +330,11 @@
                     <li class="flex items-start gap-4">
                         <div class="w-7 h-7 flex items-center justify-center rounded-full bg-green-100 mt-1">
                             <svg class="w-4 h-4 text-green-600"
-                                 xmlns="http://www.w3.org/2000/svg"
-                                 fill="none" viewBox="0 0 24 24"
-                                 stroke="currentColor" stroke-width="3">
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" stroke-width="3">
                                 <path stroke-linecap="round" stroke-linejoin="round"
-                                      d="M5 13l4 4L19 7"/>
+                                    d="M5 13l4 4L19 7" />
                             </svg>
                         </div>
                         <span class="text-gray-700">
@@ -488,14 +347,13 @@
 
                 {{-- BOTON --}}
                 <a href="#"
-                   class="mt-8 block text-center
-                   {{ strtolower($licencia->nombre_licencia) == 'profesional'
-                        ? 'bg-green-500 text-black hover:bg-green-600'
-                        : 'border-2 border-green-500 text-green-600 hover:bg-green-100' }}
-                   py-3 rounded-xl font-semibold transition">
-
+                    class="mt-8 block text-center py-3 rounded-xl font-semibold transition
+                    {{ $loop->iteration == 2
+                        ? 'bg-green-500 text-white hover:bg-green-600'
+                        : 'border-2 border-green-500 text-green-600 hover:bg-green-100' }}">
                     Seleccionar Plan
                 </a>
+
 
             </div>
 
@@ -504,8 +362,6 @@
         </div>
 
     </div>
-
->>>>>>> ceface9825d6c91e5c11f8390b8116f462d8ff87
 </section>
 
 

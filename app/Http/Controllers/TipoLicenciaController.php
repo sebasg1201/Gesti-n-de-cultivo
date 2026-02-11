@@ -10,12 +10,12 @@ class TipoLicenciaController extends Controller
     public function index()
     {
         $licencias = TipoLicencia::all();
-        return view('SuperAdmin.licencias.index', compact('licencias'));
+        return view('SuperAdmin.tipo_licencias', compact('licencias'));
     }
 
     public function create()
     {
-        return view('SuperAdmin.licencias.create');
+        return view('SuperAdmin.create_licencia');
     }
 
     public function store(Request $request)
@@ -42,7 +42,7 @@ class TipoLicenciaController extends Controller
     public function edit($id)
     {
         $licencia = TipoLicencia::findOrFail($id);
-        return view('SuperAdmin.licencias.edit', compact('licencia'));
+        return view('SuperAdmin.edit_licencia', compact('licencia'));
     }
 
     public function update(Request $request, $id)
