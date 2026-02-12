@@ -20,7 +20,13 @@ Route::post('login', [LoginController::class, 'login']);
 Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 
 // Password Reset Routes
-Route::get('password/reset', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+Route::get('password/reset/{token}', [App\Http\Controllers\Auth\ResetPasswordController::class, 'showResetForm'])->name('password.reset');
+Route::post('password/reset', [App\Http\Controllers\Auth\ResetPasswordController::class, 'reset'])->name('password.update');
+
+Route::get('password/verify', [App\Http\Controllers\Auth\CodeVerificationController::class, 'show'])->name('password.verify.form');
+Route::post('password/verify', [App\Http\Controllers\Auth\CodeVerificationController::class, 'verify'])->name('password.verify.code');
+
+Route::get('password/reset-request', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
 Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
 
 // Protected Routes
