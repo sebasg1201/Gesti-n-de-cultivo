@@ -23,6 +23,7 @@ class SuperAdmin extends Authenticatable
 
     protected $hidden = [
         'password_hash',
+        'remember_token',
     ];
 
     public function getAuthPassword()
