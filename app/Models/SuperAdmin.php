@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+use Illuminate\Auth\Passwords\CanResetPassword;
 
-class SuperAdmin extends Authenticatable
+class SuperAdmin extends Authenticatable implements CanResetPasswordContract
 {
-    use Notifiable;
+    use Notifiable, CanResetPassword;
 
     protected $table = 'super_admin';
     protected $primaryKey = 'id_super_admin';
@@ -31,12 +33,18 @@ class SuperAdmin extends Authenticatable
         return $this->password_hash;
     }
 
-    /**
-     * Get the email address where password reset links are sent.
-     *
-     * @return string
-     */
     public function getEmailForPasswordReset()
+    {
+        return $this->correo;
+    }
+
+    /**
+     * Get the notification routing information for the given driver.
+     *
+     * @param  mixed  $driver
+     * @return mixed
+     */
+    public function routeNotificationForMail($notification)
     {
         return $this->correo;
     }

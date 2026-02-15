@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Password;
 use App\Models\SuperAdmin;
+use Illuminate\Contracts\Auth\CanResetPassword;
+
+
 
 class CodeVerificationController extends Controller
 {
@@ -28,7 +31,7 @@ class CodeVerificationController extends Controller
 
         if (Cache::has($cacheKey) && Cache::get($cacheKey) == $code) {
 
-            // Code is valid. Generate a reset token to allow password change.
+            /** @var CanResetPassword $user */
             $user = SuperAdmin::where('correo', $email)->first();
 
             if (!$user) {
@@ -36,7 +39,9 @@ class CodeVerificationController extends Controller
             }
 
             // Generate standard password reset token
-            $token = Password::broker('superadmins')->createToken($user);
+            /** @var \Illuminate\Auth\Passwords\PasswordBroker $broker */
+            $broker = Password::broker('superadmins');
+            $token = $broker->createToken($user);
 
             // Clear the code
             Cache::forget($cacheKey);
