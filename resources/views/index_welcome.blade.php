@@ -26,7 +26,7 @@
         </div>
     @endif
 
-    <section class="max-w-7xl mx-auto px-6 py-20 grid md:grid-cols-2 gap-12 items-center">
+    <section id="index" class="max-w-7xl mx-auto px-6 py-20 grid md:grid-cols-2 gap-12 items-center">
         {{-- TEXTO --}}
         <div>
             <span class="text-green-500 font-semibold uppercase text-sm">
@@ -44,9 +44,9 @@
             </p>
 
             <div class="mt-8 flex gap-4">
-                <a href="#"
+                <a href="#precios"
                     class="px-6 py-4 bg-green-500 text-black rounded-xl font-semibold hover:bg-green-600 hover:shadow-lg hover:-translate-y-0.5">
-                    Comenzar Gratis
+                    Comenzar Ahora
                 </a>
 
                 <a href="#" class="px-6 py-3 border border-gray-200 rounded-xl font-semibold flex items-center gap-3
@@ -98,7 +98,7 @@
 
 
     </section>
-    <section class="bg-gray-100 py-20">
+    <section id="funciones" class="bg-gray-100 py-20">
         <div class="max-w-7xl mx-auto px-6 text-center">
             <h2 class="text-3xl font-bold text-gray-900">
                 Soluciones Integrales para el Agro
@@ -189,7 +189,7 @@
             </div>
         </div>
     </section>
-    <section class="max-w-7xl mx-auto px-6 py-20 grid md:grid-cols-2 gap-12 items-center">
+    <section id="beneficios" class="max-w-7xl mx-auto px-6 py-20 grid md:grid-cols-2 gap-12 items-center">
 
         {{-- IMAGEN --}}
         <div class="relative w-full">
@@ -267,7 +267,7 @@
 
     </section>
 
-    <section class="bg-gray-100 py-20">
+    <section id="precios" class="bg-gray-100 py-20">
 
         <div class="max-w-7xl mx-auto px-6 text-center">
 

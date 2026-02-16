@@ -90,7 +90,7 @@
                 <!-- IZQUIERDA -->
                 <div class="flex items-center">
 
-                    <button onclick="toggleSidebar()" class="mr-4">
+                    <button onclick="toggleSidebar()" class="mr-4 cursor-pointer">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="w-7 h-7">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -122,7 +122,7 @@
 
                         <form action="{{ route('logout') }}" method="POST">
                             @csrf
-                            <button type="submit" class="text-xs text-red-500 hover:text-red-700 underline">
+                            <button type="submit" class="text-xs text-red-500 hover:text-red-700 underline cursor-pointer">
                                 Cerrar Sesión
                             </button>
                         </form>

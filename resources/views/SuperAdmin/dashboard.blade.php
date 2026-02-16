@@ -63,7 +63,7 @@
                     <p class="text-xs text-gray-500 mt-1">Se creará con fecha automática y estado Pendiente.</p>
                 </div>
 
-                <button type="submit" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition">
+                <button type="submit" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition cursor-pointer">
                     Crear Empresa
                 </button>
             </form>
@@ -81,7 +81,7 @@
 
                 <div>
                     <label class="block text-sm font-medium text-gray-600">Empresa</label>
-                    <select name="id_empresa" class="w-full border-gray-300 rounded p-2 text-sm focus:ring-green-500 focus:border-green-500" required>
+                    <select name="id_empresa" class="w-full border-gray-300 rounded p-2 text-sm focus:ring-green-500 focus:border-green-500 cursor-pointer" required>
                         <option value="">Seleccione Empresa</option>
                         @foreach($empresas as $empresa)
                         <option value="{{ $empresa->id_empresa }}">{{ $empresa->nombre_empresa }}</option>
@@ -91,7 +91,7 @@
 
                 <div>
                     <label class="block text-sm font-medium text-gray-600">Tipo de Licencia</label>
-                    <select name="id_tipo_licencia" class="w-full border-gray-300 rounded p-2 text-sm focus:ring-green-500 focus:border-green-500" required>
+                    <select name="id_tipo_licencia" class="w-full border-gray-300 rounded p-2 text-sm focus:ring-green-500 focus:border-green-500 cursor-pointer" required>
                         <option value="">Seleccione Plan</option>
                         @foreach($tiposLicencia as $tipo)
                         <option value="{{ $tipo->id_tipo_licencia }}">{{ $tipo->nombre_licencia }} ({{ $tipo->tiempo }})</option>
@@ -108,7 +108,7 @@
                     <input type="text" value="Pendiente" disabled class="w-full bg-gray-100 border-gray-300 rounded p-2 text-sm text-yellow-600">
                 </div>
 
-                <button type="submit" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition">
+                <button type="submit" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition cursor-pointer">
                     Asignar
                 </button>
             </form>
@@ -125,13 +125,13 @@
 
                 <!-- Imagen Upload -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-600">Foto</label>
-                    <input type="file" name="imagen" accept="image/*" required class="w-full border-gray-300 rounded p-2 text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100">
+                    <label class="block text-sm font-medium text-gray-600 cursor-pointer">Foto</label>
+                    <input type="file" name="imagen" accept="image/*" required class="w-full border-gray-300 rounded p-2 text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100 file:cursor-pointer">
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-600">Empresa</label>
-                    <select name="id_empresa" class="w-full border-gray-300 rounded p-2 text-sm focus:ring-green-500 focus:border-green-500" required>
+                    <select name="id_empresa" class="w-full border-gray-300 rounded p-2 text-sm focus:ring-green-500 focus:border-green-500 cursor-pointer" required>
                         <option value="">Seleccione Empresa</option>
                         @foreach($empresas as $empresa)
                         <option value="{{ $empresa->id_empresa }}">{{ $empresa->nombre_empresa }}</option>
@@ -166,7 +166,7 @@
                     <input type="password" name="contrasena" class="w-full border-gray-300 rounded p-2 text-sm focus:ring-green-500 focus:border-green-500" placeholder="**********" required>
                 </div>
 
-                <button type="submit" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition">
+                <button type="submit" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition cursor-pointer">
                     Crear
                 </button>
             </form>

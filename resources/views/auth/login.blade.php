@@ -81,13 +81,13 @@
                 </div>
 
                 <button type="submit" 
-                    class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-150 ease-in-out transform hover:-translate-y-0.5">
+                    class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-150 ease-in-out transform hover:-translate-y-0.5 cursor-pointer">
                     Iniciar Sesión
                 </button>
 
                 <div class="mt-4 text-center">
-                    <a href="{{ url('/') }}" class="text-sm font-medium text-green-600 hover:text-green-500 hover:underline">
-                        &larr; Volver al Inicio
+                    <a href="{{ url('/') }}" class="text-sm font-medium text-green-600 hover:text-green-500">
+                        Volver al Inicio
                     </a>
                 </div>
 

@@ -64,7 +64,7 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                             <button onclick="openModal('{{ $solicitud->id_solicitud }}')"
-                                class="text-green-600 hover:text-green-900 font-semibold bg-green-50 px-3 py-1 rounded-lg">
+                                class="text-green-600 hover:text-green-900 font-semibold bg-green-50 px-3 py-1 rounded-lg cursor-pointer">
                                 Ver Detalle
                             </button>
                         </td>
@@ -109,7 +109,7 @@
             </div>
             <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                 <button type="button"
-                    class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                    class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm cursor-pointer"
                     onclick="closeModal()">
                     Cerrar
                 </button>
@@ -177,7 +177,7 @@
                                             <form action="{{ url('/dashboard/solicitudes') }}/${solicitud.id_solicitud}/visto" method="POST">
                                                 @csrf
                                                 @method('PUT')
-                                                <button type="submit" class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 transition">
+                                                <button type="submit" class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 transition cursor-pointer">
                                                     Marcar como Visto
                                                 </button>
                                             </form>
