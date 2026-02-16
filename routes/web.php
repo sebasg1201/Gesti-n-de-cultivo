@@ -11,6 +11,7 @@ use App\Http\Controllers\TipoLicenciaController;
 
 // Solicitud Compra Routes
 use App\Http\Controllers\SolicitudCompraController;
+
 Route::get('/solicitud-compra/{licencia}', [SolicitudCompraController::class, 'create'])->name('solicitud.create');
 Route::post('/solicitud-compra', [SolicitudCompraController::class, 'store'])->name('solicitud.store');
 
@@ -49,6 +50,8 @@ Route::middleware(['auth:superadmin'])->group(function () {
 
     Route::get('/dashboard/solicitudes', [SolicitudCompraController::class, 'index'])->name('solicitudes.index');
     Route::put('/dashboard/solicitudes/{id}/visto', [SolicitudCompraController::class, 'markAsSeen'])->name('solicitudes.markAsSeen');
+
+    Route::get('/reportes', [App\Http\Controllers\ReporteController::class, 'index'])->name('reportes.index');
 
     Route::resource('SuperAdmin', EmpresaController::class);
     Route::put('SuperAdmin/{id}/activar', [EmpresaController::class, 'activar'])->name('SuperAdmin.activar');

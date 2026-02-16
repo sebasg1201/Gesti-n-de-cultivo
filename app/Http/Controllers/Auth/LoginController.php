@@ -29,7 +29,7 @@ class LoginController extends Controller
 
         if (Auth::guard('superadmin')->attempt($credentials, $request->remember)) {
             $request->session()->regenerate();
-            
+
             // Check if superadmin is active
             if (!Auth::guard('superadmin')->user()->activo) {
                 Auth::guard('superadmin')->logout();
@@ -38,7 +38,7 @@ class LoginController extends Controller
                 ]);
             }
 
-            return redirect()->intended('dashboard');
+            return redirect()->route('reportes.index');
         }
 
         throw ValidationException::withMessages([

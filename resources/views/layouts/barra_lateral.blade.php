@@ -22,13 +22,13 @@
 
             <nav class="px-4 space-y-2">
 
-                <a href="{{ route('dashboard') }}" class="flex items-center gap-3 p-2 rounded
-                    {{ request()->routeIs('dashboard') ? 'bg-green-100 text-green-700' : 'hover:bg-gray-100' }}">
+                <a href="{{ route('reportes.index') }}" class="flex items-center gap-3 p-2 rounded
+                    {{ request()->routeIs('reportes.*') ? 'bg-green-100 text-green-700' : 'hover:bg-gray-100' }}">
 
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" class="w-5 h-5 text-green-600">
+                        stroke="currentColor" class="w-5 h-5 text-red-600">
                         <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M3 13h8V3H3v10zm10 8h8v-6h-8v6zm0-10h8V3h-8v8zM3 21h8v-6H3v6z" />
+                            d="M3 3v18M21 21H3M7 17v-6M12 17V7M17 17v-4" />
                     </svg>
                     Reportes
                 </a>
