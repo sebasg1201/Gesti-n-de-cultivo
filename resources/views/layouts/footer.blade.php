@@ -58,7 +58,7 @@
             <ul class="space-y-3 text-sm">
                 <li><a href="#funciones" class="hover:text-green-400 transition">Funcionalidades</a></li>
                 <li><a href="#precios" class="hover:text-green-400 transition">Precios</a></li>
-                <li><a href="#" class="hover:text-green-400 transition">Actualizaciones</a></li>
+                <li><a href="#beneficios" class="hover:text-green-400 transition">Beneficios</a></li>
                 <li><a href="#" class="hover:text-green-400 transition">Integraciones</a></li>
             </ul>
         </div>
