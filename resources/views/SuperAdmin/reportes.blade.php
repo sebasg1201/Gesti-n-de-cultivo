@@ -278,8 +278,8 @@
 <!-- ==========================================
      HIDDEN PRINT LAYOUT (A4)
 ========================================== -->
-<!-- Updated CSS: Sent to back (z-index -9999) instead of far-left to ensure rendering -->
-<div id="print-layout" style="position: absolute; top: 0; left: 0; width: 210mm; min-height: 297mm; z-index: -9999; background: white; padding: 20mm; font-family: 'Arial', sans-serif; color: #333;">
+<!-- Updated CSS: Completely off-screen (right) to avoid visual bugs, but kept in DOM -->
+<div id="print-layout" style="position: fixed; top: 0; left: -9999px; width: 210mm; min-height: 297mm; z-index: -9999; background: white; padding: 20mm; font-family: 'Arial', sans-serif; color: #333;">
 
     <!-- HEADER -->
     <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #16a34a; padding-bottom: 10px; margin-bottom: 20px;">
@@ -436,7 +436,14 @@
             const dataUrl = await htmlToImage.toPng(element, {
                 quality: 1.0,
                 pixelRatio: 2, // Mejor calidad de texto
-                backgroundColor: '#ffffff'
+                backgroundColor: '#ffffff',
+                style: {
+                    display: 'block',
+                    position: 'absolute',
+                    top: '0',
+                    left: '0',
+                    zIndex: '9999' // Ensure it sits on top in the capture
+                }
             });
 
             // 4. Generar PDF
