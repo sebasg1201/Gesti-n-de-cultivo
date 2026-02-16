@@ -1,7 +1,7 @@
 @extends('layouts.barra_lateral')
 
 @section('content')
-
+<!-- Containers reverted to standard layout -->
 <div id="reports-container" class="space-y-6">
 
     <div class="flex justify-between items-center">
@@ -278,8 +278,8 @@
 <!-- ==========================================
      HIDDEN PRINT LAYOUT (A4)
 ========================================== -->
-<!-- Updated CSS: Completely off-screen (right) to avoid visual bugs, but kept in DOM -->
-<div id="print-layout" style="position: fixed; top: 0; left: -9999px; width: 210mm; min-height: 297mm; z-index: -9999; background: white; padding: 20mm; font-family: 'Arial', sans-serif; color: #333;">
+<!-- Updated CSS: Positioned at 0,0 for rendering, but invisible via opacity -->
+<div id="print-layout" style="position: absolute; top: 0; left: 0; width: 210mm; min-height: 297mm; z-index: -1; background: white; padding: 20mm; font-family: 'Arial', sans-serif; color: #333; opacity: 0; pointer-events: none;">
 
     <!-- HEADER -->
     <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #16a34a; padding-bottom: 10px; margin-bottom: 20px;">
@@ -438,11 +438,9 @@
                 pixelRatio: 2, // Mejor calidad de texto
                 backgroundColor: '#ffffff',
                 style: {
-                    display: 'block',
-                    position: 'absolute',
-                    top: '0',
-                    left: '0',
-                    zIndex: '9999' // Ensure it sits on top in the capture
+                    opacity: '1', // Force visible in capture
+                    zIndex: '9999', // Ensure top stacking in capture
+                    visibility: 'visible' // Double safety
                 }
             });
 
