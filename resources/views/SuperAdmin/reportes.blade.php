@@ -2,7 +2,7 @@
 
 @section('content')
 
-<div class="space-y-6">
+<div id="reports-container" class="space-y-6">
 
     <div class="flex justify-between items-center">
         <h1 class="text-2xl font-bold text-gray-800">Panel de Reportes e Indicadores</h1>
@@ -10,6 +10,12 @@
             <span class="text-sm text-gray-500 bg-white px-3 py-1 rounded shadow-sm border border-gray-100">
                 {{ now()->format('d M, Y') }}
             </span>
+            <button id="downloadPdfBtn" class="bg-green-600 hover:bg-green-700 text-white text-sm font-medium px-4 py-2 rounded-lg shadow transition-colors flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                </svg>
+                Descargar Reporte
+            </button>
         </div>
     </div>
 
@@ -148,8 +154,16 @@
 <!-- Chart.js CDN -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+<!-- Hidden elements for data passing -->
+<div id="chart-data" data-json="{{ json_encode($chartData) }}" class="hidden"></div>
+<div id="status-data" data-json="{{ json_encode($statusDistribution) }}" class="hidden"></div>
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+
+        // Retrieve data safely
+        const chartData = JSON.parse(document.getElementById('chart-data').getAttribute('data-json') || '[]');
+        const statusDistribution = JSON.parse(document.getElementById('status-data').getAttribute('data-json') || '[]');
 
         /* ===============================
            1. GRÁFICO DE LÍNEA – LICENCIAS
@@ -166,7 +180,7 @@
                     labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
                     datasets: [{
                         label: 'Licencias Vendidas',
-                        data: @json($chartData),
+                        data: chartData,
                         borderColor: '#10B981', // Green-500
                         backgroundColor: 'rgba(16, 185, 129, 0.12)',
                         borderWidth: 2,
@@ -224,7 +238,7 @@
                 data: {
                     labels: ['Pendientes', 'Suspendidas', 'Activas'],
                     datasets: [{
-                        data: @json($statusDistribution),
+                        data: statusDistribution,
                         backgroundColor: [
                             '#FBBF24', // Yellow-400
                             '#EF4444', // Red-500
@@ -257,6 +271,192 @@
             });
         }
 
+    });
+</script>
+
+
+<!-- ==========================================
+     HIDDEN PRINT LAYOUT (A4)
+========================================== -->
+<!-- Updated CSS: Sent to back (z-index -9999) instead of far-left to ensure rendering -->
+<div id="print-layout" style="position: absolute; top: 0; left: 0; width: 210mm; min-height: 297mm; z-index: -9999; background: white; padding: 20mm; font-family: 'Arial', sans-serif; color: #333;">
+
+    <!-- HEADER -->
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #16a34a; padding-bottom: 10px; margin-bottom: 20px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <!-- Logo SVG (Simulated) -->
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 40px; height: 40px; color: #16a34a;">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+            </svg>
+            <h1 style="font-size: 24px; font-weight: bold; color: #16a34a; margin: 0;">AgriManager</h1>
+        </div>
+        <div style="text-align: right;">
+            <p style="margin: 0; font-size: 12px; color: #666;">Reporte Generado</p>
+            <p style="margin: 0; font-size: 14px; font-weight: bold;">{{ now()->format('d/m/Y H:i') }}</p>
+        </div>
+    </div>
+
+    <h2 style="text-align: center; font-size: 18px; margin-bottom: 20px; text-transform: uppercase; color: #1f2937;">Reporte de Estado General</h2>
+
+    <!-- RESUMEN DE LICENCIAS (TABLA) -->
+    <div style="margin-bottom: 30px;">
+        <h3 style="font-size: 14px; font-weight: bold; border-left: 4px solid #3b82f6; padding-left: 10px; margin-bottom: 10px; color: #374151;">Resumen de Licencias</h3>
+        <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
+            <thead style="background-color: #f3f4f6;">
+                <tr>
+                    <th style="border: 1px solid #e5e7eb; padding: 8px; text-align: left;">Métrica</th>
+                    <th style="border: 1px solid #e5e7eb; padding: 8px; text-align: center;">Cantidad</th>
+                    <th style="border: 1px solid #e5e7eb; padding: 8px; text-align: left;">Estado / Observación</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="border: 1px solid #e5e7eb; padding: 8px;">Licencias Por Vencer</td>
+                    <td style="border: 1px solid #e5e7eb; padding: 8px; text-align: center; font-weight: bold; color: #ef4444;">{{ $licenciasPorVencer ?? 0 }}</td>
+                    <td style="border: 1px solid #e5e7eb; padding: 8px; color: #ef4444;">Requieren atención inmediata</td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #e5e7eb; padding: 8px;">Renovadas Este Mes</td>
+                    <td style="border: 1px solid #e5e7eb; padding: 8px; text-align: center; font-weight: bold; color: #eab308;">{{ $renovadasEsteMes ?? 0 }}</td>
+                    <td style="border: 1px solid #e5e7eb; padding: 8px;">Ingresos recientes</td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #e5e7eb; padding: 8px;">Total Licencias Activas</td>
+                    <td style="border: 1px solid #e5e7eb; padding: 8px; text-align: center; font-weight: bold; color: #2563eb;">{{ $totalLicencias ?? 0 }}</td>
+                    <td style="border: 1px solid #e5e7eb; padding: 8px;">Base instalada total</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- RESUMEN DE EMPRESAS (TABLA) -->
+    <div style="margin-bottom: 30px;">
+        <h3 style="font-size: 14px; font-weight: bold; border-left: 4px solid #8b5cf6; padding-left: 10px; margin-bottom: 10px; color: #374151;">Estado de Empresas</h3>
+        <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
+            <thead style="background-color: #f3f4f6;">
+                <tr>
+                    <th style="border: 1px solid #e5e7eb; padding: 8px; text-align: left;">Estado</th>
+                    <th style="border: 1px solid #e5e7eb; padding: 8px; text-align: center;">Cantidad</th>
+                    <th style="border: 1px solid #e5e7eb; padding: 8px; text-align: left;">% del Total (Aprox)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="border: 1px solid #e5e7eb; padding: 8px;">Activas</td>
+                    <td style="border: 1px solid #e5e7eb; padding: 8px; text-align: center; font-weight: bold; color: #16a34a;">{{ $empresasActivas ?? 0 }}</td>
+                    <td style="border: 1px solid #e5e7eb; padding: 8px;">{{ $totalEmpresas > 0 ? round(($empresasActivas / $totalEmpresas) * 100, 1) : 0 }}%</td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #e5e7eb; padding: 8px;">Pendientes</td>
+                    <td style="border: 1px solid #e5e7eb; padding: 8px; text-align: center; font-weight: bold; color: #eab308;">{{ $empresasNuevas ?? 0 }}</td>
+                    <td style="border: 1px solid #e5e7eb; padding: 8px;">{{ $totalEmpresas > 0 ? round(($empresasNuevas / $totalEmpresas) * 100, 1) : 0 }}%</td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #e5e7eb; padding: 8px;">Suspendidas</td>
+                    <td style="border: 1px solid #e5e7eb; padding: 8px; text-align: center; font-weight: bold; color: #ef4444;">{{ $empresasSuspendidas ?? 0 }}</td>
+                    <td style="border: 1px solid #e5e7eb; padding: 8px;">{{ $totalEmpresas > 0 ? round(($empresasSuspendidas / $totalEmpresas) * 100, 1) : 0 }}%</td>
+                </tr>
+                <tr style="background-color: #f9fafb; font-weight: bold;">
+                    <td style="border: 1px solid #e5e7eb; padding: 8px;">TOTAL EMPRESAS</td>
+                    <td style="border: 1px solid #e5e7eb; padding: 8px; text-align: center;">{{ $totalEmpresas ?? 0 }}</td>
+                    <td style="border: 1px solid #e5e7eb; padding: 8px;">100%</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- GRÁFICOS (IMÁGENES) -->
+    <div style="margin-bottom: 20px;">
+        <h3 style="font-size: 14px; font-weight: bold; border-left: 4px solid #16a34a; padding-left: 10px; margin-bottom: 15px; color: #374151;">Análisis Gráfico</h3>
+
+        <div style="display: flex; gap: 20px; justify-content: space-between;">
+            <!-- IMG CHART 1 -->
+            <div style="width: 48%; border: 1px solid #e5e7eb; padding: 10px; border-radius: 4px;">
+                <h4 style="font-size: 12px; font-weight: bold; text-align: center; margin-bottom: 10px;">Tendencia de Ventas</h4>
+                <img id="print-chart-sales" src="" style="width: 100%; height: auto; display: block;">
+            </div>
+
+            <!-- IMG CHART 2 -->
+            <div style="width: 48%; border: 1px solid #e5e7eb; padding: 10px; border-radius: 4px;">
+                <h4 style="font-size: 12px; font-weight: bold; text-align: center; margin-bottom: 10px;">Distribución de Empresas</h4>
+                <img id="print-chart-status" src="" style="width: 100%; height: auto; display: block;">
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div style="margin-top: 50px; border-top: 1px solid #e5e7eb; padding-top: 10px; text-align: center; font-size: 10px; color: #9ca3af;">
+        <p>Este documento fue generado automáticamente por la plataforma AgriManager.</p>
+        <p>Gesti-n-de-cultivo &copy; {{ date('Y') }}</p>
+    </div>
+
+</div>
+
+<!-- Scripts para generar PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.11/html-to-image.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+    document.getElementById('downloadPdfBtn').addEventListener('click', async function() {
+        const btn = this;
+        const originalText = btn.innerHTML;
+
+        try {
+            if (!window.htmlToImage || !window.jspdf) {
+                throw new Error("Librerías no cargadas");
+            }
+
+            // 1. Feedback visual
+            btn.disabled = true;
+            btn.innerHTML = `
+                <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Preparando Documento...
+            `;
+
+            // 2. Capturar gráficos actuales como imágenes
+            const salesCanvas = document.getElementById('salesChart');
+            const statusCanvas = document.getElementById('statusChart');
+
+            if (salesCanvas) {
+                document.getElementById('print-chart-sales').src = salesCanvas.toDataURL('image/png');
+            }
+            if (statusCanvas) {
+                document.getElementById('print-chart-status').src = statusCanvas.toDataURL('image/png');
+            }
+
+            // 3. Renderizar el layout oculto
+            const element = document.getElementById('print-layout');
+
+            // Esperar un momento para que las imágenes se carguen en el src
+            await new Promise(resolve => setTimeout(resolve, 300));
+
+            const dataUrl = await htmlToImage.toPng(element, {
+                quality: 1.0,
+                pixelRatio: 2, // Mejor calidad de texto
+                backgroundColor: '#ffffff'
+            });
+
+            // 4. Generar PDF
+            const {
+                jsPDF
+            } = window.jspdf;
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = pdf.internal.pageSize.getHeight();
+
+            pdf.addImage(dataUrl, 'PNG', 0, 0, pdfWidth, pdfHeight);
+            pdf.save('Reporte_Profesional_{{ date("Y-m-d") }}.pdf');
+
+        } catch (error) {
+            console.error("Error al generar PDF:", error);
+            alert("No se pudo generar el documento. Por favor intente nuevamente.");
+        } finally {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
     });
 </script>
 
