@@ -58,10 +58,10 @@ class DashboardController extends Controller
     public function storeEmpresa(Request $request)
     {
         $request->validate([
-            'id_empresa' => 'required|numeric|unique:empresa,id_empresa', // NIT
+            'id_empresa' => 'required|numeric|digits_between:8,15|unique:empresa,id_empresa', // NIT
             'nombre_empresa' => 'required|string|max:200',
             'nombre_repre_legal' => 'required|string|max:100', // Added field
-            'telefono' => 'required|string|max:12',
+            'telefono' => 'required|numeric|digits_between:7,10',
             'direccion' => 'required|string|max:150',
             'correo' => 'required|email|max:100|unique:empresa,correo',
         ]);
@@ -122,10 +122,10 @@ class DashboardController extends Controller
     public function storeAdministrador(Request $request)
     {
         $request->validate([
-            'documento' => 'required|numeric|unique:usuario,documento',
+            'documento' => 'required|numeric|digits_between:7,12|unique:usuario,documento',
             'nombre' => 'required|string',
             'correo' => 'required|email|unique:usuario,correo',
-            'telefono' => 'required|string',
+            'telefono' => 'required|numeric|digits_between:7,10',
             'contrasena' => 'required|min:6',
             'id_empresa' => 'required|exists:empresa,id_empresa',
             'imagen' => 'required|image|max:2048', // Image validation

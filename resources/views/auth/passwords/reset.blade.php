@@ -41,11 +41,11 @@
                      aunque luego lo mapeemos a 'correo' en el controlador. 
                      O podemos cambiar validacion. Vamos a usar 'email' en el form para consistencia con el link. -->
                 <div>
-                    <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Correo Electrónico</label>
-                    <input id="email" type="email" name="email" value="{{ $email ?? old('email') }}" required autofocus
-                        readonly
+                    <label for="correo" class="block text-sm font-medium text-gray-700 mb-1">Correo Electrónico</label>
+                    <input id="correo" type="email" name="correo" value="{{ $email ?? old('correo') }}" required
+                        autofocus readonly
                         class="block w-full rounded-lg border-gray-300 border bg-gray-100 text-gray-500 shadow-sm p-2.5">
-                    @error('email')
+                    @error('correo')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>

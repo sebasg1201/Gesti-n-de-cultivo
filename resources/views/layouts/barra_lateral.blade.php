@@ -15,11 +15,23 @@
         <!-- SIDEBAR -->
         <aside id="sidebar" class="pb-8 w-64 bg-white shadow-md min-h-screen transition-all duration-300">
 
+            <!-- LOGO -->
             <div class="p-6 text-xl font-bold text-green-600">
                 AgriManager
             </div>
 
             <nav class="px-4 space-y-2">
+
+                <a href="{{ route('reportes.index') }}" class="flex items-center gap-3 p-2 rounded
+                    {{ request()->routeIs('reportes.*') ? 'bg-green-100 text-green-700' : 'hover:bg-gray-100' }}">
+
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="w-5 h-5 text-red-600">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M3 3v18M21 21H3M7 17v-6M12 17V7M17 17v-4" />
+                    </svg>
+                    Reportes
+                </a>
 
                 <a href="{{ route('dashboard') }}" class="flex items-center gap-3 p-2 rounded
                     {{ request()->routeIs('dashboard') ? 'bg-green-100 text-green-700' : 'hover:bg-gray-100' }}">

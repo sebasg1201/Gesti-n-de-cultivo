@@ -29,16 +29,16 @@ class LoginController extends Controller
 
         if (Auth::guard('superadmin')->attempt($credentials, $request->remember)) {
             $request->session()->regenerate();
-            
+
             // Check if superadmin is active
-            if (!Auth::guard('superadmin')->user()->activo) {
+            if (Auth::guard('superadmin')->user()->id_estado != 3) {
                 Auth::guard('superadmin')->logout();
                 throw ValidationException::withMessages([
                     'email' => __('Tu cuenta está inactiva.'),
                 ]);
             }
 
-            return redirect()->intended('dashboard');
+            return redirect()->route('reportes.index');
         }
 
         throw ValidationException::withMessages([

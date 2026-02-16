@@ -44,10 +44,10 @@ class SolicitudCompraController extends Controller
         \Illuminate\Support\Facades\Log::info('SolicitudCompra store initiated', $request->all());
 
         $request->validate([
-            'nit_empresa' => 'required|max:20|unique:solicitud_compra,nit_empresa',
+            'nit_empresa' => 'required|numeric|digits_between:8,15|unique:solicitud_compra,nit_empresa',
             'nombre_empresa' => 'required|max:200',
             'nombre_repre_legal' => 'required|max:150',
-            'telefono' => 'required|max:20',
+            'telefono' => 'required|numeric|digits_between:7,10',
             'correo' => 'required|email|max:150|unique:solicitud_compra,correo',
             'direccion' => 'required|max:200',
             'comprobante_pago' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',

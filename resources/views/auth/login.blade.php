@@ -85,6 +85,12 @@
                     Iniciar Sesión
                 </button>
 
+                <div class="mt-4 text-center">
+                    <a href="{{ url('/') }}" class="text-sm font-medium text-green-600 hover:text-green-500 hover:underline">
+                        &larr; Volver al Inicio
+                    </a>
+                </div>
+
             </form>
             
             <div class="mt-6">
