@@ -122,11 +122,11 @@ class DashboardController extends Controller
     public function storeAdministrador(Request $request)
     {
         $request->validate([
-            'documento' => 'required|numeric|digits_between:7,12|unique:usuario,documento',
+            'documento' => 'required|numeric|digits_between:7,10|unique:usuario,documento',
             'nombre' => 'required|string',
             'correo' => 'required|email|unique:usuario,correo',
             'telefono' => 'required|numeric|digits_between:7,10',
-            'contrasena' => 'required|min:6',
+            'contrasena' => 'required|min:8',
             'id_empresa' => 'required|exists:empresa,id_empresa',
             'imagen' => 'required|image|max:2048', // Image validation
         ]);

@@ -45,9 +45,9 @@ class SolicitudCompraController extends Controller
 
         $request->validate([
             'nit_empresa' => 'required|numeric|digits_between:8,15|unique:solicitud_compra,nit_empresa',
-            'nombre_empresa' => 'required|max:200',
+            'nombre_empresa' => 'required|max:200|unique:solicitud_compra,nombre_empresa',
             'nombre_repre_legal' => 'required|max:150',
-            'telefono' => 'required|numeric|digits_between:7,10',
+            'telefono' => 'required|numeric|digits_between:7,10|unique:solicitud_compra,telefono',
             'correo' => 'required|email|max:150|unique:solicitud_compra,correo',
             'direccion' => 'required|max:200',
             'comprobante_pago' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -62,8 +62,7 @@ class SolicitudCompraController extends Controller
             $comprobantePath = 'comprobantes/' . $imageName;
         }
 
-        // Default Super Admin (You might want logic to distribute load or pick a specific one)
-        // For now, taking the first one. Update logic as needed.
+
         $superAdmin = SuperAdmin::first();
         $superAdminId = $superAdmin ? $superAdmin->id_super_admin : 0; // Fallback or handle error
 
@@ -80,11 +79,6 @@ class SolicitudCompraController extends Controller
             'fecha_solicitud' => Carbon::now(),
             'id_tipo_licencia' => $request->licencia_id,
         ]);
-
-        // You might store the licencia_id in a session or another table if needed related to the specific request
-        // The table solicitud_compra doesn't seem to have id_tipo_licencia directly, 
-        // but maybe 'venta_licencias' is created after approval? 
-        // For now, just saving the request.
 
         return redirect('/')->with('success', 'Solicitud enviada exitosamente. Estaremos en contacto.');
     }

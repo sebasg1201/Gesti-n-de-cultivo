@@ -38,7 +38,19 @@ class ResetPasswordController extends Controller
         $request->validate([
             'token' => 'required',
             'correo' => 'required|email',
-            'password' => 'required|confirmed|min:8',
+            'password' => [
+                'required',
+                'confirmed',
+                'min:8',
+                'regex:/[a-z]/',      // al menos una letra minúscula
+                'regex:/[A-Z]/',      // al menos una letra mayúscula
+                'regex:/[0-9]/',      // al menos un número
+                'regex:/[@$!%*#?&]/', // al menos un carácter especial
+            ],
+        ], [
+            'password.regex' => 'La contraseña debe contener al menos una letra minúscula, una mayúscula, un número y un carácter especial (@$!%*#?&).',
+            'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
+            'password.confirmed' => 'Las contraseñas no coinciden.',
         ]);
 
         // Broker 'superadmins'
@@ -61,7 +73,6 @@ class ResetPasswordController extends Controller
      * @return void
      */
     protected function resetPassword(Authenticatable $user, $password)
-
     {
         $user->password_hash = Hash::make($password);
         $user->setRememberToken(Str::random(60));

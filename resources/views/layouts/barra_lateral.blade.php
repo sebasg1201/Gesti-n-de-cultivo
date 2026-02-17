@@ -106,12 +106,14 @@
                 <!-- DERECHA → USUARIO -->
                 <div class="flex items-center gap-3 bg-gray-50 p-2 pr-4 rounded shadow-sm">
 
-                    <!-- FOTO -->
-                    <img src="https://ui-avatars.com/api/?name=Usuario+Demo&background=16a34a&color=fff" alt="Usuario"
-                        class="w-10 h-10 rounded-full object-cover">
+                    <!-- NOMBRE -->
+                    <div
+                        class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600 font-bold">
+                        {{ strtoupper(substr(auth()->user()->nombre, 0, 1) . substr(strstr(auth()->user()->nombre, ' '), 1, 1)) }}
+                    </div>
 
                     <!-- DATOS -->
-                    <div class="text-right w-20">
+                    <div class="text-right w-30">
                         <p class="font-semibold">
                             {{ Auth::guard('superadmin')->user()->nombre ?? 'Super Admin' }}
                         </p>
@@ -122,7 +124,7 @@
 
                         <form action="{{ route('logout') }}" method="POST">
                             @csrf
-                            <button type="submit" class="text-xs text-red-500 hover:text-red-700 underline cursor-pointer">
+                            <button type="submit" class="text-xs text-red-500 hover:text-red-700 cursor-pointer">
                                 Cerrar Sesión
                             </button>
                         </form>
