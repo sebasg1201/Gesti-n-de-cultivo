@@ -8,6 +8,16 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\TipoLicenciaController;
 
+//buscar empresa automaticamente 
+Route::get('/buscar-empresa/{nit}', function ($nit) {
+
+    return \App\Models\Empresa::where('id_empresa', $nit)->first();
+
+});
+
+Route::get('/empresa/buscar/{nit}', [DashboardController::class, 'buscarEmpresa']);
+
+
 
 // Solicitud Compra Routes
 use App\Http\Controllers\SolicitudCompraController;

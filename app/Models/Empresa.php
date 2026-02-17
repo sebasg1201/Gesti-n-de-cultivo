@@ -11,15 +11,20 @@ class Empresa extends Model
 
     protected $table = 'empresa';
     protected $primaryKey = 'id_empresa';
-    public $timestamps = false; // The image shows fecha_creacion, but typically Laravel uses created_at. I'll treat it as standard or custom.
-    // If fecha_creacion is the only timestamp, we might need to configure it.
-    // tailored to the image:
+
+    public $incrementing = false; // 🔥 IMPORTANTE
+    protected $keyType = 'string'; // porque NIT puede ser string
+
+    public $timestamps = false;
+
     const CREATED_AT = 'fecha_creacion';
-    const UPDATED_AT = null; // Image doesn't show updated_at
+    const UPDATED_AT = null;
 
     protected $fillable = [
+        'id_empresa',
         'nombre_empresa',
         'nombre_repre_legal',
+        'cedula_repre',
         'telefono',
         'correo',
         'direccion',
