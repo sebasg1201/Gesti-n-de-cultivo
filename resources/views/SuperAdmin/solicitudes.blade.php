@@ -112,9 +112,9 @@
                         </div>
                     </div>
                 </div>
-                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                <div class="bg-green-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                     <button type="button"
-                        class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm cursor-pointer cursor-pointer"
+                        class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm cursor-pointer"
                         onclick="closeModal()">
                         Cerrar
                     </button>
@@ -174,7 +174,7 @@
                                                     <div class="border rounded-lg overflow-hidden bg-gray-50 flex items-center justify-center p-2 h-64">
                                                          <img src="${fullComprobanteUrl}" alt="Comprobante" class="max-w-full max-h-full object-contain">
                                                     </div>
-                                                     <a href="${fullComprobanteUrl}" target="_blank" class="mt-2 text-sm text-blue-600 hover:underline text-center">Ver imagen original</a>
+                                                     <a href="${fullComprobanteUrl}" target="_blank" class="mt-2 text-sm text-green-600 text-center">Ver imagen original</a>
                                                 </div>
 
                                                 <div class="mt-4 pt-4 border-t border-gray-200">
@@ -182,7 +182,7 @@
                                                         <form action="{{ url('/dashboard/solicitudes') }}/${solicitud.id_solicitud}/visto" method="POST">
                                                             @csrf
                                                             @method('PUT')
-                                                            <button type="submit" class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 transition cursor-pointer">
+                                                            <button type="submit" class="w-full bg-green-600 text-white font-bold py-2 px-4 rounded hover:bg-green-700 transition cursor-pointer">
                                                                 Marcar como Visto
                                                             </button>
                                                         </form>
