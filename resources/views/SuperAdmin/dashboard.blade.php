@@ -63,7 +63,7 @@
                     <p class="text-xs text-gray-500 mt-1">Se creará con fecha automática y estado Pendiente.</p>
                 </div>
 
-                <button type="submit" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition cursor-pointer">
+                <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded transition cursor-pointer">
                     Crear Empresa
                 </button>
             </form>
@@ -108,7 +108,7 @@
                     <input type="text" value="Pendiente" disabled class="w-full bg-gray-100 border-gray-300 rounded p-2 text-sm text-yellow-600">
                 </div>
 
-                <button type="submit" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition cursor-pointer">
+                <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded transition cursor-pointer">
                     Asignar
                 </button>
             </form>
@@ -166,7 +166,7 @@
                     <input type="password" name="contrasena" class="w-full border-gray-300 rounded p-2 text-sm focus:ring-green-500 focus:border-green-500" placeholder="**********" required>
                 </div>
 
-                <button type="submit" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition cursor-pointer">
+                <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded transition cursor-pointer">
                     Crear
                 </button>
             </form>

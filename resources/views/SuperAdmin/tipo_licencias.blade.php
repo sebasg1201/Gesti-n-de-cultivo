@@ -81,7 +81,7 @@
 
                             {{-- BOTON EDITAR --}}
                             <a href="{{ route('licencias.edit', $licencia->id_tipo_licencia) }}"
-                               class="flex items-center gap-1 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg shadow-sm transition duration-300">
+                               class="flex items-center gap-1 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg shadow-sm transition duration-300">
 
                                 {{-- ICONO EDITAR --}}
                                 <svg xmlns="http://www.w3.org/2000/svg" 
@@ -104,7 +104,7 @@
                                 @method('DELETE')
 
                                 <button type="submit"
-                                        class="flex items-center gap-1 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg shadow-sm transition duration-300 cursor-pointer">
+                                        class="flex items-center gap-1 bg-gray-300 hover:bg-gray-400 text-white px-4 py-2 rounded-lg shadow-sm transition duration-300 cursor-pointer">
 
                                     {{-- ICONO ELIMINAR --}}
                                     <svg xmlns="http://www.w3.org/2000/svg" 
