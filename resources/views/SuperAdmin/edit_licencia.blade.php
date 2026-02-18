@@ -1,5 +1,4 @@
 @extends('layouts.barra_lateral')
-
 @section('content')
 
 <div class="max-w-3xl mx-auto bg-white shadow-xl rounded-2xl p-8 border border-gray-100">

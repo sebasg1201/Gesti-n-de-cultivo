@@ -39,12 +39,12 @@
                         @forelse($solicitudes as $solicitud)
                             <tr class="hover:bg-gray-50 transition">
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm font-medium text-gray-900">{{ $solicitud->nombre_empresa }}</div>
+                                    <div class="text-sm font-medium text-gray-900">{{ $solicitud->empresa->nombre_empresa ?? 'N/A' }}</div>
                                     <div class="text-sm text-gray-500">{{ $solicitud->nit_empresa }}</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-900">{{ $solicitud->nombre_repre_legal }}</div>
-                                    <div class="text-sm text-gray-500">{{ $solicitud->correo }}</div>
+                                    <div class="text-sm text-gray-900">{{ $solicitud->empresa->nombre_repre_legal ?? 'N/A' }}</div>
+                                    <div class="text-sm text-gray-500">{{ $solicitud->empresa->correo ?? 'N/A' }}</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <span
@@ -68,10 +68,21 @@
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <button onclick="openModal('{{ $solicitud->id_solicitud }}')"
-                                        class="text-green-600 hover:text-green-900 font-semibold bg-green-50 px-3 py-1 rounded-lg cursor-pointer">
-                                        Ver Detalle
-                                    </button>
+                                    <div class="flex justify-end space-x-2">
+                                        <button onclick="openModal('{{ $solicitud->id_solicitud }}')"
+                                            class="text-green-600 hover:text-green-900 font-semibold bg-green-50 px-3 py-1 rounded-lg cursor-pointer">
+                                            Ver Detalle
+                                        </button>
+                                        
+                                        <form action="{{ route('solicitudes.destroy', $solicitud->id_solicitud) }}" method="POST" onsubmit="return confirm('¿Estás seguro de eliminar esta solicitud y su empresa asociada? Esta acción no se puede deshacer.');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" 
+                                                class="text-red-600 hover:text-red-900 font-semibold bg-red-50 px-3 py-1 rounded-lg cursor-pointer">
+                                                Eliminar
+                                            </button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                         @empty
@@ -137,12 +148,11 @@
 
             const modal = document.getElementById('modalDetalle');
             const content = document.getElementById('modalContent');
+            const empresa = solicitud.empresa || {}; // Fallback if no empresa loaded
 
             // Build content HTML
-            const comprobanteUrl = solicitud.comprobante_pago ? `/cooperativa_agricola/public/${solicitud.comprobante_pago}` : ''; // Adjust base URL if needed
-            // NOTE: Using direct public asset path. Might need asset() helper equivalent logic in JS or pass full URL from PHP.
-            // Let's assume asset() helper in PHP:
-
+            // Note: Update asset path logic if needed. passing variable from php is cleaner but this works for simple apps.
+            // Using fullComprobanteUrl logic from previous code.
             const fullComprobanteUrl = "{{ asset('') }}" + solicitud.comprobante_pago;
 
 
@@ -151,12 +161,12 @@
                                                     <div>
                                                         <h4 class="font-bold text-gray-700">Información de la Empresa</h4>
                                                         <div class="mt-2 text-sm text-gray-600 space-y-1">
-                                                            <p><span class="font-semibold">Empresa:</span> ${solicitud.nombre_empresa}</p>
-                                                            <p><span class="font-semibold">NIT:</span> ${solicitud.nit_empresa}</p>
-                                                            <p><span class="font-semibold">Representante:</span> ${solicitud.nombre_repre_legal}</p>
-                                                            <p><span class="font-semibold">Teléfono:</span> ${solicitud.telefono}</p>
-                                                            <p><span class="font-semibold">Correo:</span> ${solicitud.correo}</p>
-                                                            <p><span class="font-semibold">Dirección:</span> ${solicitud.direccion}</p>
+                                                            <p><span class="font-semibold">Empresa:</span> ${empresa.nombre_empresa || 'N/A'}</p>
+                                                            <p><span class="font-semibold">NIT:</span> ${solicitud.nit_empresa || 'N/A'}</p>
+                                                            <p><span class="font-semibold">Representante:</span> ${empresa.nombre_repre_legal || 'N/A'}</p>
+                                                            <p><span class="font-semibold">Teléfono:</span> ${empresa.telefono || 'N/A'}</p>
+                                                            <p><span class="font-semibold">Correo:</span> ${empresa.correo || 'N/A'}</p>
+                                                            <p><span class="font-semibold">Dirección:</span> ${empresa.direccion || 'N/A'}</p>
                                                         </div>
                                                     </div>
 

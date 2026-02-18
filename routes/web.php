@@ -8,6 +8,16 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\TipoLicenciaController;
 
+//buscar empresa automaticamente 
+Route::get('/buscar-empresa/{nit}', function ($nit) {
+
+    return \App\Models\Empresa::where('id_empresa', $nit)->first();
+
+});
+
+Route::get('/empresa/buscar/{nit}', [DashboardController::class, 'buscarEmpresa']);
+
+
 
 // Solicitud Compra Routes
 use App\Http\Controllers\SolicitudCompraController;
@@ -50,9 +60,12 @@ Route::middleware(['auth:superadmin'])->group(function () {
 
     Route::get('/dashboard/solicitudes', [SolicitudCompraController::class, 'index'])->name('solicitudes.index');
     Route::put('/dashboard/solicitudes/{id}/visto', [SolicitudCompraController::class, 'markAsSeen'])->name('solicitudes.markAsSeen');
+    Route::delete('/dashboard/solicitudes/{id}', [SolicitudCompraController::class, 'destroy'])->name('solicitudes.destroy');
 
     Route::get('/reportes', [App\Http\Controllers\ReporteController::class, 'index'])->name('reportes.index');
 
+    Route::get('/SuperAdmin/reporte/excel', [EmpresaController::class, 'generarExcel'])->name('SuperAdmin.reporte.excel');
+    Route::get('/SuperAdmin/reporte', [EmpresaController::class, 'generarReporte'])->name('SuperAdmin.reporte');
     Route::resource('SuperAdmin', EmpresaController::class);
     Route::put('SuperAdmin/{id}/activar', [EmpresaController::class, 'activar'])->name('SuperAdmin.activar');
 });

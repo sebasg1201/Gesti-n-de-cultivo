@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 16-02-2026 a las 17:08:18
+-- Tiempo de generación: 18-02-2026 a las 04:53:46
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -32,14 +32,6 @@ CREATE TABLE `cache` (
   `value` mediumtext NOT NULL,
   `expiration` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Volcado de datos para la tabla `cache`
---
-
-INSERT INTO `cache` (`key`, `value`, `expiration`) VALUES
-('laravel-cache-password_reset_code_bastobrayan246@gmail.com', 'i:342369;', 1771258013),
-('laravel-cache-password_reset_code_reyesz2803@gmail.com', 'i:728743;', 1770953137);
 
 -- --------------------------------------------------------
 
@@ -136,6 +128,7 @@ CREATE TABLE `empresa` (
   `id_empresa` varchar(14) NOT NULL,
   `nombre_empresa` varchar(200) NOT NULL,
   `nombre_repre_legal` varchar(100) NOT NULL,
+  `cedula_repre` varchar(20) DEFAULT NULL,
   `telefono` varchar(12) NOT NULL,
   `correo` varchar(100) NOT NULL,
   `direccion` varchar(150) NOT NULL,
@@ -147,8 +140,9 @@ CREATE TABLE `empresa` (
 -- Volcado de datos para la tabla `empresa`
 --
 
-INSERT INTO `empresa` (`id_empresa`, `nombre_empresa`, `nombre_repre_legal`, `telefono`, `correo`, `direccion`, `fecha_creacion`, `id_estado`) VALUES
-('8600050669', 'Finca La Florida', 'Dairo Moreno', '3103527239', 'dairo003@gmail.com', 'MzN Casa 1 Villa_cindy', '2026-02-11', 3);
+INSERT INTO `empresa` (`id_empresa`, `nombre_empresa`, `nombre_repre_legal`, `cedula_repre`, `telefono`, `correo`, `direccion`, `fecha_creacion`, `id_estado`) VALUES
+('2|431124', 'fdhjahfd', 'dfsghdshsf', '12342134421', '12341235', 'fdshags@gmail.com', '123421352', '2026-02-17', 1),
+('8600050669', 'Finca La Florida', 'Dairo Moreno', '0', '3103527239', 'dairo003@gmail.com', 'MzN Casa 1 Villa_cindy', '2026-02-11', 3);
 
 -- --------------------------------------------------------
 
@@ -350,8 +344,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('AmAS6xkv1WsCgdRzBgl9W1yYMkrIc8CGFyFkzP9w', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiQ3podHlhdW1HQkJ1a2VGMlpPeWgyMW5lZVdWMXdzYzJkWU1MT0U0YyI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7czo1OiJyb3V0ZSI7Tjt9fQ==', 1771257551),
-('pivUslQ1yWfIhZbltIQf3R0R1PKylTqQ1T47gw9m', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoibENBQVNxSkVaOWFDVkxnZWlkWk1HMDVxNlQwa0lLcEpMTEhhQ1VpQiI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6Mjc6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9sb2dpbiI7czo1OiJyb3V0ZSI7czo1OiJsb2dpbiI7fX0=', 1771258000);
+('X5dWIB0O6QFvNLGfWdQ9AcD3OnRqAOmQIME6wJxz', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiWFVwN3FOREdJVExFVWNsMFd4TVN6aWhLUHVNcURaUE80bmtWaWxocSI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6NDA6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9zb2xpY2l0dWQtY29tcHJhLzIiO3M6NToicm91dGUiO3M6MTY6InNvbGljaXR1ZC5jcmVhdGUiO319', 1771386213);
 
 -- --------------------------------------------------------
 
@@ -361,14 +354,7 @@ INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, 
 
 CREATE TABLE `solicitud_compra` (
   `id_solicitud` int(11) NOT NULL,
-  `nit_empresa` varchar(20) NOT NULL,
-  `nombre_empresa` varchar(200) NOT NULL,
-  `nombre_repre_legal` varchar(150) NOT NULL,
-  `telefono` varchar(20) NOT NULL,
-  `correo` varchar(150) NOT NULL,
-  `direccion` varchar(200) NOT NULL,
   `comprobante_pago` varchar(500) NOT NULL,
-  `id_super_admin` int(11) NOT NULL,
   `id_tipo_licencia` int(11) DEFAULT NULL,
   `id_estado` int(11) NOT NULL,
   `fecha_solicitud` datetime DEFAULT current_timestamp(),
@@ -379,8 +365,9 @@ CREATE TABLE `solicitud_compra` (
 -- Volcado de datos para la tabla `solicitud_compra`
 --
 
-INSERT INTO `solicitud_compra` (`id_solicitud`, `nit_empresa`, `nombre_empresa`, `nombre_repre_legal`, `telefono`, `correo`, `direccion`, `comprobante_pago`, `id_super_admin`, `id_tipo_licencia`, `id_estado`, `fecha_solicitud`, `fecha_revision`) VALUES
-(3, '24234235', 'SENA', 'Jose Luis Rodriguez', '3204526843', 'samueltxl201@gmail.com', 'carrera 11a sur #15-48 e 12-4', 'comprobantes/1770838133.png', 1006511657, 2, 1, '2026-02-11 19:28:53', NULL);
+INSERT INTO `solicitud_compra` (`id_solicitud`, `comprobante_pago`, `id_tipo_licencia`, `id_estado`, `fecha_solicitud`, `fecha_revision`) VALUES
+(3, 'comprobantes/1770838133.png', 2, 1, '2026-02-11 19:28:53', NULL),
+(4, 'comprobantes/1771304926.png', 3, 5, '2026-02-17 05:08:46', '2026-02-17 21:58:11');
 
 -- --------------------------------------------------------
 
@@ -408,7 +395,8 @@ CREATE TABLE `super_admin` (
 --
 
 INSERT INTO `super_admin` (`id_super_admin`, `nombre`, `usuario`, `correo`, `password_hash`, `id_estado`, `ultimo_login`, `fecha_creacion`, `fecha_actualizacion`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1006511657, 'Brayan', 'Stevan', 'bastobrayan246@gmail.com', '$2y$12$Qh0yFs6SfldIhbRSw2gfguC8OukaAtB1KnOBga5XY/dKXi.2070X.', 3, NULL, '2026-02-10 03:51:59', '2026-02-16 15:55:49', 'aegJSp6QIMpg95egR7NJXAnaE5njCRkax1I5ss63F6MT9YHZs4Q3cINlIMw9', NULL, '2026-02-13 02:07:57'),
+(1006511657, 'Brayan Basto', 'Stevan', 'bastobrayan246@gmail.com', '$2y$12$Qh0yFs6SfldIhbRSw2gfguC8OukaAtB1KnOBga5XY/dKXi.2070X.', 3, NULL, '2026-02-10 03:51:59', '2026-02-17 02:10:22', 'aegJSp6QIMpg95egR7NJXAnaE5njCRkax1I5ss63F6MT9YHZs4Q3cINlIMw9', NULL, '2026-02-13 02:07:57'),
+(1105461467, 'Sebastian Garcia', 'sebas', 'sebastiangarciaalvarez123@gmail.com', '$2y$12$HiWyptu369n4pYVh2s1fw.3eam9pB7yf92tYoFAJnLTJb8LgZZg1W', 3, NULL, '2026-02-17 02:13:13', '2026-02-18 03:41:55', '9upCcEpT04tiyVVR4hFbvCUAZ8erLAy9vdN25cTYltNXmtfYE8fT4WWmypD0', NULL, '2026-02-17 23:28:31'),
 (1110495789, 'Didier Reyes', 'dires123', 'didierreyes003@gmail.com', '$2y$12$wmB4kxXaFlmdPaBoh2udXuqkB1L6iPFzrISuCIEoVOLOlTOEgO8wa', 3, NULL, '2026-02-09 19:43:33', '2026-02-16 16:04:46', '75wAEHbAZ2DHmlMOPncWAw4MeYBfUL4VkgWvMX1jeqWD4KhPDeLZLrSxi1gG', NULL, '2026-02-16 21:04:11');
 
 -- --------------------------------------------------------
@@ -463,18 +451,6 @@ INSERT INTO `tipo_licencia` (`id_tipo_licencia`, `nombre_licencia`, `tiempo`, `d
 (1, 'Basico', '1 Mes', '24 Horas De Soporte', 50000.00, 1),
 (2, 'Medium', '6 Meses', '24 Horas De Soporte', 300000.00, 1),
 (3, 'Profesional', '1 Año', '24 Horas De Soporte', 600000.00, 1);
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `tipo_licencias`
---
-
-CREATE TABLE `tipo_licencias` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -749,7 +725,6 @@ ALTER TABLE `sessions`
 --
 ALTER TABLE `solicitud_compra`
   ADD PRIMARY KEY (`id_solicitud`),
-  ADD KEY `fk_solicitud_superadmin` (`id_super_admin`),
   ADD KEY `fk_solicitud_estado` (`id_estado`),
   ADD KEY `solicitud_compra_id_tipo_licencia_foreign` (`id_tipo_licencia`);
 
@@ -783,12 +758,6 @@ ALTER TABLE `tipo_cosecha`
 ALTER TABLE `tipo_licencia`
   ADD PRIMARY KEY (`id_tipo_licencia`),
   ADD KEY `id_estado` (`id_estado`);
-
---
--- Indices de la tabla `tipo_licencias`
---
-ALTER TABLE `tipo_licencias`
-  ADD PRIMARY KEY (`id`);
 
 --
 -- Indices de la tabla `tipo_riego`
@@ -931,7 +900,7 @@ ALTER TABLE `riego`
 -- AUTO_INCREMENT de la tabla `solicitud_compra`
 --
 ALTER TABLE `solicitud_compra`
-  MODIFY `id_solicitud` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_solicitud` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `super_admin`
@@ -956,12 +925,6 @@ ALTER TABLE `tipo_cosecha`
 --
 ALTER TABLE `tipo_licencia`
   MODIFY `id_tipo_licencia` int(14) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
---
--- AUTO_INCREMENT de la tabla `tipo_licencias`
---
-ALTER TABLE `tipo_licencias`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `tipo_riego`
@@ -1052,7 +1015,6 @@ ALTER TABLE `riego`
 --
 ALTER TABLE `solicitud_compra`
   ADD CONSTRAINT `fk_solicitud_estado` FOREIGN KEY (`id_estado`) REFERENCES `estado` (`id_estado`),
-  ADD CONSTRAINT `fk_solicitud_superadmin` FOREIGN KEY (`id_super_admin`) REFERENCES `super_admin` (`id_super_admin`),
   ADD CONSTRAINT `solicitud_compra_id_tipo_licencia_foreign` FOREIGN KEY (`id_tipo_licencia`) REFERENCES `tipo_licencia` (`id_tipo_licencia`) ON DELETE SET NULL;
 
 --

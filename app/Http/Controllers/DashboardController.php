@@ -8,42 +8,37 @@ use App\Models\Usuario;
 use App\Models\VentaLicencias;
 use App\Models\TipoLicencia;
 use Illuminate\Support\Facades\Hash;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
+use Illuminate\Support\Str;
+use App\Models\SolicitudCompra;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        // --- REPORTS LOGIC ---
-
-        // 1. Licencias Por Vencer
         $licenciasPorVencer = DB::table('venta_licencias as vl')
             ->join('tipo_licencia as tl', 'vl.id_tipo_licencia', '=', 'tl.id_tipo_licencia')
-            ->where('vl.id_estado', 1) // Assuming 1 is Active
+            ->where('vl.id_estado', 1)
             ->get()
             ->filter(function ($licencia) {
-                // Parse duration from 'tiempo' string, e.g., "12 Meses"
+
                 $meses = (int) filter_var($licencia->tiempo, FILTER_SANITIZE_NUMBER_INT);
-                if ($meses == 0)
-                    $meses = 12; // Default
-    
+                if ($meses == 0) $meses = 12;
+
                 $fechaFin = Carbon::parse($licencia->fecha_inicio)->addMonths($meses);
+
                 return $fechaFin->diffInDays(now()) <= 30 && $fechaFin->isFuture();
             })
             ->count();
 
-
-        // 2. Renovadas este mes (Purchased/Started this month)
-        $renovadasEsteMes = VentaLicencias::whereMonth('fecha_inicio', Carbon::now()->month)
-            ->whereYear('fecha_inicio', Carbon::now()->year)
+        $renovadasEsteMes = VentaLicencias::whereMonth('fecha_inicio', now()->month)
+            ->whereYear('fecha_inicio', now()->year)
             ->count();
 
-        // 3. Total Licencias (Count of all licenses)
-        $totalLicencias = DB::table('venta_licencias')->count();
+        $totalLicencias = VentaLicencias::count();
 
-        // --- DATA FOR FORMS ---
-        $empresas = Empresa::all(); // For dropdowns
+        $empresas = Empresa::all();
         $tiposLicencia = TipoLicencia::all();
 
         return view('SuperAdmin.dashboard', compact(
@@ -55,29 +50,65 @@ class DashboardController extends Controller
         ));
     }
 
+public function buscarEmpresa($nit)
+{
+    $empresa = Empresa::where('id_empresa', $nit)->first();
+
+    if (!$empresa) {
+        return response()->json(null);
+    }
+
+    // Buscar última licencia asignada a la empresa
+    $ultimaLicencia = VentaLicencias::where('id_empresa', $nit)
+        ->latest('fecha_inicio')
+        ->first();
+
+    $idTipoLicencia = $ultimaLicencia->id_tipo_licencia ?? null;
+
+    // Si no tiene historial de licencias, buscamos si tiene una solicitud reciente
+    if (!$idTipoLicencia) {
+        $solicitudReciente = SolicitudCompra::where('nit_empresa', $nit)
+            ->latest('fecha_solicitud')
+            ->first();
+        
+        $idTipoLicencia = $solicitudReciente->id_tipo_licencia ?? null;
+    }
+
+    return response()->json([
+        'id_empresa' => $empresa->id_empresa,
+        'nombre_empresa' => $empresa->nombre_empresa,
+        'nombre_repre_legal' => $empresa->nombre_repre_legal,
+        'telefono' => $empresa->telefono,
+        'direccion' => $empresa->direccion,
+        'correo' => $empresa->correo,
+        'id_tipo_licencia' => $idTipoLicencia
+    ]);
+}
+
+
     public function storeEmpresa(Request $request)
     {
         $request->validate([
-            'id_empresa' => 'required|numeric|digits_between:8,15|unique:empresa,id_empresa', // NIT
+            'id_empresa' => 'required|numeric|unique:empresa,id_empresa',
             'nombre_empresa' => 'required|string|max:200',
-            'nombre_repre_legal' => 'required|string|max:100', // Added field
-            'telefono' => 'required|numeric|digits_between:7,10',
+            'nombre_repre_legal' => 'required|string|max:100',
+            'telefono' => 'required|string|max:12',
             'direccion' => 'required|string|max:150',
             'correo' => 'required|email|max:100|unique:empresa,correo',
         ]);
 
-        $empresa = new Empresa();
-        $empresa->id_empresa = $request->id_empresa;
-        $empresa->nombre_empresa = $request->nombre_empresa;
-        $empresa->nombre_repre_legal = $request->nombre_repre_legal;
-        $empresa->telefono = $request->telefono;
-        $empresa->direccion = $request->direccion;
-        $empresa->correo = $request->correo;
-        $empresa->fecha_creacion = now(); // Automatic date
-        $empresa->id_estado = 1; // Pendiente
-        $empresa->save();
+        Empresa::create([
+            'id_empresa' => $request->id_empresa,
+            'nombre_empresa' => $request->nombre_empresa,
+            'nombre_repre_legal' => $request->nombre_repre_legal,
+            'telefono' => $request->telefono,
+            'direccion' => $request->direccion,
+            'correo' => $request->correo,
+            'fecha_creacion' => now(),
+            'id_estado' => 1
+        ]);
 
-        return redirect()->back()->with('success', 'Empresa creada exitosamente.');
+        return back()->with('success', 'Empresa creada exitosamente.');
     }
 
     public function storeLicencia(Request $request)
@@ -87,36 +118,25 @@ class DashboardController extends Controller
             'id_tipo_licencia' => 'required|exists:tipo_licencia,id_tipo_licencia',
         ]);
 
-        // Calculate dates
-        $tipoLicencia = TipoLicencia::find($request->id_tipo_licencia);
+        $tipoLicencia = TipoLicencia::findOrFail($request->id_tipo_licencia);
+
         $meses = (int) filter_var($tipoLicencia->tiempo, FILTER_SANITIZE_NUMBER_INT);
-        if ($meses == 0)
-            $meses = 12; // Fallback
-
-        $fechaInicio = now();
-
+        if ($meses == 0) $meses = 12;
 
         $empresa = Empresa::find($request->id_empresa);
-        $estadoLicencia = 1; // Default to Pending
 
-        if ($empresa) {
-
-            if ($empresa->id_estado == 3) {
-                $estadoLicencia = 3;
-            }
-        }
+        $estadoLicencia = ($empresa && $empresa->id_estado == 3) ? 3 : 1;
 
         DB::table('venta_licencias')->insert([
-            'id_key' => \Illuminate\Support\Str::random(14),
-            'fecha_inicio' => $fechaInicio,
+            'id_key' => Str::random(14),
+            'fecha_inicio' => now(),
             'observacione' => 'Asignada desde Dashboard',
             'id_empresa' => $request->id_empresa,
             'id_tipo_licencia' => $request->id_tipo_licencia,
             'id_estado' => $estadoLicencia
         ]);
 
-
-        return redirect()->back()->with('success', 'Licencia asignada exitosamente.');
+        return back()->with('success', 'Licencia asignada exitosamente.');
     }
 
     public function storeAdministrador(Request $request)
@@ -128,25 +148,15 @@ class DashboardController extends Controller
             'telefono' => 'required|numeric|digits_between:7,10',
             'contrasena' => 'required|min:8',
             'id_empresa' => 'required|exists:empresa,id_empresa',
-            'imagen' => 'required|image|max:2048', // Image validation
+            'imagen' => 'required|image|max:2048',
         ]);
 
-        // Handle Image Upload
-        if ($request->hasFile('imagen')) {
-            $imagePath = $request->file('imagen')->store('usuarios', 'public');
-        } else {
-            $imagePath = 'default.png';
-        }
+        $imagePath = $request->file('imagen')->store('usuarios', 'public');
 
-        // Determine admin status
         $empresa = Empresa::find($request->id_empresa);
-        $estadoUsuario = 1; // Default: Pending
 
-        if ($empresa && $empresa->id_estado == 3) {
-            $estadoUsuario = 3; // Active if company is active
-        }
+        $estadoUsuario = ($empresa && $empresa->id_estado == 3) ? 3 : 1;
 
-        // Logic to create admin user
         DB::table('usuario')->insert([
             'documento' => $request->documento,
             'nombre' => $request->nombre,
@@ -154,11 +164,11 @@ class DashboardController extends Controller
             'telefono' => $request->telefono,
             'contrasena' => Hash::make($request->contrasena),
             'id_empresa' => $request->id_empresa,
-            'id_tipo_usuario' => 1, // Admin type
+            'id_tipo_usuario' => 1,
             'id_estado' => $estadoUsuario,
             'imagen' => $imagePath
         ]);
 
-        return redirect()->back()->with('success', 'Administrador creado exitosamente.');
+        return back()->with('success', 'Administrador creado exitosamente.');
     }
 }

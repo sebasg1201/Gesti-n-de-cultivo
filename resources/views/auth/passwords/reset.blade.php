@@ -37,9 +37,7 @@
 
                 <input type="hidden" name="token" value="{{ $token }}">
 
-                <!-- El campo debe llamarse 'email' para que coincida con lo que espera el trait ResetsPasswords por defecto en la validacion,
-                     aunque luego lo mapeemos a 'correo' en el controlador. 
-                     O podemos cambiar validacion. Vamos a usar 'email' en el form para consistencia con el link. -->
+
                 <div>
                     <label for="correo" class="block text-sm font-medium text-gray-700 mb-1">Correo Electrónico</label>
                     <input id="correo" type="email" name="correo" value="{{ $email ?? old('correo') }}" required

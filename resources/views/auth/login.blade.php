@@ -18,7 +18,7 @@
         <div class="w-full md:w-1/2 relative bg-green-600 hidden md:block">
             <img src="{{ asset('img/campo.jpg') }}" 
                  alt="Agriculture" 
-                 class="absolute inset-0 w-full h-full object-cover mix-blend-multiply opacity-90">
+                 class="absolute inset-0 w-full h-full object-cover mix-blend-multiply opacity-90"> 
             <div class="absolute inset-0 flex flex-col items-center justify-center text-white p-8 text-center">
                 <div class="mb-4 bg-white/20 p-3 rounded-full backdrop-blur-sm">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10">
