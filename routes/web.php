@@ -46,7 +46,9 @@ Route::middleware(['auth:superadmin'])->group(function () {
 
     // Dashboard Logic specific routes
     Route::post('/dashboard/empresas', [DashboardController::class, 'storeEmpresa'])->name('empresas.store');
-    Route::post('/dashboard/licencias/asignar', [DashboardController::class, 'storeLicencia'])->name('licencias.asignar'); // New route
+    Route::post('/dashboard/licencias/asignar', [DashboardController::class, 'storeLicencia'])->name('licencias.asignar');
+    Route::put('/dashboard/licencias/{id}', [DashboardController::class, 'updateLicencia'])->name('licencias.update_dashboard'); // Distinct name to avoid conflict with resource controller if any
+    Route::get('/dashboard/licencias/exportar', [DashboardController::class, 'exportarReporte'])->name('licencias.exportar');
 
     // Licencias routes inside SuperAdmin area
     Route::get('/licencias', [TipoLicenciaController::class, 'index'])->name('licencias.index');

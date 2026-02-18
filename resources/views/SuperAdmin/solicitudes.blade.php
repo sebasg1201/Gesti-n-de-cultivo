@@ -39,11 +39,14 @@
                         @forelse($solicitudes as $solicitud)
                             <tr class="hover:bg-gray-50 transition">
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm font-medium text-gray-900">{{ $solicitud->empresa->nombre_empresa ?? 'N/A' }}</div>
+                                    <div class="text-sm font-medium text-gray-900">
+                                        {{ $solicitud->empresa->nombre_empresa ?? 'N/A' }}
+                                    </div>
                                     <div class="text-sm text-gray-500">{{ $solicitud->nit_empresa }}</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-900">{{ $solicitud->empresa->nombre_repre_legal ?? 'N/A' }}</div>
+                                    <div class="text-sm text-gray-900">{{ $solicitud->empresa->nombre_repre_legal ?? 'N/A' }}
+                                    </div>
                                     <div class="text-sm text-gray-500">{{ $solicitud->empresa->correo ?? 'N/A' }}</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
@@ -63,7 +66,7 @@
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <span
                                         class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                                       {{ $solicitud->id_estado == 1 ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800' }}">
+                                                                       {{ $solicitud->id_estado == 1 ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800' }}">
                                         {{ $solicitud->estado->nombre_estado ?? 'Desconocido' }}
                                     </span>
                                 </td>
@@ -73,11 +76,13 @@
                                             class="text-green-600 hover:text-green-900 font-semibold bg-green-50 px-3 py-1 rounded-lg cursor-pointer">
                                             Ver Detalle
                                         </button>
-                                        
-                                        <form action="{{ route('solicitudes.destroy', $solicitud->id_solicitud) }}" method="POST" onsubmit="return confirm('¿Estás seguro de eliminar esta solicitud y su empresa asociada? Esta acción no se puede deshacer.');">
+
+                                        <form action="{{ route('solicitudes.destroy', $solicitud->id_solicitud) }}"
+                                            method="POST"
+                                            onsubmit="return confirm('¿Estás seguro de eliminar esta solicitud y su empresa asociada? Esta acción no se puede deshacer.');">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" 
+                                            <button type="submit"
                                                 class="text-red-600 hover:text-red-900 font-semibold bg-red-50 px-3 py-1 rounded-lg cursor-pointer">
                                                 Eliminar
                                             </button>
@@ -95,6 +100,11 @@
                     </tbody>
                 </table>
             </div>
+        </div>
+
+        {{-- Paginación --}}
+        <div class="mt-4 px-4">
+            {{ $solicitudes->links() }}
         </div>
 
     </div>
@@ -135,7 +145,7 @@
     </div>
 
     <!-- Hidden element to pass data to JS without syntax errors -->
-    <div id="solicitudes-data" data-json="{{ json_encode($solicitudes) }}" class="hidden"></div>
+    <div id="solicitudes-data" data-json="{{ json_encode($solicitudes->items()) }}" class="hidden"></div>
 
     <script>
         // Retrieve data safely from DOM
@@ -157,55 +167,55 @@
 
 
             content.innerHTML = `
-                                                <div class="space-y-4">
-                                                    <div>
-                                                        <h4 class="font-bold text-gray-700">Información de la Empresa</h4>
-                                                        <div class="mt-2 text-sm text-gray-600 space-y-1">
-                                                            <p><span class="font-semibold">Empresa:</span> ${empresa.nombre_empresa || 'N/A'}</p>
-                                                            <p><span class="font-semibold">NIT:</span> ${solicitud.nit_empresa || 'N/A'}</p>
-                                                            <p><span class="font-semibold">Representante:</span> ${empresa.nombre_repre_legal || 'N/A'}</p>
-                                                            <p><span class="font-semibold">Teléfono:</span> ${empresa.telefono || 'N/A'}</p>
-                                                            <p><span class="font-semibold">Correo:</span> ${empresa.correo || 'N/A'}</p>
-                                                            <p><span class="font-semibold">Dirección:</span> ${empresa.direccion || 'N/A'}</p>
-                                                        </div>
-                                                    </div>
+                                                        <div class="space-y-4">
+                                                            <div>
+                                                                <h4 class="font-bold text-gray-700">Información de la Empresa</h4>
+                                                                <div class="mt-2 text-sm text-gray-600 space-y-1">
+                                                                    <p><span class="font-semibold">Empresa:</span> ${empresa.nombre_empresa || 'N/A'}</p>
+                                                                    <p><span class="font-semibold">NIT:</span> ${solicitud.nit_empresa || 'N/A'}</p>
+                                                                    <p><span class="font-semibold">Representante:</span> ${empresa.nombre_repre_legal || 'N/A'}</p>
+                                                                    <p><span class="font-semibold">Teléfono:</span> ${empresa.telefono || 'N/A'}</p>
+                                                                    <p><span class="font-semibold">Correo:</span> ${empresa.correo || 'N/A'}</p>
+                                                                    <p><span class="font-semibold">Dirección:</span> ${empresa.direccion || 'N/A'}</p>
+                                                                </div>
+                                                            </div>
 
-                                                    <div>
-                                                        <h4 class="font-bold text-gray-700">Detalles de la Licencia</h4>
-                                                        <div class="mt-2 text-sm text-gray-600 space-y-1">
-                                                             <p><span class="font-semibold">Plan:</span> ${solicitud.tipo_licencia ? solicitud.tipo_licencia.nombre_licencia : 'N/A'}</p>
-                                                             <p><span class="font-semibold">Precio:</span> $${solicitud.tipo_licencia ? new Intl.NumberFormat().format(solicitud.tipo_licencia.precio) : '0'}</p>
+                                                            <div>
+                                                                <h4 class="font-bold text-gray-700">Detalles de la Licencia</h4>
+                                                                <div class="mt-2 text-sm text-gray-600 space-y-1">
+                                                                     <p><span class="font-semibold">Plan:</span> ${solicitud.tipo_licencia ? solicitud.tipo_licencia.nombre_licencia : 'N/A'}</p>
+                                                                     <p><span class="font-semibold">Precio:</span> $${solicitud.tipo_licencia ? new Intl.NumberFormat().format(solicitud.tipo_licencia.precio) : '0'}</p>
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                </div>
 
-                                                <div class="flex flex-col">
-                                                    <h4 class="font-bold text-gray-700 mb-2">Comprobante de Pago</h4>
-                                                    <div class="border rounded-lg overflow-hidden bg-gray-50 flex items-center justify-center p-2 h-64">
-                                                         <img src="${fullComprobanteUrl}" alt="Comprobante" class="max-w-full max-h-full object-contain">
-                                                    </div>
-                                                     <a href="${fullComprobanteUrl}" target="_blank" class="mt-2 text-sm text-green-600 text-center">Ver imagen original</a>
-                                                </div>
-
-                                                <div class="mt-4 pt-4 border-t border-gray-200">
-                                                    ${solicitud.id_estado == 1 ? `
-                                                        <form action="{{ url('/dashboard/solicitudes') }}/${solicitud.id_solicitud}/visto" method="POST">
-                                                            @csrf
-                                                            @method('PUT')
-                                                            <button type="submit" class="w-full bg-green-600 text-white font-bold py-2 px-4 rounded hover:bg-green-700 transition cursor-pointer">
-                                                                Marcar como Visto
-                                                            </button>
-                                                        </form>
-                                                    ` : `
-                                                        <div class="text-center text-gray-500 font-medium">
-                                                            <span class="inline-flex items-center">
-                                                                <svg class="w-5 h-5 mr-1 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                                                                Solicitud ya revisada
-                                                            </span>
+                                                        <div class="flex flex-col">
+                                                            <h4 class="font-bold text-gray-700 mb-2">Comprobante de Pago</h4>
+                                                            <div class="border rounded-lg overflow-hidden bg-gray-50 flex items-center justify-center p-2 h-64">
+                                                                 <img src="${fullComprobanteUrl}" alt="Comprobante" class="max-w-full max-h-full object-contain">
+                                                            </div>
+                                                             <a href="${fullComprobanteUrl}" target="_blank" class="mt-2 text-sm text-green-600 text-center">Ver imagen original</a>
                                                         </div>
-                                                    `}
-                                                </div>
-                                            `;
+
+                                                        <div class="mt-4 pt-4 border-t border-gray-200">
+                                                            ${solicitud.id_estado == 1 ? `
+                                                                <form action="{{ url('/dashboard/solicitudes') }}/${solicitud.id_solicitud}/visto" method="POST">
+                                                                    @csrf
+                                                                    @method('PUT')
+                                                                    <button type="submit" class="w-full bg-green-600 text-white font-bold py-2 px-4 rounded hover:bg-green-700 transition cursor-pointer">
+                                                                        Marcar como Visto
+                                                                    </button>
+                                                                </form>
+                                                            ` : `
+                                                                <div class="text-center text-gray-500 font-medium">
+                                                                    <span class="inline-flex items-center">
+                                                                        <svg class="w-5 h-5 mr-1 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                                                        Aprobada
+                                                                    </span>
+                                                                </div>
+                                                            `}
+                                                        </div>
+                                                    `;
 
             modal.classList.remove('hidden');
         }

@@ -9,7 +9,7 @@ class TipoLicenciaController extends Controller
 {
     public function index()
     {
-        $licencias = TipoLicencia::all();
+        $licencias = TipoLicencia::paginate(10);
         return view('SuperAdmin.tipo_licencias', compact('licencias'));
     }
 
