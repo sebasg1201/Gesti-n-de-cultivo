@@ -104,7 +104,7 @@
                                 @method('DELETE')
 
                                 <button type="submit"
-                                        class="flex items-center gap-1 bg-red-500 hover:bg-red-700 text-black px-4 py-2 rounded-lg shadow-sm transition duration-300">
+                                        class="flex items-center gap-1 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg shadow-sm transition duration-300 cursor-pointer">
 
                                     {{-- ICONO ELIMINAR --}}
                                     <svg xmlns="http://www.w3.org/2000/svg" 

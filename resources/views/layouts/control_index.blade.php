@@ -17,11 +17,12 @@
     <main>
 
         @yield('content')
-        
+
     </main>
 
     {{-- FOOTER (se repite) --}}
     @include('layouts.footer')
 
 </body>
+
 </html>

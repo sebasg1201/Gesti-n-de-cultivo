@@ -63,18 +63,13 @@
                 </div>
 
                 <button type="submit"
-                    class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-150">
+                    class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-150 cursor-pointer">
                     Enviar enlace de recuperación
                 </button>
             </form>
 
             <div class="mt-6 text-center">
-                <a href="{{ route('login') }}"
-                    class="text-sm font-medium text-green-600 hover:text-green-500 flex items-center justify-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" class="w-4 h-4">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
-                    </svg>
+                <a href="{{ route('login') }}" class="text-sm font-medium text-green-600 hover:text-green-500">
                     Volver al inicio de sesión
                 </a>
             </div>

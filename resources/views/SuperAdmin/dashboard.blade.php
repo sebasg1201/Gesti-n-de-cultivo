@@ -11,50 +11,6 @@
         </div>
     </div>
 
-    <!-- SECCION REPORTES -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-        <!-- Licencias Por Vencer -->
-        <div class="bg-red-100 p-6 rounded-lg shadow-sm border-l-4 border-red-500 relative overflow-hidden">
-            <div class="relative z-10">
-                <p class="text-red-800 font-semibold mb-1">Licencias Por Vencer</p>
-                <h2 class="text-3xl font-bold text-red-900">{{ $licenciasPorVencer ?? 0 }}</h2>
-            </div>
-            <div class="absolute right-4 top-4 opacity-20">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-16 h-16 text-red-700">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
-                </svg>
-            </div>
-        </div>
-
-        <!-- Renovadas este mes -->
-        <div class="bg-yellow-100 p-6 rounded-lg shadow-sm border-l-4 border-yellow-500 relative overflow-hidden">
-            <div class="relative z-10">
-                <p class="text-yellow-800 font-semibold mb-1">Renovadas este mes</p>
-                <h2 class="text-3xl font-bold text-yellow-900">{{ $renovadasEsteMes ?? 0 }}</h2>
-            </div>
-            <div class="absolute right-4 top-4 opacity-20">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-16 h-16 text-yellow-700">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
-                </svg>
-            </div>
-        </div>
-
-        <!-- Total Licencias -->
-        <div class="bg-blue-100 p-6 rounded-lg shadow-sm border-l-4 border-blue-500 relative overflow-hidden">
-            <div class="relative z-10">
-                <p class="text-blue-800 font-semibold mb-1">Total Licencias</p>
-                <h2 class="text-3xl font-bold text-blue-900">{{ $totalLicencias ?? 0 }}</h2>
-            </div>
-            <div class="absolute right-4 top-4 opacity-20">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-16 h-16 text-blue-700">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
-                </svg>
-            </div>
-        </div>
-
-    </div>
-
     <!-- SECCION FORMULARIOS -->
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start">
 

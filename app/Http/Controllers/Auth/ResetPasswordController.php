@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+
 
 class ResetPasswordController extends Controller
 {
@@ -36,7 +38,19 @@ class ResetPasswordController extends Controller
         $request->validate([
             'token' => 'required',
             'correo' => 'required|email',
-            'password' => 'required|confirmed|min:8',
+            'password' => [
+                'required',
+                'confirmed',
+                'min:8',
+                'regex:/[a-z]/',      // al menos una letra minúscula
+                'regex:/[A-Z]/',      // al menos una letra mayúscula
+                'regex:/[0-9]/',      // al menos un número
+                'regex:/[@$!%*#?&]/', // al menos un carácter especial
+            ],
+        ], [
+            'password.regex' => 'La contraseña debe contener al menos una letra minúscula, una mayúscula, un número y un carácter especial (@$!%*#?&).',
+            'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
+            'password.confirmed' => 'Las contraseñas no coinciden.',
         ]);
 
         // Broker 'superadmins'
@@ -54,27 +68,16 @@ class ResetPasswordController extends Controller
     }
 
     /**
-     * Reset the given user's password.
-     *
-     * @param  \Illuminate\Contracts\Auth\CanResetPassword  $user
+     * @param  \Illuminate\Foundation\Auth\User  $user
      * @param  string  $password
      * @return void
      */
-    protected function resetPassword($user, $password)
+    protected function resetPassword(Authenticatable $user, $password)
     {
-        // Update password_hash instead of password
         $user->password_hash = Hash::make($password);
-
-        // If the model uses 'remember_token', we can verify it here, but SuperAdmin might not have it.
-        // Checking schema or model... Model uses 'Authenticatable' so it likely has remember_token if migrated.
-        // But let's just save.
         $user->setRememberToken(Str::random(60));
-
         $user->save();
 
         event(new PasswordReset($user));
-
-        // Login the user? User might want to login manually.
-        // Auth::guard('superadmin')->login($user);
     }
 }

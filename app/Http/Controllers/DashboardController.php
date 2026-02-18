@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
+use App\Models\SolicitudCompra;
 
 class DashboardController extends Controller
 {
@@ -62,6 +63,17 @@ public function buscarEmpresa($nit)
         ->latest('fecha_inicio')
         ->first();
 
+    $idTipoLicencia = $ultimaLicencia->id_tipo_licencia ?? null;
+
+    // Si no tiene historial de licencias, buscamos si tiene una solicitud reciente
+    if (!$idTipoLicencia) {
+        $solicitudReciente = SolicitudCompra::where('nit_empresa', $nit)
+            ->latest('fecha_solicitud')
+            ->first();
+        
+        $idTipoLicencia = $solicitudReciente->id_tipo_licencia ?? null;
+    }
+
     return response()->json([
         'id_empresa' => $empresa->id_empresa,
         'nombre_empresa' => $empresa->nombre_empresa,
@@ -69,7 +81,7 @@ public function buscarEmpresa($nit)
         'telefono' => $empresa->telefono,
         'direccion' => $empresa->direccion,
         'correo' => $empresa->correo,
-        'id_tipo_licencia' => $ultimaLicencia->id_tipo_licencia ?? null
+        'id_tipo_licencia' => $idTipoLicencia
     ]);
 }
 
@@ -130,11 +142,11 @@ public function buscarEmpresa($nit)
     public function storeAdministrador(Request $request)
     {
         $request->validate([
-            'documento' => 'required|numeric|unique:usuario,documento',
+            'documento' => 'required|numeric|digits_between:7,10|unique:usuario,documento',
             'nombre' => 'required|string',
             'correo' => 'required|email|unique:usuario,correo',
-            'telefono' => 'required|string',
-            'contrasena' => 'required|min:6',
+            'telefono' => 'required|numeric|digits_between:7,10',
+            'contrasena' => 'required|min:8',
             'id_empresa' => 'required|exists:empresa,id_empresa',
             'imagen' => 'required|image|max:2048',
         ]);

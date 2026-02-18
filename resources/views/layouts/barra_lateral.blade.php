@@ -7,141 +7,247 @@
     @vite('resources/css/app.css')
 </head>
 
-<body class="bg-gray-100">
+<body class="bg-gradient-to-br from-emerald-50 via-white to-green-100 min-h-screen text-gray-800">
 
-
-    <div class="flex">
+    <div class="flex min-h-screen">
 
         <!-- SIDEBAR -->
-        <aside id="sidebar" class="pb-8 w-64 bg-white shadow-md min-h-screen transition-all duration-300">
+        <aside id="sidebar"
+            class="w-72 bg-gradient-to-b from-emerald-900 via-emerald-800 to-emerald-900 text-emerald-100 shadow-2xl transition-all duration-300 flex flex-col overflow-hidden">
 
-            <div class="p-6 text-xl font-bold text-green-600">
-                AgriManager
+            <!-- LOGO -->
+            <div class="p-6 border-b border-emerald-700/40">
+                <h1 class="text-2xl font-extrabold tracking-wide">
+                    <span class="text-white">Agri</span>
+                    <span class="text-emerald-300">Manager</span>
+                </h1>
+                <p class="text-xs text-emerald-300 mt-1 opacity-80">Sistema Administrativo</p>
             </div>
 
-            <nav class="px-4 space-y-2">
+            <!-- NAV -->
+            <nav class="flex-1 px-4 py-6 space-y-2">
 
-                <a href="{{ route('dashboard') }}" class="flex items-center gap-3 p-2 rounded
-                    {{ request()->routeIs('dashboard') ? 'bg-green-100 text-green-700' : 'hover:bg-gray-100' }}">
+                @php
+                    function active($pattern)
+                    {
+                        return request()->routeIs($pattern)
+                            ? 'bg-white/10 text-white shadow-lg border border-white/10'
+                            : 'hover:bg-white/10 hover:text-white';
+                    }
+                @endphp
 
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" class="w-5 h-5 text-green-600">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M3 13h8V3H3v10zm10 8h8v-6h-8v6zm0-10h8V3h-8v8zM3 21h8v-6H3v6z" />
-                    </svg>
-                    Licencias
+                <a href="{{ route('reportes.index') }}"
+                    class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {{ active('reportes.*') }}">
+                    <div class="w-1.5 h-6 bg-emerald-300 rounded-full opacity-0 group-hover:opacity-100 transition-all">
+                    </div>
+                    <span class="font-medium">Reportes</span>
                 </a>
 
-                <a href="{{ route('SuperAdmin.index') }}" class="flex items-center gap-3 p-2 rounded
-                    {{ request()->routeIs('SuperAdmin.*') ? 'bg-green-100 text-green-700' : 'hover:bg-gray-100' }}">
-
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" class="w-5 h-5 text-blue-600">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M17 20h5V4H2v16h5m10 0v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6m10 0H7" />
-                    </svg>
-                    Empresas
+                <a href="{{ route('dashboard') }}"
+                    class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {{ active('dashboard') }}">
+                    <div class="w-1.5 h-6 bg-emerald-300 rounded-full opacity-0 group-hover:opacity-100 transition-all">
+                    </div>
+                    <span class="font-medium">Licencias</span>
                 </a>
 
-                <a href="{{ route('licencias.index') }}" class="flex items-center gap-3 p-2 rounded
-                    {{ request()->routeIs('licencias.*') ? 'bg-green-100 text-green-700' : 'hover:bg-gray-100' }}">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" class="w-5 h-5 text-yellow-600">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M12 8c-3 0-5 1.5-5 3s2 3 5 3 5 1.5 5 3-2 3-5 3m0-12V4m0 16v-2" />
-                    </svg>
-                    Tipo de Licencias
+                <a href="{{ route('SuperAdmin.index') }}"
+                    class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {{ active('SuperAdmin.*') }}">
+                    <div class="w-1.5 h-6 bg-emerald-300 rounded-full opacity-0 group-hover:opacity-100 transition-all">
+                    </div>
+                    <span class="font-medium">Empresas</span>
                 </a>
 
-                <a href="{{ route('solicitudes.index') }}" class="flex items-center gap-3 p-2 rounded
-                    {{ request()->routeIs('solicitudes.*') ? 'bg-green-100 text-green-700' : 'hover:bg-gray-100' }}">
+                <a href="{{ route('licencias.index') }}"
+                    class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {{ active('licencias.*') }}">
+                    <div class="w-1.5 h-6 bg-emerald-300 rounded-full opacity-0 group-hover:opacity-100 transition-all">
+                    </div>
+                    <span class="font-medium">Tipo de Licencias</span>
+                </a>
 
-                    <svg class="w-5 h-5 text-gray-400 group-hover:text-green-500" fill="none" stroke="currentColor"
-                        viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z">
-                        </path>
-                    </svg>
-                    Solicitudes De Compra
+                <a href="{{ route('solicitudes.index') }}"
+                    class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {{ active('solicitudes.*') }}">
+                    <div class="w-1.5 h-6 bg-emerald-300 rounded-full opacity-0 group-hover:opacity-100 transition-all">
+                    </div>
+                    <span class="font-medium">Solicitudes</span>
                 </a>
 
             </nav>
 
+            <!-- FOOTER SIDEBAR -->
+            <div class="p-4 border-t border-emerald-700/40 text-xs text-emerald-300 opacity-70">
+                © {{ date('Y') }} AgriManager
+            </div>
         </aside>
 
+
         <!-- CONTENIDO -->
-        <div class="flex-1">
+        <div class="flex-1 flex flex-col">
 
-            <!-- HEADER SUPERIOR  -->
-            <header class="bg-white shadow p-4 flex justify-between items-center">
+            <!-- HEADER -->
+            <header class="relative z-50">
 
-                <!-- IZQUIERDA -->
-                <div class="flex items-center">
-
-                    <button onclick="toggleSidebar()" class="mr-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="currentColor" class="w-7 h-7">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5" />
-                        </svg>
-                    </button>
-
-                    <h2 class="font-semibold">Panel de Administración</h2>
-
+                <!-- Fondo decorativo -->
+                <div class="absolute inset-0 bg-gradient-to-r from-emerald-600 via-green-500 to-emerald-600 opacity-90">
+                </div>
+                <div
+                    class="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.25),transparent_60%)]">
                 </div>
 
+                <div class="relative px-12 py-8 flex justify-between items-center text-white">
 
-                <!-- DERECHA → USUARIO -->
-                <div class="flex items-center gap-3 bg-gray-50 p-2 pr-4 rounded shadow-sm">
+                    <!-- IZQUIERDA -->
+                    <div class="flex items-center gap-8">
 
-                    <!-- FOTO -->
-                    <img src="https://ui-avatars.com/api/?name=Usuario+Demo&background=16a34a&color=fff" alt="Usuario"
-                        class="w-10 h-10 rounded-full object-cover">
+                        <!-- Botón Sidebar -->
+                        <button onclick="toggleSidebar()" class="p-3 rounded-xl bg-white/10 hover:bg-white/20 
+                       backdrop-blur-md transition-all duration-200">
 
-                    <!-- DATOS -->
-                    <div class="text-right w-20">
-                        <p class="font-semibold">
-                            {{ Auth::guard('superadmin')->user()->nombre ?? 'Super Admin' }}
-                        </p>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
 
-                        <span class="text-xs text-gray-500 block">
-                            SuperAdmin
-                        </span>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 6h16M4 12h16M4 18h16" />
+                            </svg>
+                        </button>
 
-                        <form action="{{ route('logout') }}" method="POST">
-                            @csrf
-                            <button type="submit" class="text-xs text-red-500 hover:text-red-700 underline">
-                                Cerrar Sesión
-                            </button>
-                        </form>
+                        <!-- Título fuerte -->
+                        <div>
+                            <h1 class="text-3xl font-extrabold tracking-tight">
+                                Panel de Administración
+                            </h1>
+                            <p class="text-emerald-100 text-sm mt-1 opacity-90">
+                                Gestión avanzada del sistema AgriManager
+                            </p>
+                        </div>
+
+                    </div>
+
+                    <!-- DERECHA -->
+                    <div class="flex items-center gap-6">
+
+                        <!-- Fecha -->
+                        <div class="hidden md:flex items-center gap-2 
+                        bg-white/10 backdrop-blur-md 
+                        px-4 py-2 rounded-xl text-sm">
+
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 7V3m8 4V3m-9 8h10m-13 9h16a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v11a2 2 0 002 2z" />
+                            </svg>
+
+                            {{ now()->format('d M, Y') }}
+                        </div>
+
+                        <!-- Usuario -->
+                        <div class="relative group">
+
+                            <div class="flex items-center gap-4 
+                            bg-white text-gray-800
+                            px-5 py-3 rounded-2xl
+                            shadow-2xl hover:scale-[1.03]
+                            transition-all duration-300 cursor-pointer">
+
+                                <div class="w-11 h-11 rounded-xl 
+                                bg-gradient-to-tr from-emerald-500 to-green-600
+                                text-white flex items-center justify-center font-bold shadow-md">
+                                    {{ strtoupper(substr(auth()->user()->nombre, 0, 1)) }}
+                                </div>
+
+                                <div>
+                                    <p class="font-semibold text-sm">
+                                        {{ Auth::guard('superadmin')->user()->nombre ?? 'Super Admin' }}
+                                    </p>
+                                    <p class="text-xs text-emerald-600 font-medium">
+                                        SuperAdmin
+                                    </p>
+                                </div>
+
+                                <svg class="w-4 h-4 text-emerald-600 
+                                transition-transform duration-300 
+                                group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </div>
+
+                            <!-- Dropdown -->
+                            <div class="absolute right-0 mt-4 w-56 
+                            bg-white rounded-2xl shadow-2xl 
+                            border border-emerald-100
+                            opacity-0 scale-95 
+                            group-hover:opacity-100 group-hover:scale-100
+                            transition-all duration-200 origin-top-right z-50">
+
+                                <div class="p-4 border-b border-gray-100">
+                                    <p class="text-sm font-semibold text-gray-800">
+                                        {{ Auth::guard('superadmin')->user()->nombre ?? 'Super Admin' }}
+                                    </p>
+                                    <p class="text-xs text-emerald-600">
+                                        Administrador del sistema
+                                    </p>
+                                </div>
+
+                                <form action="{{ route('logout') }}" method="POST">
+                                    @csrf
+                                    <button type="submit"
+                                        class="w-full text-left px-4 py-3 text-sm text-red-500 hover:bg-red-50 hover:text-red-600 rounded-b-2xl transition cursor-pointer">
+                                        Cerrar Sesión
+                                    </button>
+                                </form>
+
+                            </div>
+
+                        </div>
+
                     </div>
 
                 </div>
 
+                <!-- Sombra inferior elegante -->
+                <div class="absolute bottom-0 left-0 w-full h-6 
+                bg-gradient-to-b from-transparent to-black/10">
+                </div>
+
             </header>
 
-            <main class="p-8">
-                @yield('content')
+
+
+
+            <!-- MAIN -->
+            <main class="p-10 flex-1">
+
+                <div class="bg-white rounded-3xl shadow-2xl p-10 border border-emerald-100 min-h-[70vh]">
+
+                    <!-- Título decorativo -->
+                    <div class="mb-8">
+                        <h3 class="text-2xl font-bold text-emerald-800">
+                            @yield('title', 'AgroTech')
+                        </h3>
+                        <div class="w-16 h-1 bg-gradient-to-r from-emerald-400 to-green-500 rounded-full mt-2"></div>
+                    </div>
+
+                    @yield('content')
+
+                </div>
+
             </main>
 
         </div>
 
     </div>
 
-    <!-- SCRIPT -->
+
     <script>
         function toggleSidebar() {
-
             const sidebar = document.getElementById("sidebar");
 
-            if (sidebar.classList.contains("w-64")) {
-                sidebar.classList.remove("w-64");
+            if (sidebar.classList.contains("w-72")) {
+                sidebar.classList.remove("w-72");
                 sidebar.classList.add("w-0");
-                sidebar.classList.add("overflow-hidden");
             } else {
                 sidebar.classList.remove("w-0");
-                sidebar.classList.remove("overflow-hidden");
-                sidebar.classList.add("w-64");
+                sidebar.classList.add("w-72");
             }
         }
     </script>

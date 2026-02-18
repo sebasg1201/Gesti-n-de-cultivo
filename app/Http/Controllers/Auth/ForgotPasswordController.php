@@ -36,10 +36,7 @@ class ForgotPasswordController extends Controller
 
         // Send Email
         try {
-            Mail::raw("Tu código de verificación es: $code\nEste código expira en 5 minutos.", function ($message) use ($request) {
-                $message->to($request->correo)
-                    ->subject('Código de recuperación de contraseña');
-            });
+            Mail::to($request->correo)->send(new \App\Mail\ResetPasswordCode($code));
         } catch (\Exception $e) {
             return back()->withErrors(['correo' => 'Hubo un error al enviar el correo. Por favor intenta más tarde.']);
         }

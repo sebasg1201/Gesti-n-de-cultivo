@@ -5,7 +5,8 @@
                     flex items-center justify-between">
 
             {{-- LOGO --}}
-            <div class="flex items-center gap-3 font-bold text-xl text-gray-900">
+            <a href="#index" class="flex items-center gap-3 font-bold text-xl text-gray-900 cursor-pointer hover:scale-105 transition-transform duration-200 cursor-pointer">
+
                 {{-- Icono --}}
                 <div class="w-9 h-9 rounded-xl bg-green-500/90 flex items-center justify-center shadow-sm">
                     <svg class="w-5 h-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -20,25 +21,25 @@
                     Agro<span class="text-green-600">Tech</span>
                 </span>
 
-            </div>
+            </a>
+
 
 
             {{-- NAV --}}
             <nav class="hidden md:flex items-center gap-8 text-gray-700 font-medium">
-                <a href="#" class="hover:text-green-600 transition">Funciones</a>
-                <a href="#" class="hover:text-green-600 transition">Beneficios</a>
-                <a href="#" class="hover:text-green-600 transition">Precios</a>
+                <a href="#funciones" class="hover:text-green-600 transition">Funciones</a>
+                <a href="#beneficios" class="hover:text-green-600 transition">Beneficios</a>
+                <a href="#precios" class="hover:text-green-600 transition">Precios</a>
             </nav>
 
             {{-- ACTIONS --}}
             <div class="flex items-center gap-3">
-
-                <a href="{{ route('login') }}" class="px-4 py-2 rounded-xl text-gray-800 font-medium hover:bg-gray-100 transition">
-
+                <a href="{{ route('login') }}"
+                    class="px-4 py-2 rounded-xl text-gray-800 font-medium hover:bg-gray-100 transition">
                     Iniciar sesión
                 </a>
 
-                <a href="/register" class="px-4 py-2 rounded-xl bg-green-500 text-white font-semibold
+                <a href="#precios" class="px-4 py-2 rounded-xl bg-green-500 text-white font-semibold
                           hover:bg-green-600 transition shadow-sm">
                     Comenzar ahora
                 </a>

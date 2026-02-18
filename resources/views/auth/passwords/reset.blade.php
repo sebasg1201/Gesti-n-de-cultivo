@@ -55,6 +55,22 @@
                             class="block w-full rounded-lg border-gray-300 border focus:border-green-500 focus:ring-green-500 shadow-sm p-2.5"
                             placeholder="********">
                     </div>
+
+                    <!-- Password Strength Indicator -->
+                    <div class="mt-2" id="password-strength-container" style="display: none;">
+                        <div class="flex items-center gap-2">
+                            <div class="flex-1 bg-gray-200 rounded-full h-2 overflow-hidden">
+                                <div id="password-strength-bar" class="h-full transition-all duration-300"
+                                    style="width: 0%;"></div>
+                            </div>
+                            <span id="password-strength-text" class="text-xs font-medium"></span>
+                        </div>
+                        <p id="password-requirements" class="text-xs text-gray-500 mt-1">
+                            Mínimo 8 caracteres, incluyendo mayúsculas, minúsculas, números y caracteres especiales
+                            (@$!%*#?&)
+                        </p>
+                    </div>
+
                     @error('password')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -72,13 +88,93 @@
                 </div>
 
                 <button type="submit"
-                    class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-150">
+                    class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-150 cursor-pointer">
                     Restablecer Contraseña
                 </button>
             </form>
 
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const passwordInput = document.getElementById('password');
+            const strengthContainer = document.getElementById('password-strength-container');
+            const strengthBar = document.getElementById('password-strength-bar');
+            const strengthText = document.getElementById('password-strength-text');
+
+            passwordInput.addEventListener('input', function () {
+                const password = this.value;
+
+                if (password.length === 0) {
+                    strengthContainer.style.display = 'none';
+                    return;
+                }
+
+                strengthContainer.style.display = 'block';
+
+                // Calculate password strength
+                let strength = 0;
+                let strengthLevel = '';
+                let color = '';
+                let width = 0;
+
+                const hasLower = /[a-z]/.test(password);
+                const hasUpper = /[A-Z]/.test(password);
+                const hasNumber = /[0-9]/.test(password);
+                const hasSpecial = /[@$!%*#?&]/.test(password);
+                const hasMinLength = password.length >= 8;
+
+                // Only numbers
+                if (hasNumber && !hasLower && !hasUpper && !hasSpecial) {
+                    strength = 1;
+                    strengthLevel = 'Muy fácil';
+                    color = '#ef4444'; // red
+                    width = 25;
+                }
+                // Numbers and letters (no uppercase)
+                else if (hasNumber && hasLower && !hasUpper && !hasSpecial) {
+                    strength = 2;
+                    strengthLevel = 'Débil';
+                    color = '#f97316'; // orange
+                    width = 50;
+                }
+                // Has lowercase, uppercase, and numbers
+                else if (hasLower && hasUpper && hasNumber && !hasSpecial) {
+                    strength = 3;
+                    strengthLevel = 'Media';
+                    color = '#eab308'; // yellow
+                    width = 75;
+                }
+                // Has everything
+                else if (hasLower && hasUpper && hasNumber && hasSpecial && hasMinLength) {
+                    strength = 4;
+                    strengthLevel = 'Fuerte';
+                    color = '#22c55e'; // green
+                    width = 100;
+                }
+                // Other combinations
+                else {
+                    if (hasMinLength && (hasLower || hasUpper) && (hasNumber || hasSpecial)) {
+                        strength = 2;
+                        strengthLevel = 'Débil';
+                        color = '#f97316';
+                        width = 50;
+                    } else {
+                        strength = 1;
+                        strengthLevel = 'Muy fácil';
+                        color = '#ef4444';
+                        width = 25;
+                    }
+                }
+
+                strengthBar.style.width = width + '%';
+                strengthBar.style.backgroundColor = color;
+                strengthText.textContent = strengthLevel;
+                strengthText.style.color = color;
+            });
+        });
+    </script>
 
 </body>
 
