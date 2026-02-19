@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 18-02-2026 a las 04:53:46
+-- Tiempo de generación: 19-02-2026 a las 20:51:37
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -32,6 +32,14 @@ CREATE TABLE `cache` (
   `value` mediumtext NOT NULL,
   `expiration` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `cache`
+--
+
+INSERT INTO `cache` (`key`, `value`, `expiration`) VALUES
+('laravel-cache-password_reset_code_bastobrayan246@gmail.com', 'i:342369;', 1771258013),
+('laravel-cache-password_reset_code_reyesz2803@gmail.com', 'i:728743;', 1770953137);
 
 -- --------------------------------------------------------
 
@@ -128,7 +136,7 @@ CREATE TABLE `empresa` (
   `id_empresa` varchar(14) NOT NULL,
   `nombre_empresa` varchar(200) NOT NULL,
   `nombre_repre_legal` varchar(100) NOT NULL,
-  `cedula_repre` varchar(20) DEFAULT NULL,
+  `cedula_repre` int(11) NOT NULL,
   `telefono` varchar(12) NOT NULL,
   `correo` varchar(100) NOT NULL,
   `direccion` varchar(150) NOT NULL,
@@ -141,8 +149,9 @@ CREATE TABLE `empresa` (
 --
 
 INSERT INTO `empresa` (`id_empresa`, `nombre_empresa`, `nombre_repre_legal`, `cedula_repre`, `telefono`, `correo`, `direccion`, `fecha_creacion`, `id_estado`) VALUES
-('2|431124', 'fdhjahfd', 'dfsghdshsf', '12342134421', '12341235', 'fdshags@gmail.com', '123421352', '2026-02-17', 1),
-('8600050669', 'Finca La Florida', 'Dairo Moreno', '0', '3103527239', 'dairo003@gmail.com', 'MzN Casa 1 Villa_cindy', '2026-02-11', 3);
+('123123123', 'Colombia', 'David', 1110465468, '3103524334', 'david@gmail.com', 'MzN Casa 1 El_Pedregal', '2026-02-18', 3),
+('3211231212', 'CC', 'Dario', 321546651, '3103528239', 'reyes@gmail.com', 'MzN Casa# 1 Combeima', '2026-02-19', 3),
+('8600050669', 'Finca La Florida', 'Dairo Moreno', 0, '3103527239', 'dairo003@gmail.com', 'MzN Casa 1 Villa_cindy', '2026-02-11', 3);
 
 -- --------------------------------------------------------
 
@@ -344,7 +353,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('X5dWIB0O6QFvNLGfWdQ9AcD3OnRqAOmQIME6wJxz', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiWFVwN3FOREdJVExFVWNsMFd4TVN6aWhLUHVNcURaUE80bmtWaWxocSI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6NDA6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9zb2xpY2l0dWQtY29tcHJhLzIiO3M6NToicm91dGUiO3M6MTY6InNvbGljaXR1ZC5jcmVhdGUiO319', 1771386213);
+('ULcY1vtOGcney7tCLCPnivM5yIoQ9DjMWwWurYm8', 1110495789, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiZzd5a3RiZjdyVTRLd0NPaE1pMTg5emlvbG5qSU5QRzZSZnZWYU5DOSI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzA6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9yZXBvcnRlcyI7czo1OiJyb3V0ZSI7czoxNDoicmVwb3J0ZXMuaW5kZXgiO31zOjU3OiJsb2dpbl9zdXBlcmFkbWluXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MTExMDQ5NTc4OTt9', 1771530642);
 
 -- --------------------------------------------------------
 
@@ -354,6 +363,7 @@ INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, 
 
 CREATE TABLE `solicitud_compra` (
   `id_solicitud` int(11) NOT NULL,
+  `nit_empresa` varchar(20) NOT NULL,
   `comprobante_pago` varchar(500) NOT NULL,
   `id_tipo_licencia` int(11) DEFAULT NULL,
   `id_estado` int(11) NOT NULL,
@@ -365,9 +375,9 @@ CREATE TABLE `solicitud_compra` (
 -- Volcado de datos para la tabla `solicitud_compra`
 --
 
-INSERT INTO `solicitud_compra` (`id_solicitud`, `comprobante_pago`, `id_tipo_licencia`, `id_estado`, `fecha_solicitud`, `fecha_revision`) VALUES
-(3, 'comprobantes/1770838133.png', 2, 1, '2026-02-11 19:28:53', NULL),
-(4, 'comprobantes/1771304926.png', 3, 5, '2026-02-17 05:08:46', '2026-02-17 21:58:11');
+INSERT INTO `solicitud_compra` (`id_solicitud`, `nit_empresa`, `comprobante_pago`, `id_tipo_licencia`, `id_estado`, `fecha_solicitud`, `fecha_revision`) VALUES
+(4, '123123123', 'comprobantes/1771426673.png', 3, 5, '2026-02-18 14:57:53', '2026-02-18 14:59:27'),
+(7, '3211231212', 'comprobantes/1771530181.jpg', 3, 5, '2026-02-19 19:43:01', '2026-02-19 19:44:51');
 
 -- --------------------------------------------------------
 
@@ -395,9 +405,9 @@ CREATE TABLE `super_admin` (
 --
 
 INSERT INTO `super_admin` (`id_super_admin`, `nombre`, `usuario`, `correo`, `password_hash`, `id_estado`, `ultimo_login`, `fecha_creacion`, `fecha_actualizacion`, `remember_token`, `created_at`, `updated_at`) VALUES
+(121121222, 'Sebastian Garcia', 'sebas', 'sebastiangarciaalvarez123@gmail.com', '$2y$12$YoWr9W3m9DTOdIq9lQl5v.UUywmt.V8dWL.E6.BS8jtcLy9xzzoPG', 3, NULL, '2026-02-17 02:13:13', '2026-02-17 02:13:13', NULL, NULL, NULL),
 (1006511657, 'Brayan Basto', 'Stevan', 'bastobrayan246@gmail.com', '$2y$12$Qh0yFs6SfldIhbRSw2gfguC8OukaAtB1KnOBga5XY/dKXi.2070X.', 3, NULL, '2026-02-10 03:51:59', '2026-02-17 02:10:22', 'aegJSp6QIMpg95egR7NJXAnaE5njCRkax1I5ss63F6MT9YHZs4Q3cINlIMw9', NULL, '2026-02-13 02:07:57'),
-(1105461467, 'Sebastian Garcia', 'sebas', 'sebastiangarciaalvarez123@gmail.com', '$2y$12$HiWyptu369n4pYVh2s1fw.3eam9pB7yf92tYoFAJnLTJb8LgZZg1W', 3, NULL, '2026-02-17 02:13:13', '2026-02-18 03:41:55', '9upCcEpT04tiyVVR4hFbvCUAZ8erLAy9vdN25cTYltNXmtfYE8fT4WWmypD0', NULL, '2026-02-17 23:28:31'),
-(1110495789, 'Didier Reyes', 'dires123', 'didierreyes003@gmail.com', '$2y$12$wmB4kxXaFlmdPaBoh2udXuqkB1L6iPFzrISuCIEoVOLOlTOEgO8wa', 3, NULL, '2026-02-09 19:43:33', '2026-02-16 16:04:46', '75wAEHbAZ2DHmlMOPncWAw4MeYBfUL4VkgWvMX1jeqWD4KhPDeLZLrSxi1gG', NULL, '2026-02-16 21:04:11');
+(1110495789, 'Didier Reyes', 'dires123', 'didierreyes003@gmail.com', '$2y$12$KXslbp8kUObWricNtMUvnuIpq./X1Mg8v4wx4MMtbswowtRypf4TC', 3, NULL, '2026-02-09 19:43:33', '2026-02-19 19:41:50', 'MPny9AAIjGB2QpnienM95CroxC97blC6IzfFafuBwRdxni9C51ejdETKIHXW', NULL, '2026-02-18 22:41:49');
 
 -- --------------------------------------------------------
 
@@ -550,7 +560,8 @@ CREATE TABLE `usuario` (
 --
 
 INSERT INTO `usuario` (`documento`, `imagen`, `nombre`, `telefono`, `correo`, `contrasena`, `id_tipo_usuario`, `id_estado`, `id_empresa`) VALUES
-(43211222, 'usuarios/bSbGFNQXLSvkTZAd0arvomtqqIbMSZhXZwP4No2S.png', 'Edinson Cavani', '3102102122', 'edinson03@gmail.com', '$2y$12$Drb3yPwds9eZ.DQsxhRtFeKtDfTlbOsl4ZoXyOTB2gpnih.E57FoG', 1, 3, '8600050669');
+(43211222, 'usuarios/bSbGFNQXLSvkTZAd0arvomtqqIbMSZhXZwP4No2S.png', 'Edinson Cavani', '3102102122', 'edinson03@gmail.com', '$2y$12$Drb3yPwds9eZ.DQsxhRtFeKtDfTlbOsl4ZoXyOTB2gpnih.E57FoG', 1, 3, '8600050669'),
+(1110212211, 'usuarios/grutViYDWlLqDG8XQg8Ub0H2geXZN8b5yTijY2yy.jpg', 'sebastian cortes', '3022689878', 'didierrs003@gmail.com', '$2y$12$6nvXtd.POmbGOwaEipQSdeSGRmBMGQFkxwFalortl6NA7jTxJhiDq', 1, 3, '123123123');
 
 -- --------------------------------------------------------
 
@@ -572,7 +583,9 @@ CREATE TABLE `venta_licencias` (
 --
 
 INSERT INTO `venta_licencias` (`id_key`, `fecha_inicio`, `observacione`, `id_tipo_licencia`, `id_empresa`, `id_estado`) VALUES
-('nxRnZ1rZV4kzhL', '2026-02-11 15:23:37', 'Asignada desde Dashboard', 2, '8600050669', 3);
+('nxRnZ1rZV4kzhL', '2026-02-11 15:23:37', 'Asignada desde Dashboard', 2, '8600050669', 3),
+('OdWPJL2J4f0jnR', '2026-02-18 00:00:00', 'Asignada desde Dashboard', 1, '123123123', 3),
+('zZ7N4D7aSPASyv', '2026-02-19 19:47:30', 'Asignada desde Dashboard', 3, '3211231212', 3);
 
 --
 -- Índices para tablas volcadas
@@ -900,7 +913,7 @@ ALTER TABLE `riego`
 -- AUTO_INCREMENT de la tabla `solicitud_compra`
 --
 ALTER TABLE `solicitud_compra`
-  MODIFY `id_solicitud` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_solicitud` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de la tabla `super_admin`

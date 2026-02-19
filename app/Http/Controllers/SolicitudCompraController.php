@@ -14,7 +14,7 @@ class SolicitudCompraController extends Controller
     {
         $solicitudes = SolicitudCompra::with(['tipoLicencia', 'estado', 'superAdmin', 'empresa'])
             ->orderBy('fecha_solicitud', 'desc')
-            ->paginate(10);
+            ->get();
 
         return view('superadmin.solicitudes', compact('solicitudes'));
     }
@@ -56,20 +56,20 @@ class SolicitudCompraController extends Controller
                     // La FK está en solicitud apuntando a empresa.
                     // Si borramos empresa, solicitud se borra (si cascade) o falla.
                     // Si borramos solicitud, empresa queda.
-
+                    
                     // Mejor logica:
                     // 1. Borrar solicitud.
                     // 2. Borrar empresa.
-
+                    
                     $empresa->delete();
                 } catch (\Exception $e) {
-                    return redirect()->back()->with('error', 'Error al eliminar: ' . $e->getMessage());
+                     return redirect()->back()->with('error', 'Error al eliminar: ' . $e->getMessage());
                 }
             } else {
-                $solicitud->delete();
+                 $solicitud->delete();
             }
         } else {
-            $solicitud->delete();
+             $solicitud->delete();
         }
 
         return redirect()->back()->with('success', 'Solicitud y empresa eliminadas correctamente.');
@@ -89,7 +89,7 @@ class SolicitudCompraController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nit_empresa' => 'required|numeric|digits_between:10,14',
+            'nit_empresa' => 'required|string|max:20',
             'nombre_empresa' => 'required|string|max:200',
             'nombre_repre_legal' => 'required|string|max:150',
             'cedula_repre' => 'required|numeric|digits_between:8,11',
@@ -124,12 +124,12 @@ class SolicitudCompraController extends Controller
                 'direccion' => $request->direccion,
                 'fecha_creacion' => now(), // O mantener la original si solo se actualiza
                 'id_estado' => 1 // Asumimos estado 'activa' o 'pendiente' según lógica de negocio. 1=pendiente? Revisando SQL dump: 1=pendiente, 3=activa.
-                // Si es nueva empresa registrandose, quizás debería ser 1 (pendiente) o 3 (activa).
-                // El dump muesta id_estado 1 y 3. Usaremos 1 (pendiente) o lo que el usuario prefiera.
-                // Viendo el dump, empresas creadas tienen estado 1 o 3.
-                // Vamos a poner 3 (activa) por defecto para que puedan operar, o 1 si requiere aprobación.
-                // Dejaré 1 (pendiente) para ser conservador, o 3 si la empresa ya "existe".
-                // Mejor: 'id_estado' => 1 (pendiente) si se crea.
+                                 // Si es nueva empresa registrandose, quizás debería ser 1 (pendiente) o 3 (activa).
+                                 // El dump muesta id_estado 1 y 3. Usaremos 1 (pendiente) o lo que el usuario prefiera.
+                                 // Viendo el dump, empresas creadas tienen estado 1 o 3.
+                                 // Vamos a poner 3 (activa) por defecto para que puedan operar, o 1 si requiere aprobación.
+                                 // Dejaré 1 (pendiente) para ser conservador, o 3 si la empresa ya "existe".
+                                 // Mejor: 'id_estado' => 1 (pendiente) si se crea.
             ]
         );
 

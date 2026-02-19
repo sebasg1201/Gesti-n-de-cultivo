@@ -83,83 +83,6 @@ class DashboardController extends Controller
         ));
     }
 
-    public function updateLicencia(Request $request, $id)
-    {
-        $licencia = VentaLicencias::findOrFail($id);
-
-        $request->validate([
-            'fecha_inicio' => 'required|date',
-            'id_estado' => 'required|integer',
-            'id_tipo_licencia' => 'required|exists:tipo_licencia,id_tipo_licencia'
-        ]);
-
-        $licencia->fecha_inicio = $request->fecha_inicio;
-        $licencia->id_estado = $request->id_estado;
-        $licencia->id_tipo_licencia = $request->id_tipo_licencia;
-        $licencia->save();
-
-        return back()->with('success', 'Licencia actualizada correctamente.');
-    }
-
-    public function exportarReporte(Request $request): StreamedResponse
-    {
-        $year = $request->input('year', now()->year);
-        $month = $request->input('month');
-
-        $filename = "reporte_licencias_{$year}" . ($month ? "_{$month}" : "") . ".csv";
-
-        $headers = [
-            'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
-        ];
-
-        return new StreamedResponse(function () use ($year, $month) {
-            $handle = fopen('php://output', 'w');
-            fputcsv($handle, ['ID Licencia', 'Empresa', 'NIT', 'Plan', 'Fecha Inicio', 'Estado']);
-
-            $query = DB::table('venta_licencias as vl')
-                ->join('empresa as e', 'vl.id_empresa', '=', 'e.id_empresa')
-                ->join('tipo_licencia as tl', 'vl.id_tipo_licencia', '=', 'tl.id_tipo_licencia')
-                ->select(
-                    'vl.id_key',
-                    'e.nombre_empresa',
-                    'vl.id_empresa', // This is the NIT
-                    'tl.nombre_licencia',
-                    'vl.fecha_inicio',
-                    'vl.id_estado'
-                )
-                ->whereYear('vl.fecha_inicio', $year);
-
-            if ($month) {
-                $query->whereMonth('vl.fecha_inicio', $month);
-            }
-
-            $licencias = $query->cursor(); // Use cursor for large datasets
-
-            foreach ($licencias as $licencia) {
-                $estado = '';
-                if ($licencia->id_estado == 3) {
-                    $estado = 'Activa';
-                } elseif ($licencia->id_estado == 1) {
-                    $estado = 'Pendiente';
-                } else {
-                    $estado = 'Inactiva';
-                }
-
-                fputcsv($handle, [
-                    $licencia->id_key,
-                    $licencia->nombre_empresa,
-                    $licencia->id_empresa,
-                    $licencia->nombre_licencia,
-                    $licencia->fecha_inicio,
-                    $estado
-                ]);
-            }
-
-            fclose($handle);
-        }, 200, $headers);
-    }
-
     public function buscarEmpresa($nit)
     {
         $empresa = Empresa::where('id_empresa', $nit)->first();
@@ -199,23 +122,37 @@ class DashboardController extends Controller
     public function storeEmpresa(Request $request)
     {
         $request->validate([
-            'id_empresa' => 'required|numeric|unique:empresa,id_empresa',
-            'nombre_empresa' => 'required|string|max:200',
+            'id_empresa'        => 'required|numeric|unique:empresa,id_empresa',
+            'nombre_empresa'    => 'required|string|max:200',
             'nombre_repre_legal' => 'required|string|max:100',
-            'telefono' => 'required|string|max:12',
-            'direccion' => 'required|string|max:150',
-            'correo' => 'required|email|max:100|unique:empresa,correo',
+            'cedula_repre'      => 'required|numeric|digits_between:7,11',
+            'telefono'          => 'required|string|max:12',
+            'direccion'         => 'required|string|max:150',
+            'correo'            => 'required|email|max:100|unique:empresa,correo',
+            'id_tipo_licencia'  => 'required|exists:tipo_licencia,id_tipo_licencia',
         ]);
 
-        Empresa::create([
+        $empresa = Empresa::create([
             'id_empresa' => $request->id_empresa,
             'nombre_empresa' => $request->nombre_empresa,
             'nombre_repre_legal' => $request->nombre_repre_legal,
+            'cedula_repre' => $request->cedula_repre,
             'telefono' => $request->telefono,
             'direccion' => $request->direccion,
             'correo' => $request->correo,
             'fecha_creacion' => now(),
             'id_estado' => 1
+        ]);
+
+        // Crear solicitud automáticamente, marcada como "Vista" (id_estado=5)
+        // Sin comprobante de pago (manual), pero con el tipo de licencia seleccionado
+        SolicitudCompra::create([
+            'nit_empresa'      => $empresa->id_empresa,
+            'comprobante_pago' => null,
+            'id_tipo_licencia' => $request->id_tipo_licencia,
+            'id_estado'        => 5, // 5 = Vista
+            'fecha_solicitud'  => now(),
+            'fecha_revision'   => now(),
         ]);
 
         return back()->with('success', 'Empresa creada exitosamente.');

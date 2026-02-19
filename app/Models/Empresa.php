@@ -36,4 +36,9 @@ class Empresa extends Model
     {
         return $this->belongsTo(Estado::class, 'id_estado', 'id_estado');
     }
+
+    public function licencia()
+    {
+        return $this->hasOne(VentaLicencias::class, 'id_empresa', 'id_empresa')->latest('fecha_inicio');
+    }
 }

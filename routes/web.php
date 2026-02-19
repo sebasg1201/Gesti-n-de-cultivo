@@ -66,6 +66,8 @@ Route::middleware(['auth:superadmin'])->group(function () {
 
     Route::get('/reportes', [App\Http\Controllers\ReporteController::class, 'index'])->name('reportes.index');
 
+    Route::get('/SuperAdmin/reporte/excel', [EmpresaController::class, 'generarExcel'])->name('SuperAdmin.reporte.excel');
+    Route::get('/SuperAdmin/reporte', [EmpresaController::class, 'generarReporte'])->name('SuperAdmin.reporte');
     Route::resource('SuperAdmin', EmpresaController::class);
     Route::put('SuperAdmin/{id}/activar', [EmpresaController::class, 'activar'])->name('SuperAdmin.activar');
 });

@@ -100,7 +100,7 @@
 
                         <!-- Botón Sidebar -->
                         <button onclick="toggleSidebar()" class="p-3 rounded-xl bg-white/10 hover:bg-white/20 
-                       backdrop-blur-md transition-all duration-200">
+                       backdrop-blur-md transition-all duration-200 cursor-pointer">
 
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24"
                                 stroke="currentColor">
