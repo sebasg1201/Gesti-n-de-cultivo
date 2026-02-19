@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Empresa;
 use App\Models\Estado;
+use App\Models\TipoLicencia;
 use Illuminate\Http\Request;
 
 class EmpresaController extends Controller
@@ -44,9 +45,35 @@ class EmpresaController extends Controller
         ];
 
         $allEmpresas = Empresa::select('id_empresa', 'nombre_empresa')->get();
+        $tiposLicencia = TipoLicencia::all();
 
-        return view('SuperAdmin.index', compact('empresas', 'stats', 'allEmpresas'));
+        return view('SuperAdmin.index', compact('empresas', 'stats', 'allEmpresas', 'tiposLicencia'));
     }
+    public function update(Request $request, $id)
+    {
+        $empresa = Empresa::findOrFail($id);
+
+        $request->validate([
+            'nombre_empresa'    => 'required|string|max:200',
+            'nombre_repre_legal' => 'required|string|max:100',
+            'cedula_repre'      => 'required|numeric|digits_between:7,11',
+            'telefono'          => 'required|string|max:12',
+            'direccion'         => 'required|string|max:150',
+            'correo'            => 'required|email|max:100|unique:empresa,correo,' . $id . ',id_empresa',
+        ]);
+
+        $empresa->update([
+            'nombre_empresa'    => $request->nombre_empresa,
+            'nombre_repre_legal' => $request->nombre_repre_legal,
+            'cedula_repre'      => $request->cedula_repre,
+            'telefono'          => $request->telefono,
+            'direccion'         => $request->direccion,
+            'correo'            => $request->correo,
+        ]);
+
+        return back()->with('success', 'Empresa actualizada exitosamente.');
+    }
+
     public function activar($id)
     {
         $empresa = Empresa::findOrFail($id);
@@ -152,7 +179,7 @@ class EmpresaController extends Controller
         $nombreMes = \Carbon\Carbon::create()->month($mes)->locale('es')->monthName;
         $nombreMes = ucfirst($nombreMes);
 
-        $empresas = Empresa::with(['licencia.tipoLicencia', 'estado'])
+        $empresas = Empresa::with(['estado'])
             ->whereMonth('fecha_creacion', $mes)
             ->whereYear('fecha_creacion', $year)
             ->get();
@@ -172,29 +199,21 @@ class EmpresaController extends Controller
             fputs($file, "\xEF\xBB\xBF");
 
             // Header Row
-            fputcsv($file, ['ID Licencia', 'Empresa', 'NIT', 'Plan', 'Fecha Inicio', 'Estado']);
+            fputcsv($file, ['Empresa', 'NIT', 'Representante', 'Correo', 'Teléfono', 'Estado']);
 
             foreach ($empresas as $empresa) {
-                // Determine Plan and License ID
-                $plan = 'N/A';
-                $licenciaId = 'N/A';
-                $fechaInicio = 'N/A';
-
-                if ($empresa->licencia) {
-                    $fechaInicio = $empresa->licencia->fecha_inicio;
-                    $licenciaId = $empresa->licencia->id_key ?? 'N/A';
-                    if ($empresa->licencia->tipoLicencia) {
-                        $plan = $empresa->licencia->tipoLicencia->nombre;
-                    }
+                $estado = 'Desconocido';
+                if ($empresa->estado) {
+                    $estado = $empresa->estado->nombre_estado; // Assuming relationship is loaded
                 }
 
                 fputcsv($file, [
-                    $licenciaId,
                     $empresa->nombre_empresa,
-                    $empresa->id_empresa,
-                    $plan,
-                    $fechaInicio,
-                    $empresa->estado->nombre ?? $empresa->id_estado // Fallback to ID if name not found/loaded
+                    $empresa->id_empresa, // NIT
+                    $empresa->nombre_repre_legal,
+                    $empresa->correo,
+                    $empresa->telefono,
+                    $estado
                 ]);
             }
 

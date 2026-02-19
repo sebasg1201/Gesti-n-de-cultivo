@@ -50,62 +50,76 @@ class DashboardController extends Controller
         ));
     }
 
-public function buscarEmpresa($nit)
-{
-    $empresa = Empresa::where('id_empresa', $nit)->first();
+    public function buscarEmpresa($nit)
+    {
+        $empresa = Empresa::where('id_empresa', $nit)->first();
 
-    if (!$empresa) {
-        return response()->json(null);
-    }
+        if (!$empresa) {
+            return response()->json(null);
+        }
 
-    // Buscar última licencia asignada a la empresa
-    $ultimaLicencia = VentaLicencias::where('id_empresa', $nit)
-        ->latest('fecha_inicio')
-        ->first();
-
-    $idTipoLicencia = $ultimaLicencia->id_tipo_licencia ?? null;
-
-    // Si no tiene historial de licencias, buscamos si tiene una solicitud reciente
-    if (!$idTipoLicencia) {
-        $solicitudReciente = SolicitudCompra::where('nit_empresa', $nit)
-            ->latest('fecha_solicitud')
+        // Buscar última licencia asignada a la empresa
+        $ultimaLicencia = VentaLicencias::where('id_empresa', $nit)
+            ->latest('fecha_inicio')
             ->first();
-        
-        $idTipoLicencia = $solicitudReciente->id_tipo_licencia ?? null;
-    }
 
-    return response()->json([
-        'id_empresa' => $empresa->id_empresa,
-        'nombre_empresa' => $empresa->nombre_empresa,
-        'nombre_repre_legal' => $empresa->nombre_repre_legal,
-        'telefono' => $empresa->telefono,
-        'direccion' => $empresa->direccion,
-        'correo' => $empresa->correo,
-        'id_tipo_licencia' => $idTipoLicencia
-    ]);
-}
+        $idTipoLicencia = $ultimaLicencia->id_tipo_licencia ?? null;
+
+        // Si no tiene historial de licencias, buscamos si tiene una solicitud reciente
+        if (!$idTipoLicencia) {
+            $solicitudReciente = SolicitudCompra::where('nit_empresa', $nit)
+                ->latest('fecha_solicitud')
+                ->first();
+
+            $idTipoLicencia = $solicitudReciente->id_tipo_licencia ?? null;
+        }
+
+        return response()->json([
+            'id_empresa' => $empresa->id_empresa,
+            'nombre_empresa' => $empresa->nombre_empresa,
+            'nombre_repre_legal' => $empresa->nombre_repre_legal,
+            'telefono' => $empresa->telefono,
+            'direccion' => $empresa->direccion,
+            'correo' => $empresa->correo,
+            'id_tipo_licencia' => $idTipoLicencia
+        ]);
+    }
 
 
     public function storeEmpresa(Request $request)
     {
         $request->validate([
-            'id_empresa' => 'required|numeric|unique:empresa,id_empresa',
-            'nombre_empresa' => 'required|string|max:200',
+            'id_empresa'        => 'required|numeric|unique:empresa,id_empresa',
+            'nombre_empresa'    => 'required|string|max:200',
             'nombre_repre_legal' => 'required|string|max:100',
-            'telefono' => 'required|string|max:12',
-            'direccion' => 'required|string|max:150',
-            'correo' => 'required|email|max:100|unique:empresa,correo',
+            'cedula_repre'      => 'required|numeric|digits_between:7,11',
+            'telefono'          => 'required|string|max:12',
+            'direccion'         => 'required|string|max:150',
+            'correo'            => 'required|email|max:100|unique:empresa,correo',
+            'id_tipo_licencia'  => 'required|exists:tipo_licencia,id_tipo_licencia',
         ]);
 
-        Empresa::create([
+        $empresa = Empresa::create([
             'id_empresa' => $request->id_empresa,
             'nombre_empresa' => $request->nombre_empresa,
             'nombre_repre_legal' => $request->nombre_repre_legal,
+            'cedula_repre' => $request->cedula_repre,
             'telefono' => $request->telefono,
             'direccion' => $request->direccion,
             'correo' => $request->correo,
             'fecha_creacion' => now(),
             'id_estado' => 1
+        ]);
+
+        // Crear solicitud automáticamente, marcada como "Vista" (id_estado=5)
+        // Sin comprobante de pago (manual), pero con el tipo de licencia seleccionado
+        SolicitudCompra::create([
+            'nit_empresa'      => $empresa->id_empresa,
+            'comprobante_pago' => null,
+            'id_tipo_licencia' => $request->id_tipo_licencia,
+            'id_estado'        => 5, // 5 = Vista
+            'fecha_solicitud'  => now(),
+            'fecha_revision'   => now(),
         ]);
 
         return back()->with('success', 'Empresa creada exitosamente.');
