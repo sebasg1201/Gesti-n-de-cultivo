@@ -42,34 +42,32 @@ class SolicitudCompraController extends Controller
             return redirect()->back()->with('error', 'Solicitud no encontrada.');
         }
 
-        // Eliminar empresa asociada si existe
-        // Nota: Asegúrate de que esto es lo que quieres. Borrar la solicitud borra la empresa?
-        // El usuario pidió: "quiero agregar un boton que me elimine los datosde esa empresa como la solicitud de compra"
-        // Así que sí, borramos ambos.
-        if ($solicitud->nit_empresa) {
-            $empresa = Empresa::find($solicitud->nit_empresa);
-            if ($empresa) {
-                // Si hay otras dependencias (FKs) en empresa, esto podría fallar si no hay cascada.
-                // Asumimos que se quiere borrar.
-                try {
-                    $solicitud->delete(); // Borramos solicitud primero para liberar FK si no es cascada, o al reves. 
-                    // La FK está en solicitud apuntando a empresa.
-                    // Si borramos empresa, solicitud se borra (si cascade) o falla.
-                    // Si borramos solicitud, empresa queda.
-                    
-                    // Mejor logica:
-                    // 1. Borrar solicitud.
-                    // 2. Borrar empresa.
-                    
-                    $empresa->delete();
-                } catch (\Exception $e) {
-                     return redirect()->back()->with('error', 'Error al eliminar: ' . $e->getMessage());
-                }
-            } else {
-                 $solicitud->delete();
+        $nitEmpresa = $solicitud->nit_empresa;
+
+        try {
+            // Desactivar FK checks para garantizar borrado sin restricciones
+            \DB::statement('SET FOREIGN_KEY_CHECKS=0');
+
+            // 1. Borrar TODAS las solicitudes del NIT
+            \DB::table('solicitud_compra')->where('nit_empresa', $nitEmpresa)->delete();
+
+            if ($nitEmpresa) {
+                // 2. Borrar usuarios de la empresa
+                \DB::table('usuario')->where('id_empresa', $nitEmpresa)->delete();
+
+                // 3. Borrar licencias de la empresa
+                \DB::table('venta_licencias')->where('id_empresa', $nitEmpresa)->delete();
+
+                // 4. Borrar la empresa directamente
+                \DB::table('empresa')->where('id_empresa', $nitEmpresa)->delete();
             }
-        } else {
-             $solicitud->delete();
+
+            // Reactivar FK checks
+            \DB::statement('SET FOREIGN_KEY_CHECKS=1');
+
+        } catch (\Exception $e) {
+            \DB::statement('SET FOREIGN_KEY_CHECKS=1'); // Siempre reactivar
+            return redirect()->back()->with('error', 'Error al eliminar: ' . $e->getMessage());
         }
 
         return redirect()->back()->with('success', 'Solicitud y empresa eliminadas correctamente.');
@@ -124,12 +122,12 @@ class SolicitudCompraController extends Controller
                 'direccion' => $request->direccion,
                 'fecha_creacion' => now(), // O mantener la original si solo se actualiza
                 'id_estado' => 1 // Asumimos estado 'activa' o 'pendiente' según lógica de negocio. 1=pendiente? Revisando SQL dump: 1=pendiente, 3=activa.
-                                 // Si es nueva empresa registrandose, quizás debería ser 1 (pendiente) o 3 (activa).
-                                 // El dump muesta id_estado 1 y 3. Usaremos 1 (pendiente) o lo que el usuario prefiera.
-                                 // Viendo el dump, empresas creadas tienen estado 1 o 3.
-                                 // Vamos a poner 3 (activa) por defecto para que puedan operar, o 1 si requiere aprobación.
-                                 // Dejaré 1 (pendiente) para ser conservador, o 3 si la empresa ya "existe".
-                                 // Mejor: 'id_estado' => 1 (pendiente) si se crea.
+                // Si es nueva empresa registrandose, quizás debería ser 1 (pendiente) o 3 (activa).
+                // El dump muesta id_estado 1 y 3. Usaremos 1 (pendiente) o lo que el usuario prefiera.
+                // Viendo el dump, empresas creadas tienen estado 1 o 3.
+                // Vamos a poner 3 (activa) por defecto para que puedan operar, o 1 si requiere aprobación.
+                // Dejaré 1 (pendiente) para ser conservador, o 3 si la empresa ya "existe".
+                // Mejor: 'id_estado' => 1 (pendiente) si se crea.
             ]
         );
 
