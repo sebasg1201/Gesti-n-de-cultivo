@@ -70,7 +70,7 @@ class DashboardController extends Controller
                 $query->where('id_estado', 2);
         }
 
-        $licencasTable = $query->orderBy('fecha_inicio', 'desc')->paginate(10);
+        $licencasTable = $query->paginate(3);
 
 
         return view('SuperAdmin.dashboard', compact(

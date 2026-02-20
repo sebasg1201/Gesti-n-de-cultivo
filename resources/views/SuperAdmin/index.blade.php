@@ -233,9 +233,9 @@
         </tbody>
     </table>
 
-    <div class="p-4">
-        {{ $empresas->links('pagination::simple-tailwind') }}
-    </div>
+<div class="flex justify-center mt-6">
+    {{ $empresas->withQueryString()->links() }}
+</div>
 </div>
 
 

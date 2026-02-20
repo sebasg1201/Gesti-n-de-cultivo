@@ -221,8 +221,8 @@
                         </table>
                     </div>
 
-                    <div class="p-4 border-t border-gray-100 bg-gray-50">
-                        {{ $licencasTable->appends(request()->query())->links() }}
+                    <div class="flex justify-center mt-6">
+                        {{ $licencasTable->withQueryString()->links() }}
                     </div>
                 </div>
 

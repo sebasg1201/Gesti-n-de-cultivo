@@ -96,6 +96,9 @@
             </table>
         </div>
     </div>
+    <div class="flex justify-center mt-6">
+    {{ $solicitudes->withQueryString()->links() }}
+</div>
 
 </div>
 

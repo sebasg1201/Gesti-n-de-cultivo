@@ -14,7 +14,7 @@ class SolicitudCompraController extends Controller
     {
         $solicitudes = SolicitudCompra::with(['tipoLicencia', 'estado', 'superAdmin', 'empresa'])
             ->orderBy('fecha_solicitud', 'desc')
-            ->get();
+            ->paginate(3);
 
         return view('superadmin.solicitudes', compact('solicitudes'));
     }
