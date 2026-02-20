@@ -18,7 +18,7 @@ class EmpresaController extends Controller
             $query->where(function ($q) use ($search) {
                 $q->where('nombre_empresa', 'like', "%{$search}%")
                     ->orWhere('nombre_repre_legal', 'like', "%{$search}%")
-                    ->orWhere('id_empresa', 'like', "%{$search}%"); // Assuming NIT is id_empresa or similar
+                    ->orWhere('id_empresa', 'like', "%{$search}%");
             });
         }
 
@@ -34,13 +34,12 @@ class EmpresaController extends Controller
             }
         }
 
-        // Changed pagination to 4 as requested
         $empresas = $query->paginate(3);
 
         // Calculate stats
         $stats = [
-            'nuevas' => Empresa::where('id_estado', 1)->count(), // Assuming 1 is Pending/New
-            'suspendidas' => Empresa::where('id_estado', 2)->count(), // Assuming 2 is Suspended
+            'nuevas' => Empresa::where('id_estado', 1)->count(),
+            'suspendidas' => Empresa::where('id_estado', 2)->count(),
             'activaciones' => Empresa::where('id_estado', 3)->count(),
         ];
 
@@ -49,26 +48,27 @@ class EmpresaController extends Controller
 
         return view('SuperAdmin.index', compact('empresas', 'stats', 'allEmpresas', 'tiposLicencia'));
     }
+
     public function update(Request $request, $id)
     {
         $empresa = Empresa::findOrFail($id);
 
         $request->validate([
-            'nombre_empresa'    => 'required|string|max:200',
+            'nombre_empresa' => 'required|string|max:200',
             'nombre_repre_legal' => 'required|string|max:100',
-            'cedula_repre'      => 'required|numeric|digits_between:7,11',
-            'telefono'          => 'required|string|max:12',
-            'direccion'         => 'required|string|max:150',
-            'correo'            => 'required|email|max:100|unique:empresa,correo,' . $id . ',id_empresa',
+            'cedula_repre' => 'required|numeric|digits_between:7,11',
+            'telefono' => 'required|string|max:12',
+            'direccion' => 'required|string|max:150',
+            'correo' => 'required|email|max:100|unique:empresa,correo,' . $id . ',id_empresa',
         ]);
 
         $empresa->update([
-            'nombre_empresa'    => $request->nombre_empresa,
+            'nombre_empresa' => $request->nombre_empresa,
             'nombre_repre_legal' => $request->nombre_repre_legal,
-            'cedula_repre'      => $request->cedula_repre,
-            'telefono'          => $request->telefono,
-            'direccion'         => $request->direccion,
-            'correo'            => $request->correo,
+            'cedula_repre' => $request->cedula_repre,
+            'telefono' => $request->telefono,
+            'direccion' => $request->direccion,
+            'correo' => $request->correo,
         ]);
 
         return back()->with('success', 'Empresa actualizada exitosamente.');
@@ -78,7 +78,6 @@ class EmpresaController extends Controller
     {
         $empresa = Empresa::findOrFail($id);
 
-
         $empresa->id_estado = 3; // Activa
         $empresa->save();
 
@@ -87,11 +86,10 @@ class EmpresaController extends Controller
             ->first();
 
         if ($licencia) {
-            $licencia->id_estado = 3; // 3 = Activa (Synced with Company)
-            $licencia->fecha_inicio = now(); // Reset start time
+            $licencia->id_estado = 3; // 3 = Activa
+            $licencia->fecha_inicio = now();
             $licencia->save();
         }
-
 
         \App\Models\Usuario::where('id_empresa', $id)->update(['id_estado' => 3]);
 
@@ -131,12 +129,12 @@ class EmpresaController extends Controller
             foreach ($empresas as $empresa) {
                 $estado = 'Desconocido';
                 if ($empresa->estado) {
-                    $estado = $empresa->estado->nombre_estado; // Assuming relationship is loaded
+                    $estado = $empresa->estado->nombre_estado;
                 }
 
                 fputcsv($file, [
                     $empresa->nombre_empresa,
-                    $empresa->id_empresa, // NIT
+                    $empresa->id_empresa,
                     $empresa->nombre_repre_legal,
                     $empresa->correo,
                     $empresa->telefono,

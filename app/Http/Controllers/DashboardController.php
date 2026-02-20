@@ -100,7 +100,7 @@ class DashboardController extends Controller
 
         // Si no tiene historial de licencias, buscamos si tiene una solicitud reciente
         if (!$idTipoLicencia) {
-            $solicitudReciente = SolicitudCompra::where('nit_empresa', $nit)
+            $solicitudReciente = SolicitudCompra::where('id_empresa', $nit)
                 ->latest('fecha_solicitud')
                 ->first();
 
@@ -122,14 +122,14 @@ class DashboardController extends Controller
     public function storeEmpresa(Request $request)
     {
         $request->validate([
-            'id_empresa'        => 'required|numeric|unique:empresa,id_empresa',
-            'nombre_empresa'    => 'required|string|max:200',
+            'id_empresa' => 'required|numeric|unique:empresa,id_empresa',
+            'nombre_empresa' => 'required|string|max:200',
             'nombre_repre_legal' => 'required|string|max:100',
-            'cedula_repre'      => 'required|numeric|digits_between:7,11',
-            'telefono'          => 'required|string|max:12',
-            'direccion'         => 'required|string|max:150',
-            'correo'            => 'required|email|max:100|unique:empresa,correo',
-            'id_tipo_licencia'  => 'required|exists:tipo_licencia,id_tipo_licencia',
+            'cedula_repre' => 'required|numeric|digits_between:7,11',
+            'telefono' => 'required|string|max:12',
+            'direccion' => 'required|string|max:150',
+            'correo' => 'required|email|max:100|unique:empresa,correo',
+            'id_tipo_licencia' => 'required|exists:tipo_licencia,id_tipo_licencia',
         ]);
 
         $empresa = Empresa::create([
@@ -147,12 +147,12 @@ class DashboardController extends Controller
         // Crear solicitud automáticamente, marcada como "Vista" (id_estado=5)
         // Sin comprobante de pago (manual), pero con el tipo de licencia seleccionado
         SolicitudCompra::create([
-            'nit_empresa'      => $empresa->id_empresa,
+            'id_empresa' => $empresa->id_empresa,
             'comprobante_pago' => null,
             'id_tipo_licencia' => $request->id_tipo_licencia,
-            'id_estado'        => 5, // 5 = Vista
-            'fecha_solicitud'  => now(),
-            'fecha_revision'   => now(),
+            'id_estado' => 5, // 5 = Vista
+            'fecha_solicitud' => now(),
+            'fecha_revision' => now(),
         ]);
 
         return back()->with('success', 'Empresa creada exitosamente.');

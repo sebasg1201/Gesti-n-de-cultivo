@@ -14,7 +14,7 @@ class SolicitudCompra extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'nit_empresa',
+        'id_empresa',
         'comprobante_pago',
         'id_super_admin',
         'id_estado',
@@ -41,6 +41,6 @@ class SolicitudCompra extends Model
     // Relación con empresa
     public function empresa()
     {
-        return $this->belongsTo(Empresa::class, 'nit_empresa', 'id_empresa');
+        return $this->belongsTo(Empresa::class, 'id_empresa', 'id_empresa');
     }
 }
