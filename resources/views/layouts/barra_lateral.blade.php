@@ -64,11 +64,22 @@
                     <span class="font-medium">Tipo de Licencias</span>
                 </a>
 
+                @php
+                    $nuevasSolicitudes = \App\Models\SolicitudCompra::where('id_estado', 1)->count();
+                @endphp
                 <a href="{{ route('solicitudes.index') }}"
-                    class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {{ active('solicitudes.*') }}">
-                    <div class="w-1.5 h-6 bg-emerald-300 rounded-full opacity-0 group-hover:opacity-100 transition-all">
+                    class="group flex justify-between items-center px-4 py-3 rounded-xl transition-all duration-200 {{ active('solicitudes.*') }}">
+                    <div class="flex items-center gap-3">
+                        <div
+                            class="w-1.5 h-6 bg-emerald-300 rounded-full opacity-0 group-hover:opacity-100 transition-all">
+                        </div>
+                        <span class="font-medium">Solicitudes</span>
                     </div>
-                    <span class="font-medium">Solicitudes</span>
+                    @if($nuevasSolicitudes > 0 && !request()->routeIs('solicitudes.*'))
+                        <span class="bg-green-500 text-white text-xs font-bold px-2 py-0.5 rounded-full shadow-md">
+                            {{ $nuevasSolicitudes }}
+                        </span>
+                    @endif
                 </a>
 
             </nav>
@@ -251,7 +262,7 @@
             }
         }
     </script>
-@stack('scripts')
+    @stack('scripts')
 </body>
 
 </html>

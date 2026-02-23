@@ -34,6 +34,45 @@ class SolicitudCompraController extends Controller
         return redirect()->back()->with('error', 'Solicitud no encontrada.');
     }
 
+    public function aprobar($id)
+    {
+        $solicitud = SolicitudCompra::find($id);
+
+        if (!$solicitud) {
+            return redirect()->back()->with('error', 'Solicitud no encontrada.');
+        }
+
+        // 1. Actualizar estado de la solicitud a Aprobado (5)
+        $solicitud->id_estado = 5;
+        $solicitud->fecha_revision = now();
+        $solicitud->save();
+
+        // 2. Activar la empresa (3)
+        $idEmpresa = $solicitud->id_empresa;
+        if ($idEmpresa) {
+            $empresa = Empresa::find($idEmpresa);
+            if ($empresa) {
+                $empresa->id_estado = 3;
+                $empresa->save();
+
+                // 3. Activar licencias y usuarios de la empresa
+                $licencia = \App\Models\VentaLicencias::where('id_empresa', $idEmpresa)
+                    ->orderBy('fecha_inicio', 'desc')
+                    ->first();
+
+                if ($licencia) {
+                    $licencia->id_estado = 3; // Activa
+                    $licencia->fecha_inicio = now();
+                    $licencia->save();
+                }
+
+                \App\Models\Usuario::where('id_empresa', $idEmpresa)->update(['id_estado' => 3]);
+            }
+        }
+
+        return redirect()->back()->with('success', 'Solicitud aprobada y empresa activada exitosamente.');
+    }
+
     public function destroy($id)
     {
         $solicitud = SolicitudCompra::find($id);

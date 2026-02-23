@@ -12,7 +12,7 @@
             <div class="flex items-center gap-2">
                 <!-- REPORT BUTTON -->
                 <button onclick="document.getElementById('exportModal').classList.remove('hidden')"
-                    class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 shadow-sm transition">
+                    class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 shadow-sm transition cursor-pointer">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="w-4 h-4">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -195,7 +195,7 @@
                                         <td class="px-6 py-4 text-right">
                                             <button data-licencia="{{ json_encode($licencia) }}"
                                                 onclick="openEditModal(JSON.parse(this.getAttribute('data-licencia')))"
-                                                class="text-gray-400 hover:text-green-600 transition-colors p-2 rounded-full hover:bg-green-50">
+                                                class="text-gray-400 hover:text-green-600 transition-colors p-2 rounded-full hover:bg-green-50 cursor-pointer">
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                     stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
                                                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -347,10 +347,10 @@
                         </div>
                         <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
                             <button type="submit"
-                                class="inline-flex w-full justify-center rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 sm:ml-3 sm:w-auto">Guardar
+                                class="inline-flex w-full justify-center rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 sm:ml-3 sm:w-auto cursor-pointer">Guardar
                                 Cambios</button>
                             <button type="button" onclick="document.getElementById('editModal').classList.add('hidden')"
-                                class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">Cancelar</button>
+                                class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto cursor-pointer">Cancelar</button>
                         </div>
                     </form>
                 </div>

@@ -3,7 +3,7 @@
 @section('content')
 
     <div class="flex justify-between items-center mb-6">
-        <h1 class="text-2xl font-bold">Administración de Empresas</h1>
+        <h1 class="text-2xl font-bold">Gestión De Empresas</h1>
 
         <div class="flex items-center gap-4">
             <!-- EXCEL BUTTON -->
@@ -39,11 +39,14 @@
     </div>
 
     <!-- SEARCH AND FILTER -->
-    <div class="bg-white p-4 rounded shadow mb-6 relative z-10">
-        <form action="{{ route('SuperAdmin.index') }}" method="GET">
-            <div class="flex flex-col md:flex-row gap-4 mb-4">
-                <div class="relative w-full md:w-1/2">
-                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+    <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 mb-6 relative z-10">
+        <form action="{{ route('SuperAdmin.index') }}" method="GET"
+            class="flex flex-col lg:flex-row justify-between items-center gap-4">
+
+            <!-- CONTROLES DE BÚSQUEDA -->
+            <div class="flex w-full lg:w-1/2 gap-3">
+                <div class="relative w-full">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                         <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none"
                             viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -51,32 +54,35 @@
                         </svg>
                     </div>
                     <input type="search" name="search" value="{{ request('search') }}"
-                        class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-green-500 focus:border-green-500 sm:text-sm"
-                        placeholder="Buscar por Nombre de Empresa o NIT...">
+                        class="block w-full pl-11 pr-4 py-2.5 border border-gray-300 rounded-lg leading-5 bg-gray-50 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 sm:text-sm transition-colors text-gray-700"
+                        placeholder="Buscar por Empresa o NIT...">
                 </div>
                 <button type="submit"
-                    class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded transition">
+                    class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2.5 px-6 rounded-lg transition-colors flex items-center gap-2 shadow-sm whitespace-nowrap cursor-pointer">
                     Buscar
                 </button>
             </div>
-            <div class="flex flex-wrap gap-2">
+
+            <!-- FILTROS DE ESTADO -->
+            <div class="flex flex-wrap items-center gap-2 w-full lg:w-auto justify-end">
                 <a href="{{ route('SuperAdmin.index', ['search' => request('search')]) }}"
-                    class="px-4 py-2 text-sm font-medium rounded-lg {{ !request('status') ? 'bg-gray-400 text-white' : 'bg-white text-gray-500 border border-gray-200 hover:bg-gray-100' }}">
+                    class="px-4 py-2 text-sm font-medium rounded-lg transition-all {{ !request('status') ? 'bg-gray-800 text-white shadow-md' : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-gray-900 border border-transparent' }}">
                     Todas
                 </a>
                 <a href="{{ route('SuperAdmin.index', ['status' => 'pendiente', 'search' => request('search')]) }}"
-                    class="px-4 py-2 text-sm font-medium rounded-lg {{ request('status') == 'pendiente' ? 'bg-yellow-500 text-white' : 'bg-yellow-50 text-yellow-700 border border-yellow-200 hover:bg-yellow-100' }}">
+                    class="px-4 py-2 text-sm font-medium rounded-lg transition-all {{ request('status') == 'pendiente' ? 'bg-yellow-500 text-white shadow-md hover:bg-yellow-600' : 'bg-yellow-50 text-yellow-700 border border-yellow-200 hover:bg-yellow-100 hover:text-yellow-800' }}">
                     Pendientes
                 </a>
                 <a href="{{ route('SuperAdmin.index', ['status' => 'activa', 'search' => request('search')]) }}"
-                    class="px-4 py-2 text-sm font-medium rounded-lg {{ request('status') == 'activa' ? 'bg-green-500 text-white' : 'bg-green-50 text-green-700 border border-green-200 hover:bg-green-100' }}">
+                    class="px-4 py-2 text-sm font-medium rounded-lg transition-all {{ request('status') == 'activa' ? 'bg-green-500 text-white shadow-md hover:bg-green-600' : 'bg-green-50 text-green-700 border border-green-200 hover:bg-green-100 hover:text-green-800' }}">
                     Activas
                 </a>
                 <a href="{{ route('SuperAdmin.index', ['status' => 'bloqueada', 'search' => request('search')]) }}"
-                    class="px-4 py-2 text-sm font-medium rounded-lg {{ request('status') == 'bloqueada' ? 'bg-red-500 text-white' : 'bg-red-50 text-red-700 border border-red-200 hover:bg-red-100' }}">
+                    class="px-4 py-2 text-sm font-medium rounded-lg transition-all {{ request('status') == 'bloqueada' ? 'bg-red-500 text-white shadow-md hover:bg-red-600' : 'bg-red-50 text-red-700 border border-red-200 hover:bg-red-100 hover:text-red-800' }}">
                     Bloqueadas
                 </a>
             </div>
+
         </form>
     </div>
 
@@ -155,10 +161,10 @@
                                         @csrf
                                         @method('PUT')
                                         <button type="submit"
-                                            class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3 rounded text-xs flex items-center gap-1"
+                                            class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3 rounded text-xs flex items-center gap-1 cursor-pointer"
                                             onclick="return confirm('¿Estás seguro de activar esta empresa?')">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                                                stroke-width="1.5" stroke="currentColor" class="w-3 h-3">
                                                 <path stroke-linecap="round" stroke-linejoin="round"
                                                     d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" />
                                             </svg>
@@ -169,7 +175,7 @@
                                     <button disabled
                                         class="bg-gray-300 text-gray-500 font-bold py-1 px-3 rounded text-xs flex items-center gap-1 cursor-not-allowed">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                            stroke="currentColor" class="w-4 h-4">
+                                            stroke="currentColor" class="w-3 h-3">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
                                         </svg>
                                         Activa
@@ -181,7 +187,7 @@
                                     onclick="openModal(JSON.parse(this.getAttribute('data-empresa')))"
                                     class="bg-green-600 hover:bg-green-700 text-white font-bold py-1 px-3 rounded text-xs flex items-center gap-1 cursor-pointer">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                        stroke="currentColor" class="w-4 h-4">
+                                        stroke="currentColor" class="w-3 h-3">
                                         <path stroke-linecap="round" stroke-linejoin="round"
                                             d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
                                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -195,7 +201,7 @@
                                     onclick="openEditModal(JSON.parse(this.getAttribute('data-empresa')))"
                                     class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-1 px-3 rounded text-xs flex items-center gap-1 cursor-pointer">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                        stroke="currentColor" class="w-4 h-4">
+                                        stroke="currentColor" class="w-3 h-3">
                                         <path stroke-linecap="round" stroke-linejoin="round"
                                             d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
                                     </svg>
@@ -433,7 +439,7 @@
             <div class="bg-gray-50 px-4 py-3 border-b flex justify-between items-center">
                 <h3 class="text-lg leading-6 font-medium text-gray-900">Registrar Nueva Empresa</h3>
                 <button onclick="closeCreateModal()"
-                    class="h-6 w-6 flex items-center justify-center text-gray-400 hover:text-gray-500">
+                    class="h-6 w-6 flex items-center justify-center text-gray-400 hover:text-gray-500 cursor-pointer">
                     <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M6 18L18 6M6 6l12 12" />
@@ -541,7 +547,7 @@
 
                         <div class="col-span-2 flex justify-end mt-4">
                             <button type="submit"
-                                class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg transition transform hover:scale-105">
+                                class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg transition transform hover:scale-105 cursor-pointer">
                                 Guardar Empresa
                             </button>
                         </div>
@@ -565,7 +571,7 @@
             <div class="bg-gray-50 px-4 py-3 border-b flex justify-between items-center">
                 <h3 class="text-lg leading-2 font-medium text-gray-900">Asignar Administrador</h3>
                 <button onclick="closeAdminModal()"
-                    class="h-6 w-6 flex items-center justify-center text-gray-400 hover:text-gray-500">
+                    class="h-6 w-6 flex items-center justify-center text-gray-400 hover:text-gray-500 cursor-pointer">
                     <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M6 18L18 6M6 6l12 12" />
@@ -657,7 +663,7 @@
 
                         <div class="col-span-2 flex justify-end mt-4">
                             <button type="submit"
-                                class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg transition transform hover:scale-105">
+                                class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg transition transform hover:scale-105 cursor-pointer">
                                 Crear Administrador
                             </button>
                         </div>
@@ -761,13 +767,8 @@
         document.getElementById('createModal').classList.add('hidden');
         document.body.style.overflow = 'auto';
 
-        // Clear forms and unlock
+        // Clear forms
         document.getElementById('formEmpresa').reset();
-        unlock('create_nombre');
-        unlock('create_representante');
-        unlock('create_telefono');
-        unlock('create_correo');
-        unlock('create_direccion');
 
         // Clear any error states
         document.querySelectorAll('.border-red-500').forEach(el => {
@@ -828,67 +829,7 @@
         validateInput('admin_telefono', 'error_admin_telefono', regexNumber);
     });
 
-    // --- AUTO-FILL LOGIC ---
-    document.getElementById('create_nit').addEventListener('input', function () {
-        let nit = this.value;
-        if (nit.length < 3) return;
-
-        fetch(`/empresa/buscar/${nit}`)
-            .then(res => res.json())
-            .then(data => {
-                if (data && Object.keys(data).length > 0) {
-                    fillAndLock('create_nombre', data.nombre_empresa);
-                    fillAndLock('create_representante', data.nombre_repre_legal);
-                    fillAndLock('create_telefono', data.telefono);
-                    fillAndLock('create_correo', data.correo);
-                    fillAndLock('create_direccion', data.direccion);
-                } else {
-                    // Not found logic - keep unlocked
-                    unlock('create_nombre');
-                    unlock('create_representante');
-                    unlock('create_telefono');
-                    unlock('create_correo');
-                    unlock('create_direccion');
-                }
-            })
-            .catch(err => console.error(err));
-    });
-
-    // Handle manual clearing of NIT input
-    document.getElementById('create_nit').addEventListener('keyup', function () { // keyup needed to catch backspace to empty
-        if (this.value.length === 0) {
-            unlock('create_nombre');
-            unlock('create_representante');
-            unlock('create_telefono');
-            unlock('create_correo');
-            unlock('create_direccion');
-
-            // Clear values too
-            document.getElementById('create_nombre').value = '';
-            document.getElementById('create_representante').value = '';
-            document.getElementById('create_telefono').value = '';
-            document.getElementById('create_correo').value = '';
-            document.getElementById('create_direccion').value = '';
-        }
-    });
-
-    function fillAndLock(id, value) {
-        const el = document.getElementById(id);
-        if (el) {
-            el.value = value || '';
-            el.readOnly = true;
-            el.classList.add('bg-gray-100', 'cursor-not-allowed');
-        }
-    }
-
-    function unlock(id) {
-        const el = document.getElementById(id);
-        if (el) {
-            el.readOnly = false;
-            // el.value = ''; // Optional
-            el.classList.remove('bg-gray-100', 'cursor-not-allowed');
-        }
-    }
+    // Auto-fill logic removed as requested
 
     function openEditModal(empresa) {
         document.getElementById('edit_nombre').value = empresa.nombre_empresa || '';
