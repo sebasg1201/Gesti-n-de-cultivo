@@ -38,190 +38,27 @@
         </div>
     </div>
 
-<<<<<<< HEAD
-<!-- COMPANIES TABLE -->
-<div class="bg-white rounded shadow overflow-hidden">
-    <div class="p-4 border-b">
-        <h3 class="font-bold">Solicitudes de Acceso <span
-                class="bg-yellow-100 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">{{ $stats['nuevas'] }}
-                Pendientes</span></h3>
-    </div>
-
-    <table class="w-full text-left">
-        <thead class="bg-gray-50 text-xs uppercase text-gray-700">
-            <tr>
-                <th class="p-4">Empresa y NIT</th>
-                <th class="p-4">Propietario</th>
-                <th class="p-4">Fecha Registro</th>
-                <th class="p-4">Estado</th>
-                <th class="p-4">Accion</th>
-            </tr>
-        </thead>
-        <tbody class="divide-y divide-gray-200">
-            @forelse($empresas as $empresa)
-            <tr class="hover:bg-gray-50">
-                <td class="p-4">
-                    <div class="flex items-center gap-3">
-                        <div
-                            class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600 font-bold">
-                            {{ substr($empresa->nombre_empresa, 0, 2) }}
-                        </div>
-                        <div>
-                            <div class="font-bold text-gray-900">{{ $empresa->nombre_empresa }}</div>
-                            <div class="text-sm text-gray-500">NIT: {{ $empresa->id_empresa }}</div>
-                        </div>
-                    </div>
-                </td>
-                <td class="p-4">
-                    <div class="font-medium text-gray-900">{{ $empresa->nombre_repre_legal }}</div>
-                    <div class="text-sm text-gray-500">{{ $empresa->correo }}</div>
-                </td>
-                <td class="p-4">
-                    <div class="font-medium text-gray-900">
-                        {{ \Carbon\Carbon::parse($empresa->fecha_creacion)->format('d M, Y') }}
-                    </div>
-                    <div class="text-xs text-gray-500">
-                        {{ \Carbon\Carbon::parse($empresa->fecha_creacion)->locale('es')->diffForHumans() }}
-                    </div>
-                </td>
-                <td class="p-4">
-                    @if($empresa->estado)
-                    @php
-                    $color = match ($empresa->estado->id_estado) {
-                    1 => 'text-yellow-700 bg-yellow-100', // pendiente
-                    2 => 'text-red-700 bg-red-100', // bloqueada
-                    3 => 'text-green-700 bg-green-100', // activa
-                    default => 'text-gray-700 bg-gray-100',
-                    };
-                    @endphp
-
-                    <span class="px-2 py-1 font-semibold leading-tight rounded-full {{ $color }}">
-                        {{ ucfirst($empresa->estado->nombre_estado) }}
-                    </span>
-                    @else
-                    <span class="px-2 py-1 font-semibold leading-tight text-gray-700 bg-gray-100 rounded-full">
-                        Desconocido
-                    </span>
-                    @endif
-                </td>
-
-                <td class="p-4">
-                    <div class="flex gap-2">
-                        {{-- Botón Activar --}}
-                        @if($empresa->id_estado != 3)
-                        <form action="{{ route('SuperAdmin.activar', $empresa->id_empresa) }}" method="POST"
-                            class="inline">
-                            @csrf
-                            @method('PUT')
-                            <button type="submit"
-                                class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3 rounded text-xs flex items-center gap-1"
-                                onclick="return confirm('¿Estás seguro de activar esta empresa?')">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" />
-                                </svg>
-                                Activar Acceso
-                            </button>
-                        </form>
-                        @else
-                        <button disabled
-                            class="bg-gray-300 text-gray-500 font-bold py-1 px-3 rounded text-xs flex items-center gap-1 cursor-not-allowed">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor" class="w-4 h-4">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-                            </svg>
-                            Activa
-                        </button>
-                        @endif
-
-                        {{-- Botón Ver Detalles --}}
-                        <button type="button" data-empresa="{{ json_encode($empresa) }}"
-                            onclick="openModal(JSON.parse(this.getAttribute('data-empresa')))"
-                            class="bg-green-600 hover:bg-green-700 text-white font-bold py-1 px-3 rounded text-xs flex items-center gap-1 cursor-pointer">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor" class="w-4 h-4">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                            </svg>
-                            Ver Detalles
-                        </button>
-
-                        {{-- Botón Editar --}}
-                        <button type="button" data-empresa="{{ json_encode($empresa) }}"
-                            onclick="openEditModal(JSON.parse(this.getAttribute('data-empresa')))"
-                            class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-1 px-3 rounded text-xs flex items-center gap-1 cursor-pointer">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor" class="w-4 h-4">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
-                            </svg>
-                            Editar
-                        </button>
-                    </div>
-                    <!-- More actions could be added here -->
-                </td>
-            </tr>
-            @empty
-            <tr>
-                <td colspan="5" class="p-4 text-center text-gray-500">No se encontraron empresas.</td>
-            </tr>
-            @endforelse
-        </tbody>
-    </table>
-
-<div class="flex justify-center mt-6">
-    {{ $empresas->withQueryString()->links() }}
-</div>
-</div>
-
-
-<!-- DETAILS MODAL -->
-<div id="detailsModal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog"
-    aria-modal="true">
-    <!-- Background backdrop -->
-    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-
-        <div
-            class="relative z-10 inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl sm:my-8 sm:align-middle sm:max-w-lg w-full">
-            <div class="bg-gray-100 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                <div class="sm:flex sm:items-start">
-                    <div
-                        class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-green-100 sm:mx-0 sm:h-10 sm:w-10">
-                        <svg class="h-6 w-6 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+    <!-- SEARCH AND FILTER -->
+    <div class="bg-white p-4 rounded shadow mb-6 relative z-10">
+        <form action="{{ route('SuperAdmin.index') }}" method="GET">
+            <div class="flex flex-col md:flex-row gap-4 mb-4">
+                <div class="relative w-full md:w-1/2">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0Z" />
-=======
-    <!-- SEARCH & FILTERS -->
-    <div class="bg-white p-4 rounded shadow mb-6">
-        <div class="flex flex-col lg:flex-row justify-between items-center gap-4">
-            <form action="{{ route('SuperAdmin.index') }}" method="GET" class="flex gap-4 w-full lg:w-1/2">
-                @if(request('status'))
-                    <input type="hidden" name="status" value="{{ request('status') }}">
-                @endif
-                <div class="relative flex-grow">
-                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                        <svg class="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                            viewBox="0 0 20 20">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
->>>>>>> 52d9e2529c2b007bb5d70f6436482a8c5056dfa4
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                         </svg>
                     </div>
                     <input type="search" name="search" value="{{ request('search') }}"
-                        class="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-green-500 focus:border-green-500"
+                        class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-green-500 focus:border-green-500 sm:text-sm"
                         placeholder="Buscar por Nombre de Empresa o NIT...">
                 </div>
                 <button type="submit"
-                    class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded cursor-pointer">
+                    class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded transition">
                     Buscar
                 </button>
-            </form>
-
+            </div>
             <div class="flex flex-wrap gap-2">
                 <a href="{{ route('SuperAdmin.index', ['search' => request('search')]) }}"
                     class="px-4 py-2 text-sm font-medium rounded-lg {{ !request('status') ? 'bg-gray-400 text-white' : 'bg-white text-gray-500 border border-gray-200 hover:bg-gray-100' }}">
@@ -240,7 +77,7 @@
                     Bloqueadas
                 </a>
             </div>
-        </div>
+        </form>
     </div>
 
     <!-- COMPANIES TABLE -->
@@ -282,10 +119,10 @@
                         </td>
                         <td class="p-4">
                             <div class="font-medium text-gray-900">
-                                {{ \Carbon\Carbon::parse($empresa->fecha_creacion)->format('d M, Y') }}
+                                {{ \Carbon\Carbon::parse($empresa->fecha_creacion)->timezone('America/Bogota')->format('d M, Y') }}
                             </div>
                             <div class="text-xs text-gray-500">
-                                {{ \Carbon\Carbon::parse($empresa->fecha_creacion)->locale('es')->diffForHumans() }}
+                                {{ \Carbon\Carbon::parse($empresa->fecha_creacion)->timezone('America/Bogota')->locale('es')->diffForHumans() }}
                             </div>
                         </td>
                         <td class="p-4">
@@ -376,11 +213,10 @@
             </tbody>
         </table>
 
-        <div class="p-4">
-            {{ $empresas->links('pagination::simple-tailwind') }}
+        <div class="flex justify-center mt-6 p-4">
+            {{ $empresas->withQueryString()->links() }}
         </div>
     </div>
-
 
     <!-- DETAILS MODAL -->
     <div id="detailsModal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog"
@@ -413,7 +249,8 @@
                                     </div>
                                     <div class="py-3 sm:grid sm:grid-cols-3 sm:gap-4">
                                         <dt class="text-sm font-medium text-gray-500">NIT (ID)</dt>
-                                        <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2" id="modal-nit"></dd>
+                                        <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2" id="modal-nit">
+                                        </dd>
                                     </div>
                                     <div class="py-3 sm:grid sm:grid-cols-3 sm:gap-4">
                                         <dt class="text-sm font-medium text-gray-500">Representante</dt>
@@ -466,7 +303,11 @@
             document.getElementById('modal-telefono').innerText = empresa.telefono;
             document.getElementById('modal-correo').innerText = empresa.correo;
             document.getElementById('modal-direccion').innerText = empresa.direccion;
-            document.getElementById('modal-fecha').innerText = empresa.fecha_creacion;
+            // Formatear la fecha
+            let fechaOriginal = new Date(empresa.fecha_creacion);
+            // Como viene de BD en UTC (o local), ajustamos a un string legible:
+            let opcionesFecha = { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'America/Bogota' };
+            document.getElementById('modal-fecha').innerText = fechaOriginal.toLocaleDateString('es-ES', opcionesFecha);
 
             // Handle State Display
             const estadoSpan = document.getElementById('modal-estado');
@@ -620,31 +461,37 @@
 
                         <!-- Nombre -->
                         <div class="col-span-2 md:col-span-1">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Nombre de la Empresa</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Nombre de la
+                                Empresa</label>
                             <input type="text" name="nombre_empresa" id="create_nombre"
                                 class="w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
                                 placeholder="Ej: AgroTech S.A.S" required>
-                            <span class="text-xs text-red-500 mt-1 hidden" id="error_create_nombre">Solo letras y
+                            <span class="text-xs text-red-500 mt-1 hidden" id="error_create_nombre">Solo letras
+                                y
                                 espacios permitidos</span>
                         </div>
 
                         <!-- Representante -->
                         <div class="col-span-2 md:col-span-1">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Representante Legal</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Representante
+                                Legal</label>
                             <input type="text" name="nombre_repre_legal" id="create_representante"
                                 class="w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
                                 placeholder="Ej: Juan Pérez" required>
-                            <span class="text-xs text-red-500 mt-1 hidden" id="error_create_representante">Solo letras y
+                            <span class="text-xs text-red-500 mt-1 hidden" id="error_create_representante">Solo
+                                letras y
                                 espacios permitidos</span>
                         </div>
 
                         <!-- Cedula Representante -->
                         <div class="col-span-2 md:col-span-1">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Cédula del Representante</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Cédula del
+                                Representante</label>
                             <input type="text" name="cedula_repre" id="create_cedula_repre"
                                 class="w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
                                 placeholder="Ej: 10234567890" required>
-                            <span class="text-xs text-red-500 mt-1 hidden" id="error_create_cedula_repre">Solo números
+                            <span class="text-xs text-red-500 mt-1 hidden" id="error_create_cedula_repre">Solo
+                                números
                                 permitidos</span>
                         </div>
 
@@ -654,13 +501,15 @@
                             <input type="text" name="telefono" id="create_telefono"
                                 class="w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
                                 placeholder="Ej: 3001234567" required>
-                            <span class="text-xs text-red-500 mt-1 hidden" id="error_create_telefono">Solo números
+                            <span class="text-xs text-red-500 mt-1 hidden" id="error_create_telefono">Solo
+                                números
                                 permitidos</span>
                         </div>
 
                         <!-- Correo -->
                         <div class="col-span-2 md:col-span-1">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Correo Electrónico</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Correo
+                                Electrónico</label>
                             <input type="email" name="correo" id="create_correo"
                                 class="w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
                                 placeholder="contacto@empresa.com" required>
@@ -734,7 +583,8 @@
 
                         <!-- Empresa Select -->
                         <div class="col-span-2">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Asignar a Empresa</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Asignar a
+                                Empresa</label>
                             <select name="id_empresa"
                                 class="w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
                                 required>
@@ -749,11 +599,13 @@
 
                         <!-- Documento -->
                         <div class="col-span-2 md:col-span-1">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Documento de Identidad</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Documento de
+                                Identidad</label>
                             <input type="text" name="documento" id="admin_documento"
                                 class="w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
                                 required>
-                            <span class="text-xs text-red-500 mt-1 hidden" id="error_admin_documento">Solo números
+                            <span class="text-xs text-red-500 mt-1 hidden" id="error_admin_documento">Solo
+                                números
                                 permitidos</span>
                         </div>
 
@@ -769,7 +621,8 @@
 
                         <!-- Correo Admin -->
                         <div class="col-span-2 md:col-span-1">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Correo Electrónico</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Correo
+                                Electrónico</label>
                             <input type="email" name="correo" id="admin_correo"
                                 class="w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
                                 required>
@@ -781,7 +634,8 @@
                             <input type="text" name="telefono" id="admin_telefono"
                                 class="w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
                                 required>
-                            <span class="text-xs text-red-500 mt-1 hidden" id="error_admin_telefono">Solo números
+                            <span class="text-xs text-red-500 mt-1 hidden" id="error_admin_telefono">Solo
+                                números
                                 permitidos</span>
                         </div>
 
@@ -852,7 +706,8 @@
                     </div>
 
                     <div class="col-span-2 md:col-span-1">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Cédula del Representante</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Cédula del
+                            Representante</label>
                         <input type="text" name="cedula_repre" id="edit_cedula_repre"
                             class="w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
                             required>

@@ -193,7 +193,8 @@
                                             </span>
                                         </td>
                                         <td class="px-6 py-4 text-right">
-                                            <button onclick="openEditModal({{ json_encode($licencia) }})"
+                                            <button data-licencia="{{ json_encode($licencia) }}"
+                                                onclick="openEditModal(JSON.parse(this.getAttribute('data-licencia')))"
                                                 class="text-gray-400 hover:text-green-600 transition-colors p-2 rounded-full hover:bg-green-50">
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                     stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
@@ -383,6 +384,9 @@
         </div>
     @endif
 
+    <!-- Hidden element to pass data to JS safely -->
+    <div id="tipos-licencia-data" data-json="{{ json_encode($tiposLicencia->keyBy('id_tipo_licencia')) }}" class="hidden">
+    </div>
 @endsection
 
 @push('scripts')
@@ -402,7 +406,8 @@
             const spinner = document.getElementById('nitSpinner');
 
             // Mapa de tipos de licencia para mostrar el nombre
-            const tiposLicencia = @json($tiposLicencia->keyBy('id_tipo_licencia'));
+            const tiposLicenciasDataStr = document.getElementById('tipos-licencia-data').getAttribute('data-json');
+            const tiposLicencia = tiposLicenciasDataStr ? JSON.parse(tiposLicenciasDataStr) : {};
 
             let debounceTimer;
 
