@@ -135,4 +135,81 @@ class SolicitudCompraController extends Controller
 
         return redirect('/')->with('success', 'Solicitud enviada exitosamente. Estaremos en contacto.');
     }
+
+    public function exportarReporte(\Illuminate\Http\Request $request)
+    {
+        $year = $request->input('year', date('Y'));
+        $month = $request->input('month');
+
+        $nombreMes = $month ? ucfirst(\Carbon\Carbon::createFromDate(2024, (int) $month, 1)->locale('es')->monthName) : null;
+        $periodoLabel = $nombreMes ? "$nombreMes $year" : "Todo el año $year";
+
+        $query = SolicitudCompra::with(['empresa', 'tipoLicencia', 'estado'])
+            ->whereYear('fecha_solicitud', $year);
+
+        if ($month) {
+            $query->whereMonth('fecha_solicitud', $month);
+        }
+
+        $solicitudes = $query->orderBy('fecha_solicitud', 'desc')->get();
+
+        $csvFileName = 'Reporte_Solicitudes_' . $year . ($month ? '_' . str_pad($month, 2, '0', STR_PAD_LEFT) : '') . '.csv';
+
+        $headers = [
+            "Content-type" => "text/csv; charset=UTF-8",
+            "Content-Disposition" => "attachment; filename=$csvFileName",
+            "Pragma" => "no-cache",
+            "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
+            "Expires" => "0"
+        ];
+
+        $callback = function () use ($solicitudes, $periodoLabel) {
+            $file = fopen('php://output', 'w');
+            fputs($file, chr(0xEF) . chr(0xBB) . chr(0xBF)); // BOM UTF-8
+
+            // === ENCABEZADO DEL REPORTE ===
+            fputcsv($file, ['REPORTE DE SOLICITUDES DE COMPRA'], ';');
+            fputcsv($file, ['Período:', $periodoLabel], ';');
+            fputcsv($file, ['Fecha de generación:', now()->format('d/m/Y H:i')], ';');
+            fputcsv($file, ['Total de registros:', $solicitudes->count()], ';');
+            fputcsv($file, [], ';');
+
+            // === CABECERA DE COLUMNAS ===
+            fputcsv($file, [
+                'N°',
+                'Empresa',
+                'NIT',
+                'Representante Legal',
+                'Correo Electrónico',
+                'Teléfono',
+                'Plan Solicitado',
+                'Fecha de Solicitud',
+                'Estado',
+            ], ';');
+
+            // === FILAS DE DATOS ===
+            $i = 1;
+            foreach ($solicitudes as $sol) {
+                $empresa = $sol->empresa;
+                $estado = $sol->estado ? $sol->estado->nombre_estado : 'Desconocido';
+                fputcsv($file, [
+                    $i++,
+                    $empresa->nombre_empresa ?? 'N/A',
+                    $sol->id_empresa,
+                    $empresa->nombre_repre_legal ?? 'N/A',
+                    $empresa->correo ?? 'N/A',
+                    $empresa->telefono ?? 'N/A',
+                    $sol->tipoLicencia->nombre_licencia ?? 'N/A',
+                    \Carbon\Carbon::parse($sol->fecha_solicitud)->format('d/m/Y'),
+                    $estado,
+                ], ';');
+            }
+
+            fputcsv($file, [], ';');
+            fputcsv($file, ['--- Fin del reporte ---'], ';');
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
 }

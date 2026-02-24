@@ -6,7 +6,15 @@
         {{-- Header --}}
         <div class="flex justify-between items-center mb-6">
             <h2 class="text-2xl font-bold text-gray-800">Solicitudes de Compra</h2>
-            {{-- Add filter or search if needed later --}}
+            <button onclick="document.getElementById('exportSolicitudesModal').classList.remove('hidden')"
+                class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 shadow-sm transition">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="w-4 h-4">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                </svg>
+                Exportar Reporte
+            </button>
         </div>
 
         {{-- Table --}}
@@ -66,7 +74,7 @@
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <span
                                         class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                                                               {{ $solicitud->id_estado == 1 ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800' }}">
+                                                                                                       {{ $solicitud->id_estado == 1 ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800' }}">
                                         {{ $solicitud->estado->nombre_estado ?? 'Desconocido' }}
                                     </span>
                                 </td>
@@ -193,41 +201,41 @@
 
             // -- Construir contenido del modal --
             content.innerHTML = `
-                        <div class="space-y-4">
-                            <div>
-                                <h4 class="font-bold text-gray-700">Información de la Empresa</h4>
-                                <div class="mt-2 text-sm text-gray-600 space-y-1">
-                                    <p><span class="font-semibold">Empresa:</span> ${empresa.nombre_empresa || 'N/A'}</p>
-                                    <p><span class="font-semibold">NIT:</span> ${solicitud.id_empresa || 'N/A'}</p>
-                                    <p><span class="font-semibold">Representante:</span> ${empresa.nombre_repre_legal || 'N/A'}</p>
-                                    <p><span class="font-semibold">Teléfono:</span> ${empresa.telefono || 'N/A'}</p>
-                                    <p><span class="font-semibold">Correo:</span> ${empresa.correo || 'N/A'}</p>
-                                    <p><span class="font-semibold">Dirección:</span> ${empresa.direccion || 'N/A'}</p>
-                                </div>
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-gray-700">Detalles de la Licencia</h4>
-                                <div class="mt-2 text-sm text-gray-600 space-y-1">
-                                    <p><span class="font-semibold">Plan:</span> ${solicitud.tipo_licencia ? solicitud.tipo_licencia.nombre_licencia : 'N/A'}</p>
-                                    <p><span class="font-semibold">Precio:</span> $${solicitud.tipo_licencia ? new Intl.NumberFormat().format(solicitud.tipo_licencia.precio) : '0'}</p>
-                                </div>
-                            </div>
-                        </div>
+                                    <div class="space-y-4">
+                                        <div>
+                                            <h4 class="font-bold text-gray-700">Información de la Empresa</h4>
+                                            <div class="mt-2 text-sm text-gray-600 space-y-1">
+                                                <p><span class="font-semibold">Empresa:</span> ${empresa.nombre_empresa || 'N/A'}</p>
+                                                <p><span class="font-semibold">NIT:</span> ${solicitud.id_empresa || 'N/A'}</p>
+                                                <p><span class="font-semibold">Representante:</span> ${empresa.nombre_repre_legal || 'N/A'}</p>
+                                                <p><span class="font-semibold">Teléfono:</span> ${empresa.telefono || 'N/A'}</p>
+                                                <p><span class="font-semibold">Correo:</span> ${empresa.correo || 'N/A'}</p>
+                                                <p><span class="font-semibold">Dirección:</span> ${empresa.direccion || 'N/A'}</p>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-gray-700">Detalles de la Licencia</h4>
+                                            <div class="mt-2 text-sm text-gray-600 space-y-1">
+                                                <p><span class="font-semibold">Plan:</span> ${solicitud.tipo_licencia ? solicitud.tipo_licencia.nombre_licencia : 'N/A'}</p>
+                                                <p><span class="font-semibold">Precio:</span> $${solicitud.tipo_licencia ? new Intl.NumberFormat().format(solicitud.tipo_licencia.precio) : '0'}</p>
+                                            </div>
+                                        </div>
+                                    </div>
 
-                        <div class="flex flex-col">
-                            <h4 class="font-bold text-gray-700 mb-2">Comprobante de Pago</h4>
-                            <div class="border rounded-lg overflow-hidden bg-gray-50 flex items-center justify-center p-2 h-64">
-                                ${solicitud.comprobante_pago
+                                    <div class="flex flex-col">
+                                        <h4 class="font-bold text-gray-700 mb-2">Comprobante de Pago</h4>
+                                        <div class="border rounded-lg overflow-hidden bg-gray-50 flex items-center justify-center p-2 h-64">
+                                            ${solicitud.comprobante_pago
                     ? `<img src="${fullComprobanteUrl}" alt="Comprobante" class="max-w-full max-h-full object-contain">`
                     : `<span class="text-gray-400 italic text-sm">Sin comprobante de pago (registro manual)</span>`
                 }
-                            </div>
-                            ${solicitud.comprobante_pago
+                                        </div>
+                                        ${solicitud.comprobante_pago
                     ? `<a href="${fullComprobanteUrl}" target="_blank" class="mt-2 text-sm text-green-600 text-center">Ver imagen original</a>`
                     : ''
                 }
-                        </div>
-                    `;
+                                    </div>
+                                `;
 
             // -- Configurar formulario Reportar (DELETE) --
             const formReportar = document.getElementById('formReportar');
@@ -253,4 +261,76 @@
             document.getElementById('modalDetalle').classList.add('hidden');
         }
     </script>
+    <!-- EXPORT SOLICITUDES MODAL -->
+    <div id="exportSolicitudesModal" class="fixed inset-0 z-[9999] hidden" aria-modal="true">
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-black/50"
+            onclick="document.getElementById('exportSolicitudesModal').classList.add('hidden')"></div>
+        <div class="relative flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-xl shadow-2xl w-full max-w-sm z-10">
+                <!-- Header -->
+                <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+                    <div class="flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-green-600" fill="none"
+                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m3.75 9v6m3-3H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+                        </svg>
+                        <h3 class="text-base font-semibold text-gray-900">Descargar Reporte de Solicitudes</h3>
+                    </div>
+                    <button onclick="document.getElementById('exportSolicitudesModal').classList.add('hidden')"
+                        class="text-gray-400 hover:text-gray-600 cursor-pointer">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                <!-- Body -->
+                <form method="GET" action="{{ route('solicitudes.exportar') }}">
+                    <div class="px-6 py-5 space-y-4">
+                        <p class="text-sm text-gray-500">Selecciona el mes y año para filtrar el reporte de solicitudes de
+                            compra.</p>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Mes</label>
+                            <select name="month"
+                                class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-green-500 focus:border-green-500">
+                                <option value="">Todo el año</option>
+                                @foreach(range(1, 12) as $m)
+                                    <option value="{{ $m }}" {{ now()->month == $m ? 'selected' : '' }}>
+                                        {{ ucfirst(\Carbon\Carbon::createFromDate(2024, (int) $m, 1)->locale('es')->monthName) }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Año</label>
+                            <select name="year"
+                                class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-green-500 focus:border-green-500">
+                                @foreach(range(now()->year, 2024) as $y)
+                                    <option value="{{ $y }}" {{ now()->year == $y ? 'selected' : '' }}>{{ $y }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <!-- Footer -->
+                    <div class="px-6 py-4 bg-gray-50 rounded-b-xl flex justify-end gap-3 border-t border-gray-200">
+                        <button type="button"
+                            onclick="document.getElementById('exportSolicitudesModal').classList.add('hidden')"
+                            class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer">Cancelar</button>
+                        <button type="submit"
+                            class="flex items-center gap-2 px-4 py-2 text-sm font-bold text-white bg-green-600 hover:bg-green-700 rounded-lg transition cursor-pointer">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                                stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                            </svg>
+                            Descargar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
 @endsection

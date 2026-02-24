@@ -101,7 +101,7 @@ class EmpresaController extends Controller
         $mes = (int) $request->input('mes', now()->month);
         $year = (int) $request->input('anio', now()->year);
 
-        $nombreMes = \Carbon\Carbon::create()->month($mes)->locale('es')->monthName;
+        $nombreMes = \Carbon\Carbon::createFromDate(2024, (int) $mes, 1)->locale('es')->monthName;
         $nombreMes = ucfirst($nombreMes);
 
         $empresas = Empresa::with(['estado'])
@@ -110,37 +110,60 @@ class EmpresaController extends Controller
             ->get();
 
         $headers = [
-            "Content-type" => "text/csv",
+            "Content-type" => "text/csv; charset=UTF-8",
             "Content-Disposition" => "attachment; filename=Reporte_Empresas_{$nombreMes}_{$year}.csv",
             "Pragma" => "no-cache",
             "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
             "Expires" => "0"
         ];
 
-        $callback = function () use ($empresas) {
+        $callback = function () use ($empresas, $nombreMes, $year) {
             $file = fopen('php://output', 'w');
 
-            // Add BOM for Excel UTF-8 compatibility
+            // BOM para compatibilidad UTF-8 en Excel
             fputs($file, "\xEF\xBB\xBF");
 
-            // Header Row
-            fputcsv($file, ['Empresa', 'NIT', 'Representante', 'Correo', 'Teléfono', 'Estado']);
+            // === SECCIÓN DE ENCABEZADO DEL REPORTE ===
+            fputcsv($file, ['REPORTE DE EMPRESAS REGISTRADAS'], ';');
+            fputcsv($file, ['Período:', "$nombreMes $year"], ';');
+            fputcsv($file, ['Fecha de generación:', now()->format('d/m/Y H:i')], ';');
+            fputcsv($file, ['Total de registros:', $empresas->count()], ';');
+            fputcsv($file, [], ';'); // Fila vacía separadora
 
+            // === CABECERA DE COLUMNAS ===
+            fputcsv($file, [
+                'N°',
+                'Nombre de la Empresa',
+                'NIT',
+                'Representante Legal',
+                'Cédula Representante',
+                'Correo Electrónico',
+                'Teléfono',
+                'Dirección',
+                'Fecha de Registro',
+                'Estado',
+            ], ';');
+
+            // === DATOS ===
+            $i = 1;
             foreach ($empresas as $empresa) {
-                $estado = 'Desconocido';
-                if ($empresa->estado) {
-                    $estado = $empresa->estado->nombre_estado;
-                }
-
+                $estado = $empresa->estado ? $empresa->estado->nombre_estado : 'Desconocido';
                 fputcsv($file, [
+                    $i++,
                     $empresa->nombre_empresa,
                     $empresa->id_empresa,
                     $empresa->nombre_repre_legal,
+                    $empresa->cedula_repre ?? 'N/A',
                     $empresa->correo,
                     $empresa->telefono,
-                    $estado
-                ]);
+                    $empresa->direccion,
+                    $empresa->fecha_creacion ? \Carbon\Carbon::parse($empresa->fecha_creacion)->format('d/m/Y') : 'N/A',
+                    $estado,
+                ], ';');
             }
+
+            fputcsv($file, [], ';');
+            fputcsv($file, ['--- Fin del reporte ---'], ';');
 
             fclose($file);
         };

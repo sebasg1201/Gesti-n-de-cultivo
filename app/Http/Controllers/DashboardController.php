@@ -42,7 +42,25 @@ class DashboardController extends Controller
         $empresas = Empresa::all();
         $tiposLicencia = TipoLicencia::all();
 
-        // 3. LICENSES TABLE LOGIC (New)
+        // 3. AUTO-EXPIRE LICENSES
+        $activasOPendientes = VentaLicencias::with('tipoLicencia')->whereIn('id_estado', [1, 3])->get();
+        foreach ($activasOPendientes as $lic) {
+            if ($lic->tipoLicencia) {
+                $meses = (int) filter_var($lic->tipoLicencia->tiempo, FILTER_SANITIZE_NUMBER_INT);
+                if (stripos($lic->tipoLicencia->tiempo, 'año') !== false || stripos($lic->tipoLicencia->tiempo, 'year') !== false) {
+                    $meses = $meses * 12;
+                }
+                if ($meses == 0)
+                    $meses = 12;
+
+                $fechaFin = Carbon::parse($lic->fecha_inicio)->addMonths($meses)->endOfDay();
+                if (now()->greaterThan($fechaFin)) {
+                    DB::table('venta_licencias')->where('id_key', $lic->id_key)->update(['id_estado' => 2]);
+                }
+            }
+        }
+
+        // 4. LICENSES TABLE LOGIC
         $query = VentaLicencias::with(['empresa', 'tipoLicencia']);
 
         if ($request->has('search')) {
@@ -218,5 +236,121 @@ class DashboardController extends Controller
         ]);
 
         return back()->with('success', 'Administrador creado exitosamente.');
+    }
+
+    public function updateLicencia(Request $request, $id)
+    {
+        $request->validate([
+            'id_tipo_licencia' => 'required|exists:tipo_licencia,id_tipo_licencia',
+        ]);
+
+        $licencia = DB::table('venta_licencias')->where('id_key', $id)->first();
+        if (!$licencia) {
+            return back()->withErrors(['Licencia no encontrada']);
+        }
+
+        DB::table('venta_licencias')->where('id_key', $id)->update([
+            'id_tipo_licencia' => $request->id_tipo_licencia,
+        ]);
+
+        return back()->with('success', 'Licencia actualizada exitosamente.');
+    }
+
+    public function exportarReporte(Request $request)
+    {
+        $year = $request->input('year', date('Y'));
+        $month = $request->input('month');
+
+        $nombreMes = $month ? ucfirst(\Carbon\Carbon::createFromDate(2024, (int) $month, 1)->locale('es')->monthName) : null;
+        $periodoLabel = $nombreMes ? "$nombreMes $year" : "Todo el año $year";
+
+        $query = DB::table('venta_licencias as vl')
+            ->join('empresa as e', 'vl.id_empresa', '=', 'e.id_empresa')
+            ->join('tipo_licencia as tl', 'vl.id_tipo_licencia', '=', 'tl.id_tipo_licencia')
+            ->select(
+                'e.nombre_empresa',
+                'e.id_empresa as nit',
+                'tl.nombre_licencia',
+                'tl.tiempo',
+                'vl.fecha_inicio',
+                'vl.id_estado'
+            )
+            ->whereYear('vl.fecha_inicio', $year);
+
+        if ($month) {
+            $query->whereMonth('vl.fecha_inicio', $month);
+        }
+
+        $licencias = $query->get();
+
+        $csvFileName = 'Reporte_Licencias_' . $year . ($month ? '_' . str_pad($month, 2, '0', STR_PAD_LEFT) : '') . '.csv';
+
+        $headers = [
+            "Content-type" => "text/csv; charset=UTF-8",
+            "Content-Disposition" => "attachment; filename=$csvFileName",
+            "Pragma" => "no-cache",
+            "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
+            "Expires" => "0"
+        ];
+
+        $callback = function () use ($licencias, $periodoLabel) {
+            $file = fopen('php://output', 'w');
+            fputs($file, chr(0xEF) . chr(0xBB) . chr(0xBF)); // BOM UTF-8
+
+            // === ENCABEZADO DEL REPORTE ===
+            fputcsv($file, ['REPORTE DE LICENCIAS ASIGNADAS'], ';');
+            fputcsv($file, ['Período:', $periodoLabel], ';');
+            fputcsv($file, ['Fecha de generación:', now()->format('d/m/Y H:i')], ';');
+            fputcsv($file, ['Total de registros:', $licencias->count()], ';');
+            fputcsv($file, [], ';'); // Separador
+
+            // === CABECERA DE COLUMNAS ===
+            fputcsv($file, [
+                'N°',
+                'Empresa',
+                'NIT',
+                'Plan de Licencia',
+                'Duración del Plan',
+                'Fecha de Inicio',
+                'Fecha de Vencimiento',
+                'Estado',
+            ], ';');
+
+            // === FILAS DE DATOS ===
+            $i = 1;
+            foreach ($licencias as $lic) {
+                $estado = match ($lic->id_estado) {
+                    3 => 'Activa',
+                    1 => 'Pendiente',
+                    2 => 'Inactiva',
+                    default => 'Desconocido'
+                };
+
+                $meses = (int) filter_var($lic->tiempo, FILTER_SANITIZE_NUMBER_INT);
+                if (stripos($lic->tiempo, 'año') !== false || stripos($lic->tiempo, 'year') !== false) {
+                    $meses = $meses * 12;
+                }
+                if ($meses == 0)
+                    $meses = 12;
+                $fechaFin = Carbon::parse($lic->fecha_inicio)->addMonths($meses)->format('d/m/Y');
+
+                fputcsv($file, [
+                    $i++,
+                    $lic->nombre_empresa,
+                    $lic->nit,
+                    $lic->nombre_licencia,
+                    $lic->tiempo,
+                    Carbon::parse($lic->fecha_inicio)->format('d/m/Y'),
+                    $fechaFin,
+                    $estado,
+                ], ';');
+            }
+
+            fputcsv($file, [], ';');
+            fputcsv($file, ['--- Fin del reporte ---'], ';');
+            fclose($file);
+        };
+
+        return new StreamedResponse($callback, 200, $headers);
     }
 }

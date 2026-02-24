@@ -234,55 +234,72 @@
     </div>
 
     <!-- EXPORT MODAL -->
-    <div id="exportModal" class="fixed inset-0 z-50 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-
-        <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
-            <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-                <div
-                    class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm">
-                    <form method="GET" action="{{ route('licencias.exportar') }}">
-                        <div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
-                            <h3 class="text-base font-semibold leading-6 text-gray-900 mb-4">Exportar Reporte</h3>
-                            <div class="space-y-4">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700">Año</label>
-                                    <select name="year"
-                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
-                                        @for($i = date('Y'); $i >= 2024; $i--)
-                                            <option value="{{ $i }}">{{ $i }}</option>
-                                        @endfor
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700">Mes (Opcional)</label>
-                                    <select name="month"
-                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
-                                        <option value="">Todo el año</option>
-                                        <option value="1">Enero</option>
-                                        <option value="2">Febrero</option>
-                                        <option value="3">Marzo</option>
-                                        <option value="4">Abril</option>
-                                        <option value="5">Mayo</option>
-                                        <option value="6">Junio</option>
-                                        <option value="7">Julio</option>
-                                        <option value="8">Agosto</option>
-                                        <option value="9">Septiembre</option>
-                                        <option value="10">Octubre</option>
-                                        <option value="11">Noviembre</option>
-                                        <option value="12">Diciembre</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                            <button type="submit"
-                                class="inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 sm:ml-3 sm:w-auto"
-                                onclick="setTimeout(() => document.getElementById('exportModal').classList.add('hidden'), 500)">Descargar</button>
-                            <button type="button" onclick="document.getElementById('exportModal').classList.add('hidden')"
-                                class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">Cancelar</button>
-                        </div>
-                    </form>
+    <div id="exportModal" class="fixed inset-0 z-[9999] hidden" aria-modal="true">
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-black/50" onclick="document.getElementById('exportModal').classList.add('hidden')">
+        </div>
+        <div class="relative flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-xl shadow-2xl w-full max-w-sm z-10">
+                <!-- Header -->
+                <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+                    <div class="flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-green-600" fill="none"
+                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m3.75 9v6m3-3H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+                        </svg>
+                        <h3 class="text-base font-semibold text-gray-900">Descargar Reporte de Licencias</h3>
+                    </div>
+                    <button onclick="document.getElementById('exportModal').classList.add('hidden')"
+                        class="text-gray-400 hover:text-gray-600 cursor-pointer">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
                 </div>
+                <!-- Body -->
+                <form action="{{ route('licencias.exportar') }}" method="GET">
+                    <div class="px-6 py-5 space-y-4">
+                        <p class="text-sm text-gray-500">Selecciona el mes y año para filtrar el reporte de licencias
+                            asignadas.</p>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Mes</label>
+                            <select name="month"
+                                class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-green-500 focus:border-green-500">
+                                <option value="">Todo el año</option>
+                                @foreach(range(1, 12) as $m)
+                                    <option value="{{ $m }}" {{ now()->month == $m ? 'selected' : '' }}>
+                                        {{ ucfirst(\Carbon\Carbon::createFromDate(2024, (int) $m, 1)->locale('es')->monthName) }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Año</label>
+                            <select name="year"
+                                class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-green-500 focus:border-green-500">
+                                @foreach(range(now()->year, 2024) as $y)
+                                    <option value="{{ $y }}" {{ now()->year == $y ? 'selected' : '' }}>{{ $y }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <!-- Footer -->
+                    <div class="px-6 py-4 bg-gray-50 rounded-b-xl flex justify-end gap-3 border-t border-gray-200">
+                        <button type="button" onclick="document.getElementById('exportModal').classList.add('hidden')"
+                            class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer">Cancelar</button>
+                        <button type="submit"
+                            class="flex items-center gap-2 px-4 py-2 text-sm font-bold text-white bg-green-600 hover:bg-green-700 rounded-lg transition cursor-pointer">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                                stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                            </svg>
+                            Descargar
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -317,24 +334,42 @@
                                         <div>
                                             <label class="block text-sm font-medium text-gray-700">Plan de Licencia</label>
                                             <select id="edit_id_tipo_licencia" name="id_tipo_licencia"
+                                                onchange="updateEditFechaFin()"
                                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm">
                                                 @foreach($tiposLicencia as $tipo)
-                                                    <option value="{{ $tipo->id_tipo_licencia }}">{{ $tipo->nombre_licencia }}
+                                                    @php
+                                                        $meses = (int) filter_var($tipo->tiempo, FILTER_SANITIZE_NUMBER_INT);
+                                                        if (stripos($tipo->tiempo, 'año') !== false || stripos($tipo->tiempo, 'year') !== false) {
+                                                            $meses = $meses * 12;
+                                                        }
+                                                        if ($meses == 0)
+                                                            $meses = 12;
+                                                    @endphp
+                                                    <option value="{{ $tipo->id_tipo_licencia }}" data-meses="{{ $meses }}">
+                                                        {{ $tipo->nombre_licencia }}
                                                     </option>
                                                 @endforeach
                                             </select>
                                         </div>
 
-                                        <div>
-                                            <label class="block text-sm font-medium text-gray-700">Fecha de Inicio</label>
-                                            <input type="date" id="edit_fecha_inicio" name="fecha_inicio"
-                                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm">
+                                        <div class="grid grid-cols-2 gap-4">
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700">Fecha de
+                                                    Inicio</label>
+                                                <input type="date" id="edit_fecha_inicio" name="fecha_inicio" readonly
+                                                    class="mt-1 block w-full rounded-md border-gray-300 bg-gray-100 shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm cursor-not-allowed">
+                                            </div>
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700">Fecha de Fin</label>
+                                                <input type="date" id="edit_fecha_fin" disabled
+                                                    class="mt-1 block w-full rounded-md border-gray-300 bg-gray-100 shadow-sm sm:text-sm text-gray-500 cursor-not-allowed">
+                                            </div>
                                         </div>
 
                                         <div>
                                             <label class="block text-sm font-medium text-gray-700">Estado</label>
-                                            <select id="edit_id_estado" name="id_estado"
-                                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm">
+                                            <select id="edit_id_estado" name="id_estado" disabled
+                                                class="mt-1 block w-full rounded-md border-gray-300 bg-gray-100 shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm cursor-not-allowed">
                                                 <option value="3">Activa</option>
                                                 <option value="1">Pendiente</option>
                                                 <option value="2">Inactiva</option>
@@ -463,6 +498,26 @@
             });
         });
 
+        function updateEditFechaFin() {
+            const fechaInicio = document.getElementById('edit_fecha_inicio').value;
+            const selectPlan = document.getElementById('edit_id_tipo_licencia');
+            const selectedOption = selectPlan.options[selectPlan.selectedIndex];
+
+            if (!fechaInicio || !selectedOption) return;
+
+            let meses = parseInt(selectedOption.getAttribute('data-meses')) || 12;
+
+            // Se asume la fecha a medio día para evitar problemas de zona horaria
+            let date = new Date(fechaInicio + 'T12:00:00');
+            date.setMonth(date.getMonth() + meses);
+
+            const day = ("0" + date.getDate()).slice(-2);
+            const month = ("0" + (date.getMonth() + 1)).slice(-2);
+            const year = date.getFullYear();
+
+            document.getElementById('edit_fecha_fin').value = `${year}-${month}-${day}`;
+        }
+
         function openEditModal(licencia) {
             const modal = document.getElementById('editModal');
             const form = document.getElementById('editForm');
@@ -481,6 +536,8 @@
             document.getElementById('edit_fecha_inicio').value = `${year}-${month}-${day}`;
 
             document.getElementById('edit_id_estado').value = licencia.id_estado;
+
+            updateEditFechaFin();
 
             modal.classList.remove('hidden');
         }

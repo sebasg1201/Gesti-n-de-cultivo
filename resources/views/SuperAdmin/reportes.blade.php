@@ -292,8 +292,8 @@
 
 
     <!-- ==========================================
-                     HIDDEN PRINT LAYOUT (A4)
-                ========================================== -->
+                                         HIDDEN PRINT LAYOUT (A4)
+                                    ========================================== -->
     <!-- Updated CSS: Positioned at 0,0 for rendering, but invisible via opacity -->
     <div id="print-layout"
         style="display: none; position: absolute; top: 0; left: 0; width: 210mm; min-height: 297mm; z-index: -1; background: white; padding: 20mm; font-family: 'Arial', sans-serif; color: #333; opacity: 0; pointer-events: none;">
@@ -465,12 +465,12 @@
                 // 1. Feedback visual
                 btn.disabled = true;
                 btn.innerHTML = `
-                                <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                </svg>
-                                Preparando Documento...
-                            `;
+                                                    <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                    </svg>
+                                                    Preparando Documento...
+                                                `;
 
                 // 2. Capturar gráficos actuales como imágenes
                 const salesCanvas = document.getElementById('salesChart');
@@ -522,5 +522,6 @@
             }
         });
     </script>
+
 
 @endsection
