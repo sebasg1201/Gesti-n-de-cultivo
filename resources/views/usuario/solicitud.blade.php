@@ -36,7 +36,7 @@
 
                     {{-- FORMULARIO --}}
                     <form action="{{ route('solicitud.store') }}" method="POST" enctype="multipart/form-data"
-                        class="space-y-6">
+                        class="space-y-6 validate-form">
                         @csrf
                         <input type="hidden" name="licencia_id" value="{{ $licencia->id_tipo_licencia }}">
 
@@ -98,11 +98,11 @@
                                 Pago</label>
                             <input type="file" name="comprobante_pago" id="comprobante_pago" required accept="image/*"
                                 class="mt-1 block w-full text-sm text-gray-500
-                                                            file:mr-4 file:py-2 file:px-4
-                                                            file:rounded-full file:border-0
-                                                            file:text-sm file:font-semibold
-                                                            file:bg-green-50 file:text-green-700
-                                                            hover:file:bg-green-100 file:cursor-pointer">
+                                                                file:mr-4 file:py-2 file:px-4
+                                                                file:rounded-full file:border-0
+                                                                file:text-sm file:font-semibold
+                                                                file:bg-green-50 file:text-green-700
+                                                                hover:file:bg-green-100 file:cursor-pointer">
                             <p class="mt-1 text-xs text-gray-500">Sube una imagen clara del comprobante.</p>
                         </div>
 
@@ -152,17 +152,17 @@
                         </div>
                         <div class="mt-6 flex justify-center">
                             <a href="{{ url('/') }}" class="inline-flex items-center gap-2
-                                    bg-gray-100 text-gray-700
-                                    px-6 py-2
-                                    rounded-xl
-                                    shadow-sm
-                                    border border-gray-200
-                                    hover:bg-gray-200
-                                    hover:text-gray-900
-                                    hover:shadow-md
-                                    active:scale-95
-                                    transition-all duration-200
-                                    cursor-pointer">
+                                        bg-gray-100 text-gray-700
+                                        px-6 py-2
+                                        rounded-xl
+                                        shadow-sm
+                                        border border-gray-200
+                                        hover:bg-gray-200
+                                        hover:text-gray-900
+                                        hover:shadow-md
+                                        active:scale-95
+                                        transition-all duration-200
+                                        cursor-pointer">
                                 <span class="text-lg"></span>
                                 <span class="text-sm font-semibold">Volver al Inicio</span>
                             </a>
@@ -175,4 +175,5 @@
             </div>
         </div>
     </div>
+    <script src="{{ asset('js/form-validation.js') }}"></script>
 @endsection

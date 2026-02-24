@@ -51,7 +51,7 @@
                         </div>
                     </div>
 
-                    <form action="{{ route('licencias.asignar') }}" method="POST" class="space-y-5">
+                    <form action="{{ route('licencias.asignar') }}" method="POST" class="space-y-5 validate-form">
                         @csrf
 
                         {{-- Campo NIT --}}
@@ -295,63 +295,118 @@
                 <div
                     class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
 
-                    <form id="editForm" method="POST" action="">
+                    <form id="editForm" method="POST" action="" class="validate-form">
                         @csrf
                         @method('PUT')
 
-                        <div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
-                            <div class="sm:flex sm:items-start">
-                                <div
-                                    class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-green-100 sm:mx-0 sm:h-10 sm:w-10">
-                                    <svg class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                        stroke="currentColor" aria-hidden="true">
+                        {{-- MODAL HEADER --}}
+                        <div class="bg-gradient-to-r from-emerald-600 to-green-500 px-6 py-5">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                                    <svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                        stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                                            d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Z" />
                                     </svg>
                                 </div>
-                                <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left w-full">
-                                    <h3 class="text-base font-semibold leading-6 text-gray-900" id="modal-title">Editar
-                                        Licencia</h3>
-                                    <div class="mt-4 space-y-4">
-
-                                        <div>
-                                            <label class="block text-sm font-medium text-gray-700">Plan de Licencia</label>
-                                            <select id="edit_id_tipo_licencia" name="id_tipo_licencia"
-                                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm">
-                                                @foreach($tiposLicencia as $tipo)
-                                                    <option value="{{ $tipo->id_tipo_licencia }}">{{ $tipo->nombre_licencia }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-
-                                        <div>
-                                            <label class="block text-sm font-medium text-gray-700">Fecha de Inicio</label>
-                                            <input type="date" id="edit_fecha_inicio" name="fecha_inicio"
-                                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm">
-                                        </div>
-
-                                        <div>
-                                            <label class="block text-sm font-medium text-gray-700">Estado</label>
-                                            <select id="edit_id_estado" name="id_estado"
-                                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm">
-                                                <option value="3">Activa</option>
-                                                <option value="1">Pendiente</option>
-                                                <option value="2">Inactiva</option>
-                                            </select>
-                                        </div>
-
-                                    </div>
+                                <div>
+                                    <h3 class="text-lg font-bold text-white">Editar Licencia</h3>
+                                    <p class="text-emerald-100 text-xs">Modifica el plan o estado de la licencia asignada
+                                    </p>
                                 </div>
                             </div>
                         </div>
-                        <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                            <button type="submit"
-                                class="inline-flex w-full justify-center rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 sm:ml-3 sm:w-auto cursor-pointer">Guardar
-                                Cambios</button>
-                            <button type="button" onclick="document.getElementById('editModal').classList.add('hidden')"
-                                class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto cursor-pointer">Cancelar</button>
+
+                        {{-- MODAL BODY --}}
+                        <div class="px-6 py-6 space-y-5 bg-white">
+
+                            {{-- Plan de Licencia --}}
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-emerald-500" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.44 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.44 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.44 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.44 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                                    </svg>
+                                    Plan de Licencia
+                                </label>
+                                <div class="relative">
+                                    <select id="edit_id_tipo_licencia" name="id_tipo_licencia"
+                                        class="w-full appearance-none bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 pr-10 text-sm text-gray-800 font-medium focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-emerald-400 transition-all cursor-pointer">
+                                        @foreach($tiposLicencia as $tipo)
+                                            <option value="{{ $tipo->id_tipo_licencia }}">{{ $tipo->nombre_licencia }}</option>
+                                        @endforeach
+                                    </select>
+                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3">
+                                        <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 9l-7 7-7-7" />
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- Fecha de Inicio --}}
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-emerald-500" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                    Fecha de Inicio
+                                </label>
+                                <input type="date" id="edit_fecha_inicio" name="fecha_inicio"
+                                    class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-emerald-400 transition-all">
+                            </div>
+
+                            {{-- Estado --}}
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-emerald-500" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    Estado de la Licencia
+                                </label>
+                                <div class="relative">
+                                    <select id="edit_id_estado" name="id_estado"
+                                        class="w-full appearance-none bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 pr-10 text-sm text-gray-800 font-medium focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-emerald-400 transition-all cursor-pointer">
+                                        <option value="3">✅ Activa</option>
+                                        <option value="1">⏳ Pendiente</option>
+                                        <option value="2">❌ Inactiva</option>
+                                    </select>
+                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3">
+                                        <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 9l-7 7-7-7" />
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
+
+                        {{-- MODAL FOOTER --}}
+                        <div class="bg-gray-50 border-t border-gray-100 px-6 py-4 flex justify-end gap-3">
+                            <button type="button" onclick="document.getElementById('editModal').classList.add('hidden')"
+                                class="px-5 py-2.5 text-sm font-semibold text-gray-600 bg-white border border-gray-200 rounded-xl hover:bg-gray-100 transition-all shadow-sm cursor-pointer">
+                                Cancelar
+                            </button>
+                            <button type="submit"
+                                class="px-6 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-emerald-600 to-green-500 rounded-xl hover:from-emerald-700 hover:to-green-600 transition-all shadow-md hover:shadow-lg cursor-pointer flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                                Guardar Cambios
+                            </button>
+                        </div>
+
                     </form>
                 </div>
             </div>

@@ -32,7 +32,7 @@
                 <p class="text-gray-500 text-sm mt-2">Ingresa tu nueva contraseña para acceder a tu cuenta.</p>
             </div>
 
-            <form method="POST" action="{{ route('password.update') }}" class="space-y-6">
+            <form method="POST" action="{{ route('password.update') }}" class="space-y-6 validate-form">
                 @csrf
 
                 <input type="hidden" name="token" value="{{ $token }}">
@@ -176,6 +176,7 @@
         });
     </script>
 
+    <script src="{{ asset('js/form-validation.js') }}"></script>
 </body>
 
 </html>

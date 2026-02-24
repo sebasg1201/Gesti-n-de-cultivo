@@ -506,7 +506,7 @@
                 <!-- FORM EMPRESA -->
                 <div id="content-empresa" class="space-y-4">
                     <form action="{{ route('empresas.store') }}" method="POST" id="formEmpresa"
-                        class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        class="grid grid-cols-1 md:grid-cols-2 gap-6 validate-form">
                         @csrf
 
                         <!-- NIT -->
@@ -638,7 +638,7 @@
                 <!-- FORM ADMIN -->
                 <div id="content-admin" class="space-y-4">
                     <form action="{{ route('administradores.store') }}" method="POST" enctype="multipart/form-data"
-                        id="formAdmin" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        id="formAdmin" class="grid grid-cols-1 md:grid-cols-2 gap-6 space-y-6 validate-form">
                         @csrf
 
                         <!-- Empresa NIT Search -->
@@ -747,81 +747,147 @@
 
 <!-- EDIT EMPRESA MODAL -->
 <div id="editModal" class="fixed inset-0 z-[9999] hidden overflow-y-auto" aria-modal="true">
-    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-        <div
-            class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl w-full">
+    <div class="flex items-center justify-center min-h-screen px-4 py-6">
+        <div class="fixed inset-0 bg-black/40 backdrop-blur-sm" onclick="closeEditModal()"></div>
+        <div class="relative bg-white rounded-2xl text-left shadow-2xl transform transition-all w-full max-w-4xl">
 
-            <div class="bg-gray-50 px-4 py-3 border-b flex justify-between items-center">
-                <h3 class="text-lg leading-6 font-medium text-gray-900">Editar Empresa</h3>
-                <button onclick="closeEditModal()" class="text-gray-400 hover:text-gray-500 focus:outline-none">
-                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
+            {{-- HEADER --}}
+            <div class="bg-gradient-to-r from-amber-500 to-yellow-400 px-6 py-5 rounded-t-2xl">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                            <svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-white">Editar Empresa</h3>
+                            <p class="text-amber-100 text-xs">Actualiza los datos del registro empresarial</p>
+                        </div>
+                    </div>
+                    <button onclick="closeEditModal()"
+                        class="text-white/80 hover:text-white transition-colors p-1 rounded-lg hover:bg-white/10">
+                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
             </div>
 
-            <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                <form id="formEditEmpresa" action="" method="POST" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    @csrf
-                    @method('PUT')
+            {{-- BODY --}}
+            <form id="formEditEmpresa" action="" method="POST" class="validate-form">
+                @csrf
+                @method('PUT')
 
-                    <div class="col-span-2 md:col-span-1">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Nombre de la Empresa</label>
+                <div class="px-6 pt-6 pb-4 grid grid-cols-1 md:grid-cols-2 gap-5">
+
+                    {{-- Nombre Empresa --}}
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-1.5">
+                            <svg class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                            </svg>
+                            Nombre de la Empresa
+                        </label>
                         <input type="text" name="nombre_empresa" id="edit_nombre"
-                            class="w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
+                            class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition-all"
                             required>
                     </div>
 
-                    <div class="col-span-2 md:col-span-1">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Representante Legal</label>
+                    {{-- Representante Legal --}}
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-1.5">
+                            <svg class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                            Representante Legal
+                        </label>
                         <input type="text" name="nombre_repre_legal" id="edit_representante"
-                            class="w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
+                            class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition-all"
                             required>
                     </div>
 
-                    <div class="col-span-2 md:col-span-1">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Cédula del
-                            Representante</label>
+                    {{-- Cédula --}}
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-1.5">
+                            <svg class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0" />
+                            </svg>
+                            Cédula del Representante
+                        </label>
                         <input type="text" name="cedula_repre" id="edit_cedula_repre"
-                            class="w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
+                            class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition-all"
                             required>
                     </div>
 
-                    <div class="col-span-2 md:col-span-1">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
+                    {{-- Teléfono --}}
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-1.5">
+                            <svg class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                            </svg>
+                            Teléfono
+                        </label>
                         <input type="text" name="telefono" id="edit_telefono"
-                            class="w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
+                            class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition-all"
                             required>
                     </div>
 
-                    <div class="col-span-2 md:col-span-1">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Correo Electrónico</label>
+                    {{-- Correo --}}
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-1.5">
+                            <svg class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                            Correo Electrónico
+                        </label>
                         <input type="email" name="correo" id="edit_correo"
-                            class="w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
+                            class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition-all"
                             required>
                     </div>
 
-                    <div class="col-span-2 md:col-span-1">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Dirección</label>
+                    {{-- Dirección --}}
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-1.5">
+                            <svg class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                            Dirección
+                        </label>
                         <input type="text" name="direccion" id="edit_direccion"
-                            class="w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
+                            class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition-all"
                             required>
                     </div>
 
-                    <div class="col-span-2 flex justify-end mt-4">
-                        <button type="button" onclick="closeEditModal()"
-                            class="mr-3 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-2 px-6 rounded-lg transition">
-                            Cancelar
-                        </button>
-                        <button type="submit"
-                            class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-6 rounded-lg transition transform hover:scale-105">
-                            Actualizar Empresa
-                        </button>
-                    </div>
-                </form>
-            </div>
+                </div>
+
+                {{-- FOOTER --}}
+                <div class="bg-gray-50 border-t border-gray-100 px-6 py-4 rounded-b-2xl flex justify-end gap-3">
+                    <button type="button" onclick="closeEditModal()"
+                        class="px-5 py-2.5 text-sm font-semibold text-gray-600 bg-white border border-gray-200 rounded-xl hover:bg-gray-100 transition-all shadow-sm cursor-pointer">
+                        Cancelar
+                    </button>
+                    <button type="submit"
+                        class="px-6 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-amber-500 to-yellow-400 rounded-xl hover:from-amber-600 hover:to-yellow-500 transition-all shadow-md hover:shadow-lg cursor-pointer flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        Actualizar Empresa
+                    </button>
+                </div>
+
+            </form>
         </div>
     </div>
 </div>
