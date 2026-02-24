@@ -347,6 +347,60 @@
         }
     </script>
 
+    @if(session('success'))
+        <div class="fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded shadow-lg animate-fade-in-up z-50">
+            <div class="flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                    class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                </svg>
+                {{ session('success') }}
+            </div>
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="fixed bottom-4 right-4 bg-red-500 text-white px-6 py-3 rounded shadow-lg animate-fade-in-up z-50">
+            <div class="flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                    class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                {{ session('error') }}
+            </div>
+        </div>
+    @endif
+
+    @if($errors->any())
+        <div class="fixed bottom-4 right-4 bg-red-500 text-white px-6 py-3 rounded shadow-lg z-50">
+            <ul class="list-disc pl-5">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    <style>
+        @keyframes fade-in-up {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in-up {
+            animation: fade-in-up 0.5s ease-out forwards;
+        }
+    </style>
+
 @endsection
 
 <!-- EXCEL MODAL -->
@@ -587,20 +641,36 @@
                         id="formAdmin" class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         @csrf
 
-                        <!-- Empresa Select -->
+                        <!-- Empresa NIT Search -->
                         <div class="col-span-2">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Asignar a
-                                Empresa</label>
-                            <select name="id_empresa"
-                                class="w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
-                                required>
-                                <option value="">Seleccione una empresa...</option>
-                                @foreach($allEmpresas as $emp)
-                                    <option value="{{ $emp->id_empresa }}">{{ $emp->nombre_empresa }} (NIT:
-                                        {{ $emp->id_empresa }})
-                                    </option>
-                                @endforeach
-                            </select>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">NIT de la Empresa</label>
+                            <div class="relative">
+                                <input type="text" id="admin_nit_busqueda" placeholder="Ingrese el NIT..."
+                                    class="w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 transition-colors pr-10"
+                                    autocomplete="off" required>
+                                <div id="adminNitSpinner" class="hidden absolute right-3 top-2.5">
+                                    <svg class="animate-spin h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg"
+                                        fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                            stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <input type="hidden" id="admin_id_empresa" name="id_empresa" required>
+                        </div>
+
+                        <!-- Info empresa encontrada -->
+                        <div id="adminEmpresaInfo"
+                            class="hidden col-span-2 p-3 bg-green-50 rounded-lg border border-green-100">
+                            <p class="text-xs font-semibold text-green-800" id="adminEmpresaNombre"></p>
+                            <p class="text-xs text-green-600" id="adminEmpresaNit"></p>
+                        </div>
+
+                        <!-- Empresa no encontrada -->
+                        <div id="adminEmpresaNoEncontrada"
+                            class="hidden col-span-2 p-3 bg-red-50 rounded-lg border border-red-100">
+                            <p class="text-xs text-red-700">No se encontró ninguna empresa con ese NIT.</p>
                         </div>
 
                         <!-- Documento -->
@@ -662,8 +732,8 @@
                         </div>
 
                         <div class="col-span-2 flex justify-end mt-4">
-                            <button type="submit"
-                                class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg transition transform hover:scale-105 cursor-pointer">
+                            <button type="submit" id="btnCrearAdmin" disabled
+                                class="bg-green-600 hover:bg-green-700 disabled:bg-gray-300 disabled:cursor-not-allowed disabled:transform-none text-white font-bold py-2 px-6 rounded-lg transition transform hover:scale-105 cursor-pointer">
                                 Crear Administrador
                             </button>
                         </div>
@@ -829,7 +899,96 @@
         validateInput('admin_telefono', 'error_admin_telefono', regexNumber);
     });
 
-    // Auto-fill logic removed as requested
+    // Auto-fill logic removed as requested for create modal but added for admin modal
+    // ===== AUTO-FILL ADMIN NIT -> EMPRESA =====
+    const adminNitInput = document.getElementById('admin_nit_busqueda');
+    const adminIdEmpresaHidden = document.getElementById('admin_id_empresa');
+    const adminEmpresaInfo = document.getElementById('adminEmpresaInfo');
+    const adminEmpresaNoEncontrada = document.getElementById('adminEmpresaNoEncontrada');
+    const adminEmpresaNombreEl = document.getElementById('adminEmpresaNombre');
+    const adminEmpresaNitEl = document.getElementById('adminEmpresaNit');
+    const btnCrearAdmin = document.getElementById('btnCrearAdmin');
+    const adminSpinner = document.getElementById('adminNitSpinner');
+
+    // Form fields to auto-fill
+    const adminNombreInput = document.getElementById('admin_nombre');
+    const adminTelefonoInput = document.getElementById('admin_telefono');
+    const adminCorreoInput = document.getElementById('admin_correo');
+    const adminDocumentoInput = document.getElementById('admin_documento');
+
+    let adminDebounceTimer;
+
+    if (adminNitInput) {
+        adminNitInput.addEventListener('input', function () {
+            clearTimeout(adminDebounceTimer);
+            const nit = this.value.trim();
+
+            // Resetear estado
+            adminEmpresaInfo.classList.add('hidden');
+            adminEmpresaNoEncontrada.classList.add('hidden');
+            adminIdEmpresaHidden.value = '';
+
+            // Resetear campos auto-completados
+            if (adminNombreInput) { adminNombreInput.value = ''; adminNombreInput.removeAttribute('readonly'); adminNombreInput.classList.remove('bg-gray-100', 'cursor-not-allowed', 'text-gray-500'); }
+            if (adminTelefonoInput) { adminTelefonoInput.value = ''; adminTelefonoInput.removeAttribute('readonly'); adminTelefonoInput.classList.remove('bg-gray-100', 'cursor-not-allowed', 'text-gray-500'); }
+            if (adminCorreoInput) { adminCorreoInput.value = ''; adminCorreoInput.removeAttribute('readonly'); adminCorreoInput.classList.remove('bg-gray-100', 'cursor-not-allowed', 'text-gray-500'); }
+            if (adminDocumentoInput) { adminDocumentoInput.value = ''; adminDocumentoInput.removeAttribute('readonly'); adminDocumentoInput.classList.remove('bg-gray-100', 'cursor-not-allowed', 'text-gray-500'); }
+
+
+            if (btnCrearAdmin) btnCrearAdmin.disabled = true;
+
+            if (nit.length < 3) return;
+
+            adminDebounceTimer = setTimeout(() => {
+                adminSpinner.classList.remove('hidden');
+
+                fetch(`/empresa/buscar/${nit}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        adminSpinner.classList.add('hidden');
+
+                        if (!data || !data.id_empresa) {
+                            adminEmpresaNoEncontrada.classList.remove('hidden');
+                            return;
+                        }
+
+                        // Empresa encontrada
+                        adminIdEmpresaHidden.value = data.id_empresa;
+                        adminEmpresaNombreEl.textContent = data.nombre_empresa;
+                        adminEmpresaNitEl.textContent = 'NIT: ' + data.id_empresa;
+                        adminEmpresaInfo.classList.remove('hidden');
+
+                        // Autocompletar datos del representante
+                        if (adminNombreInput && data.nombre_repre_legal) {
+                            adminNombreInput.value = data.nombre_repre_legal;
+                            adminNombreInput.setAttribute('readonly', true);
+                            adminNombreInput.classList.add('bg-gray-100', 'cursor-not-allowed', 'text-gray-500');
+                        }
+                        if (adminTelefonoInput && data.telefono) {
+                            adminTelefonoInput.value = data.telefono;
+                            adminTelefonoInput.setAttribute('readonly', true);
+                            adminTelefonoInput.classList.add('bg-gray-100', 'cursor-not-allowed', 'text-gray-500');
+                        }
+                        if (adminCorreoInput && data.correo) {
+                            adminCorreoInput.value = data.correo;
+                            adminCorreoInput.setAttribute('readonly', true);
+                            adminCorreoInput.classList.add('bg-gray-100', 'cursor-not-allowed', 'text-gray-500');
+                        }
+                        if (adminDocumentoInput && data.cedula_repre) {
+                            adminDocumentoInput.value = data.cedula_repre;
+                            adminDocumentoInput.setAttribute('readonly', true);
+                            adminDocumentoInput.classList.add('bg-gray-100', 'cursor-not-allowed', 'text-gray-500');
+                        }
+
+                        if (btnCrearAdmin) btnCrearAdmin.disabled = false;
+                    })
+                    .catch(() => {
+                        adminSpinner.classList.add('hidden');
+                        adminEmpresaNoEncontrada.classList.remove('hidden');
+                    });
+            }, 500);
+        });
+    }
 
     function openEditModal(empresa) {
         document.getElementById('edit_nombre').value = empresa.nombre_empresa || '';

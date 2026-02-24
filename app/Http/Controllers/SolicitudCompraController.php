@@ -47,30 +47,7 @@ class SolicitudCompraController extends Controller
         $solicitud->fecha_revision = now();
         $solicitud->save();
 
-        // 2. Activar la empresa (3)
-        $idEmpresa = $solicitud->id_empresa;
-        if ($idEmpresa) {
-            $empresa = Empresa::find($idEmpresa);
-            if ($empresa) {
-                $empresa->id_estado = 3;
-                $empresa->save();
-
-                // 3. Activar licencias y usuarios de la empresa
-                $licencia = \App\Models\VentaLicencias::where('id_empresa', $idEmpresa)
-                    ->orderBy('fecha_inicio', 'desc')
-                    ->first();
-
-                if ($licencia) {
-                    $licencia->id_estado = 3; // Activa
-                    $licencia->fecha_inicio = now();
-                    $licencia->save();
-                }
-
-                \App\Models\Usuario::where('id_empresa', $idEmpresa)->update(['id_estado' => 3]);
-            }
-        }
-
-        return redirect()->back()->with('success', 'Solicitud aprobada y empresa activada exitosamente.');
+        return redirect()->back()->with('success', 'Solicitud aprobada.');
     }
 
     public function destroy($id)

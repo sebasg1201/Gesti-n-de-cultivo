@@ -13,6 +13,9 @@ use Carbon\Carbon;
 use Illuminate\Support\Str;
 use App\Models\SolicitudCompra;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\AdminCreatedMail;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class DashboardController extends Controller
 {
@@ -111,6 +114,7 @@ class DashboardController extends Controller
             'id_empresa' => $empresa->id_empresa,
             'nombre_empresa' => $empresa->nombre_empresa,
             'nombre_repre_legal' => $empresa->nombre_repre_legal,
+            'cedula_repre' => $empresa->cedula_repre,
             'telefono' => $empresa->telefono,
             'direccion' => $empresa->direccion,
             'correo' => $empresa->correo,
@@ -217,6 +221,36 @@ class DashboardController extends Controller
             'imagen' => $imagePath
         ]);
 
-        return back()->with('success', 'Administrador creado exitosamente.');
+        try {
+            // Intentar obtener el nombre del plan para el PDF
+            $ultimaLicencia = VentaLicencias::where('id_empresa', $empresa->id_empresa)->latest('fecha_inicio')->first();
+            $planName = 'Sin plan activo';
+            if ($ultimaLicencia && $ultimaLicencia->tipoLicencia) {
+                $planName = $ultimaLicencia->tipoLicencia->nombre_licencia;
+            }
+
+            // Generar el PDF
+            $pdf = Pdf::loadView('pdf.admin_credentials', [
+                'adminName' => $request->nombre,
+                'email' => $request->correo,
+                'password' => $request->contrasena,
+                'empresaName' => $empresa->nombre_empresa,
+                'planName' => $planName
+            ]);
+
+            // Enviar el correo con el PDF adjunto
+            Mail::to($request->correo)->send(new AdminCreatedMail(
+                $request->nombre,
+                $request->correo,
+                $request->contrasena,
+                $empresa->nombre_empresa,
+                $planName,
+                $pdf->output()
+            ));
+        } catch (\Exception $e) {
+            return back()->with('error', 'Administrador creado, pero hubo un error al enviar el correo con las credenciales: ' . $e->getMessage());
+        }
+
+        return back()->with('success', 'Administrador creado exitosamente y credenciales enviadas.');
     }
 }
