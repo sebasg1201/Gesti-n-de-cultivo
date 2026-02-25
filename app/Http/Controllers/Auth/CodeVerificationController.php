@@ -35,7 +35,7 @@ class CodeVerificationController extends Controller
             $user = SuperAdmin::where('correo', $email)->first();
 
             if (!$user) {
-                return back()->with('error', 'Usuario no encontrado.');
+                return back()->with('error', 'Usuario no encontrado.')->with('email', $email);
             }
 
             // Generate standard password reset token
@@ -50,6 +50,6 @@ class CodeVerificationController extends Controller
             return redirect()->route('password.reset', ['token' => $token, 'email' => $email]);
         }
 
-        return back()->with('error', 'El código es incorrecto o ha expirado.');
+        return back()->with('error', 'El código es incorrecto o ha expirado.')->with('email', $email);
     }
 }

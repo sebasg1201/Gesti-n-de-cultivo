@@ -50,7 +50,7 @@
                                     <div class="text-sm font-medium text-gray-900">
                                         {{ $solicitud->empresa->nombre_empresa ?? 'N/A' }}
                                     </div>
-                                    <div class="text-sm text-gray-500">{{ $solicitud->id_empresa }}</div>
+                                    <div class="text-sm text-gray-500">NIT: {{ $solicitud->id_empresa }}</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="text-sm text-gray-900">{{ $solicitud->empresa->nombre_repre_legal ?? 'N/A' }}

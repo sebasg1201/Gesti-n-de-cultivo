@@ -30,7 +30,7 @@
                 </div>
                 <h2 class="text-2xl font-bold text-gray-800">Verificar Código</h2>
                 <p class="text-gray-500 text-sm mt-2">Hemos enviado un código de 6 dígitos a tu correo:
-                    <strong>{{ session('email') }}</strong>
+                    <strong>{{ old('email', session('email')) }}</strong>
                 </p>
             </div>
 
@@ -43,7 +43,7 @@
 
             <form method="POST" action="{{ route('password.verify.code') }}" class="space-y-6 validate-form">
                 @csrf
-                <input type="hidden" name="email" value="{{ session('email') }}">
+                <input type="hidden" name="email" value="{{ old('email', session('email')) }}">
 
                 <div>
                     <label for="code" class="block text-sm font-medium text-gray-700 mb-1">Código de
