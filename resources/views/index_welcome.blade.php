@@ -2,26 +2,22 @@
 
 @section('content')
     @if(session('success'))
-        <div class="max-w-7xl mx-auto px-6 mt-6">
-            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
-                <strong class="font-bold">¡Éxito!</strong>
-                <span class="block sm:inline">{{ session('success') }}</span>
-                <span class="absolute top-0 bottom-0 right-0 px-4 py-3">
-                    <svg class="fill-current h-6 w-6 text-green-500" role="button" xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 20 20" onclick="this.parentElement.parentElement.style.display='none';">
-                        <title>Close</title>
-                        <path
-                            d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z" />
-                    </svg>
-                </span>
+        <div class="auto-dismiss fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded shadow-lg z-50">
+            <div class="flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                </svg>
+                <span>{{ session('success') }}</span>
             </div>
         </div>
     @endif
     @if(session('error'))
-        <div class="max-w-7xl mx-auto px-6 mt-6">
-            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-                <strong class="font-bold">Error:</strong>
-                <span class="block sm:inline">{{ session('error') }}</span>
+        <div class="auto-dismiss fixed bottom-20 right-4 bg-red-500 text-white px-6 py-3 rounded shadow-lg z-50">
+            <div class="flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+                </svg>
+                <span>{{ session('error') }}</span>
             </div>
         </div>
     @endif

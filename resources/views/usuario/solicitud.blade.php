@@ -15,15 +15,19 @@
                     {{-- MENSAJES DE ERROR/EXITO --}}
                     <div class="md:col-span-2">
                         @if(session('success'))
-                            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative"
-                                role="alert">
-                                <strong class="font-bold">¡Éxito!</strong>
-                                <span class="block sm:inline">{{ session('success') }}</span>
+                            <div id="toast-success" class="fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded shadow-lg z-50">
+                                <div class="flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                    </svg>
+                                    <strong>¡Éxito!</strong>
+                                    <span>{{ session('success') }}</span>
+                                </div>
                             </div>
                         @endif
 
                         @if ($errors->any())
-                            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                            <div id="toast-errors" class="fixed bottom-4 right-4 bg-red-500 text-white px-6 py-3 rounded shadow-lg z-50">
                                 <strong class="font-bold">Por favor corrige los siguientes errores:</strong>
                                 <ul class="mt-2 list-disc list-inside">
                                     @foreach ($errors->all() as $error)
@@ -36,7 +40,7 @@
 
                     {{-- FORMULARIO --}}
                     <form action="{{ route('solicitud.store') }}" method="POST" enctype="multipart/form-data"
-                        class="space-y-6">
+                        class="space-y-6 validate-form">
                         @csrf
                         <input type="hidden" name="licencia_id" value="{{ $licencia->id_tipo_licencia }}">
 
@@ -98,11 +102,11 @@
                                 Pago</label>
                             <input type="file" name="comprobante_pago" id="comprobante_pago" required accept="image/*"
                                 class="mt-1 block w-full text-sm text-gray-500
-                                                            file:mr-4 file:py-2 file:px-4
-                                                            file:rounded-full file:border-0
-                                                            file:text-sm file:font-semibold
-                                                            file:bg-green-50 file:text-green-700
-                                                            hover:file:bg-green-100 file:cursor-pointer">
+                                                                file:mr-4 file:py-2 file:px-4
+                                                                file:rounded-full file:border-0
+                                                                file:text-sm file:font-semibold
+                                                                file:bg-green-50 file:text-green-700
+                                                                hover:file:bg-green-100 file:cursor-pointer">
                             <p class="mt-1 text-xs text-gray-500">Sube una imagen clara del comprobante.</p>
                         </div>
 
@@ -152,17 +156,17 @@
                         </div>
                         <div class="mt-6 flex justify-center">
                             <a href="{{ url('/') }}" class="inline-flex items-center gap-2
-                                    bg-gray-100 text-gray-700
-                                    px-6 py-2
-                                    rounded-xl
-                                    shadow-sm
-                                    border border-gray-200
-                                    hover:bg-gray-200
-                                    hover:text-gray-900
-                                    hover:shadow-md
-                                    active:scale-95
-                                    transition-all duration-200
-                                    cursor-pointer">
+                                        bg-gray-100 text-gray-700
+                                        px-6 py-2
+                                        rounded-xl
+                                        shadow-sm
+                                        border border-gray-200
+                                        hover:bg-gray-200
+                                        hover:text-gray-900
+                                        hover:shadow-md
+                                        active:scale-95
+                                        transition-all duration-200
+                                        cursor-pointer">
                                 <span class="text-lg"></span>
                                 <span class="text-sm font-semibold">Volver al Inicio</span>
                             </a>
@@ -175,4 +179,19 @@
             </div>
         </div>
     </div>
+    <script src="{{ asset('js/form-validation.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            ['toast-success', 'toast-errors'].forEach(function (id) {
+                var el = document.getElementById(id);
+                if (el) {
+                    setTimeout(function () {
+                        el.style.transition = 'opacity 0.6s ease';
+                        el.style.opacity = '0';
+                        setTimeout(function () { el.remove(); }, 600);
+                    }, 10000);
+                }
+            });
+        });
+    </script>
 @endsection

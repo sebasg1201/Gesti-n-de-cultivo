@@ -13,6 +13,9 @@ use Carbon\Carbon;
 use Illuminate\Support\Str;
 use App\Models\SolicitudCompra;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\AdminCreatedMail;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class DashboardController extends Controller
 {
@@ -126,13 +129,15 @@ class DashboardController extends Controller
         }
 
         return response()->json([
-            'id_empresa' => $empresa->id_empresa,
-            'nombre_empresa' => $empresa->nombre_empresa,
-            'nombre_repre_legal' => $empresa->nombre_repre_legal,
-            'telefono' => $empresa->telefono,
-            'direccion' => $empresa->direccion,
-            'correo' => $empresa->correo,
-            'id_tipo_licencia' => $idTipoLicencia
+            'id_empresa'          => $empresa->id_empresa,
+            'nombre_empresa'      => $empresa->nombre_empresa,
+            'nombre_repre_legal'  => $empresa->nombre_repre_legal,
+            'cedula_repre'        => $empresa->cedula_repre,
+            'telefono'            => $empresa->telefono,
+            'direccion'           => $empresa->direccion,
+            'correo'              => $empresa->correo,
+            'id_tipo_licencia'    => $idTipoLicencia,
+            'tiene_licencia_activa' => VentaLicencias::where('id_empresa', $nit)->where('id_estado', 3)->exists(),
         ]);
     }
 
@@ -182,6 +187,16 @@ class DashboardController extends Controller
             'id_empresa' => 'required|exists:empresa,id_empresa',
             'id_tipo_licencia' => 'required|exists:tipo_licencia,id_tipo_licencia',
         ]);
+
+        // Verificar si la empresa ya tiene una licencia activa
+        $licenciaActiva = DB::table('venta_licencias')
+            ->where('id_empresa', $request->id_empresa)
+            ->where('id_estado', 3)
+            ->exists();
+
+        if ($licenciaActiva) {
+            return back()->with('error', 'Esta empresa ya tiene una licencia activa. No se puede asignar otra.');
+        }
 
         $tipoLicencia = TipoLicencia::findOrFail($request->id_tipo_licencia);
 
@@ -235,7 +250,37 @@ class DashboardController extends Controller
             'imagen' => $imagePath
         ]);
 
-        return back()->with('success', 'Administrador creado exitosamente.');
+        try {
+            // Intentar obtener el nombre del plan para el PDF
+            $ultimaLicencia = VentaLicencias::where('id_empresa', $empresa->id_empresa)->latest('fecha_inicio')->first();
+            $planName = 'Sin plan activo';
+            if ($ultimaLicencia && $ultimaLicencia->tipoLicencia) {
+                $planName = $ultimaLicencia->tipoLicencia->nombre_licencia;
+            }
+
+            // Generar el PDF
+            $pdf = Pdf::loadView('pdf.admin_credentials', [
+                'adminName' => $request->nombre,
+                'email' => $request->correo,
+                'password' => $request->contrasena,
+                'empresaName' => $empresa->nombre_empresa,
+                'planName' => $planName
+            ]);
+
+            // Enviar el correo con el PDF adjunto
+            Mail::to($request->correo)->send(new AdminCreatedMail(
+                $request->nombre,
+                $request->correo,
+                $request->contrasena,
+                $empresa->nombre_empresa,
+                $planName,
+                $pdf->output()
+            ));
+        } catch (\Exception $e) {
+            return back()->with('error', 'Administrador creado, pero hubo un error al enviar el correo con las credenciales: ' . $e->getMessage());
+        }
+
+        return back()->with('success', 'Administrador creado exitosamente y credenciales enviadas.');
     }
 
     public function updateLicencia(Request $request, $id)

@@ -221,13 +221,13 @@
 </div>
 
 @if(session('success'))
-<div class="fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded shadow-lg animate-bounce">
+<div class="auto-dismiss fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded shadow-lg animate-bounce">
     {{ session('success') }}
 </div>
 @endif
 
 @if($errors->any())
-<div class="fixed bottom-4 right-4 bg-red-500 text-white px-6 py-3 rounded shadow-lg">
+<div class="auto-dismiss fixed bottom-4 right-4 bg-red-500 text-white px-6 py-3 rounded shadow-lg">
     <ul class="list-disc pl-5">
         @foreach ($errors->all() as $error)
             <li>{{ $error }}</li>

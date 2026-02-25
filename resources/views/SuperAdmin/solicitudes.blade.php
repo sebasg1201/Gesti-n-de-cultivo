@@ -74,7 +74,7 @@
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <span
                                         class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                                                                                       {{ $solicitud->id_estado == 1 ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800' }}">
+                                                                                                                                                               {{ $solicitud->id_estado == 1 ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800' }}">
                                         {{ $solicitud->estado->nombre_estado ?? 'Desconocido' }}
                                     </span>
                                 </td>
@@ -118,9 +118,21 @@
                 <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                     <div class="sm:flex sm:items-start">
                         <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
-                            <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
-                                Detalle de Solicitud de Compra
-                            </h3>
+                            <div class="flex justify-between items-start">
+                                <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
+                                    Detalle de Solicitud de Compra
+                                </h3>
+
+                                <!-- BOTÓN X ARRIBA -->
+                                <button onclick="closeModal()"
+                                    class="text-gray-400 hover:text-gray-600 transition cursor-pointer">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
+                            </div>
 
                             <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6" id="modalContent">
                                 <!-- Dynamic content will be loaded here via JS -->
@@ -135,7 +147,7 @@
                         onsubmit="return confirm('¿Estás seguro? Esta acción eliminará la solicitud y el registro de la empresa. No se puede deshacer.')">
                         @csrf
                         @method('DELETE')
-                        <button type="submit"
+                        <button type="submit" id="btnReportar"
                             class="inline-flex items-center gap-1 bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg text-sm transition cursor-pointer">
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
                                 stroke-width="1.5" stroke="currentColor">
@@ -147,11 +159,6 @@
                     </form>
 
                     <div class="flex gap-2">
-                        <button type="button"
-                            class="inline-flex items-center justify-center rounded-lg border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none cursor-pointer"
-                            onclick="closeModal()">
-                            Cerrar
-                        </button>
                         {{-- Botón Aprobar: visible solo si está pendiente --}}
                         <form id="formAprobar" action="" method="POST">
                             @csrf
@@ -201,41 +208,41 @@
 
             // -- Construir contenido del modal --
             content.innerHTML = `
-                                    <div class="space-y-4">
-                                        <div>
-                                            <h4 class="font-bold text-gray-700">Información de la Empresa</h4>
-                                            <div class="mt-2 text-sm text-gray-600 space-y-1">
-                                                <p><span class="font-semibold">Empresa:</span> ${empresa.nombre_empresa || 'N/A'}</p>
-                                                <p><span class="font-semibold">NIT:</span> ${solicitud.id_empresa || 'N/A'}</p>
-                                                <p><span class="font-semibold">Representante:</span> ${empresa.nombre_repre_legal || 'N/A'}</p>
-                                                <p><span class="font-semibold">Teléfono:</span> ${empresa.telefono || 'N/A'}</p>
-                                                <p><span class="font-semibold">Correo:</span> ${empresa.correo || 'N/A'}</p>
-                                                <p><span class="font-semibold">Dirección:</span> ${empresa.direccion || 'N/A'}</p>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <h4 class="font-bold text-gray-700">Detalles de la Licencia</h4>
-                                            <div class="mt-2 text-sm text-gray-600 space-y-1">
-                                                <p><span class="font-semibold">Plan:</span> ${solicitud.tipo_licencia ? solicitud.tipo_licencia.nombre_licencia : 'N/A'}</p>
-                                                <p><span class="font-semibold">Precio:</span> $${solicitud.tipo_licencia ? new Intl.NumberFormat().format(solicitud.tipo_licencia.precio) : '0'}</p>
-                                            </div>
-                                        </div>
-                                    </div>
+                                                                <div class="space-y-4">
+                                                                    <div>
+                                                                        <h4 class="font-bold text-gray-700">Información de la Empresa</h4>
+                                                                        <div class="mt-2 text-sm text-gray-600 space-y-1">
+                                                                            <p><span class="font-semibold">Empresa:</span> ${empresa.nombre_empresa || 'N/A'}</p>
+                                                                            <p><span class="font-semibold">NIT:</span> ${solicitud.id_empresa || 'N/A'}</p>
+                                                                            <p><span class="font-semibold">Representante:</span> ${empresa.nombre_repre_legal || 'N/A'}</p>
+                                                                            <p><span class="font-semibold">Teléfono:</span> ${empresa.telefono || 'N/A'}</p>
+                                                                            <p><span class="font-semibold">Correo:</span> ${empresa.correo || 'N/A'}</p>
+                                                                            <p><span class="font-semibold">Dirección:</span> ${empresa.direccion || 'N/A'}</p>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div>
+                                                                        <h4 class="font-bold text-gray-700">Detalles de la Licencia</h4>
+                                                                        <div class="mt-2 text-sm text-gray-600 space-y-1">
+                                                                            <p><span class="font-semibold">Plan:</span> ${solicitud.tipo_licencia ? solicitud.tipo_licencia.nombre_licencia : 'N/A'}</p>
+                                                                            <p><span class="font-semibold">Precio:</span> $${solicitud.tipo_licencia ? new Intl.NumberFormat().format(solicitud.tipo_licencia.precio) : '0'}</p>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
 
-                                    <div class="flex flex-col">
-                                        <h4 class="font-bold text-gray-700 mb-2">Comprobante de Pago</h4>
-                                        <div class="border rounded-lg overflow-hidden bg-gray-50 flex items-center justify-center p-2 h-64">
-                                            ${solicitud.comprobante_pago
+                                                                <div class="flex flex-col">
+                                                                    <h4 class="font-bold text-gray-700 mb-2">Comprobante de Pago</h4>
+                                                                    <div class="border rounded-lg overflow-hidden bg-gray-50 flex items-center justify-center p-2 h-64">
+                                                                        ${solicitud.comprobante_pago
                     ? `<img src="${fullComprobanteUrl}" alt="Comprobante" class="max-w-full max-h-full object-contain">`
                     : `<span class="text-gray-400 italic text-sm">Sin comprobante de pago (registro manual)</span>`
                 }
-                                        </div>
-                                        ${solicitud.comprobante_pago
+                                                                    </div>
+                                                                    ${solicitud.comprobante_pago
                     ? `<a href="${fullComprobanteUrl}" target="_blank" class="mt-2 text-sm text-green-600 text-center">Ver imagen original</a>`
                     : ''
                 }
-                                    </div>
-                                `;
+                                                                </div>
+                                                            `;
 
             // -- Configurar formulario Reportar (DELETE) --
             const formReportar = document.getElementById('formReportar');
@@ -245,13 +252,25 @@
             const formAprobar = document.getElementById('formAprobar');
             const btnAprobar = document.getElementById('btnAprobar');
             const badgeAprobada = document.getElementById('badgeAprobada');
+            const btnReportar = document.getElementById('btnReportar');
+
             if (solicitud.id_estado == 1) {
-                formAprobar.action = baseUrl + '/' + solicitud.id_solicitud + '/visto';
+                formAprobar.action = baseUrl + '/' + solicitud.id_solicitud + '/aprobado';
                 btnAprobar.style.display = 'inline-flex';
                 badgeAprobada.style.display = 'none';
+
+                // Habilitar botón Reportar
+                btnReportar.disabled = false;
+                btnReportar.classList.remove('opacity-50', 'cursor-not-allowed', 'hover:bg-red-600');
+                btnReportar.classList.add('hover:bg-red-700', 'cursor-pointer');
             } else {
                 btnAprobar.style.display = 'none';
                 badgeAprobada.style.display = 'inline-flex';
+
+                // Deshabilitar botón Reportar
+                btnReportar.disabled = true;
+                btnReportar.classList.add('opacity-50', 'cursor-not-allowed', 'hover:bg-red-600');
+                btnReportar.classList.remove('hover:bg-red-700', 'cursor-pointer');
             }
 
             modal.classList.remove('hidden');

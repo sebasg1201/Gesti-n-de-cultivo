@@ -34,6 +34,22 @@ class SolicitudCompraController extends Controller
         return redirect()->back()->with('error', 'Solicitud no encontrada.');
     }
 
+    public function aprobar($id)
+    {
+        $solicitud = SolicitudCompra::find($id);
+
+        if (!$solicitud) {
+            return redirect()->back()->with('error', 'Solicitud no encontrada.');
+        }
+
+        // 1. Actualizar estado de la solicitud a Aprobado (5)
+        $solicitud->id_estado = 5;
+        $solicitud->fecha_revision = now();
+        $solicitud->save();
+
+        return redirect()->back()->with('success', 'Solicitud aprobada.');
+    }
+
     public function destroy($id)
     {
         $solicitud = SolicitudCompra::find($id);

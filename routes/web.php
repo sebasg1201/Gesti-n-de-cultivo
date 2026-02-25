@@ -63,6 +63,7 @@ Route::middleware(['auth:superadmin'])->group(function () {
     Route::get('/dashboard/solicitudes', [SolicitudCompraController::class, 'index'])->name('solicitudes.index');
     Route::get('/dashboard/solicitudes/exportar', [SolicitudCompraController::class, 'exportarReporte'])->name('solicitudes.exportar');
     Route::put('/dashboard/solicitudes/{id}/visto', [SolicitudCompraController::class, 'markAsSeen'])->name('solicitudes.markAsSeen');
+    Route::put('/dashboard/solicitudes/{id}/aprobado', [SolicitudCompraController::class, 'aprobar'])->name('solicitudes.aprobar');
     Route::delete('/dashboard/solicitudes/{id}', [SolicitudCompraController::class, 'destroy'])->name('solicitudes.destroy');
 
     Route::get('/reportes', [App\Http\Controllers\ReporteController::class, 'index'])->name('reportes.index');

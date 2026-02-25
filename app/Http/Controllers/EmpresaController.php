@@ -78,6 +78,11 @@ class EmpresaController extends Controller
     {
         $empresa = Empresa::findOrFail($id);
 
+        // Prevenir re-activación si ya está activa
+        if ($empresa->id_estado == 3) {
+            return redirect()->back()->with('error', 'Esta empresa ya está activa.');
+        }
+
         $empresa->id_estado = 3; // Activa
         $empresa->save();
 
