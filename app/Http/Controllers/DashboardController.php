@@ -119,25 +119,30 @@ class DashboardController extends Controller
 
         $idTipoLicencia = $ultimaLicencia->id_tipo_licencia ?? null;
 
-        // Si no tiene historial de licencias, buscamos si tiene una solicitud reciente
-        if (!$idTipoLicencia) {
-            $solicitudReciente = SolicitudCompra::where('id_empresa', $nit)
-                ->latest('fecha_solicitud')
-                ->first();
+        // Buscar última solicitud siempre (independientemente de la licencia)
+        $solicitudReciente = SolicitudCompra::where('id_empresa', $nit)
+            ->latest('fecha_solicitud')
+            ->first();
 
+        if (!$idTipoLicencia) {
             $idTipoLicencia = $solicitudReciente->id_tipo_licencia ?? null;
         }
 
         return response()->json([
-            'id_empresa'          => $empresa->id_empresa,
-            'nombre_empresa'      => $empresa->nombre_empresa,
-            'nombre_repre_legal'  => $empresa->nombre_repre_legal,
-            'cedula_repre'        => $empresa->cedula_repre,
-            'telefono'            => $empresa->telefono,
-            'direccion'           => $empresa->direccion,
-            'correo'              => $empresa->correo,
-            'id_tipo_licencia'    => $idTipoLicencia,
+            'id_empresa' => $empresa->id_empresa,
+            'nombre_empresa' => $empresa->nombre_empresa,
+            'nombre_repre_legal' => $empresa->nombre_repre_legal,
+            'cedula_repre' => $empresa->cedula_repre,
+            'telefono' => $empresa->telefono,
+            'direccion' => $empresa->direccion,
+            'correo' => $empresa->correo,
+            'id_tipo_licencia' => $idTipoLicencia,
             'tiene_licencia_activa' => VentaLicencias::where('id_empresa', $nit)->where('id_estado', 3)->exists(),
+            'tiene_licencia_asignada' => $ultimaLicencia ? true : false,
+            'solicitud_aprobada' => ($solicitudReciente && $solicitudReciente->id_estado == 5) ? true : false,
+            'es_creada_admin' => ($solicitudReciente && $solicitudReciente->comprobante_pago == null && $solicitudReciente->id_estado == 5) ? true : false, // Si es creada por Dashboard, no pasa por aprobacion manual visual normal, ya está en 5
+            'empresa_activa' => ($empresa->id_estado == 3) ? true : false,
+            'tiene_admin' => \App\Models\Usuario::where('id_empresa', $nit)->where('id_tipo_usuario', 1)->exists(),
         ]);
     }
 
@@ -198,6 +203,16 @@ class DashboardController extends Controller
             return back()->with('error', 'Esta empresa ya tiene una licencia activa. No se puede asignar otra.');
         }
 
+        $solicitudReciente = SolicitudCompra::where('id_empresa', $request->id_empresa)
+            ->latest('fecha_solicitud')
+            ->first();
+
+        // Si la solicitud no es 5 (Aprobada) y tiene comprobante de pago (lo que indica que vino del registro de usuarios), bloqueamos.
+        // Las creadas por el Dashboard (storeEmpresa) nacen en 5 y sin comprobante.
+        if ($solicitudReciente && $solicitudReciente->id_estado != 5) {
+            return back()->with('error', 'Debes aprobar la solicitud de la empresa antes de asignarle una licencia.');
+        }
+
         $tipoLicencia = TipoLicencia::findOrFail($request->id_tipo_licencia);
 
         $meses = (int) filter_var($tipoLicencia->tiempo, FILTER_SANITIZE_NUMBER_INT);
@@ -235,6 +250,15 @@ class DashboardController extends Controller
         $imagePath = $request->file('imagen')->store('usuarios', 'public');
 
         $empresa = Empresa::find($request->id_empresa);
+
+        if (!$empresa || $empresa->id_estado != 3) {
+            return back()->with('error', 'No puedes crear un administrador para una empresa que no está activa. Actívala primero desde la tabla.');
+        }
+
+        $yaTieneAdmin = \App\Models\Usuario::where('id_empresa', $request->id_empresa)->where('id_tipo_usuario', 1)->exists();
+        if ($yaTieneAdmin) {
+            return back()->with('error', 'Esta empresa ya tiene un administrador asignado. Solo se permite un administrador principal por empresa.');
+        }
 
         $estadoUsuario = ($empresa && $empresa->id_estado == 3) ? 3 : 1;
 

@@ -156,21 +156,35 @@
                             <div class="flex gap-2">
                                 {{-- Botón Activar --}}
                                 @if($empresa->id_estado != 3)
-                                    <form action="{{ route('SuperAdmin.activar', $empresa->id_empresa) }}" method="POST"
-                                        class="inline">
-                                        @csrf
-                                        @method('PUT')
-                                        <button type="submit"
-                                            class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3 rounded text-xs flex items-center gap-1 cursor-pointer"
-                                            onclick="return confirm('¿Estás seguro de activar esta empresa?')">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                stroke-width="1.5" stroke="currentColor" class="w-3 h-3">
+                                    @if($empresa->licencia)
+                                        <form action="{{ route('SuperAdmin.activar', $empresa->id_empresa) }}" method="POST"
+                                            class="inline">
+                                            @csrf
+                                            @method('PUT')
+                                            <button type="submit"
+                                                class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3 rounded text-xs flex items-center gap-1 cursor-pointer"
+                                                onclick="return confirm('¿Estás seguro de activar esta empresa?')">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                    stroke-width="1.5" stroke="currentColor" class="w-3 h-3">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" />
+                                                </svg>
+                                                Activar Acceso
+                                            </button>
+                                        </form>
+                                    @else
+                                        <button type="button"
+                                            onclick="alert('Debes asignarle una licencia en el Dashboard a esta empresa antes de poder activarla.')"
+                                            class="bg-gray-300 text-gray-500 hover:text-gray-600 font-bold py-1 px-3 rounded text-xs flex items-center gap-1 cursor-not-allowed"
+                                            title="Requiere asignar licencia">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                                stroke="currentColor" class="w-3 h-3">
                                                 <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" />
+                                                    d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
                                             </svg>
                                             Activar Acceso
                                         </button>
-                                    </form>
+                                    @endif
                                 @else
                                     <button disabled
                                         class="bg-gray-300 text-gray-500 font-bold py-1 px-3 rounded text-xs flex items-center gap-1 cursor-not-allowed">
@@ -348,7 +362,8 @@
     </script>
 
     @if(session('success'))
-        <div class="auto-dismiss fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded shadow-lg animate-fade-in-up z-50">
+        <div
+            class="auto-dismiss fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded shadow-lg animate-fade-in-up z-50">
             <div class="flex items-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
                     class="w-5 h-5">
@@ -361,7 +376,8 @@
     @endif
 
     @if(session('error'))
-        <div class="auto-dismiss fixed bottom-4 right-4 bg-red-500 text-white px-6 py-3 rounded shadow-lg animate-fade-in-up z-50">
+        <div
+            class="auto-dismiss fixed bottom-4 right-4 bg-red-500 text-white px-6 py-3 rounded shadow-lg animate-fade-in-up z-50">
             <div class="flex items-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
                     class="w-5 h-5">
@@ -482,265 +498,406 @@
 
 <!-- CREATE EMPRESA MODAL -->
 <div id="createModal" class="fixed inset-0 z-[9999] hidden overflow-y-auto" aria-modal="true">
-    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+    <div class="flex items-center justify-center min-h-screen px-4 py-6">
+        <div class="fixed inset-0 bg-black/40 backdrop-blur-sm" onclick="closeCreateModal()"></div>
+        <div class="relative bg-white rounded-2xl text-left shadow-2xl transform transition-all w-full max-w-4xl">
 
-        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-
-        <div
-            class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl w-full">
-
-            <!-- HEADER MODAL -->
-            <div class="bg-gray-50 px-4 py-3 border-b flex justify-between items-center">
-                <h3 class="text-lg leading-6 font-medium text-gray-900">Registrar Nueva Empresa</h3>
-                <button onclick="closeCreateModal()"
-                    class="h-6 w-6 flex items-center justify-center text-gray-400 hover:text-gray-500 cursor-pointer">
-                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
-
-            <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-
-                <!-- FORM EMPRESA -->
-                <div id="content-empresa" class="space-y-4">
-                    <form action="{{ route('empresas.store') }}" method="POST" id="formEmpresa"
-                        class="grid grid-cols-1 md:grid-cols-2 gap-6 validate-form">
-                        @csrf
-
-                        <!-- NIT -->
-                        <div class="col-span-2 md:col-span-1">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">NIT / ID Empresa</label>
-                            <input type="text" name="id_empresa" id="create_nit"
-                                class="w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
-                                placeholder="Ej: 900123456" required>
-                            <span class="text-xs text-red-500 mt-1 hidden" id="error_create_nit">Solo números
-                                permitidos</span>
+            {{-- HEADER --}}
+            <div class="bg-gradient-to-r from-green-500 to-emerald-400 px-6 py-5 rounded-t-2xl">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                            <svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 4.5v15m7.5-7.5h-15" />
+                            </svg>
                         </div>
-
-                        <!-- Nombre -->
-                        <div class="col-span-2 md:col-span-1">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Nombre de la
-                                Empresa</label>
-                            <input type="text" name="nombre_empresa" id="create_nombre"
-                                class="w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
-                                placeholder="Ej: AgroTech S.A.S" required>
-                            <span class="text-xs text-red-500 mt-1 hidden" id="error_create_nombre">Solo letras
-                                y
-                                espacios permitidos</span>
+                        <div>
+                            <h3 class="text-lg font-bold text-white">Registrar Nueva Empresa</h3>
+                            <p class="text-green-100 text-xs">Completa los datos para dar de alta una empresa</p>
                         </div>
-
-                        <!-- Representante -->
-                        <div class="col-span-2 md:col-span-1">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Representante
-                                Legal</label>
-                            <input type="text" name="nombre_repre_legal" id="create_representante"
-                                class="w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
-                                placeholder="Ej: Juan Pérez" required>
-                            <span class="text-xs text-red-500 mt-1 hidden" id="error_create_representante">Solo
-                                letras y
-                                espacios permitidos</span>
-                        </div>
-
-                        <!-- Cedula Representante -->
-                        <div class="col-span-2 md:col-span-1">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Cédula del
-                                Representante</label>
-                            <input type="text" name="cedula_repre" id="create_cedula_repre"
-                                class="w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
-                                placeholder="Ej: 10234567890" required>
-                            <span class="text-xs text-red-500 mt-1 hidden" id="error_create_cedula_repre">Solo
-                                números
-                                permitidos</span>
-                        </div>
-
-                        <!-- Telefono -->
-                        <div class="col-span-2 md:col-span-1">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
-                            <input type="text" name="telefono" id="create_telefono"
-                                class="w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
-                                placeholder="Ej: 3001234567" required>
-                            <span class="text-xs text-red-500 mt-1 hidden" id="error_create_telefono">Solo
-                                números
-                                permitidos</span>
-                        </div>
-
-                        <!-- Correo -->
-                        <div class="col-span-2 md:col-span-1">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Correo
-                                Electrónico</label>
-                            <input type="email" name="correo" id="create_correo"
-                                class="w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
-                                placeholder="contacto@empresa.com" required>
-                            <span class="text-xs text-red-500 mt-1 hidden" id="error_create_correo">Correo
-                                inválido</span>
-                        </div>
-
-                        <!-- Direccion -->
-                        <div class="col-span-2 md:col-span-1">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Dirección</label>
-                            <input type="text" name="direccion" id="create_direccion"
-                                class="w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
-                                placeholder="Ej: Calle 123 # 45-67" required>
-                        </div>
-
-                        <!-- Tipo de Licencia -->
-                        <div class="col-span-2">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de Licencia</label>
-                            <select name="id_tipo_licencia"
-                                class="w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
-                                required>
-                                <option value="">Seleccione un tipo de licencia...</option>
-                                @foreach($tiposLicencia as $tipo)
-                                    <option value="{{ $tipo->id_tipo_licencia }}">{{ $tipo->nombre_licencia }} —
-                                        ${{ number_format($tipo->precio, 0, ',', '.') }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div class="col-span-2 flex justify-end mt-4">
-                            <button type="submit"
-                                class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg transition transform hover:scale-105 cursor-pointer">
-                                Guardar Empresa
-                            </button>
-                        </div>
-                    </form>
+                    </div>
+                    <button onclick="closeCreateModal()"
+                        class="text-white/80 hover:text-white transition-colors p-1 rounded-lg hover:bg-white/10">
+                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
                 </div>
             </div>
+
+            {{-- BODY --}}
+            <form action="{{ route('empresas.store') }}" method="POST" id="formEmpresa" class="validate-form">
+                @csrf
+                <div class="px-6 pt-6 pb-4 grid grid-cols-1 md:grid-cols-2 gap-5">
+
+                    <!-- NIT -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-1.5">
+                            <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0" />
+                            </svg>
+                            NIT / ID Empresa
+                        </label>
+                        <input type="text" name="id_empresa" id="create_nit"
+                            class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all"
+                            placeholder="Ej: 900123456" required>
+                    </div>
+
+                    <!-- Nombre -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-1.5">
+                            <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                            </svg>
+                            Nombre de la Empresa
+                        </label>
+                        <input type="text" name="nombre_empresa" id="create_nombre"
+                            class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all"
+                            placeholder="Ej: AgroTech S.A.S" required>
+                    </div>
+
+                    <!-- Representante -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-1.5">
+                            <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                            Representante Legal
+                        </label>
+                        <input type="text" name="nombre_repre_legal" id="create_representante"
+                            class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all"
+                            placeholder="Ej: Juan Pérez" required>
+                    </div>
+
+                    <!-- Cedula Representante -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-1.5">
+                            <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0" />
+                            </svg>
+                            Cédula del Representante
+                        </label>
+                        <input type="text" name="cedula_repre" id="create_cedula_repre"
+                            class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all"
+                            placeholder="Ej: 10234567890" required>
+                    </div>
+
+                    <!-- Telefono -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-1.5">
+                            <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                            </svg>
+                            Teléfono
+                        </label>
+                        <input type="text" name="telefono" id="create_telefono"
+                            class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all"
+                            placeholder="Ej: 3001234567" required>
+                    </div>
+
+                    <!-- Correo -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-1.5">
+                            <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                            Correo Electrónico
+                        </label>
+                        <input type="email" name="correo" id="create_correo"
+                            class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all"
+                            placeholder="contacto@empresa.com" required>
+                        <span class="text-xs text-red-500 mt-1 hidden" id="error_create_correo">Correo inválido</span>
+                    </div>
+
+                    <!-- Direccion -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-1.5">
+                            <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                            Dirección
+                        </label>
+                        <input type="text" name="direccion" id="create_direccion"
+                            class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all"
+                            placeholder="Ej: Calle 123 # 45-67" required>
+                    </div>
+
+                    <!-- Tipo de Licencia -->
+                    <div class="col-span-1 md:col-span-2">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-1.5">
+                            <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            Tipo de Licencia
+                        </label>
+                        <select name="id_tipo_licencia"
+                            class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all custom-select"
+                            required>
+                            <option value="">Seleccione un tipo de licencia...</option>
+                            @foreach($tiposLicencia as $tipo)
+                                <option value="{{ $tipo->id_tipo_licencia }}">{{ $tipo->nombre_licencia }} —
+                                    ${{ number_format($tipo->precio, 0, ',', '.') }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+
+                {{-- FOOTER --}}
+                <div class="bg-gray-50 border-t border-gray-100 px-6 py-4 rounded-b-2xl flex justify-end gap-3">
+                    <button type="button" onclick="closeCreateModal()"
+                        class="px-5 py-2.5 text-sm font-semibold text-gray-600 bg-white border border-gray-200 rounded-xl hover:bg-gray-100 transition-all shadow-sm cursor-pointer">
+                        Cancelar
+                    </button>
+                    <button type="submit"
+                        class="px-6 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-green-500 to-emerald-400 rounded-xl hover:from-green-600 hover:to-emerald-500 transition-all shadow-md hover:shadow-lg cursor-pointer flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        Guardar Empresa
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 
 <!-- ADMIN MODAL -->
 <div id="adminModal" class="fixed inset-0 z-[9999] hidden overflow-y-auto" aria-modal="true">
-    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+    <div class="flex items-center justify-center min-h-screen px-4 py-6">
+        <div class="fixed inset-0 bg-black/40 backdrop-blur-sm" onclick="closeAdminModal()"></div>
+        <div class="relative bg-white rounded-2xl text-left shadow-2xl transform transition-all w-full max-w-4xl">
 
-        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-
-        <div
-            class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl w-full">
-
-            <!-- HEADER MODAL -->
-            <div class="bg-gray-50 px-4 py-3 border-b flex justify-between items-center">
-                <h3 class="text-lg leading-2 font-medium text-gray-900">Asignar Administrador</h3>
-                <button onclick="closeAdminModal()"
-                    class="h-6 w-6 flex items-center justify-center text-gray-400 hover:text-gray-500 cursor-pointer">
-                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
+            {{-- HEADER --}}
+            <div class="bg-gradient-to-r from-green-500 to-emerald-400 px-6 py-5 rounded-t-2xl">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                            <svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-white">Asignar Administrador</h3>
+                            <p class="text-green-100 text-xs">Crea un usuario administrador para gestionar la empresa
+                            </p>
+                        </div>
+                    </div>
+                    <button onclick="closeAdminModal()"
+                        class="text-white/80 hover:text-white transition-colors p-1 rounded-lg hover:bg-white/10">
+                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
             </div>
 
-            <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+            {{-- BODY --}}
+            <form action="{{ route('administradores.store') }}" method="POST" enctype="multipart/form-data"
+                id="formAdmin" class="validate-form">
+                @csrf
+                <div class="px-6 pt-6 pb-4 grid grid-cols-1 md:grid-cols-2 gap-5">
 
-                <!-- FORM ADMIN -->
-                <div id="content-admin" class="space-y-4">
-                    <form action="{{ route('administradores.store') }}" method="POST" enctype="multipart/form-data"
-                        id="formAdmin" class="grid grid-cols-1 md:grid-cols-2 gap-6 space-y-6 validate-form">
-                        @csrf
-
-                        <!-- Empresa NIT Search -->
-                        <div class="col-span-2">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">NIT de la Empresa</label>
-                            <div class="relative">
-                                <input type="text" id="admin_nit_busqueda" placeholder="Ingrese el NIT..."
-                                    class="w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 transition-colors pr-10"
-                                    autocomplete="off" required>
-                                <div id="adminNitSpinner" class="hidden absolute right-3 top-2.5">
-                                    <svg class="animate-spin h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg"
-                                        fill="none" viewBox="0 0 24 24">
-                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
-                                            stroke-width="4"></circle>
-                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
-                                    </svg>
-                                </div>
+                    <!-- Empresa NIT Search -->
+                    <div class="col-span-1 md:col-span-2">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-1.5">
+                            <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                            </svg>
+                            Buscar Empresa por NIT
+                        </label>
+                        <div class="relative">
+                            <input type="text" id="admin_nit_busqueda" placeholder="Ingrese el NIT..."
+                                class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all pr-10"
+                                autocomplete="off" required>
+                            <div id="adminNitSpinner" class="hidden absolute right-3 top-2.5">
+                                <svg class="animate-spin h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg"
+                                    fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                        stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                                </svg>
                             </div>
-                            <input type="hidden" id="admin_id_empresa" name="id_empresa" required>
                         </div>
+                        <input type="hidden" id="admin_id_empresa" name="id_empresa" required>
+                    </div>
 
-                        <!-- Info empresa encontrada -->
-                        <div id="adminEmpresaInfo"
-                            class="hidden col-span-2 p-3 bg-green-50 rounded-lg border border-green-100">
-                            <p class="text-xs font-semibold text-green-800" id="adminEmpresaNombre"></p>
+                    <!-- Info empresa encontrada -->
+                    <div id="adminEmpresaInfo"
+                        class="hidden col-span-1 md:col-span-2 p-3 bg-green-50 rounded-xl border border-green-100 flex items-center gap-3">
+                        <div class="p-2 bg-green-100 rounded-lg">
+                            <svg class="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 13l4 4L19 7" />
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-sm font-bold text-green-800" id="adminEmpresaNombre"></p>
                             <p class="text-xs text-green-600" id="adminEmpresaNit"></p>
                         </div>
+                    </div>
 
-                        <!-- Empresa no encontrada -->
-                        <div id="adminEmpresaNoEncontrada"
-                            class="hidden col-span-2 p-3 bg-red-50 rounded-lg border border-red-100">
-                            <p class="text-xs text-red-700">No se encontró ninguna empresa con ese NIT.</p>
+                    <!-- Empresa no encontrada -->
+                    <div id="adminEmpresaNoEncontrada"
+                        class="hidden col-span-1 md:col-span-2 p-3 bg-red-50 rounded-xl border border-red-100 flex items-center gap-3">
+                        <div class="p-2 bg-red-100 rounded-lg">
+                            <svg class="w-5 h-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                            </svg>
                         </div>
+                        <p class="text-sm font-semibold text-red-800">No se encontró ninguna empresa con ese NIT.</p>
+                    </div>
 
-                        <!-- Documento -->
-                        <div class="col-span-2 md:col-span-1">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Documento de
-                                Identidad</label>
-                            <input type="text" name="documento" id="admin_documento"
-                                class="w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
-                                required>
-                            <span class="text-xs text-red-500 mt-1 hidden" id="error_admin_documento">Solo
-                                números
-                                permitidos</span>
+                    <!-- Empresa Inactiva -->
+                    <div id="adminEmpresaInactiva"
+                        class="hidden col-span-1 md:col-span-2 p-3 bg-amber-50 rounded-xl border border-amber-100 flex items-center gap-3">
+                        <div class="p-2 bg-amber-100 rounded-lg">
+                            <svg class="w-5 h-5 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                            </svg>
                         </div>
+                        <div>
+                            <p class="text-sm font-bold text-amber-800">Acción Requerida</p>
+                            <p class="text-xs text-amber-700">La empresa debe estar activa para asignarle un
+                                administrador. Actívala primero desde la tabla.</p>
+                        </div>
+                    </div>
 
-                        <!-- Nombre Admin -->
-                        <div class="col-span-2 md:col-span-1">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Nombre Completo</label>
-                            <input type="text" name="nombre" id="admin_nombre"
-                                class="w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
-                                required>
-                            <span class="text-xs text-red-500 mt-1 hidden" id="error_admin_nombre">Solo letras y
-                                espacios permitidos</span>
+                    <!-- Empresa ya tiene administrador -->
+                    <div id="adminEmpresaConAdmin"
+                        class="hidden col-span-1 md:col-span-2 p-3 bg-red-50 rounded-xl border border-red-100 flex items-center gap-3">
+                        <div class="p-2 bg-red-100 rounded-lg">
+                            <svg class="w-5 h-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                            </svg>
                         </div>
+                        <div>
+                            <p class="text-sm font-bold text-red-800">No permitido</p>
+                            <p class="text-xs text-red-700">Esta empresa ya tiene un administrador. Solo puede haber
+                                uno.</p>
+                        </div>
+                    </div>
 
-                        <!-- Correo Admin -->
-                        <div class="col-span-2 md:col-span-1">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Correo
-                                Electrónico</label>
-                            <input type="email" name="correo" id="admin_correo"
-                                class="w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
-                                required>
-                        </div>
+                    <!-- Documento -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-1.5">
+                            <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0" />
+                            </svg>
+                            Documento de Identidad
+                        </label>
+                        <input type="text" name="documento" id="admin_documento"
+                            class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all"
+                            required>
+                    </div>
 
-                        <!-- Telefono Admin -->
-                        <div class="col-span-2 md:col-span-1">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
-                            <input type="text" name="telefono" id="admin_telefono"
-                                class="w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
-                                required>
-                            <span class="text-xs text-red-500 mt-1 hidden" id="error_admin_telefono">Solo
-                                números
-                                permitidos</span>
-                        </div>
+                    <!-- Nombre Admin -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-1.5">
+                            <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                            Nombre Completo
+                        </label>
+                        <input type="text" name="nombre" id="admin_nombre"
+                            class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all"
+                            required>
+                    </div>
 
-                        <!-- Password -->
-                        <div class="col-span-2 md:col-span-1">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
-                            <input type="password" name="contrasena"
-                                class="w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
-                                required>
-                        </div>
+                    <!-- Correo Admin -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-1.5">
+                            <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                            Correo Electrónico
+                        </label>
+                        <input type="email" name="correo" id="admin_correo"
+                            class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all"
+                            required>
+                    </div>
 
-                        <!-- Foto -->
-                        <div class="col-span-2 md:col-span-1">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Foto de Perfil</label>
-                            <input type="file" name="imagen" accept="image/*"
-                                class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100"
-                                required>
-                        </div>
+                    <!-- Telefono Admin -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-1.5">
+                            <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                            </svg>
+                            Teléfono
+                        </label>
+                        <input type="text" name="telefono" id="admin_telefono"
+                            class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all"
+                            required>
+                    </div>
 
-                        <div class="col-span-2 flex justify-end mt-4">
-                            <button type="submit" id="btnCrearAdmin" disabled
-                                class="bg-green-600 hover:bg-green-700 disabled:bg-gray-300 disabled:cursor-not-allowed disabled:transform-none text-white font-bold py-2 px-6 rounded-lg transition transform hover:scale-105 cursor-pointer">
-                                Crear Administrador
-                            </button>
-                        </div>
-                    </form>
+                    <!-- Password -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-1.5">
+                            <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                            </svg>
+                            Contraseña
+                        </label>
+                        <input type="password" name="contrasena"
+                            class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all"
+                            required>
+                    </div>
+
+                    <!-- Foto -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-1.5">
+                            <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            Foto de Perfil
+                        </label>
+                        <input type="file" name="imagen" accept="image/*"
+                            class="w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100 transition-all focus:outline-none"
+                            required>
+                    </div>
                 </div>
 
-            </div>
+                {{-- FOOTER --}}
+                <div class="bg-gray-50 border-t border-gray-100 px-6 py-4 rounded-b-2xl flex justify-end gap-3">
+                    <button type="button" onclick="closeAdminModal()"
+                        class="px-5 py-2.5 text-sm font-semibold text-gray-600 bg-white border border-gray-200 rounded-xl hover:bg-gray-100 transition-all shadow-sm cursor-pointer">
+                        Cancelar
+                    </button>
+                    <button type="submit" id="btnCrearAdmin" disabled
+                        class="px-6 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-green-500 to-emerald-400 rounded-xl hover:from-green-600 hover:to-emerald-500 transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                        </svg>
+                        Crear Administrador
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -752,7 +909,7 @@
         <div class="relative bg-white rounded-2xl text-left shadow-2xl transform transition-all w-full max-w-4xl">
 
             {{-- HEADER --}}
-            <div class="bg-gradient-to-r from-amber-500 to-yellow-400 px-6 py-5 rounded-t-2xl">
+            <div class="bg-gradient-to-r from-amber-500 to-green-400 px-6 py-5 rounded-t-2xl">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
@@ -971,6 +1128,8 @@
     const adminIdEmpresaHidden = document.getElementById('admin_id_empresa');
     const adminEmpresaInfo = document.getElementById('adminEmpresaInfo');
     const adminEmpresaNoEncontrada = document.getElementById('adminEmpresaNoEncontrada');
+    const adminEmpresaInactiva = document.getElementById('adminEmpresaInactiva');
+    const adminEmpresaConAdmin = document.getElementById('adminEmpresaConAdmin');
     const adminEmpresaNombreEl = document.getElementById('adminEmpresaNombre');
     const adminEmpresaNitEl = document.getElementById('adminEmpresaNit');
     const btnCrearAdmin = document.getElementById('btnCrearAdmin');
@@ -992,6 +1151,8 @@
             // Resetear estado
             adminEmpresaInfo.classList.add('hidden');
             adminEmpresaNoEncontrada.classList.add('hidden');
+            if (adminEmpresaInactiva) adminEmpresaInactiva.classList.add('hidden');
+            if (adminEmpresaConAdmin) adminEmpresaConAdmin.classList.add('hidden');
             adminIdEmpresaHidden.value = '';
 
             // Resetear campos auto-completados
@@ -1015,6 +1176,18 @@
 
                         if (!data || !data.id_empresa) {
                             adminEmpresaNoEncontrada.classList.remove('hidden');
+                            return;
+                        }
+
+                        if (!data.empresa_activa) {
+                            if (adminEmpresaInactiva) adminEmpresaInactiva.classList.remove('hidden');
+                            if (btnCrearAdmin) btnCrearAdmin.disabled = true;
+                            return;
+                        }
+
+                        if (data.tiene_admin) {
+                            if (adminEmpresaConAdmin) adminEmpresaConAdmin.classList.remove('hidden');
+                            if (btnCrearAdmin) btnCrearAdmin.disabled = true;
                             return;
                         }
 

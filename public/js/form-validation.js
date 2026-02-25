@@ -3,7 +3,7 @@
  *
  * Reglas:
  *  - NIT:    solo números, 9-12 dígitos
- *  - Cédula: solo números, 6-10 dígitos
+ *  - Cédula: solo números, 6-10 dígitos (Max 10 si empieza por 1000000000)
  *  - Email:  formato válido usuario@dominio.com
  *  - Teléfono: solo números, 7-10 dígitos
  *  - Contraseña: mínimo 8 caracteres
@@ -122,6 +122,16 @@ function getFieldType(input) {
         return 'nombre_repre';
     }
 
+    // Nombre de Licencia
+    if (n === 'nombre_licencia' || id === 'nombre_licencia') {
+        return 'nombre_licencia';
+    }
+
+    // Tiempo de Duración
+    if (n === 'tiempo' || id === 'tiempo') {
+        return 'tiempo';
+    }
+
     // Precio / Valor
     if (n === 'precio' || id === 'precio' || n.includes('precio') || id.includes('precio')
         || n === 'valor' || id === 'valor') {
@@ -140,7 +150,7 @@ function getFieldType(input) {
 function validateField(input, showUI) {
     if (shouldSkip(input)) return true;
 
-    const value = input.value.trim();
+    let value = input.value.trim();
     const isRequired = input.hasAttribute('required');
     const fieldType = getFieldType(input);
 
@@ -174,10 +184,62 @@ function validateField(input, showUI) {
 
         case 'cedula':
             if (!regexNum.test(value)) {
-                isValid = false; errorMessage = 'Solo debe contener números.';
-            } else if (value.length < 6 || value.length > 10) {
-                isValid = false; errorMessage = 'La cédula debe tener entre 6 y 10 dígitos.';
+                isValid = false;
+                errorMessage = 'Solo debe contener números.';
+                break;
             }
+
+            const len = value.length;
+            const num = Number(value);
+
+            // No permitir que empiece en 0
+            if (value.startsWith('0')) {
+                isValid = false;
+                errorMessage = 'La cédula no puede empezar en 0.';
+                break;
+            }
+
+            // Cédulas antiguas (6 a 9 dígitos)
+            if (len >= 6 && len <= 9) {
+
+                // Evitar números irreales demasiado altos
+                if (num >= 1000000000) {
+                    isValid = false;
+                    errorMessage = 'Número de cédula inválido.';
+                    break;
+                }
+
+                // Opcional: límite más realista
+                if (num > 150000000) {
+                    isValid = false;
+                    errorMessage = 'Número de cédula fuera de rango válido.';
+                    break;
+                }
+
+                break; // válida
+            }
+
+            // Cédulas nuevas (exactamente 10 dígitos)
+            if (len === 10) {
+
+                if (!value.startsWith('1')) {
+                    isValid = false;
+                    errorMessage = 'Las cédulas de 10 dígitos deben empezar por 1.';
+                    break;
+                }
+
+                if (num < 1000000000) {
+                    isValid = false;
+                    errorMessage = 'Número de cédula inválido.';
+                    break;
+                }
+
+                break; // válida
+            }
+
+            // ❌ Cualquier otro caso
+            isValid = false;
+            errorMessage = 'La cédula debe tener entre 6 y 10 dígitos.';
             break;
 
         case 'email': {
@@ -212,6 +274,22 @@ function validateField(input, showUI) {
         case 'nombre_repre':
             if (!regexText.test(value)) {
                 isValid = false; errorMessage = 'Solo debe contener letras y espacios.';
+            }
+            break;
+
+        case 'nombre_licencia':
+            if (!regexText.test(value)) {
+                isValid = false; errorMessage = 'El nombre solo debe contener letras y espacios.';
+            } else if (value.length > 100) {
+                isValid = false; errorMessage = 'Máximo 100 caracteres.';
+            }
+            break;
+
+        case 'tiempo':
+            if (value.length > 50) {
+                isValid = false; errorMessage = 'Máximo 50 caracteres.';
+            } else if (!/^[a-zA-Z0-9\sñÑáéíóúÁÉÍÓÚ]+$/.test(value)) {
+                isValid = false; errorMessage = 'Solo letras, números y espacios.';
             }
             break;
 

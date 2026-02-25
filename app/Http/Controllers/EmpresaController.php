@@ -11,7 +11,7 @@ class EmpresaController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Empresa::with('estado');
+        $query = Empresa::with(['estado', 'licencia']);
 
         if ($request->has('search')) {
             $search = $request->input('search');
@@ -83,22 +83,22 @@ class EmpresaController extends Controller
             return redirect()->back()->with('error', 'Esta empresa ya está activa.');
         }
 
-        $empresa->id_estado = 3; // Activa
-        $empresa->save();
-
         $licencia = \App\Models\VentaLicencias::where('id_empresa', $id)
             ->orderBy('fecha_inicio', 'desc')
             ->first();
 
-        if ($licencia) {
-            $licencia->id_estado = 3; // 3 = Activa
-            $licencia->fecha_inicio = now();
-            $licencia->save();
+        if (!$licencia) {
+            return redirect()->back()->with('error', 'No puedes activar una empresa sin antes asignarle una licencia en el Dashboard.');
         }
 
-        \App\Models\Usuario::where('id_empresa', $id)->update(['id_estado' => 3]);
+        $empresa->id_estado = 3; // Activa
+        $empresa->save();
 
-        return redirect()->back()->with('success', 'Empresa, Licencia y Usuarios activados con éxito.');
+        $licencia->id_estado = 3; // 3 = Activa
+        $licencia->fecha_inicio = now();
+        $licencia->save();
+
+        return redirect()->back()->with('success', 'Empresa y Licencia activadas con éxito.');
     }
 
     public function generarExcel(Request $request)

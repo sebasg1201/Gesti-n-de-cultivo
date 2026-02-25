@@ -85,6 +85,19 @@
                             <p class="text-xs text-red-700">No se encontró ninguna empresa con ese NIT.</p>
                         </div>
 
+                        {{-- Empresa ya tiene licencia activa --}}
+                        <div id="empresaConLicencia" class="hidden p-3 bg-yellow-50 rounded-lg border border-yellow-200">
+                            <p class="text-xs text-yellow-800 font-semibold">Atención</p>
+                            <p class="text-xs text-yellow-700 mt-1">Esta empresa ya cuenta con una licencia activa.</p>
+                        </div>
+
+                        {{-- Solicitud no aprobada --}}
+                        <div id="solicitudNoAprobada" class="hidden p-3 bg-red-50 rounded-lg border border-red-100">
+                            <p class="text-xs text-red-800 font-semibold">Acción Requerida</p>
+                            <p class="text-xs text-red-700 mt-1">Debes aprobar la solicitud de la empresa antes de asignarle
+                                una licencia.</p>
+                        </div>
+
                         {{-- Plan (readonly, se llena automáticamente) --}}
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Plan de Licencia</label>
@@ -435,6 +448,8 @@
             const planNombreInput = document.getElementById('planNombre');
             const empresaInfo = document.getElementById('empresaInfo');
             const empresaNoEncontrada = document.getElementById('empresaNoEncontrada');
+            const empresaConLicencia = document.getElementById('empresaConLicencia');
+            const solicitudNoAprobada = document.getElementById('solicitudNoAprobada');
             const empresaNombreEl = document.getElementById('empresaNombre');
             const empresaNitEl = document.getElementById('empresaNit');
             const btnAsignar = document.getElementById('btnAsignar');
@@ -453,6 +468,8 @@
                 // Resetear estado
                 empresaInfo.classList.add('hidden');
                 empresaNoEncontrada.classList.add('hidden');
+                empresaConLicencia.classList.add('hidden');
+                solicitudNoAprobada.classList.add('hidden');
                 idEmpresaHidden.value = '';
                 idTipoLicenciaHidden.value = '';
                 planNombreInput.value = '';
@@ -478,6 +495,20 @@
                             empresaNombreEl.textContent = data.nombre_empresa;
                             empresaNitEl.textContent = 'NIT: ' + data.id_empresa;
                             empresaInfo.classList.remove('hidden');
+
+                            if (data.tiene_licencia_activa) {
+                                empresaConLicencia.classList.remove('hidden');
+                                planNombreInput.value = 'Licencia ya activa';
+                                btnAsignar.disabled = true;
+                                return;
+                            }
+
+                            if (!data.solicitud_aprobada && !data.es_creada_admin) {
+                                solicitudNoAprobada.classList.remove('hidden');
+                                planNombreInput.value = 'Solicitud pendiente de aprobación';
+                                btnAsignar.disabled = true;
+                                return;
+                            }
 
                             // Llenar plan si existe
                             if (data.id_tipo_licencia && tiposLicencia[data.id_tipo_licencia]) {
