@@ -248,7 +248,7 @@ function validateField(input, showUI) {
     // --- 2. Reglas según tipo de campo ---
     const regexNum = /^\d+$/;
     const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const regexText = /^[a-zA-Z\sñÑáéíóúÁÉÍÓÚ]+$/;
+    const regexText = /^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ\s.&]+$/;
 
     switch (fieldType) {
         case 'nit':
@@ -348,9 +348,13 @@ function validateField(input, showUI) {
             }
             break;
 
-        case 'nombre_repre':
+        case 'nombre_empresa':
             if (!regexText.test(value)) {
-                isValid = false; errorMessage = 'Solo debe contener letras y espacios.';
+                isValid = false;
+                errorMessage = 'El nombre de la empresa solo debe contener letras, espacios O (.)(&)';
+            } else if (value.length > 100) {
+                isValid = false;
+                errorMessage = 'Máximo 100 caracteres.';
             }
             break;
 
