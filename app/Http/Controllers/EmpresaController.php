@@ -175,4 +175,29 @@ class EmpresaController extends Controller
 
         return response()->stream($callback, 200, $headers);
     }
+    public function validarUnicidad(Request $request)
+    {
+        $field = $request->input('field');
+        $value = $request->input('value');
+        $excludeId = $request->input('id_excluir'); // Para actualizaciones
+
+        // Mapeo selectivo por seguridad
+        $camposPermitidos = ['id_empresa', 'nombre_empresa', 'cedula_repre', 'telefono', 'correo'];
+        if (!in_array($field, $camposPermitidos)) {
+            return response()->json(['exists' => false]);
+        }
+
+        $query = Empresa::where($field, $value);
+
+        if ($excludeId) {
+            $query->where('id_empresa', '!=', $excludeId);
+        }
+
+        $exists = $query->exists();
+
+        return response()->json([
+            'exists' => $exists,
+            'message' => $exists ? 'Este dato ya está registrado.' : 'Disponible.'
+        ]);
+    }
 }

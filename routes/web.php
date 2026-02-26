@@ -16,6 +16,7 @@ Route::get('/buscar-empresa/{nit}', function ($nit) {
 });
 
 Route::get('/empresa/buscar/{nit}', [DashboardController::class, 'buscarEmpresa']);
+Route::post('/validar-unicidad', [EmpresaController::class, 'validarUnicidad']);
 
 
 

@@ -137,7 +137,7 @@ class DashboardController extends Controller
             'direccion' => $empresa->direccion,
             'correo' => $empresa->correo,
             'id_tipo_licencia' => $idTipoLicencia,
-            'tiene_licencia_activa' => VentaLicencias::where('id_empresa', $nit)->where('id_estado', 3)->exists(),
+            'tiene_licencia_activa' => VentaLicencias::where('id_empresa', $nit)->whereIn('id_estado', [1, 3])->exists(),
             'tiene_licencia_asignada' => $ultimaLicencia ? true : false,
             'solicitud_aprobada' => ($solicitudReciente && $solicitudReciente->id_estado == 5) ? true : false,
             'es_creada_admin' => ($solicitudReciente && $solicitudReciente->comprobante_pago == null && $solicitudReciente->id_estado == 5) ? true : false, // Si es creada por Dashboard, no pasa por aprobacion manual visual normal, ya está en 5
@@ -193,14 +193,14 @@ class DashboardController extends Controller
             'id_tipo_licencia' => 'required|exists:tipo_licencia,id_tipo_licencia',
         ]);
 
-        // Verificar si la empresa ya tiene una licencia activa
-        $licenciaActiva = DB::table('venta_licencias')
+        // Verificar si la empresa ya tiene una licencia activa o pendiente
+        $licenciaExistente = DB::table('venta_licencias')
             ->where('id_empresa', $request->id_empresa)
-            ->where('id_estado', 3)
+            ->whereIn('id_estado', [1, 3])
             ->exists();
 
-        if ($licenciaActiva) {
-            return back()->with('error', 'Esta empresa ya tiene una licencia activa. No se puede asignar otra.');
+        if ($licenciaExistente) {
+            return back()->with('error', 'Esta empresa ya tiene una licencia activa o pendiente. No se puede asignar otra.');
         }
 
         $solicitudReciente = SolicitudCompra::where('id_empresa', $request->id_empresa)

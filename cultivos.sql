@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 25-02-2026 a las 19:21:50
+-- Tiempo de generación: 26-02-2026 a las 19:54:29
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -38,6 +38,7 @@ CREATE TABLE `cache` (
 --
 
 INSERT INTO `cache` (`key`, `value`, `expiration`) VALUES
+('agrotech-cache-password_reset_code_didierreyes003@gmail.com', 'i:707596;', 1772057537),
 ('laravel-cache-password_reset_code_bastobrayan246@gmail.com', 'i:342369;', 1771258013),
 ('laravel-cache-password_reset_code_reyesz2803@gmail.com', 'i:728743;', 1770953137);
 
@@ -143,6 +144,14 @@ CREATE TABLE `empresa` (
   `fecha_creacion` datetime DEFAULT NULL,
   `id_estado` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `empresa`
+--
+
+INSERT INTO `empresa` (`id_empresa`, `nombre_empresa`, `nombre_repre_legal`, `cedula_repre`, `telefono`, `correo`, `direccion`, `fecha_creacion`, `id_estado`) VALUES
+('1212355444', 'Medellin', 'Yuber', 1110465231, '3022609743', 'yuber@gmail.com', 'MzN Casa# 1 Zona 4', '2026-02-26 13:13:35', 1),
+('9880912400', 'AgroTech', 'johan', 1110495788, '3103527239', 'johsn@gmail.com', 'MzN Casa# 1 Picaleña', '2026-02-26 13:10:52', 1);
 
 -- --------------------------------------------------------
 
@@ -344,7 +353,9 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('U5RZPr2r65tMtcXeAey7S25p4BSsifiuLimu3TmG', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiNEFoQ0w5cDg4YkdCMjZtTDZ4MVRGSjI2SGFhdkM2SnpMdUo0WVZobyI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6Mjc6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9sb2dpbiI7czo1OiJyb3V0ZSI7czo1OiJsb2dpbiI7fX0=', 1772043598);
+('dCvmXQhrCC2XVHcSNR7bgJFYeeOaReILaIk9Ju9J', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiM3M4WWZicWZDdWdIMGVMVEVYcGNwd3d4bFo4ZGZ0akNJN2tLMHVZNSI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6NDA6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9zb2xpY2l0dWQtY29tcHJhLzMiO3M6NToicm91dGUiO3M6MTY6InNvbGljaXR1ZC5jcmVhdGUiO319', 1772128167),
+('gNZauQF7VnIpxYgTAAuSoyFriM3sZkHk6qOrKR7K', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiTjFRZk1HN3pzc0RveE02QjBMcW81dTVCQVVBN0U1Sm56UFhEb2tsSCI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6NDA6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9zb2xpY2l0dWQtY29tcHJhLzMiO3M6NToicm91dGUiO3M6MTY6InNvbGljaXR1ZC5jcmVhdGUiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX19', 1772128230),
+('YaaXChRSjPIvjocGkqgWpGOEDIle73nPmoDcs7X1', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiVmRSbjJubExLbkljeHlZNG5YQ0tsUFdOMnVKTDE1Wjc1T3NPWDdyUiI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6NDA6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9zb2xpY2l0dWQtY29tcHJhLzIiO3M6NToicm91dGUiO3M6MTY6InNvbGljaXR1ZC5jcmVhdGUiO319', 1772131942);
 
 -- --------------------------------------------------------
 
@@ -361,6 +372,14 @@ CREATE TABLE `solicitud_compra` (
   `fecha_solicitud` datetime DEFAULT current_timestamp(),
   `fecha_revision` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `solicitud_compra`
+--
+
+INSERT INTO `solicitud_compra` (`id_solicitud`, `id_empresa`, `comprobante_pago`, `id_tipo_licencia`, `id_estado`, `fecha_solicitud`, `fecha_revision`) VALUES
+(23, '9880912400', 'comprobantes/1772129452.png', 3, 1, '2026-02-26 13:10:52', NULL),
+(24, '1212355444', 'comprobantes/1772129615.png', 3, 5, '2026-02-26 13:13:35', '2026-02-26 13:41:53');
 
 -- --------------------------------------------------------
 
@@ -389,8 +408,8 @@ CREATE TABLE `super_admin` (
 
 INSERT INTO `super_admin` (`id_super_admin`, `nombre`, `usuario`, `correo`, `password_hash`, `id_estado`, `ultimo_login`, `fecha_creacion`, `fecha_actualizacion`, `remember_token`, `created_at`, `updated_at`) VALUES
 (121121222, 'Sebastian Garcia', 'sebas', 'sebastiangarciaalvarez123@gmail.com', '$2y$12$YoWr9W3m9DTOdIq9lQl5v.UUywmt.V8dWL.E6.BS8jtcLy9xzzoPG', 3, NULL, '2026-02-17 02:13:13', '2026-02-17 02:13:13', NULL, NULL, NULL),
-(1006511657, 'Brayan Basto', 'Stevan', 'bastobrayan246@gmail.com', '$2y$12$Qh0yFs6SfldIhbRSw2gfguC8OukaAtB1KnOBga5XY/dKXi.2070X.', 3, NULL, '2026-02-10 03:51:59', '2026-02-17 02:10:22', 'aegJSp6QIMpg95egR7NJXAnaE5njCRkax1I5ss63F6MT9YHZs4Q3cINlIMw9', NULL, '2026-02-13 02:07:57'),
-(1110495789, 'Didier Reyes', 'dires123', 'didierreyes003@gmail.com', '$2y$12$CKXs7SUsNzetpilgVTY19udZyQIjCesQsJb5QL0y1mR4nhZmvnkvq', 3, NULL, '2026-02-09 19:43:33', '2026-02-25 18:19:55', 'E1xAHunpYj7x7v7U75M5jrWqbDB6UrlaXZ1wBBpZiI0TjAaZ7LGtpatrtJvu', NULL, '2026-02-24 18:07:11');
+(1006511657, 'Brayan Basto', 'Stevan', 'bastobrayan246@gmail.com', '$2y$12$Qh0yFs6SfldIhbRSw2gfguC8OukaAtB1KnOBga5XY/dKXi.2070X.', 3, NULL, '2026-02-10 03:51:59', '2026-02-26 18:51:59', 'VP7FUMElK9VcB6bLVQKms0wO9szkni2vUklcHmbTAlnp9yP3smsLlM6KwNIE', NULL, '2026-02-13 02:07:57'),
+(1110495789, 'Didier Reyes', 'dires123', 'didierreyes003@gmail.com', '$2y$12$Fsbgdwa0dvw0ifmmHXSg7.mPbKWgnPQEcHMOz.6fKhHxgy8kUaOaS', 3, NULL, '2026-02-09 19:43:33', '2026-02-26 18:50:49', '4RNgNmM077wU9EGpn138v8hZluXWltW3FERqj1F2DrNB5dI4EXN32X8rwZk4', NULL, '2026-02-25 21:01:21');
 
 -- --------------------------------------------------------
 
@@ -506,23 +525,6 @@ CREATE TABLE `trabajador` (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `users`
---
-
-CREATE TABLE `users` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `email` varchar(255) NOT NULL,
-  `email_verified_at` timestamp NULL DEFAULT NULL,
-  `password` varchar(255) NOT NULL,
-  `remember_token` varchar(100) DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
 -- Estructura de tabla para la tabla `usuario`
 --
 
@@ -552,6 +554,13 @@ CREATE TABLE `venta_licencias` (
   `id_empresa` varchar(14) NOT NULL,
   `id_estado` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `venta_licencias`
+--
+
+INSERT INTO `venta_licencias` (`id_key`, `fecha_inicio`, `observacione`, `id_tipo_licencia`, `id_empresa`, `id_estado`) VALUES
+('VvTVwUiRpGhPor', '2026-02-26 13:42:06', 'Asignada desde Dashboard', 3, '1212355444', 1);
 
 --
 -- Índices para tablas volcadas
@@ -764,13 +773,6 @@ ALTER TABLE `trabajador`
   ADD PRIMARY KEY (`id_trabajador`);
 
 --
--- Indices de la tabla `users`
---
-ALTER TABLE `users`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `users_email_unique` (`email`);
-
---
 -- Indices de la tabla `usuario`
 --
 ALTER TABLE `usuario`
@@ -880,7 +882,7 @@ ALTER TABLE `riego`
 -- AUTO_INCREMENT de la tabla `solicitud_compra`
 --
 ALTER TABLE `solicitud_compra`
-  MODIFY `id_solicitud` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id_solicitud` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT de la tabla `super_admin`
@@ -904,7 +906,7 @@ ALTER TABLE `tipo_cosecha`
 -- AUTO_INCREMENT de la tabla `tipo_licencia`
 --
 ALTER TABLE `tipo_licencia`
-  MODIFY `id_tipo_licencia` int(14) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_tipo_licencia` int(14) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `tipo_riego`
@@ -923,12 +925,6 @@ ALTER TABLE `tipo_semilla`
 --
 ALTER TABLE `tipo_usuario`
   MODIFY `id_tipo_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
---
--- AUTO_INCREMENT de la tabla `users`
---
-ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- Restricciones para tablas volcadas

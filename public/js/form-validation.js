@@ -19,12 +19,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const inputs = form.querySelectorAll('input, select, textarea');
         const submitBtn = form.querySelector('button[type="submit"]');
 
-        // ---- Revisar validez global y habilitar/deshabilitar submit ----
         const checkFormValidity = () => {
             let formIsValid = true;
             inputs.forEach(input => {
                 if (shouldSkip(input)) return;
-                if (!validateField(input, false)) {
+                // No es válido si falla formato local O si la validación asíncrona falló O está en curso
+                if (!validateField(input, false) || input.dataset.asyncValid === 'false' || input.dataset.asyncChecking === 'true') {
                     formIsValid = false;
                 }
             });
@@ -36,24 +36,29 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
 
-        // ---- Asignar listeners ----
         inputs.forEach(input => {
             if (shouldSkip(input)) return;
 
             ['input', 'change', 'blur'].forEach(event => {
                 input.addEventListener(event, () => {
-                    validateField(input, true);
+                    const isValidLocal = validateField(input, true);
+                    if (isValidLocal) {
+                        triggerAsyncValidation(input, checkFormValidity);
+                    } else {
+                        // Reset asíncrono si el formato local falla
+                        input.dataset.asyncValid = 'true';
+                        input.dataset.asyncChecking = 'false';
+                    }
                     checkFormValidity();
                 });
             });
         });
 
-        // ---- Prevenir envío si hay errores ----
         form.addEventListener('submit', (e) => {
             let formIsValid = true;
             inputs.forEach(input => {
                 if (shouldSkip(input)) return;
-                if (!validateField(input, true)) {
+                if (!validateField(input, true) || input.dataset.asyncValid === 'false') {
                     formIsValid = false;
                 }
             });
@@ -63,6 +68,73 @@ document.addEventListener('DOMContentLoaded', () => {
         checkFormValidity();
     });
 });
+
+let debounceTimers = {};
+
+const triggerAsyncValidation = (input, onComplete) => {
+    const type = getFieldType(input);
+    const fieldMapping = {
+        'nit': 'id_empresa',
+        'nombre_empresa': 'nombre_empresa',
+        'cedula': 'cedula_repre',
+        'telefono': 'telefono',
+        'email': 'correo'
+    };
+
+    const fieldName = fieldMapping[type];
+    if (!fieldName) return;
+
+    const value = input.value.trim();
+    if (value.length < 3) return; // Mínimo de caracteres para disparar búsqueda asíncrona
+
+    if (debounceTimers[fieldName]) clearTimeout(debounceTimers[fieldName]);
+    debounceTimers[fieldName] = setTimeout(async () => {
+        await checkUniquenessFromServer(input, fieldName, value);
+        if (onComplete) onComplete();
+    }, 500);
+};
+
+const checkUniquenessFromServer = async (input, field, value) => {
+    input.dataset.asyncChecking = 'true';
+    updateUI(input, 'checking', 'Verificando disponibilidad...');
+
+    try {
+        const token = document.querySelector('meta[name="csrf-token"]')?.content;
+        const response = await fetch('/validar-unicidad', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': token,
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({ field, value })
+        });
+
+        if (!response.ok) {
+            throw new Error(`Server error: ${response.status}`);
+        }
+
+        const data = await response.json();
+        input.dataset.asyncChecking = 'false';
+
+        if (data.exists) {
+            input.dataset.asyncValid = 'false';
+            updateUI(input, false, data.message);
+        } else {
+            input.dataset.asyncValid = 'true';
+            updateUI(input, true, '');
+        }
+    } catch (error) {
+        console.error('Error validando:', error);
+        input.dataset.asyncChecking = 'false';
+
+        // En caso de error técnico (419, 500), no marcamos como verde ni rojo 
+        // para no dar falsa sensación de seguridad ni bloquear al usuario.
+        // Lo dejamos en estado neutral o permitimos si es vital.
+        input.dataset.asyncValid = 'true';
+        updateUI(input, null, '');
+    }
+};
 
 /* -----------------------------------------------------------------------
    Helpers
@@ -136,6 +208,11 @@ function getFieldType(input) {
     if (n === 'precio' || id === 'precio' || n.includes('precio') || id.includes('precio')
         || n === 'valor' || id === 'valor') {
         return 'precio';
+    }
+
+    // Nombre de Empresa
+    if (n === 'nombre_empresa' || id === 'nombre_empresa' || n.includes('nombre_empresa')) {
+        return 'nombre_empresa';
     }
 
     return null;
@@ -323,6 +400,7 @@ function updateUI(input, isValid, errorMessage) {
     input.classList.remove(
         'border-red-500', 'focus:ring-red-500', 'focus:border-red-500',
         'border-green-500', 'focus:ring-green-500', 'focus:border-green-500',
+        'border-blue-500', 'focus:ring-blue-500', 'focus:border-blue-500',
         'border-gray-300'
     );
 
@@ -333,12 +411,18 @@ function updateUI(input, isValid, errorMessage) {
         return;
     }
 
+    if (isValid === 'checking') {
+        input.classList.add('border-blue-500', 'focus:ring-blue-500', 'focus:border-blue-500');
+        showErrorMsg(input, errorMessage, 'text-blue-500');
+        return;
+    }
+
     if (isValid) {
         input.classList.add('border-green-500', 'focus:ring-green-500', 'focus:border-green-500');
         removeErrorMsg(input);
     } else {
         input.classList.add('border-red-500', 'focus:ring-red-500', 'focus:border-red-500');
-        showErrorMsg(input, errorMessage);
+        showErrorMsg(input, errorMessage, 'text-red-500');
     }
 }
 
@@ -347,16 +431,19 @@ function updateUI(input, isValid, errorMessage) {
  * La estrategia es usar un <p data-for="input-id"> insertado en el mismo
  * contenedor padre del input para evitar conflictos en modales.
  */
-function showErrorMsg(input, message) {
+function showErrorMsg(input, message, colorClass = 'text-red-500') {
     const errorId = 'v-err-' + (input.id || input.name || Math.random().toString(36).slice(2));
     let errorEl = document.getElementById(errorId);
 
     if (!errorEl) {
         errorEl = document.createElement('p');
         errorEl.id = errorId;
-        errorEl.className = 'v-error-msg text-red-500 text-xs mt-1';
+        errorEl.className = `v-error-msg ${colorClass} text-xs mt-1`;
         // Insertar justo después del input (no del contenedor)
         input.insertAdjacentElement('afterend', errorEl);
+    } else {
+        // Actualizar clase de color si ya existe
+        errorEl.className = `v-error-msg ${colorClass} text-xs mt-1`;
     }
 
     errorEl.textContent = message;

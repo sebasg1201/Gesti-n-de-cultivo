@@ -45,7 +45,7 @@
                         autofocus readonly
                         class="block w-full rounded-lg border-gray-300 border bg-gray-100 text-gray-500 shadow-sm p-2.5">
                     @error('correo')
-                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
 
@@ -73,7 +73,7 @@
                     </div>
 
                     @error('password')
-                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
 
@@ -98,13 +98,13 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const passwordInput = document.getElementById('password');
             const strengthContainer = document.getElementById('password-strength-container');
             const strengthBar = document.getElementById('password-strength-bar');
             const strengthText = document.getElementById('password-strength-text');
 
-            passwordInput.addEventListener('input', function() {
+            passwordInput.addEventListener('input', function () {
                 const password = this.value;
 
                 if (password.length === 0) {
@@ -180,7 +180,7 @@
     <script src="{{ asset('js/form-validation.js') }}"></script>
     <script>
         // Prevent Back-Forward Cache (BFCache) to ensure strict security flow
-        window.addEventListener('pageshow', function(event) {
+        window.addEventListener('pageshow', function (event) {
             if (event.persisted) {
                 window.location.reload();
             }
