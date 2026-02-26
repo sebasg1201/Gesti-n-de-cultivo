@@ -2,474 +2,476 @@
 
 @section('content')
 
-<div class="flex justify-between items-center mb-6">
-    <h1 class="text-2xl font-bold">Gestión De Empresas</h1>
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold">Gestión De Empresas</h1>
 
-    <div class="flex items-center gap-4">
-        <!-- EXCEL BUTTON -->
-        <button onclick="openExcelModal()"
-            class="bg-green-600 hover:bg-green-700 text-white font-bold py-1 px-3 rounded text-sm flex items-center gap-1 transition transform hover:scale-105 cursor-pointer">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                stroke="currentColor" class="w-4 h-4">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m3.75 9v6m3-3H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
-            </svg>
-            Descargar Excel
-        </button>
+        <div class="flex items-center gap-4">
+            <!-- EXCEL BUTTON -->
+            <button onclick="openExcelModal()"
+                class="bg-green-600 hover:bg-green-700 text-white font-bold py-1 px-3 rounded text-sm flex items-center gap-1 transition transform hover:scale-105 cursor-pointer">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="w-4 h-4">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m3.75 9v6m3-3H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+                </svg>
+                Descargar Excel
+            </button>
 
-        <button onclick="openCreateModal()"
-            class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded flex items-center gap-2 cursor-pointer transition transform hover:scale-105">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                stroke="currentColor" class="w-3 h-3">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-            </svg>
-            Nueva Empresa
-        </button>
+            <button onclick="openCreateModal()"
+                class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded flex items-center gap-2 cursor-pointer transition transform hover:scale-105">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                    stroke="currentColor" class="w-3 h-3">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                </svg>
+                Nueva Empresa
+            </button>
 
-        <button onclick="openAdminModal()"
-            class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded flex items-center gap-2 cursor-pointer transition transform hover:scale-105">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                stroke="currentColor" class="w-3 h-3">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M19 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3.75 15a9.006 9.006 0 0 1 6-2.25h.008v.008h-.008A9.005 9.005 0 0 1 12.007 15l.006.058c.277 3.394-2.128 6.942-5.717 6.942H6.302c-3.13 0-5.618-2.585-5.98-5.717l-.006-.058Z" />
-            </svg>
-            Asignar Administrador
-        </button>
-    </div>
-</div>
-
-<!-- SEARCH AND FILTER -->
-<div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 mb-6 relative z-10">
-    <form action="{{ route('SuperAdmin.index') }}" method="GET"
-        class="flex flex-col lg:flex-row justify-between items-center gap-4">
-
-        <!-- CONTROLES DE BÚSQUEDA -->
-        <div class="flex w-full lg:w-1/2 gap-3">
-            <div class="relative w-full">
-                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none"
-                        viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                </div>
-                <input type="search" name="search" value="{{ request('search') }}"
-                    class="block w-full pl-11 pr-4 py-2.5 border border-gray-300 rounded-lg leading-5 bg-gray-50 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 sm:text-sm transition-colors text-gray-700"
-                    placeholder="Buscar por Empresa o NIT...">
-            </div>
-            <button type="submit"
-                class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2.5 px-6 rounded-lg transition-colors flex items-center gap-2 shadow-sm whitespace-nowrap cursor-pointer">
-                Buscar
+            <button onclick="openAdminModal()"
+                class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded flex items-center gap-2 cursor-pointer transition transform hover:scale-105">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                    stroke="currentColor" class="w-3 h-3">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M19 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3.75 15a9.006 9.006 0 0 1 6-2.25h.008v.008h-.008A9.005 9.005 0 0 1 12.007 15l.006.058c.277 3.394-2.128 6.942-5.717 6.942H6.302c-3.13 0-5.618-2.585-5.98-5.717l-.006-.058Z" />
+                </svg>
+                Asignar Administrador
             </button>
         </div>
-
-        <!-- FILTROS DE ESTADO -->
-        <div class="flex flex-wrap items-center gap-2 w-full lg:w-auto justify-end">
-            <a href="{{ route('SuperAdmin.index', ['search' => request('search')]) }}"
-                class="px-4 py-2 text-sm font-medium rounded-lg transition-all {{ !request('status') ? 'bg-gray-800 text-white shadow-md' : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-gray-900 border border-transparent' }}">
-                Todas
-            </a>
-            <a href="{{ route('SuperAdmin.index', ['status' => 'pendiente', 'search' => request('search')]) }}"
-                class="px-4 py-2 text-sm font-medium rounded-lg transition-all {{ request('status') == 'pendiente' ? 'bg-yellow-500 text-white shadow-md hover:bg-yellow-600' : 'bg-yellow-50 text-yellow-700 border border-yellow-200 hover:bg-yellow-100 hover:text-yellow-800' }}">
-                Pendientes
-            </a>
-            <a href="{{ route('SuperAdmin.index', ['status' => 'activa', 'search' => request('search')]) }}"
-                class="px-4 py-2 text-sm font-medium rounded-lg transition-all {{ request('status') == 'activa' ? 'bg-green-500 text-white shadow-md hover:bg-green-600' : 'bg-green-50 text-green-700 border border-green-200 hover:bg-green-100 hover:text-green-800' }}">
-                Activas
-            </a>
-            <a href="{{ route('SuperAdmin.index', ['status' => 'bloqueada', 'search' => request('search')]) }}"
-                class="px-4 py-2 text-sm font-medium rounded-lg transition-all {{ request('status') == 'bloqueada' ? 'bg-red-500 text-white shadow-md hover:bg-red-600' : 'bg-red-50 text-red-700 border border-red-200 hover:bg-red-100 hover:text-red-800' }}">
-                Bloqueadas
-            </a>
-        </div>
-
-    </form>
-</div>
-
-<!-- COMPANIES TABLE -->
-<div class="bg-white rounded shadow overflow-hidden">
-    <div class="p-4 border-b">
-        <h3 class="font-bold">Solicitudes de Acceso <span
-                class="bg-yellow-100 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">{{ $stats['nuevas'] }}
-                Pendientes</span></h3>
     </div>
 
-    <table class="w-full text-left">
-        <thead class="bg-gray-50 text-xs uppercase text-gray-700">
-            <tr>
-                <th class="p-4">Empresa y NIT</th>
-                <th class="p-4">Propietario</th>
-                <th class="p-4">Fecha Registro</th>
-                <th class="p-4">Estado</th>
-                <th class="p-4">Accion</th>
-            </tr>
-        </thead>
-        <tbody class="divide-y divide-gray-200">
-            @forelse($empresas as $empresa)
-            <tr class="hover:bg-gray-50">
-                <td class="p-4">
-                    <div class="flex items-center gap-3">
-                        <div
-                            class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600 font-bold">
-                            {{ substr($empresa->nombre_empresa, 0, 2) }}
-                        </div>
-                        <div>
-                            <div class="font-bold text-gray-900">{{ $empresa->nombre_empresa }}</div>
-                            <div class="text-sm text-gray-500">NIT: {{ $empresa->id_empresa }}</div>
-                        </div>
-                    </div>
-                </td>
-                <td class="p-4">
-                    <div class="font-medium text-gray-900">{{ $empresa->nombre_repre_legal }}</div>
-                    <div class="text-sm text-gray-500">{{ $empresa->correo }}</div>
-                </td>
-                <td class="p-4">
-                    <div class="font-medium text-gray-900">
-                        {{ \Carbon\Carbon::parse($empresa->fecha_creacion)->timezone('America/Bogota')->format('d M, Y') }}
-                    </div>
-                    <div class="text-xs text-gray-500">
-                        {{ \Carbon\Carbon::parse($empresa->fecha_creacion)->timezone('America/Bogota')->locale('es')->diffForHumans() }}
-                    </div>
-                </td>
-                <td class="p-4">
-                    @if($empresa->estado)
-                    @php
-                    $color = match ($empresa->estado->id_estado) {
-                    1 => 'text-yellow-700 bg-yellow-100', // pendiente
-                    2 => 'text-red-700 bg-red-100', // bloqueada
-                    3 => 'text-green-700 bg-green-100', // activa
-                    default => 'text-gray-700 bg-gray-100',
-                    };
-                    @endphp
+    <!-- SEARCH AND FILTER -->
+    <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 mb-6 relative z-10">
+        <form action="{{ route('SuperAdmin.index') }}" method="GET"
+            class="flex flex-col lg:flex-row justify-between items-center gap-4">
 
-                    <span class="px-2 py-1 font-semibold leading-tight rounded-full {{ $color }}">
-                        {{ ucfirst($empresa->estado->nombre_estado) }}
-                    </span>
-                    @else
-                    <span class="px-2 py-1 font-semibold leading-tight text-gray-700 bg-gray-100 rounded-full">
-                        Desconocido
-                    </span>
-                    @endif
-                </td>
+            <!-- CONTROLES DE BÚSQUEDA -->
+            <div class="flex w-full lg:w-1/2 gap-3">
+                <div class="relative w-full">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    </div>
+                    <input type="search" name="search" value="{{ request('search') }}"
+                        class="block w-full pl-11 pr-4 py-2.5 border border-gray-300 rounded-lg leading-5 bg-gray-50 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 sm:text-sm transition-colors text-gray-700"
+                        placeholder="Buscar por Empresa o NIT...">
+                </div>
+                <button type="submit"
+                    class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2.5 px-6 rounded-lg transition-colors flex items-center gap-2 shadow-sm whitespace-nowrap cursor-pointer">
+                    Buscar
+                </button>
+            </div>
 
-                <td class="p-4">
-                    <div class="flex gap-2">
-                        {{-- Botón Activar --}}
-                        @if($empresa->id_estado != 3)
-                        @if($empresa->licencia)
-                        <form action="{{ route('SuperAdmin.activar', $empresa->id_empresa) }}" method="POST"
-                            class="inline">
-                            @csrf
-                            @method('PUT')
-                            <button type="submit"
-                                class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3 rounded text-xs flex items-center gap-1 cursor-pointer"
-                                onclick="return confirm('¿Estás seguro de activar esta empresa?')">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" stroke="currentColor" class="w-3 h-3">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" />
+            <!-- FILTROS DE ESTADO -->
+            <div class="flex flex-wrap items-center gap-2 w-full lg:w-auto justify-end">
+                <a href="{{ route('SuperAdmin.index', ['search' => request('search')]) }}"
+                    class="px-4 py-2 text-sm font-medium rounded-lg transition-all {{ !request('status') ? 'bg-gray-800 text-white shadow-md' : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-gray-900 border border-transparent' }}">
+                    Todas
+                </a>
+                <a href="{{ route('SuperAdmin.index', ['status' => 'pendiente', 'search' => request('search')]) }}"
+                    class="px-4 py-2 text-sm font-medium rounded-lg transition-all {{ request('status') == 'pendiente' ? 'bg-yellow-500 text-white shadow-md hover:bg-yellow-600' : 'bg-yellow-50 text-yellow-700 border border-yellow-200 hover:bg-yellow-100 hover:text-yellow-800' }}">
+                    Pendientes
+                </a>
+                <a href="{{ route('SuperAdmin.index', ['status' => 'activa', 'search' => request('search')]) }}"
+                    class="px-4 py-2 text-sm font-medium rounded-lg transition-all {{ request('status') == 'activa' ? 'bg-green-500 text-white shadow-md hover:bg-green-600' : 'bg-green-50 text-green-700 border border-green-200 hover:bg-green-100 hover:text-green-800' }}">
+                    Activas
+                </a>
+                <a href="{{ route('SuperAdmin.index', ['status' => 'bloqueada', 'search' => request('search')]) }}"
+                    class="px-4 py-2 text-sm font-medium rounded-lg transition-all {{ request('status') == 'bloqueada' ? 'bg-red-500 text-white shadow-md hover:bg-red-600' : 'bg-red-50 text-red-700 border border-red-200 hover:bg-red-100 hover:text-red-800' }}">
+                    Bloqueadas
+                </a>
+            </div>
+
+        </form>
+    </div>
+
+    <!-- COMPANIES TABLE -->
+    <div class="bg-white rounded shadow overflow-hidden">
+        <div class="p-4 border-b">
+            <h3 class="font-bold">Solicitudes de Acceso <span
+                    class="bg-yellow-100 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">{{ $stats['nuevas'] }}
+                    Pendientes</span></h3>
+        </div>
+
+        <table class="w-full text-left">
+            <thead class="bg-gray-50 text-xs uppercase text-gray-700">
+                <tr>
+                    <th class="p-4">Empresa y NIT</th>
+                    <th class="p-4">Propietario</th>
+                    <th class="p-4">Fecha Registro</th>
+                    <th class="p-4">Estado</th>
+                    <th class="p-4">Accion</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+                @forelse($empresas as $empresa)
+                    <tr class="hover:bg-gray-50">
+                        <td class="p-4">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600 font-bold">
+                                    {{ substr($empresa->nombre_empresa, 0, 2) }}
+                                </div>
+                                <div>
+                                    <div class="font-bold text-gray-900">{{ $empresa->nombre_empresa }}</div>
+                                    <div class="text-sm text-gray-500">NIT: {{ $empresa->id_empresa }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="p-4">
+                            <div class="font-medium text-gray-900">{{ $empresa->nombre_repre_legal }}</div>
+                            <div class="text-sm text-gray-500">{{ $empresa->correo }}</div>
+                        </td>
+                        <td class="p-4">
+                            <div class="font-medium text-gray-900">
+                                {{ \Carbon\Carbon::parse($empresa->fecha_creacion)->timezone('America/Bogota')->format('d M, Y') }}
+                            </div>
+                            <div class="text-xs text-gray-500">
+                                {{ \Carbon\Carbon::parse($empresa->fecha_creacion)->timezone('America/Bogota')->locale('es')->diffForHumans() }}
+                            </div>
+                        </td>
+                        <td class="p-4">
+                            @if($empresa->estado)
+                                @php
+                                    $color = match ($empresa->estado->id_estado) {
+                                        1 => 'text-yellow-700 bg-yellow-100', // pendiente
+                                        2 => 'text-red-700 bg-red-100', // bloqueada
+                                        3 => 'text-green-700 bg-green-100', // activa
+                                        default => 'text-gray-700 bg-gray-100',
+                                    };
+                                @endphp
+
+                                <span class="px-2 py-1 font-semibold leading-tight rounded-full {{ $color }}">
+                                    {{ ucfirst($empresa->estado->nombre_estado) }}
+                                </span>
+                            @else
+                                <span class="px-2 py-1 font-semibold leading-tight text-gray-700 bg-gray-100 rounded-full">
+                                    Desconocido
+                                </span>
+                            @endif
+                        </td>
+
+                        <td class="p-4">
+                            <div class="flex gap-2">
+                                {{-- Botón Activar --}}
+                                @if($empresa->id_estado != 3)
+                                    @if($empresa->licencia)
+                                        <form action="{{ route('SuperAdmin.activar', $empresa->id_empresa) }}" method="POST"
+                                            class="inline">
+                                            @csrf
+                                            @method('PUT')
+                                            <button type="submit"
+                                                class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3 rounded text-xs flex items-center gap-1 cursor-pointer"
+                                                onclick="return confirm('¿Estás seguro de activar esta empresa?')">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                    stroke-width="1.5" stroke="currentColor" class="w-3 h-3">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" />
+                                                </svg>
+                                                Activar Acceso
+                                            </button>
+                                        </form>
+                                    @else
+                                        <button type="button"
+                                            onclick="alert('Debes asignarle una licencia en el Dashboard a esta empresa antes de poder activarla.')"
+                                            class="bg-gray-300 text-gray-500 hover:text-gray-600 font-bold py-1 px-3 rounded text-xs flex items-center gap-1 cursor-not-allowed"
+                                            title="Requiere asignar licencia">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                                stroke="currentColor" class="w-3 h-3">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+                                            </svg>
+                                            Activar Acceso
+                                        </button>
+                                    @endif
+                                @else
+                                    <button disabled
+                                        class="bg-gray-300 text-gray-500 font-bold py-1 px-3 rounded text-xs flex items-center gap-1 cursor-not-allowed">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                            stroke="currentColor" class="w-3 h-3">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                                        </svg>
+                                        Activa
+                                    </button>
+                                @endif
+
+                                {{-- Botón Ver Detalles --}}
+                                <button type="button" data-empresa="{{ json_encode($empresa) }}"
+                                    onclick="openModal(JSON.parse(this.getAttribute('data-empresa')))"
+                                    class="bg-green-600 hover:bg-green-700 text-white font-bold py-1 px-3 rounded text-xs flex items-center gap-1 cursor-pointer">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                        stroke="currentColor" class="w-3 h-3">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                                    </svg>
+                                    Ver Detalles
+                                </button>
+
+                                {{-- Botón Editar --}}
+                                <button type="button" data-empresa="{{ json_encode($empresa) }}"
+                                    onclick="openEditModal(JSON.parse(this.getAttribute('data-empresa')))"
+                                    class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-1 px-3 rounded text-xs flex items-center gap-1 cursor-pointer">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                        stroke="currentColor" class="w-3 h-3">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                                    </svg>
+                                    Editar
+                                </button>
+                            </div>
+                            <!-- More actions could be added here -->
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="5" class="p-4 text-center text-gray-500">No se encontraron empresas.</td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+
+        <div class="flex justify-center mt-6 p-4">
+            {{ $empresas->withQueryString()->links() }}
+        </div>
+    </div>
+
+    <!-- DETAILS MODAL -->
+    <div id="detailsModal" class="fixed inset-0 z-[9999] hidden overflow-y-auto" aria-modal="true">
+        <div class="flex items-center justify-center min-h-screen px-4 py-6">
+            <div class="fixed inset-0 bg-black/40 backdrop-blur-sm" onclick="closeModal()"></div>
+            <div class="relative bg-white rounded-2xl text-left shadow-2xl transform transition-all w-full max-w-lg">
+
+                {{-- HEADER --}}
+                <div class="bg-gradient-to-r from-green-500 to-emerald-400 px-6 py-5 rounded-t-2xl">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                                <svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                                 </svg>
-                                Activar Acceso
-                            </button>
-                        </form>
-                        @else
-                        <button type="button"
-                            onclick="alert('Debes asignarle una licencia en el Dashboard a esta empresa antes de poder activarla.')"
-                            class="bg-gray-300 text-gray-500 hover:text-gray-600 font-bold py-1 px-3 rounded text-xs flex items-center gap-1 cursor-not-allowed"
-                            title="Requiere asignar licencia">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor" class="w-3 h-3">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-white">Detalles de la Empresa</h3>
+                                <p class="text-green-100 text-xs">Información completa del registro</p>
+                            </div>
+                        </div>
+                        <button onclick="closeModal()"
+                            class="text-white/80 hover:text-white transition-colors p-1 rounded-lg hover:bg-white/10">
+                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12" />
                             </svg>
-                            Activar Acceso
-                        </button>
-                        @endif
-                        @else
-                        <button disabled
-                            class="bg-gray-300 text-gray-500 font-bold py-1 px-3 rounded text-xs flex items-center gap-1 cursor-not-allowed">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor" class="w-3 h-3">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-                            </svg>
-                            Activa
-                        </button>
-                        @endif
-
-                        {{-- Botón Ver Detalles --}}
-                        <button type="button" data-empresa="{{ json_encode($empresa) }}"
-                            onclick="openModal(JSON.parse(this.getAttribute('data-empresa')))"
-                            class="bg-green-600 hover:bg-green-700 text-white font-bold py-1 px-3 rounded text-xs flex items-center gap-1 cursor-pointer">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor" class="w-3 h-3">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                            </svg>
-                            Ver Detalles
-                        </button>
-
-                        {{-- Botón Editar --}}
-                        <button type="button" data-empresa="{{ json_encode($empresa) }}"
-                            onclick="openEditModal(JSON.parse(this.getAttribute('data-empresa')))"
-                            class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-1 px-3 rounded text-xs flex items-center gap-1 cursor-pointer">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor" class="w-3 h-3">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
-                            </svg>
-                            Editar
                         </button>
                     </div>
-                    <!-- More actions could be added here -->
-                </td>
-            </tr>
-            @empty
-            <tr>
-                <td colspan="5" class="p-4 text-center text-gray-500">No se encontraron empresas.</td>
-            </tr>
-            @endforelse
-        </tbody>
-    </table>
+                </div>
 
-    <div class="flex justify-center mt-6 p-4">
-        {{ $empresas->withQueryString()->links() }}
-    </div>
-</div>
+                {{-- COMPANY AVATAR + NAME BANNER --}}
+                <div class="px-6 py-5 flex items-center gap-4 border-b border-gray-100">
+                    <div class="w-14 h-14 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center text-white font-bold text-xl shadow-md"
+                        id="modal-avatar"></div>
+                    <div>
+                        <p class="text-base font-bold text-gray-900" id="modal-nombre"></p>
+                        <p class="text-sm text-gray-500">NIT: <span id="modal-nit" class="font-medium text-gray-700"></span>
+                        </p>
+                    </div>
+                    <div class="ml-auto" id="modal-estado"></div>
+                </div>
 
-<!-- DETAILS MODAL -->
-<div id="detailsModal" class="fixed inset-0 z-[9999] hidden overflow-y-auto" aria-modal="true">
-    <div class="flex items-center justify-center min-h-screen px-4 py-6">
-        <div class="fixed inset-0 bg-black/40 backdrop-blur-sm" onclick="closeModal()"></div>
-        <div class="relative bg-white rounded-2xl text-left shadow-2xl transform transition-all w-full max-w-lg">
+                {{-- DETAILS GRID --}}
+                <div class="px-6 py-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
 
-            {{-- HEADER --}}
-            <div class="bg-gradient-to-r from-green-500 to-emerald-400 px-6 py-5 rounded-t-2xl">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
-                            <svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <div class="bg-gray-50 rounded-xl p-4 flex items-start gap-3">
+                        <div class="mt-0.5 p-2 bg-green-100 rounded-lg">
+                            <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                             </svg>
                         </div>
                         <div>
-                            <h3 class="text-lg font-bold text-white">Detalles de la Empresa</h3>
-                            <p class="text-green-100 text-xs">Información completa del registro</p>
+                            <p class="text-xs text-gray-400 font-medium">Representante</p>
+                            <p class="text-sm font-semibold text-gray-800" id="modal-representante"></p>
                         </div>
                     </div>
-                    <button onclick="closeModal()"
-                        class="text-white/80 hover:text-white transition-colors p-1 rounded-lg hover:bg-white/10">
-                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
 
-            {{-- COMPANY AVATAR + NAME BANNER --}}
-            <div class="px-6 py-5 flex items-center gap-4 border-b border-gray-100">
-                <div class="w-14 h-14 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center text-white font-bold text-xl shadow-md" id="modal-avatar"></div>
-                <div>
-                    <p class="text-base font-bold text-gray-900" id="modal-nombre"></p>
-                    <p class="text-sm text-gray-500">NIT: <span id="modal-nit" class="font-medium text-gray-700"></span></p>
-                </div>
-                <div class="ml-auto" id="modal-estado"></div>
-            </div>
+                    <div class="bg-gray-50 rounded-xl p-4 flex items-start gap-3">
+                        <div class="mt-0.5 p-2 bg-green-100 rounded-lg">
+                            <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-400 font-medium">Teléfono</p>
+                            <p class="text-sm font-semibold text-gray-800" id="modal-telefono"></p>
+                        </div>
+                    </div>
 
-            {{-- DETAILS GRID --}}
-            <div class="px-6 py-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="bg-gray-50 rounded-xl p-4 flex items-start gap-3">
+                        <div class="mt-0.5 p-2 bg-green-100 rounded-lg">
+                            <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-400 font-medium">Correo</p>
+                            <p class="text-sm font-semibold text-gray-800 break-all" id="modal-correo"></p>
+                        </div>
+                    </div>
 
-                <div class="bg-gray-50 rounded-xl p-4 flex items-start gap-3">
-                    <div class="mt-0.5 p-2 bg-green-100 rounded-lg">
-                        <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                        </svg>
+                    <div class="bg-gray-50 rounded-xl p-4 flex items-start gap-3">
+                        <div class="mt-0.5 p-2 bg-green-100 rounded-lg">
+                            <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-400 font-medium">Dirección</p>
+                            <p class="text-sm font-semibold text-gray-800" id="modal-direccion"></p>
+                        </div>
                     </div>
-                    <div>
-                        <p class="text-xs text-gray-400 font-medium">Representante</p>
-                        <p class="text-sm font-semibold text-gray-800" id="modal-representante"></p>
-                    </div>
-                </div>
 
-                <div class="bg-gray-50 rounded-xl p-4 flex items-start gap-3">
-                    <div class="mt-0.5 p-2 bg-green-100 rounded-lg">
-                        <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                        </svg>
+                    <div class="sm:col-span-2 bg-gray-50 rounded-xl p-4 flex items-start gap-3">
+                        <div class="mt-0.5 p-2 bg-green-100 rounded-lg">
+                            <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-400 font-medium">Fecha de Registro</p>
+                            <p class="text-sm font-semibold text-gray-800" id="modal-fecha"></p>
+                        </div>
                     </div>
-                    <div>
-                        <p class="text-xs text-gray-400 font-medium">Teléfono</p>
-                        <p class="text-sm font-semibold text-gray-800" id="modal-telefono"></p>
-                    </div>
-                </div>
 
-                <div class="bg-gray-50 rounded-xl p-4 flex items-start gap-3">
-                    <div class="mt-0.5 p-2 bg-green-100 rounded-lg">
-                        <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                        </svg>
-                    </div>
-                    <div>
-                        <p class="text-xs text-gray-400 font-medium">Correo</p>
-                        <p class="text-sm font-semibold text-gray-800 break-all" id="modal-correo"></p>
-                    </div>
                 </div>
 
-                <div class="bg-gray-50 rounded-xl p-4 flex items-start gap-3">
-                    <div class="mt-0.5 p-2 bg-green-100 rounded-lg">
-                        <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
-                    </div>
-                    <div>
-                        <p class="text-xs text-gray-400 font-medium">Dirección</p>
-                        <p class="text-sm font-semibold text-gray-800" id="modal-direccion"></p>
-                    </div>
-                </div>
+                {{-- FOOTER --}}
 
-                <div class="sm:col-span-2 bg-gray-50 rounded-xl p-4 flex items-start gap-3">
-                    <div class="mt-0.5 p-2 bg-green-100 rounded-lg">
-                        <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
-                    </div>
-                    <div>
-                        <p class="text-xs text-gray-400 font-medium">Fecha de Registro</p>
-                        <p class="text-sm font-semibold text-gray-800" id="modal-fecha"></p>
-                    </div>
-                </div>
 
             </div>
-
-            {{-- FOOTER --}}
-
-
         </div>
     </div>
-</div>
 
-<script>
-    function openModal(empresa) {
-        document.getElementById('modal-nombre').innerText = empresa.nombre_empresa;
-        document.getElementById('modal-nit').innerText = empresa.id_empresa;
-        document.getElementById('modal-representante').innerText = empresa.nombre_repre_legal || '-';
-        document.getElementById('modal-telefono').innerText = empresa.telefono || '-';
-        document.getElementById('modal-correo').innerText = empresa.correo || '-';
-        document.getElementById('modal-direccion').innerText = empresa.direccion || '-';
+    <script>
+        function openModal(empresa) {
+            document.getElementById('modal-nombre').innerText = empresa.nombre_empresa;
+            document.getElementById('modal-nit').innerText = empresa.id_empresa;
+            document.getElementById('modal-representante').innerText = empresa.nombre_repre_legal || '-';
+            document.getElementById('modal-telefono').innerText = empresa.telefono || '-';
+            document.getElementById('modal-correo').innerText = empresa.correo || '-';
+            document.getElementById('modal-direccion').innerText = empresa.direccion || '-';
 
-        // Avatar
-        document.getElementById('modal-avatar').innerText = (empresa.nombre_empresa || '?').substring(0, 2).toUpperCase();
+            // Avatar
+            document.getElementById('modal-avatar').innerText = (empresa.nombre_empresa || '?').substring(0, 2).toUpperCase();
 
-        // Fecha
-        let fechaOriginal = new Date(empresa.fecha_creacion);
-        let opcionesFecha = {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            timeZone: 'America/Bogota'
-        };
-        document.getElementById('modal-fecha').innerText = fechaOriginal.toLocaleDateString('es-ES', opcionesFecha);
+            // Fecha
+            let fechaOriginal = new Date(empresa.fecha_creacion);
+            let opcionesFecha = {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                timeZone: 'America/Bogota'
+            };
+            document.getElementById('modal-fecha').innerText = fechaOriginal.toLocaleDateString('es-ES', opcionesFecha);
 
-        // Estado badge
-        const estadoSpan = document.getElementById('modal-estado');
-        let estadoText = 'Desconocido';
-        let estadoClass = 'text-gray-700 bg-gray-100';
+            // Estado badge
+            const estadoSpan = document.getElementById('modal-estado');
+            let estadoText = 'Desconocido';
+            let estadoClass = 'text-gray-700 bg-gray-100';
 
-        if (empresa.estado) {
-            estadoText = empresa.estado.nombre_estado;
-            if (empresa.estado.id_estado == 1) estadoClass = 'text-yellow-700 bg-yellow-100';
-            else if (empresa.estado.id_estado == 2) estadoClass = 'text-red-700 bg-red-100';
-            else if (empresa.estado.id_estado == 3) estadoClass = 'text-green-700 bg-green-100';
+            if (empresa.estado) {
+                estadoText = empresa.estado.nombre_estado;
+                if (empresa.estado.id_estado == 1) estadoClass = 'text-yellow-700 bg-yellow-100';
+                else if (empresa.estado.id_estado == 2) estadoClass = 'text-red-700 bg-red-100';
+                else if (empresa.estado.id_estado == 3) estadoClass = 'text-green-700 bg-green-100';
+            }
+
+            estadoSpan.innerHTML = `<span class="px-2.5 py-1 text-xs font-semibold leading-tight rounded-full ${estadoClass}">${estadoText}</span>`;
+
+            document.getElementById('detailsModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
         }
 
-        estadoSpan.innerHTML = `<span class="px-2.5 py-1 text-xs font-semibold leading-tight rounded-full ${estadoClass}">${estadoText}</span>`;
-
-        document.getElementById('detailsModal').classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
-    }
-
-    function closeModal() {
-        document.getElementById('detailsModal').classList.add('hidden');
-        document.body.style.overflow = 'auto';
-    }
-
-    // -- EXCEL MODAL --
-    function openExcelModal() {
-        document.getElementById('excelModal').classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
-    }
-
-    function closeExcelModal() {
-        document.getElementById('excelModal').classList.add('hidden');
-        document.body.style.overflow = 'auto';
-    }
-</script>
-
-@if(session('success'))
-<div
-    class="auto-dismiss fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded shadow-lg animate-fade-in-up z-50">
-    <div class="flex items-center gap-2">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-            class="w-5 h-5">
-            <path stroke-linecap="round" stroke-linejoin="round"
-                d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-        </svg>
-        {{ session('success') }}
-    </div>
-</div>
-@endif
-
-@if(session('error'))
-<div
-    class="auto-dismiss fixed bottom-4 right-4 bg-red-500 text-white px-6 py-3 rounded shadow-lg animate-fade-in-up z-50">
-    <div class="flex items-center gap-2">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-            class="w-5 h-5">
-            <path stroke-linecap="round" stroke-linejoin="round"
-                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-        </svg>
-        {{ session('error') }}
-    </div>
-</div>
-@endif
-
-@if($errors->any())
-<div class="auto-dismiss fixed bottom-4 right-4 bg-red-500 text-white px-6 py-3 rounded shadow-lg z-50">
-    <ul class="list-disc pl-5">
-        @foreach ($errors->all() as $error)
-        <li>{{ $error }}</li>
-        @endforeach
-    </ul>
-</div>
-@endif
-
-<style>
-    @keyframes fade-in-up {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
+        function closeModal() {
+            document.getElementById('detailsModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
         }
 
-        to {
-            opacity: 1;
-            transform: translateY(0);
+        // -- EXCEL MODAL --
+        function openExcelModal() {
+            document.getElementById('excelModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
         }
-    }
 
-    .animate-fade-in-up {
-        animation: fade-in-up 0.5s ease-out forwards;
-    }
-</style>
+        function closeExcelModal() {
+            document.getElementById('excelModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+    </script>
+
+    @if(session('success'))
+        <div
+            class="auto-dismiss fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded shadow-lg animate-fade-in-up z-50">
+            <div class="flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                    class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                </svg>
+                {{ session('success') }}
+            </div>
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div
+            class="auto-dismiss fixed bottom-4 right-4 bg-red-500 text-white px-6 py-3 rounded shadow-lg animate-fade-in-up z-50">
+            <div class="flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                    class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                {{ session('error') }}
+            </div>
+        </div>
+    @endif
+
+    @if($errors->any())
+        <div class="auto-dismiss fixed bottom-4 right-4 bg-red-500 text-white px-6 py-3 rounded shadow-lg z-50">
+            <ul class="list-disc pl-5">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    <style>
+        @keyframes fade-in-up {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in-up {
+            animation: fade-in-up 0.5s ease-out forwards;
+        }
+    </style>
 
 @endsection
 
@@ -510,9 +512,9 @@
                         <select name="mes"
                             class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-green-500 focus:border-green-500">
                             @foreach(range(1, 12) as $m)
-                            <option value="{{ $m }}" {{ now()->month == $m ? 'selected' : '' }}>
-                                {{ ucfirst(\Carbon\Carbon::create()->month($m)->locale('es')->monthName) }}
-                            </option>
+                                <option value="{{ $m }}" {{ now()->month == $m ? 'selected' : '' }}>
+                                    {{ ucfirst(\Carbon\Carbon::create()->month($m)->locale('es')->monthName) }}
+                                </option>
                             @endforeach
                         </select>
                     </div>
@@ -523,7 +525,7 @@
                         <select name="anio"
                             class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-green-500 focus:border-green-500">
                             @foreach(range(now()->year, 2024) as $y)
-                            <option value="{{ $y }}" {{ now()->year == $y ? 'selected' : '' }}>{{ $y }}</option>
+                                <option value="{{ $y }}" {{ now()->year == $y ? 'selected' : '' }}>{{ $y }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -697,8 +699,8 @@
                             required>
                             <option value="">Seleccione un tipo de licencia...</option>
                             @foreach($tiposLicencia as $tipo)
-                            <option value="{{ $tipo->id_tipo_licencia }}">{{ $tipo->nombre_licencia }} —
-                                ${{ number_format($tipo->precio, 0, ',', '.') }}</option>
+                                <option value="{{ $tipo->id_tipo_licencia }}">{{ $tipo->nombre_licencia }} —
+                                    ${{ number_format($tipo->precio, 0, ',', '.') }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -754,7 +756,7 @@
 
             {{-- BODY --}}
             <form action="{{ route('administradores.store') }}" method="POST" enctype="multipart/form-data"
-                id="formAdmin" class="validate-form">
+                id="formAdmin" class="space-y-6">
                 @csrf
                 <div class="px-6 pt-6 pb-4 grid grid-cols-1 md:grid-cols-2 gap-5">
 
@@ -905,7 +907,9 @@
                                     d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                             </svg>
                             Contraseña
-                            <span class="ml-auto text-xs font-normal text-green-600 bg-green-50 px-2 py-0.5 rounded-full">Generada automáticamente</span>
+                            <span
+                                class="ml-auto text-xs font-normal text-green-600 bg-green-50 px-2 py-0.5 rounded-full">Generada
+                                automáticamente</span>
                         </label>
                         <!-- Hidden input sends the real value -->
                         <input type="hidden" name="contrasena" id="admin_contrasena">
@@ -917,12 +921,15 @@
                             <button type="button" id="btnCopiarContrasena" onclick="copiarContrasena()"
                                 title="Copiar contraseña"
                                 class="absolute right-3 text-gray-400 hover:text-green-600 transition-colors">
-                                <svg id="iconCopy" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg id="iconCopy" class="w-4 h-4" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                                 </svg>
-                                <svg id="iconCheck" class="w-4 h-4 hidden text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m4.5 12.75 6 6 9-13.5" />
+                                <svg id="iconCheck" class="w-4 h-4 hidden text-green-500" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="m4.5 12.75 6 6 9-13.5" />
                                 </svg>
                             </button>
                         </div>
@@ -993,7 +1000,7 @@
             </div>
 
             {{-- BODY --}}
-            <form id="formEditEmpresa" action="" method="POST" class="validate-form">
+            <form id="formEditEmpresa" action="" method="POST" class="space-y-6">
                 @csrf
                 @method('PUT')
 
@@ -1149,7 +1156,7 @@
 
         if (!input) return;
 
-        input.addEventListener('input', function() {
+        input.addEventListener('input', function () {
             if (this.value && !regex.test(this.value)) {
                 this.classList.add('border-red-500', 'focus:border-red-500', 'focus:ring-red-500');
                 this.classList.remove('border-gray-300', 'focus:border-green-500', 'focus:ring-green-500');
@@ -1163,7 +1170,7 @@
     }
 
     // Attach validations
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         // Empresa Form
         validateInput('create_nit', 'error_create_nit', regexNumber);
         validateInput('create_nombre', 'error_create_nombre', regexText);
@@ -1199,7 +1206,7 @@
     let adminDebounceTimer;
 
     if (adminNitInput) {
-        adminNitInput.addEventListener('input', function() {
+        adminNitInput.addEventListener('input', function () {
             clearTimeout(adminDebounceTimer);
             const nit = this.value.trim();
 

@@ -44,7 +44,7 @@
                 <p class="text-gray-500 text-sm">Ingresa tus credenciales para continuar.</p>
             </div>
 
-            <form method="POST" action="{{ route('login') }}" class="space-y-6 validate-form">
+            <form method="POST" action="{{ route('login') }}" class="space-y-6">
                 @csrf
 
                 <div>
