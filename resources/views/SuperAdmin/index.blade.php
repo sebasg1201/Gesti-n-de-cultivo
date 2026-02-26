@@ -239,78 +239,121 @@
 </div>
 
 <!-- DETAILS MODAL -->
-<div id="detailsModal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog"
-    aria-modal="true">
-    <!-- Background backdrop -->
-    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+<div id="detailsModal" class="fixed inset-0 z-[9999] hidden overflow-y-auto" aria-modal="true">
+    <div class="flex items-center justify-center min-h-screen px-4 py-6">
+        <div class="fixed inset-0 bg-black/40 backdrop-blur-sm" onclick="closeModal()"></div>
+        <div class="relative bg-white rounded-2xl text-left shadow-2xl transform transition-all w-full max-w-lg">
 
-        <div
-            class="relative z-10 inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl sm:my-8 sm:align-middle sm:max-w-lg w-full">
-            <div class="bg-gray-100 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                <div class="sm:flex sm:items-start">
-                    <div
-                        class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-green-100 sm:mx-0 sm:h-10 sm:w-10">
-                        <svg class="h-6 w-6 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0Z" />
-                        </svg>
-                    </div>
-                    <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
-                        <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
-                            Detalles de la Empresa
-                        </h3>
-                        <div class="mt-4 border-t border-gray-200">
-                            <dl class="divide-y divide-gray-200">
-                                <div class="py-3 sm:grid sm:grid-cols-3 sm:gap-4">
-                                    <dt class="text-sm font-medium text-gray-500">Nombre</dt>
-                                    <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2" id="modal-nombre"></dd>
-                                </div>
-                                <div class="py-3 sm:grid sm:grid-cols-3 sm:gap-4">
-                                    <dt class="text-sm font-medium text-gray-500">NIT (ID)</dt>
-                                    <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2" id="modal-nit">
-                                    </dd>
-                                </div>
-                                <div class="py-3 sm:grid sm:grid-cols-3 sm:gap-4">
-                                    <dt class="text-sm font-medium text-gray-500">Representante</dt>
-                                    <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"
-                                        id="modal-representante"></dd>
-                                </div>
-                                <div class="py-3 sm:grid sm:grid-cols-3 sm:gap-4">
-                                    <dt class="text-sm font-medium text-gray-500">Teléfono</dt>
-                                    <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2" id="modal-telefono">
-                                    </dd>
-                                </div>
-                                <div class="py-3 sm:grid sm:grid-cols-3 sm:gap-4">
-                                    <dt class="text-sm font-medium text-gray-500">Correo</dt>
-                                    <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2" id="modal-correo"></dd>
-                                </div>
-                                <div class="py-3 sm:grid sm:grid-cols-3 sm:gap-4">
-                                    <dt class="text-sm font-medium text-gray-500">Dirección</dt>
-                                    <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2" id="modal-direccion">
-                                    </dd>
-                                </div>
-                                <div class="py-3 sm:grid sm:grid-cols-3 sm:gap-4">
-                                    <dt class="text-sm font-medium text-gray-500">Fecha Creación</dt>
-                                    <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2" id="modal-fecha"></dd>
-                                </div>
-                                <div class="py-3 sm:grid sm:grid-cols-3 sm:gap-4">
-                                    <dt class="text-sm font-medium text-gray-500">Estado</dt>
-                                    <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2" id="modal-estado"></dd>
-                                </div>
-                            </dl>
+            {{-- HEADER --}}
+            <div class="bg-gradient-to-r from-green-500 to-emerald-400 px-6 py-5 rounded-t-2xl">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                            <svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-white">Detalles de la Empresa</h3>
+                            <p class="text-green-100 text-xs">Información completa del registro</p>
                         </div>
                     </div>
+                    <button onclick="closeModal()"
+                        class="text-white/80 hover:text-white transition-colors p-1 rounded-lg hover:bg-white/10">
+                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
                 </div>
             </div>
-            <div class="bg-green-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                <button type="button"
-                    class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm cursor-pointer"
-                    onclick="closeModal()">
-                    Cerrar
-                </button>
+
+            {{-- COMPANY AVATAR + NAME BANNER --}}
+            <div class="px-6 py-5 flex items-center gap-4 border-b border-gray-100">
+                <div class="w-14 h-14 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center text-white font-bold text-xl shadow-md" id="modal-avatar"></div>
+                <div>
+                    <p class="text-base font-bold text-gray-900" id="modal-nombre"></p>
+                    <p class="text-sm text-gray-500">NIT: <span id="modal-nit" class="font-medium text-gray-700"></span></p>
+                </div>
+                <div class="ml-auto" id="modal-estado"></div>
             </div>
+
+            {{-- DETAILS GRID --}}
+            <div class="px-6 py-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+                <div class="bg-gray-50 rounded-xl p-4 flex items-start gap-3">
+                    <div class="mt-0.5 p-2 bg-green-100 rounded-lg">
+                        <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-xs text-gray-400 font-medium">Representante</p>
+                        <p class="text-sm font-semibold text-gray-800" id="modal-representante"></p>
+                    </div>
+                </div>
+
+                <div class="bg-gray-50 rounded-xl p-4 flex items-start gap-3">
+                    <div class="mt-0.5 p-2 bg-green-100 rounded-lg">
+                        <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-xs text-gray-400 font-medium">Teléfono</p>
+                        <p class="text-sm font-semibold text-gray-800" id="modal-telefono"></p>
+                    </div>
+                </div>
+
+                <div class="bg-gray-50 rounded-xl p-4 flex items-start gap-3">
+                    <div class="mt-0.5 p-2 bg-green-100 rounded-lg">
+                        <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-xs text-gray-400 font-medium">Correo</p>
+                        <p class="text-sm font-semibold text-gray-800 break-all" id="modal-correo"></p>
+                    </div>
+                </div>
+
+                <div class="bg-gray-50 rounded-xl p-4 flex items-start gap-3">
+                    <div class="mt-0.5 p-2 bg-green-100 rounded-lg">
+                        <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-xs text-gray-400 font-medium">Dirección</p>
+                        <p class="text-sm font-semibold text-gray-800" id="modal-direccion"></p>
+                    </div>
+                </div>
+
+                <div class="sm:col-span-2 bg-gray-50 rounded-xl p-4 flex items-start gap-3">
+                    <div class="mt-0.5 p-2 bg-green-100 rounded-lg">
+                        <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-xs text-gray-400 font-medium">Fecha de Registro</p>
+                        <p class="text-sm font-semibold text-gray-800" id="modal-fecha"></p>
+                    </div>
+                </div>
+
+            </div>
+
+            {{-- FOOTER --}}
+
+
         </div>
     </div>
 </div>
@@ -319,22 +362,25 @@
     function openModal(empresa) {
         document.getElementById('modal-nombre').innerText = empresa.nombre_empresa;
         document.getElementById('modal-nit').innerText = empresa.id_empresa;
-        document.getElementById('modal-representante').innerText = empresa.nombre_repre_legal;
-        document.getElementById('modal-telefono').innerText = empresa.telefono;
-        document.getElementById('modal-correo').innerText = empresa.correo;
-        document.getElementById('modal-direccion').innerText = empresa.direccion;
-        // Formatear la fecha
+        document.getElementById('modal-representante').innerText = empresa.nombre_repre_legal || '-';
+        document.getElementById('modal-telefono').innerText = empresa.telefono || '-';
+        document.getElementById('modal-correo').innerText = empresa.correo || '-';
+        document.getElementById('modal-direccion').innerText = empresa.direccion || '-';
+
+        // Avatar
+        document.getElementById('modal-avatar').innerText = (empresa.nombre_empresa || '?').substring(0, 2).toUpperCase();
+
+        // Fecha
         let fechaOriginal = new Date(empresa.fecha_creacion);
-        // Como viene de BD en UTC (o local), ajustamos a un string legible:
         let opcionesFecha = {
             year: 'numeric',
-            month: 'short',
+            month: 'long',
             day: 'numeric',
             timeZone: 'America/Bogota'
         };
         document.getElementById('modal-fecha').innerText = fechaOriginal.toLocaleDateString('es-ES', opcionesFecha);
 
-        // Handle State Display
+        // Estado badge
         const estadoSpan = document.getElementById('modal-estado');
         let estadoText = 'Desconocido';
         let estadoClass = 'text-gray-700 bg-gray-100';
@@ -346,13 +392,15 @@
             else if (empresa.estado.id_estado == 3) estadoClass = 'text-green-700 bg-green-100';
         }
 
-        estadoSpan.innerHTML = `<span class="px-2 py-1 font-semibold leading-tight rounded-full ${estadoClass}">${estadoText}</span>`;
+        estadoSpan.innerHTML = `<span class="px-2.5 py-1 text-xs font-semibold leading-tight rounded-full ${estadoClass}">${estadoText}</span>`;
 
         document.getElementById('detailsModal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
     }
 
     function closeModal() {
         document.getElementById('detailsModal').classList.add('hidden');
+        document.body.style.overflow = 'auto';
     }
 
     // -- EXCEL MODAL --
@@ -483,10 +531,6 @@
 
                 <!-- Footer -->
                 <div class="px-6 py-4 bg-gray-50 rounded-b-xl flex justify-end gap-3 border-t border-gray-200">
-                    <button type="button" onclick="closeExcelModal()"
-                        class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer">
-                        Cancelar
-                    </button>
                     <button type="submit"
                         class="flex items-center gap-2 px-4 py-2 text-sm font-bold text-white bg-green-600 hover:bg-green-700 rounded-lg transition cursor-pointer">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
@@ -662,10 +706,6 @@
 
                 {{-- FOOTER --}}
                 <div class="bg-gray-50 border-t border-gray-100 px-6 py-4 rounded-b-2xl flex justify-end gap-3">
-                    <button type="button" onclick="closeCreateModal()"
-                        class="px-5 py-2.5 text-sm font-semibold text-gray-600 bg-white border border-gray-200 rounded-xl hover:bg-gray-100 transition-all shadow-sm cursor-pointer">
-                        Cancelar
-                    </button>
                     <button type="submit"
                         class="px-6 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-green-500 to-emerald-400 rounded-xl hover:from-green-600 hover:to-emerald-500 transition-all shadow-md hover:shadow-lg cursor-pointer flex items-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
@@ -811,8 +851,8 @@
                             Documento de Identidad
                         </label>
                         <input type="text" name="documento" id="admin_documento"
-                            class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all"
-                            required>
+                            class="w-full bg-gray-100 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-400 focus:outline-none cursor-not-allowed transition-all"
+                            disabled required>
                     </div>
 
                     <!-- Nombre Admin -->
@@ -825,8 +865,8 @@
                             Nombre Completo
                         </label>
                         <input type="text" name="nombre" id="admin_nombre"
-                            class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all"
-                            required>
+                            class="w-full bg-gray-100 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-400 focus:outline-none cursor-not-allowed transition-all"
+                            disabled required>
                     </div>
 
                     <!-- Correo Admin -->
@@ -839,8 +879,8 @@
                             Correo Electrónico
                         </label>
                         <input type="email" name="correo" id="admin_correo"
-                            class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all"
-                            required>
+                            class="w-full bg-gray-100 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-400 focus:outline-none cursor-not-allowed transition-all"
+                            disabled required>
                     </div>
 
                     <!-- Telefono Admin -->
@@ -853,11 +893,11 @@
                             Teléfono
                         </label>
                         <input type="text" name="telefono" id="admin_telefono"
-                            class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all"
-                            required>
+                            class="w-full bg-gray-100 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-400 focus:outline-none cursor-not-allowed transition-all"
+                            disabled required>
                     </div>
 
-                    <!-- Password -->
+                    <!-- Password (auto-generated, read-only) -->
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-1.5">
                             <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -865,10 +905,28 @@
                                     d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                             </svg>
                             Contraseña
+                            <span class="ml-auto text-xs font-normal text-green-600 bg-green-50 px-2 py-0.5 rounded-full">Generada automáticamente</span>
                         </label>
-                        <input type="password" name="contrasena"
-                            class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all"
-                            required>
+                        <!-- Hidden input sends the real value -->
+                        <input type="hidden" name="contrasena" id="admin_contrasena">
+                        <!-- Visual display + copy button -->
+                        <div class="relative flex items-center">
+                            <input type="text" id="admin_contrasena_display" readonly
+                                class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-500 font-mono focus:outline-none cursor-not-allowed tracking-widest transition-all"
+                                placeholder="Se generará al buscar el NIT...">
+                            <button type="button" id="btnCopiarContrasena" onclick="copiarContrasena()"
+                                title="Copiar contraseña"
+                                class="absolute right-3 text-gray-400 hover:text-green-600 transition-colors">
+                                <svg id="iconCopy" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                </svg>
+                                <svg id="iconCheck" class="w-4 h-4 hidden text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m4.5 12.75 6 6 9-13.5" />
+                                </svg>
+                            </button>
+                        </div>
+                        <p class="text-xs text-gray-400 mt-1">Copia esta contraseña antes de crear el administrador.</p>
                     </div>
 
                     <!-- Foto -->
@@ -880,18 +938,14 @@
                             </svg>
                             Foto de Perfil
                         </label>
-                        <input type="file" name="imagen" accept="image/*"
-                            class="w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100 transition-all focus:outline-none"
-                            required>
+                        <input type="file" name="imagen" id="admin_imagen" accept="image/*"
+                            class="w-full text-sm text-gray-400 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-gray-100 file:text-gray-400 transition-all focus:outline-none cursor-not-allowed"
+                            disabled required>
                     </div>
                 </div>
 
                 {{-- FOOTER --}}
                 <div class="bg-gray-50 border-t border-gray-100 px-6 py-4 rounded-b-2xl flex justify-end gap-3">
-                    <button type="button" onclick="closeAdminModal()"
-                        class="px-5 py-2.5 text-sm font-semibold text-gray-600 bg-white border border-gray-200 rounded-xl hover:bg-gray-100 transition-all shadow-sm cursor-pointer">
-                        Cancelar
-                    </button>
                     <button type="submit" id="btnCrearAdmin" disabled
                         class="px-6 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-green-500 to-emerald-400 rounded-xl hover:from-green-600 hover:to-emerald-500 transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer flex items-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
@@ -1035,10 +1089,6 @@
 
                 {{-- FOOTER --}}
                 <div class="bg-gray-50 border-t border-gray-100 px-6 py-4 rounded-b-2xl flex justify-end gap-3">
-                    <button type="button" onclick="closeEditModal()"
-                        class="px-5 py-2.5 text-sm font-semibold text-gray-600 bg-white border border-gray-200 rounded-xl hover:bg-gray-100 transition-all shadow-sm cursor-pointer">
-                        Cancelar
-                    </button>
                     <button type="submit"
                         class="px-6 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-amber-500 to-yellow-400 rounded-xl hover:from-amber-600 hover:to-yellow-500 transition-all shadow-md hover:shadow-lg cursor-pointer flex items-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
@@ -1160,29 +1210,8 @@
             if (adminEmpresaConAdmin) adminEmpresaConAdmin.classList.add('hidden');
             adminIdEmpresaHidden.value = '';
 
-            // Resetear campos auto-completados
-            if (adminNombreInput) {
-                adminNombreInput.value = '';
-                adminNombreInput.removeAttribute('readonly');
-                adminNombreInput.classList.remove('bg-gray-100', 'cursor-not-allowed', 'text-gray-500');
-            }
-            if (adminTelefonoInput) {
-                adminTelefonoInput.value = '';
-                adminTelefonoInput.removeAttribute('readonly');
-                adminTelefonoInput.classList.remove('bg-gray-100', 'cursor-not-allowed', 'text-gray-500');
-            }
-            if (adminCorreoInput) {
-                adminCorreoInput.value = '';
-                adminCorreoInput.removeAttribute('readonly');
-                adminCorreoInput.classList.remove('bg-gray-100', 'cursor-not-allowed', 'text-gray-500');
-            }
-            if (adminDocumentoInput) {
-                adminDocumentoInput.value = '';
-                adminDocumentoInput.removeAttribute('readonly');
-                adminDocumentoInput.classList.remove('bg-gray-100', 'cursor-not-allowed', 'text-gray-500');
-            }
-
-
+            // Lock all form fields when NIT changes or is empty
+            lockAdminFields();
             if (btnCrearAdmin) btnCrearAdmin.disabled = true;
 
             if (nit.length < 3) return;
@@ -1212,32 +1241,30 @@
                             return;
                         }
 
-                        // Empresa encontrada
+                        // Empresa válida encontrada → desbloquear campos
                         adminIdEmpresaHidden.value = data.id_empresa;
                         adminEmpresaNombreEl.textContent = data.nombre_empresa;
                         adminEmpresaNitEl.textContent = 'NIT: ' + data.id_empresa;
                         adminEmpresaInfo.classList.remove('hidden');
 
-                        // Autocompletar datos del representante
+                        unlockAdminFields();
+
+                        // Autocompletar con datos del representante
                         if (adminNombreInput && data.nombre_repre_legal) {
                             adminNombreInput.value = data.nombre_repre_legal;
                             adminNombreInput.setAttribute('readonly', true);
-                            adminNombreInput.classList.add('bg-gray-100', 'cursor-not-allowed', 'text-gray-500');
                         }
                         if (adminTelefonoInput && data.telefono) {
                             adminTelefonoInput.value = data.telefono;
                             adminTelefonoInput.setAttribute('readonly', true);
-                            adminTelefonoInput.classList.add('bg-gray-100', 'cursor-not-allowed', 'text-gray-500');
                         }
                         if (adminCorreoInput && data.correo) {
                             adminCorreoInput.value = data.correo;
                             adminCorreoInput.setAttribute('readonly', true);
-                            adminCorreoInput.classList.add('bg-gray-100', 'cursor-not-allowed', 'text-gray-500');
                         }
                         if (adminDocumentoInput && data.cedula_repre) {
                             adminDocumentoInput.value = data.cedula_repre;
                             adminDocumentoInput.setAttribute('readonly', true);
-                            adminDocumentoInput.classList.add('bg-gray-100', 'cursor-not-allowed', 'text-gray-500');
                         }
 
                         if (btnCrearAdmin) btnCrearAdmin.disabled = false;
@@ -1247,6 +1274,97 @@
                         adminEmpresaNoEncontrada.classList.remove('hidden');
                     });
             }, 500);
+        });
+    }
+
+    function lockAdminFields() {
+        const fields = [adminNombreInput, adminTelefonoInput, adminCorreoInput, adminDocumentoInput];
+        const contrasenaHidden = document.getElementById('admin_contrasena');
+        const contrasenaDisplay = document.getElementById('admin_contrasena_display');
+        const imagenInput = document.getElementById('admin_imagen');
+
+        fields.forEach(f => {
+            if (!f) return;
+            f.value = '';
+            f.removeAttribute('readonly');
+            f.disabled = true;
+            f.classList.remove('bg-gray-50', 'text-gray-800', 'focus:ring-green-400', 'focus:border-green-400', 'cursor-not-allowed');
+            f.classList.add('bg-gray-100', 'text-gray-400', 'cursor-not-allowed');
+        });
+        if (contrasenaHidden) contrasenaHidden.value = '';
+        if (contrasenaDisplay) contrasenaDisplay.value = '';
+        if (imagenInput) {
+            imagenInput.disabled = true;
+            imagenInput.classList.remove('file:bg-green-50', 'file:text-green-700', 'hover:file:bg-green-100');
+            imagenInput.classList.add('file:bg-gray-100', 'file:text-gray-400', 'cursor-not-allowed');
+        }
+    }
+
+    function unlockAdminFields() {
+        const fields = [adminNombreInput, adminTelefonoInput, adminCorreoInput, adminDocumentoInput];
+        const contrasenaHidden = document.getElementById('admin_contrasena');
+        const contrasenaDisplay = document.getElementById('admin_contrasena_display');
+        const imagenInput = document.getElementById('admin_imagen');
+
+        fields.forEach(f => {
+            if (!f) return;
+            f.disabled = false;
+            f.classList.remove('bg-gray-100', 'text-gray-400', 'cursor-not-allowed');
+            f.classList.add('bg-gray-50', 'text-gray-800', 'focus:ring-green-400', 'focus:border-green-400');
+        });
+
+        // Auto-generate password and populate both hidden and display fields
+        const pwd = generatePassword();
+        if (contrasenaHidden) contrasenaHidden.value = pwd;
+        if (contrasenaDisplay) contrasenaDisplay.value = pwd;
+
+        if (imagenInput) {
+            imagenInput.disabled = false;
+            imagenInput.classList.remove('file:bg-gray-100', 'file:text-gray-400', 'cursor-not-allowed');
+            imagenInput.classList.add('file:bg-green-50', 'file:text-green-700', 'hover:file:bg-green-100');
+        }
+    }
+
+    function generatePassword() {
+        const upper = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
+        const lower = 'abcdefghijkmnopqrstuvwxyz';
+        const digits = '23456789';
+        const special = '!#$%&*+-./:=?@^_';
+        const allChars = upper + lower + digits + special;
+
+        // Guarantee at least one of each category
+        let pwd = [
+            upper[Math.floor(Math.random() * upper.length)],
+            upper[Math.floor(Math.random() * upper.length)],
+            lower[Math.floor(Math.random() * lower.length)],
+            lower[Math.floor(Math.random() * lower.length)],
+            digits[Math.floor(Math.random() * digits.length)],
+            digits[Math.floor(Math.random() * digits.length)],
+            special[Math.floor(Math.random() * special.length)],
+            special[Math.floor(Math.random() * special.length)],
+        ];
+
+        // Fill up to 12 chars
+        while (pwd.length < 12) {
+            pwd.push(allChars[Math.floor(Math.random() * allChars.length)]);
+        }
+
+        // Shuffle
+        return pwd.sort(() => Math.random() - 0.5).join('');
+    }
+
+    function copiarContrasena() {
+        const display = document.getElementById('admin_contrasena_display');
+        if (!display || !display.value) return;
+        navigator.clipboard.writeText(display.value).then(() => {
+            const iconCopy = document.getElementById('iconCopy');
+            const iconCheck = document.getElementById('iconCheck');
+            iconCopy.classList.add('hidden');
+            iconCheck.classList.remove('hidden');
+            setTimeout(() => {
+                iconCopy.classList.remove('hidden');
+                iconCheck.classList.add('hidden');
+            }, 2000);
         });
     }
 
