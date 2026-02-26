@@ -16,11 +16,12 @@ class SolicitudCompraController extends Controller
         $query = SolicitudCompra::with(['tipoLicencia', 'estado', 'superAdmin', 'empresa']);
 
         if ($search) {
-            $query->where(function($q) use ($search) {
-                $q->where('id_empresa', 'LIKE', "%$search%")
-                  ->orWhereHas('empresa', function($q2) use ($search) {
-                      $q2->where('nombre_empresa', 'LIKE', "%$search%");
-                  });
+            $query->where(function ($q) use ($search) {
+                $q->where('id_empresa', 'LIKE', "%{$search}%")
+                    ->orWhereHas('empresa', function ($q2) use ($search) {
+                        $q2->where('nombre_empresa', 'LIKE', "%{$search}%")
+                            ->orWhere('correo', 'LIKE', "%{$search}%");
+                    });
             });
         }
 
