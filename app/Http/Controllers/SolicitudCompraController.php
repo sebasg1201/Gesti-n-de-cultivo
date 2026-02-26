@@ -10,11 +10,21 @@ use App\Models\Empresa;
 
 class SolicitudCompraController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $solicitudes = SolicitudCompra::with(['tipoLicencia', 'estado', 'superAdmin', 'empresa'])
-            ->orderBy('fecha_solicitud', 'desc')
-            ->paginate(3);
+        $search = $request->input('search');
+        $query = SolicitudCompra::with(['tipoLicencia', 'estado', 'superAdmin', 'empresa']);
+
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('id_empresa', 'LIKE', "%$search%")
+                  ->orWhereHas('empresa', function($q2) use ($search) {
+                      $q2->where('nombre_empresa', 'LIKE', "%$search%");
+                  });
+            });
+        }
+
+        $solicitudes = $query->orderBy('fecha_solicitud', 'desc')->paginate(10);
 
         return view('superadmin.solicitudes', compact('solicitudes'));
     }

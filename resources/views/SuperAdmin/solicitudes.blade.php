@@ -6,15 +6,44 @@
     {{-- Header --}}
     <div class="flex justify-between items-center mb-6">
         <h2 class="text-2xl font-bold text-gray-800">Solicitudes de Compra</h2>
-        <button onclick="document.getElementById('exportSolicitudesModal').classList.remove('hidden')"
-            class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 shadow-sm transition">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                stroke="currentColor" class="w-4 h-4">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
-            </svg>
-            Exportar Reporte
-        </button>
+        <div class="flex items-center gap-4">
+            <button onclick="document.getElementById('exportSolicitudesModal').classList.remove('hidden')"
+                class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 shadow-sm transition">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="w-4 h-4">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                </svg>
+                Exportar Reporte
+            </button>
+        </div>
+    </div>
+
+    {{-- SEARCH BAR --}}
+    <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 mb-6">
+        <form action="{{ route('solicitudes.index') }}" method="GET" class="flex flex-col lg:flex-row justify-between items-center gap-4">
+            <div class="flex w-full lg:w-1/2 gap-3">
+                <div class="relative w-full">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    </div>
+                    <input type="search" name="search" value="{{ request('search') }}"
+                        class="block w-full pl-11 pr-4 py-2.5 border border-gray-100 rounded-lg leading-5 bg-gray-50 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 sm:text-sm transition-colors text-gray-700"
+                        placeholder="Buscar por Empresa o NIT...">
+                </div>
+                <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2.5 px-6 rounded-lg transition-colors flex items-center gap-2 shadow-sm whitespace-nowrap cursor-pointer">
+                    Buscar
+                </button>
+            </div>
+            
+            @if(request('search'))
+                <a href="{{ route('solicitudes.index') }}" class="text-sm text-gray-500 hover:text-green-600 transition-colors">
+                    Limpiar búsqueda
+                </a>
+            @endif
+        </form>
     </div>
 
     {{-- Table --}}
