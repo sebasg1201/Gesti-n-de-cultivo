@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 20-02-2026 a las 22:23:28
+-- Tiempo de generación: 25-02-2026 a las 19:21:50
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -140,7 +140,7 @@ CREATE TABLE `empresa` (
   `telefono` varchar(12) NOT NULL,
   `correo` varchar(100) NOT NULL,
   `direccion` varchar(150) NOT NULL,
-  `fecha_creacion` date NOT NULL,
+  `fecha_creacion` datetime DEFAULT NULL,
   `id_estado` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -344,7 +344,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('Fsesys6qKkn4kglL6jqz3JB4nRKQeBf0rWQwCofb', 1110495789, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiNlkyb0xPdzU5RUJFNFJqakxKT1RzMU5MRktqblVDWndKNnhWS0RUViI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6NDM6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9kYXNoYm9hcmQvc29saWNpdHVkZXMiO3M6NToicm91dGUiO3M6MTc6InNvbGljaXR1ZGVzLmluZGV4Ijt9czo1NzoibG9naW5fc3VwZXJhZG1pbl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjExMTA0OTU3ODk7fQ==', 1771622366);
+('U5RZPr2r65tMtcXeAey7S25p4BSsifiuLimu3TmG', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiNEFoQ0w5cDg4YkdCMjZtTDZ4MVRGSjI2SGFhdkM2SnpMdUo0WVZobyI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6Mjc6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9sb2dpbiI7czo1OiJyb3V0ZSI7czo1OiJsb2dpbiI7fX0=', 1772043598);
 
 -- --------------------------------------------------------
 
@@ -390,7 +390,7 @@ CREATE TABLE `super_admin` (
 INSERT INTO `super_admin` (`id_super_admin`, `nombre`, `usuario`, `correo`, `password_hash`, `id_estado`, `ultimo_login`, `fecha_creacion`, `fecha_actualizacion`, `remember_token`, `created_at`, `updated_at`) VALUES
 (121121222, 'Sebastian Garcia', 'sebas', 'sebastiangarciaalvarez123@gmail.com', '$2y$12$YoWr9W3m9DTOdIq9lQl5v.UUywmt.V8dWL.E6.BS8jtcLy9xzzoPG', 3, NULL, '2026-02-17 02:13:13', '2026-02-17 02:13:13', NULL, NULL, NULL),
 (1006511657, 'Brayan Basto', 'Stevan', 'bastobrayan246@gmail.com', '$2y$12$Qh0yFs6SfldIhbRSw2gfguC8OukaAtB1KnOBga5XY/dKXi.2070X.', 3, NULL, '2026-02-10 03:51:59', '2026-02-17 02:10:22', 'aegJSp6QIMpg95egR7NJXAnaE5njCRkax1I5ss63F6MT9YHZs4Q3cINlIMw9', NULL, '2026-02-13 02:07:57'),
-(1110495789, 'Didier Reyes', 'dires123', 'didierreyes003@gmail.com', '$2y$12$KXslbp8kUObWricNtMUvnuIpq./X1Mg8v4wx4MMtbswowtRypf4TC', 3, NULL, '2026-02-09 19:43:33', '2026-02-20 21:01:00', 'zzuSDMDGXSStsSjnxKkUspQwT4qIddiwIF8qXdx0cNpYX9BjBABFxqWLspYn', NULL, '2026-02-18 22:41:49');
+(1110495789, 'Didier Reyes', 'dires123', 'didierreyes003@gmail.com', '$2y$12$CKXs7SUsNzetpilgVTY19udZyQIjCesQsJb5QL0y1mR4nhZmvnkvq', 3, NULL, '2026-02-09 19:43:33', '2026-02-25 18:19:55', 'E1xAHunpYj7x7v7U75M5jrWqbDB6UrlaXZ1wBBpZiI0TjAaZ7LGtpatrtJvu', NULL, '2026-02-24 18:07:11');
 
 -- --------------------------------------------------------
 
@@ -880,7 +880,7 @@ ALTER TABLE `riego`
 -- AUTO_INCREMENT de la tabla `solicitud_compra`
 --
 ALTER TABLE `solicitud_compra`
-  MODIFY `id_solicitud` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id_solicitud` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT de la tabla `super_admin`

@@ -30,20 +30,20 @@
                 </div>
                 <h2 class="text-2xl font-bold text-gray-800">Verificar Código</h2>
                 <p class="text-gray-500 text-sm mt-2">Hemos enviado un código de 6 dígitos a tu correo:
-                    <strong>{{ old('email', session('email')) }}</strong>
+                    <strong>{{ $email ?? old('email') }}</strong>
                 </p>
             </div>
 
             @if (session('error'))
-                <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded relative mb-6 text-sm"
-                    role="alert">
-                    <span class="block sm:inline">{{ session('error') }}</span>
-                </div>
+            <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded relative mb-6 text-sm"
+                role="alert">
+                <span class="block sm:inline">{{ session('error') }}</span>
+            </div>
             @endif
 
             <form method="POST" action="{{ route('password.verify.code') }}" class="space-y-6 validate-form">
                 @csrf
-                <input type="hidden" name="email" value="{{ old('email', session('email')) }}">
+                <input type="hidden" name="email" value="{{ $email ?? old('email') }}">
 
                 <div>
                     <label for="code" class="block text-sm font-medium text-gray-700 mb-1">Código de
@@ -54,7 +54,7 @@
                             placeholder="000000">
                     </div>
                     @error('code')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
 
@@ -75,6 +75,14 @@
     </div>
 
     <script src="{{ asset('js/form-validation.js') }}"></script>
+    <script>
+        // Prevent Back-Forward Cache (BFCache) to ensure strict security flow
+        window.addEventListener('pageshow', function(event) {
+            if (event.persisted) {
+                window.location.reload();
+            }
+        });
+    </script>
 </body>
 
 </html>

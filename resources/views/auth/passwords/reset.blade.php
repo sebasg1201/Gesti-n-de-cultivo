@@ -36,6 +36,7 @@
                 @csrf
 
                 <input type="hidden" name="token" value="{{ $token }}">
+                <input type="hidden" id="has-correo-error" value="{{ $errors->has('correo') ? '1' : '0' }}">
 
 
                 <div>
@@ -44,7 +45,7 @@
                         autofocus readonly
                         class="block w-full rounded-lg border-gray-300 border bg-gray-100 text-gray-500 shadow-sm p-2.5">
                     @error('correo')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
 
@@ -72,7 +73,7 @@
                     </div>
 
                     @error('password')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
 
@@ -97,13 +98,13 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             const passwordInput = document.getElementById('password');
             const strengthContainer = document.getElementById('password-strength-container');
             const strengthBar = document.getElementById('password-strength-bar');
             const strengthText = document.getElementById('password-strength-text');
 
-            passwordInput.addEventListener('input', function () {
+            passwordInput.addEventListener('input', function() {
                 const password = this.value;
 
                 if (password.length === 0) {
@@ -122,7 +123,7 @@
                 const hasLower = /[a-z]/.test(password);
                 const hasUpper = /[A-Z]/.test(password);
                 const hasNumber = /[0-9]/.test(password);
-                const hasSpecial = /[@$!%*#?&]/.test(password);
+                const hasSpecial = /[!\"#$%&\'()*+,\-.\/:;<=>?@\[\]^_`{|}~]/.test(password);
                 const hasMinLength = password.length >= 8;
 
                 // Only numbers
@@ -177,6 +178,23 @@
     </script>
 
     <script src="{{ asset('js/form-validation.js') }}"></script>
+    <script>
+        // Prevent Back-Forward Cache (BFCache) to ensure strict security flow
+        window.addEventListener('pageshow', function(event) {
+            if (event.persisted) {
+                window.location.reload();
+            }
+        });
+
+        // If the server flashed a 'correo' error, it means the token is invalid or expired.
+        // We redirect immediately to the email request page instead of showing the error on this view.
+        // Initialize redirect check based on hidden input
+        var hasCorreoError = document.getElementById('has-correo-error').value === '1';
+
+        if (hasCorreoError) {
+            window.location.href = "{{ route('password.request') }}";
+        }
+    </script>
 </body>
 
 </html>

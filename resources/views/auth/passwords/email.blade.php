@@ -34,10 +34,10 @@
             </div>
 
             @if (session('status'))
-                <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded relative mb-6 text-sm"
-                    role="alert">
-                    <span class="block sm:inline">{{ session('status') }}</span>
-                </div>
+            <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded relative mb-6 text-sm"
+                role="alert">
+                <span class="block sm:inline">{{ session('status') }}</span>
+            </div>
             @endif
 
             <form method="POST" action="{{ route('password.email') }}" class="space-y-6 validate-form">
@@ -58,7 +58,7 @@
                             placeholder="usuario@agricontrol.com">
                     </div>
                     @error('correo')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
 
@@ -78,6 +78,14 @@
     </div>
 
     <script src="{{ asset('js/form-validation.js') }}"></script>
+    <script>
+        // Prevent Back-Forward Cache (BFCache) to ensure strict security flow
+        window.addEventListener('pageshow', function(event) {
+            if (event.persisted) {
+                window.location.reload();
+            }
+        });
+    </script>
 </body>
 
 </html>

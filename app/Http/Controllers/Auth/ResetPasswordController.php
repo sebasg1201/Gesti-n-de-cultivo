@@ -18,13 +18,29 @@ class ResetPasswordController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  string|null  $token
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response
      */
     public function showResetForm(Request $request, $token = null)
     {
-        return view('auth.passwords.reset')->with(
-            ['token' => $token, 'email' => $request->email]
-        );
+        $email = $request->email;
+        if (!$email || !$token) {
+            return redirect()->route('password.request')->withErrors(['correo' => 'El enlace de restablecimiento es inválido o faltan datos.']);
+        }
+
+        $user = \App\Models\SuperAdmin::where('correo', $email)->first();
+
+        /** @var \Illuminate\Auth\Passwords\PasswordBroker $broker */
+        $broker = \Illuminate\Support\Facades\Password::broker('superadmins');
+
+        if (!$user || !$broker->tokenExists($user, $token)) {
+            return redirect()->route('password.request')->withErrors(['correo' => 'El enlace de restablecimiento ya ha sido utilizado, ha expirado, o es inválido. Por favor, solicita uno nuevo.']);
+        }
+
+        return response()
+            ->view('auth.passwords.reset', ['token' => $token, 'email' => $email])
+            ->header('Cache-Control', 'no-cache, no-store, max-age=0, must-revalidate')
+            ->header('Pragma', 'no-cache')
+            ->header('Expires', '0');
     }
 
     /**
@@ -45,7 +61,7 @@ class ResetPasswordController extends Controller
                 'regex:/[a-z]/',      // al menos una letra minúscula
                 'regex:/[A-Z]/',      // al menos una letra mayúscula
                 'regex:/[0-9]/',      // al menos un número
-                'regex:/[@$!%*#?&]/', // al menos un carácter especial
+                'regex:/[!\"#$%&\'()*+,\-.\/:;<=>?@\[\]^_`{|}~]/', // al menos un carácter especial
             ],
         ], [
             'password.regex' => 'La contraseña debe contener al menos una letra minúscula, una mayúscula, un número y un carácter especial (@$!%*#?&).',

@@ -42,6 +42,8 @@ class ForgotPasswordController extends Controller
         }
 
         // Store email in session for verify view
+        session(['reset_email' => $request->correo]);
+
         return redirect()->route('password.verify.form')->with([
             'email' => $request->correo,
             'status' => '¡Código enviado! Revisa tu correo electrónico.'
