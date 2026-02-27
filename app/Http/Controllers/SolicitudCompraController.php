@@ -26,7 +26,7 @@ class SolicitudCompraController extends Controller
             });
         }
 
-        $solicitudes = $query->orderBy('fecha_solicitud', 'desc')->paginate(10);
+        $solicitudes = $query->orderBy('fecha_solicitud', 'desc')->paginate(3);
 
         return view('superadmin.solicitudes', compact('solicitudes'));
     }
@@ -74,30 +74,29 @@ class SolicitudCompraController extends Controller
 
         try {
             // Desactivar FK checks para garantizar borrado sin restricciones
-            \DB::statement('SET FOREIGN_KEY_CHECKS=0');
+            DB::statement('SET FOREIGN_KEY_CHECKS=0');
 
             // 1. Borrar TODAS las solicitudes de la empresa
-            \DB::table('solicitud_compra')->where('id_empresa', $idEmpresa)->delete();
+            DB::table('solicitud_compra')->where('id_empresa', $idEmpresa)->delete();
 
             if ($idEmpresa) {
                 // 2. Borrar usuarios de la empresa
-                \DB::table('usuario')->where('id_empresa', $idEmpresa)->delete();
+                DB::table('usuario')->where('id_empresa', $idEmpresa)->delete();
 
                 // 3. Borrar licencias de la empresa
-                \DB::table('venta_licencias')->where('id_empresa', $idEmpresa)->delete();
+                DB::table('venta_licencias')->where('id_empresa', $idEmpresa)->delete();
 
                 // 4. Borrar la empresa directamente
-                \DB::table('empresa')->where('id_empresa', $idEmpresa)->delete();
+                DB::table('empresa')->where('id_empresa', $idEmpresa)->delete();
             }
 
             // Reactivar FK checks
-            \DB::statement('SET FOREIGN_KEY_CHECKS=1');
+            DB::statement('SET FOREIGN_KEY_CHECKS=1');
 
         } catch (\Exception $e) {
-            \DB::statement('SET FOREIGN_KEY_CHECKS=1'); // Siempre reactivar
+            DB::statement('SET FOREIGN_KEY_CHECKS=1'); // Siempre reactivar
             return redirect()->back()->with('error', 'Error al eliminar: ' . $e->getMessage());
         }
-
         return redirect()->back()->with('success', 'Solicitud y empresa eliminadas correctamente.');
     }
 

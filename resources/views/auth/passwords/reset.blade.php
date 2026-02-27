@@ -123,7 +123,7 @@
                 const hasLower = /[a-z]/.test(password);
                 const hasUpper = /[A-Z]/.test(password);
                 const hasNumber = /[0-9]/.test(password);
-                const hasSpecial = /[!\"#$%&\'()*+,\-.\/:;<=>?@\[\]^_`{|}~]/.test(password);
+                const hasSpecial = /[!\"#$%&\'()*+,\-.\/:;<=>?@\[\]^_`{|°}~]/.test(password);
                 const hasMinLength = password.length >= 8;
 
                 // Only numbers
