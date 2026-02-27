@@ -12,7 +12,6 @@ use App\Http\Controllers\TipoLicenciaController;
 Route::get('/buscar-empresa/{nit}', function ($nit) {
 
     return \App\Models\Empresa::where('id_empresa', $nit)->first();
-
 });
 
 Route::get('/empresa/buscar/{nit}', [DashboardController::class, 'buscarEmpresa']);
@@ -75,4 +74,4 @@ Route::middleware(['auth:superadmin'])->group(function () {
     Route::put('SuperAdmin/{id}/activar', [EmpresaController::class, 'activar'])->name('SuperAdmin.activar');
 });
 
-Route::get('/', [HomeController::class, 'index']);
+Route::get('/', [HomeController::class, 'index'])->name('index_welcome');

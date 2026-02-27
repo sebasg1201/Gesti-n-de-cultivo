@@ -1,13 +1,16 @@
 /**
  * AgriControl - Global Real-Time Form Validation
+ * Estándares Profesionales Colombia (2024)
  *
  * Reglas:
- *  - NIT:    solo números, 9-12 dígitos
- *  - Cédula: solo números, 6-10 dígitos (Max 10 si empieza por 1000000000)
- *  - Email:  formato válido usuario@dominio.com
- *  - Teléfono: solo números, 7-10 dígitos
- *  - Contraseña: mínimo 8 caracteres
- *  - Nombre Representante: solo letras y espacios
+ *  - NIT:              Solo números, exactamente 9 dígitos (DIAN Colombia), no empieza en 0
+ *  - Nombre Empresa:   Solo letras/espacios/(&.SAS), mínimo 2 palabras reales, máx 100 chars
+ *  - Cédula Repre:     Solo números, 6-10 dígitos, no empieza en 0
+ *  - Representante:    Solo letras y espacios (sin números ni especiales), mínimo 3 letras, mínimo 2 palabras
+ *  - Teléfono:         Solo números, exactamente 7 dígitos (fijo local) o 10 dígitos (celular/fijo nacional)
+ *  - Email:            Formato válido usuario@dominio.ext (dominio real, TLD >= 2 letras)
+ *  - Dirección:        Mínimo 5 caracteres, formato real (letras + números)
+ *  - Contraseña:       Mínimo 8 caracteres
  *
  * Para detectar el tipo de campo se usa tanto el `name` como el `id` del input.
  * Los campos sin regla especial solo se validan como "requerido / no requerido".
@@ -190,8 +193,21 @@ function getFieldType(input) {
     }
 
     // Nombre solo letras (representante legal)
-    if (n === 'nombre_repre_legal' || id === 'nombre_repre_legal') {
+    if (n === 'nombre_repre_legal' || id === 'nombre_repre_legal'
+        || n.includes('representante') || id.includes('representante')
+        || n.includes('repre_legal') || id.includes('repre_legal')) {
         return 'nombre_repre';
+    }
+
+    // Nombre de Empresa
+    if (n === 'nombre_empresa' || id === 'nombre_empresa' || n.includes('nombre_empresa')) {
+        return 'nombre_empresa';
+    }
+
+    // Dirección
+    if (n.includes('direccion') || n.includes('direccion') || n === 'direccion'
+        || id.includes('direccion') || id === 'direccion') {
+        return 'direccion';
     }
 
     // Nombre de Licencia
@@ -208,11 +224,6 @@ function getFieldType(input) {
     if (n === 'precio' || id === 'precio' || n.includes('precio') || id.includes('precio')
         || n === 'valor' || id === 'valor') {
         return 'precio';
-    }
-
-    // Nombre de Empresa
-    if (n === 'nombre_empresa' || id === 'nombre_empresa' || n.includes('nombre_empresa')) {
-        return 'nombre_empresa';
     }
 
     return null;
@@ -247,136 +258,389 @@ function validateField(input, showUI) {
 
     // --- 2. Reglas según tipo de campo ---
     const regexNum = /^\d+$/;
-    const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const regexSoloLetras = /^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s]+$/;         // Solo letras + espacios (sin números ni especiales)
+    const regexEmpresa = /^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s.&]+$/;       // Empresa: letras, espacios, punto, ampersand
     const regexText = /^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ\s.&]+$/;
 
     switch (fieldType) {
-        case 'nit':
-            if (!regexNum.test(value)) {
-                isValid = false; errorMessage = 'Solo debe contener números.';
-            } else if (value.length < 9 || value.length > 12) {
-                isValid = false; errorMessage = 'El NIT debe tener entre 9 y 12 dígitos.';
-            }
-            break;
 
-        case 'cedula':
+        // ── NIT ────────────────────────────────────────────────────────────
+        // Colombia (DIAN): exactamente 9 dígitos, no empieza en 0
+        case 'nit': {
             if (!regexNum.test(value)) {
                 isValid = false;
-                errorMessage = 'Solo debe contener números.';
-                break;
-            }
-
-            const len = value.length;
-            const num = Number(value);
-
-            // No permitir que empiece en 0
-            if (value.startsWith('0')) {
+                errorMessage = 'El NIT solo debe contener números, sin guiones ni puntos.';
+            } else if (!(value.startsWith('8') || value.startsWith('9'))) {
                 isValid = false;
-                errorMessage = 'La cédula no puede empezar en 0.';
-                break;
-            }
-
-            // Cédulas antiguas (6 a 9 dígitos)
-            if (len >= 6 && len <= 9) {
-
-                // Evitar números irreales demasiado altos
-                if (num >= 1000000000) {
-                    isValid = false;
-                    errorMessage = 'Número de cédula inválido.';
-                    break;
-                }
-
-                // Opcional: límite más realista
-                if (num > 150000000) {
-                    isValid = false;
-                    errorMessage = 'Número de cédula fuera de rango válido.';
-                    break;
-                }
-
-                break; // válida
-            }
-
-            // Cédulas nuevas (exactamente 10 dígitos)
-            if (len === 10) {
-
-                if (!value.startsWith('1')) {
-                    isValid = false;
-                    errorMessage = 'Las cédulas de 10 dígitos deben empezar por 1.';
-                    break;
-                }
-
-                if (num < 1000000000) {
-                    isValid = false;
-                    errorMessage = 'Número de cédula inválido.';
-                    break;
-                }
-
-                break; // válida
-            }
-
-            // ❌ Cualquier otro caso
-            isValid = false;
-            errorMessage = 'La cédula debe tener entre 6 y 10 dígitos.';
-            break;
-
-        case 'email': {
-            // Regex profesional: local válido + dominio real + TLD mínimo 2 letras
-            // Rechaza: a@b.c, @domain.com, user@.com, user@domain., etc.
-            const regexEmailPro = /^[a-zA-Z0-9][a-zA-Z0-9._%+\-]*[a-zA-Z0-9]@[a-zA-Z0-9][a-zA-Z0-9.\-]*[a-zA-Z0-9]\.[a-zA-Z]{2,}$/;
-            // También validar longitudes mínimas razonables
-            const emailParts = value.split('@');
-            const localOk = emailParts.length === 2 && emailParts[0].length >= 2;
-            const domainParts = emailParts.length === 2 ? emailParts[1].split('.') : [];
-            const domainOk = domainParts.length >= 2 && domainParts[0].length >= 2 && domainParts[domainParts.length - 1].length >= 2;
-            if (!regexEmailPro.test(value) || !localOk || !domainOk) {
-                isValid = false; errorMessage = 'Correo inválido. Ej: usuario@empresa.com (dominio debe tener al menos 2 letras).';
+                errorMessage = 'El NIT debe iniciar con 8 o 9.';
+            } else if (value.length !== 9) {
+                isValid = false;
+                errorMessage = `El NIT debe tener exactamente 9 dígitos. Actualmente tienes ${value.length}.`;
+            } else if (/^(\d)\1+$/.test(value)) {
+                isValid = false;
+                errorMessage = 'El NIT no puede tener todos los dígitos iguales.';
             }
             break;
         }
 
-        case 'telefono':
-            if (!regexNum.test(value)) {
-                isValid = false; errorMessage = 'Solo debe contener números.';
-            } else if (value.length < 7 || value.length > 10) {
-                isValid = false; errorMessage = 'El teléfono debe tener entre 7 y 10 dígitos.';
-            }
-            break;
+        // ── CÉDULA Representante ───────────────────────────────────────────
+        case 'cedula': {
 
+            if (!/^\d+$/.test(value)) {
+                isValid = false;
+                errorMessage = 'La cédula solo debe contener números.';
+                break;
+            }
+
+            if (value.startsWith('0')) {
+                isValid = false;
+                errorMessage = 'La cédula no puede iniciar en 0.';
+                break;
+            }
+
+            // Evitar números repetidos (1111111111, 222222, etc.)
+            if (/^(\d)\1+$/.test(value)) {
+                isValid = false;
+                errorMessage = 'Número de cédula inválido.';
+                break;
+            }
+
+            // Evitar secuencias obvias (123456, 987654, etc.)
+            if (/123456|234567|345678|456789/.test(value) || /987654|876543|765432|654321/.test(value)) {
+                isValid = false;
+                errorMessage = 'Número de cédula inválido.';
+                break;
+            }
+
+            const len = value.length;
+
+            // 6 a 9 dígitos → válidas
+            if (len >= 6 && len <= 9) {
+                break;
+            }
+
+            // 10 dígitos → deben empezar en 1
+            if (len === 10) {
+                if (!value.startsWith('1')) {
+                    isValid = false;
+                    errorMessage = 'Las cédulas de 10 dígitos deben iniciar en 1.';
+                    break;
+                }
+                break;
+            }
+
+            isValid = false;
+            errorMessage = 'La cédula debe tener entre 6 y 10 dígitos.';
+            break;
+        }
+        // ── NOMBRE EMPRESA ─────────────────────────────────────────────────
+        // Mínimo 2 palabras reales (nombre + razón/sigla), solo letras/espacios/(&.)
+        case 'nombre_empresa': {
+            if (!regexEmpresa.test(value)) {
+                isValid = false;
+                errorMessage = 'El nombre de la empresa no puede contener números ni caracteres especiales.';
+                break;
+            }
+
+            const palabras = value.trim().toLowerCase().split(/\s+/);
+
+            if (palabras.length < 2) {
+                isValid = false;
+                errorMessage = 'El nombre debe contener al menos 2 palabras.';
+                break;
+            }
+
+            if (palabras.some(p => p.length < 3)) {
+                isValid = false;
+                errorMessage = 'Cada palabra debe tener al menos 3 letras.';
+                break;
+            }
+
+            // Función para detectar palabras sospechosas
+            const esPalabraBasura = (p) => {
+                // Sin vocales
+                if (!/[aeiouáéíóú]/.test(p)) return true;
+
+                // Repeticiones exageradas
+                if (/(.)\1{3,}/.test(p)) return true;
+
+                // Muy larga sin sentido (más de 12 letras)
+                if (p.length > 12) return true;
+
+                // Baja variedad de letras (ej: asdasdasd)
+                const letrasUnicas = new Set(p).size;
+                if (letrasUnicas <= 3 && p.length > 5) return true;
+
+                return false;
+            };
+
+            if (palabras.some(p => esPalabraBasura(p))) {
+                isValid = false;
+                errorMessage = 'El nombre contiene palabras no válidas.';
+                break;
+            }
+
+            if (value.length < 5) {
+                isValid = false;
+                errorMessage = 'El nombre es demasiado corto.';
+                break;
+            }
+
+            if (value.length > 50) {
+                isValid = false;
+                errorMessage = 'El nombre no puede superar los 50 caracteres.';
+                break;
+            }
+
+            break;
+        }
+
+        // ── REPRESENTANTE LEGAL ────────────────────────────────────────────
+        // Solo letras y espacios, sin números ni especiales, mínimo 2 palabras con ≥ 3 letras c/u
+        case 'nombre_repre': {
+            // Solo letras y espacios (nada de puntos, números ni símbolos)
+            if (!/^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]+$/.test(value)) {
+                isValid = false;
+                errorMessage = 'El nombre solo puede contener letras y espacios. No se permiten caracteres especiales.';
+                break;
+            }
+
+            const palabras = value.trim().toLowerCase().split(/\s+/);
+
+            // 1. Mínimo 2 palabras (nombre + apellido)
+            if (palabras.length < 2) {
+                isValid = false;
+                errorMessage = 'Debe ingresar al menos nombre y apellido.';
+                break;
+            }
+
+            // 2. Cada palabra mínimo 3 letras
+            if (palabras.some(p => p.length < 3)) {
+                isValid = false;
+                errorMessage = 'Cada nombre o apellido debe tener al menos 3 letras.';
+                break;
+            }
+
+            // 3. Evitar palabras sin vocales (ej: "sss", "qwrty")
+            const tieneVocal = p => /[aeiouáéíóú]/.test(p);
+            if (palabras.some(p => !tieneVocal(p))) {
+                isValid = false;
+                errorMessage = 'El nombre contiene palabras no válidas.';
+                break;
+            }
+
+            // 4. Evitar repeticiones exageradas (ej: "aaaa", "ssss")
+            if (palabras.some(p => /(.)\1{2,}/.test(p))) {
+                isValid = false;
+                errorMessage = 'El nombre contiene repeticiones inválidas.';
+                break;
+            }
+
+            // 5. Evitar patrones tipo teclado (asdf, qwerty)
+            const patronesFake = ['asdf', 'qwerty', 'zxcv', 'asdfg', 'qwert', 'abcde'];
+            if (palabras.some(p => patronesFake.includes(p))) {
+                isValid = false;
+                errorMessage = 'El nombre no parece válido.';
+                break;
+            }
+
+            // 6. Mínimo 3 letras en total (sin contar espacios)
+            if (value.replace(/\s/g, '').length < 3) {
+                isValid = false;
+                errorMessage = 'El nombre debe tener al menos 3 letras.';
+                break;
+            }
+
+            // 7. Máximo 50 caracteres
+            if (value.length > 50) {
+                isValid = false;
+                errorMessage = 'El nombre no puede superar los 50 caracteres.';
+                break;
+            }
+
+            break;
+        }
+
+        // ── EMAIL ──────────────────────────────────────────────────────────
+        case 'email': {
+            const regexEmailPro = /^[a-zA-Z0-9][a-zA-Z0-9._%+\-]*[a-zA-Z0-9]@[a-zA-Z0-9][a-zA-Z0-9.\-]*[a-zA-Z0-9]\.[a-zA-Z]{2,}$/;
+
+            if (!regexEmailPro.test(value)) {
+                isValid = false;
+                errorMessage = 'Correo inválido. Ej: usuario@empresa.com';
+                break;
+            }
+
+            const [local, domain] = value.split('@');
+
+            // 🔹 Validar longitud mínima
+            if (local.length < 3) {
+                isValid = false;
+                errorMessage = 'El correo es demasiado corto.';
+                break;
+            }
+
+            // 🔹 Detectar patrones sospechosos (asdf, qwer, etc.)
+            if (/^[a-z]{6,}$/.test(local)) {
+                const vocales = local.match(/[aeiou]/gi) || [];
+                const porcentajeVocales = vocales.length / local.length;
+
+                if (porcentajeVocales < 0.3) {
+                    isValid = false;
+                    errorMessage = 'El correo parece no válido (texto sin sentido).';
+                    break;
+                }
+            }
+
+            // 🔹 Detectar caracteres repetidos (aaaaaa)
+            if (/(.)\1{3,}/.test(local)) {
+                isValid = false;
+                errorMessage = 'El correo no puede tener caracteres repetidos excesivos.';
+                break;
+            }
+
+            // 🔹 Lista de dominios comunes (para advertencias)
+            const dominiosComunes = ['gmail.com', 'hotmail.com', 'outlook.com', 'yahoo.com'];
+
+            if (!dominiosComunes.includes(domain)) {
+                // No invalidamos, solo advertimos
+                console.warn('Dominio poco común:', domain);
+            }
+
+            break;
+        }
+
+        // ── TELÉFONO ───────────────────────────────────────────────────────
+        // Colombia: 7 dígitos (fijo local sin indicativo) o 10 dígitos (celular o fijo nacional)
+        case 'telefono': {
+
+            if (!regexNum.test(value)) {
+                isValid = false;
+                errorMessage = 'El teléfono solo debe contener números, sin espacios ni guiones.';
+                break;
+            }
+
+            // ❌ Longitud inválida
+            if (value.length !== 10) {
+                isValid = false;
+                errorMessage = `El teléfono debe tener exactamente 10 dígitos (celular). Actualmente tienes ${value.length}.`;
+                break;
+            }
+
+            // 📱 CELULAR → obligatorio iniciar en 3
+            if (value.length === 10 && !value.startsWith('3')) {
+                isValid = false;
+                errorMessage = 'El número celular debe iniciar con 3. Ej: 3001234567.';
+                break;
+            }
+
+            break;
+        }
+
+        // ── DIRECCIÓN ─────────────────────────────────────────────────────
+        // Mínimo 5 chars, debe tener letras Y números (Ej: "Calle 12 # 34-56")
+        case 'direccion': {
+            if (value.length < 8) {
+                isValid = false;
+                errorMessage = 'La dirección es demasiado corta. Ej: "Calle 12 # 34-56".';
+                break;
+            }
+
+            if (value.length > 150) {
+                isValid = false;
+                errorMessage = 'La dirección no puede superar los 150 caracteres.';
+                break;
+            }
+
+            // 🔹 Debe tener letras y números
+            if (!/[a-zA-ZñÑáéíóúÁÉÍÓÚ]/.test(value) || !/\d/.test(value)) {
+                isValid = false;
+                errorMessage = 'La dirección debe contener letras y números. Ej: "Calle 12 # 34-56".';
+                break;
+            }
+
+            // 🔹 Evitar caracteres repetidos tipo "aaaaaa"
+            if (/(.)\1{4,}/.test(value)) {
+                isValid = false;
+                errorMessage = 'La dirección no puede contener caracteres repetidos excesivos.';
+                break;
+            }
+
+            // 🔹 Detectar texto basura tipo "asdfasdf"
+            const soloLetras = value.replace(/[^a-zA-Z]/g, '');
+            if (soloLetras.length >= 6) {
+                const vocales = soloLetras.match(/[aeiou]/gi) || [];
+                const porcentaje = vocales.length / soloLetras.length;
+
+                if (porcentaje < 0.3) {
+                    isValid = false;
+                    errorMessage = 'La dirección no parece válida (texto sin sentido).';
+                    break;
+                }
+            }
+
+            // 🔹 Debe tener estructura básica colombiana
+            const regexDireccionCol = /(calle|carrera|cra|cl|av|avenida|transversal|diagonal)/i;
+            if (!regexDireccionCol.test(value)) {
+                isValid = false;
+                errorMessage = 'Incluye tipo de vía. Ej: Calle, Carrera, Avenida, etc.';
+                break;
+            }
+
+            // 🔹 Debe tener símbolo típico (# o -)
+            if (!/[#\-]/.test(value)) {
+                isValid = false;
+                errorMessage = 'La dirección debe incluir formato como "# 34-56".';
+                break;
+            }
+
+            // Validar formato tipo: Calle 12 # 34-56
+            const regexCompleta = /(calle|carrera|cra|cl|av|avenida|transversal|diagonal)\s+\d+\s*#\s*\d+-\d+/i;
+
+            if (!regexCompleta.test(value)) {
+                isValid = false;
+                errorMessage = 'La dirección debe tener formato completo. Ej: "Calle 12 # 34-56".';
+                break;
+            }
+
+            break;
+        }
+
+        // ── CONTRASEÑA ────────────────────────────────────────────────────
         case 'password':
             if (value.length < 8) {
-                isValid = false; errorMessage = 'La contraseña debe tener mínimo 8 caracteres.';
+                isValid = false;
+                errorMessage = 'La contraseña debe tener mínimo 8 caracteres.';
             }
             break;
 
-        case 'nombre_empresa':
+        // ── NOMBRE LICENCIA ───────────────────────────────────────────────
+        case 'nombre_licencia':
             if (!regexText.test(value)) {
                 isValid = false;
-                errorMessage = 'El nombre de la empresa solo debe contener letras, espacios O (.)(&)';
+                errorMessage = 'El nombre de licencia solo debe contener letras, números y espacios.';
             } else if (value.length > 100) {
                 isValid = false;
                 errorMessage = 'Máximo 100 caracteres.';
             }
             break;
 
-        case 'nombre_licencia':
-            if (!regexText.test(value)) {
-                isValid = false; errorMessage = 'El nombre solo debe contener letras y espacios.';
-            } else if (value.length > 100) {
-                isValid = false; errorMessage = 'Máximo 100 caracteres.';
-            }
-            break;
-
+        // ── TIEMPO DURACIÓN ───────────────────────────────────────────────
         case 'tiempo':
             if (value.length > 50) {
-                isValid = false; errorMessage = 'Máximo 50 caracteres.';
+                isValid = false;
+                errorMessage = 'Máximo 50 caracteres.';
             } else if (!/^[a-zA-Z0-9\sñÑáéíóúÁÉÍÓÚ]+$/.test(value)) {
-                isValid = false; errorMessage = 'Solo letras, números y espacios.';
+                isValid = false;
+                errorMessage = 'Solo letras, números y espacios.';
             }
             break;
 
+        // ── PRECIO ────────────────────────────────────────────────────────
         case 'precio':
             if (isNaN(value) || Number(value) <= 0) {
-                isValid = false; errorMessage = 'Ingresa un precio válido mayor a 0.';
+                isValid = false;
+                errorMessage = 'Ingresa un precio válido mayor a 0.';
             }
             break;
 

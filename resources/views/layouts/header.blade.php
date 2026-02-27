@@ -5,7 +5,7 @@
                     flex items-center justify-between">
 
             {{-- LOGO --}}
-            <a href="#index" class="flex items-center gap-3 font-bold text-xl text-gray-900 cursor-pointer hover:scale-105 transition-transform duration-200 cursor-pointer">
+            <a href="{{ route('index_welcome') }}" class="flex items-center gap-3 font-bold text-xl text-gray-900 cursor-pointer hover:scale-105 transition-transform duration-200 cursor-pointer">
 
                 {{-- Icono --}}
                 <div class="w-9 h-9 rounded-xl bg-green-500/90 flex items-center justify-center shadow-sm">
