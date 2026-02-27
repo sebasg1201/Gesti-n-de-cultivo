@@ -26,7 +26,7 @@ class SolicitudCompraController extends Controller
             });
         }
 
-        $solicitudes = $query->orderBy('fecha_solicitud', 'desc')->paginate(10);
+        $solicitudes = $query->orderBy('fecha_solicitud', 'desc')->paginate(3);
 
         return view('superadmin.solicitudes', compact('solicitudes'));
     }
