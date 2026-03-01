@@ -61,7 +61,7 @@ class ResetPasswordController extends Controller
                 'regex:/[a-z]/',      // al menos una letra minúscula
                 'regex:/[A-Z]/',      // al menos una letra mayúscula
                 'regex:/[0-9]/',      // al menos un número
-                'regex:/[!\"#$%&\'()*+,\-.\/:;<=>?@\[\]^_`{|}~]/', // al menos un carácter especial
+                'regex:/[!\"#$%&\'()*+,\-.\/:;<=>?@\[\]^_`{|°}~]/', // al menos un carácter especial
             ],
         ], [
             'password.regex' => 'La contraseña debe contener al menos una letra minúscula, una mayúscula, un número y un carácter especial (@$!%*#?&).',

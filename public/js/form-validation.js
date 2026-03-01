@@ -144,7 +144,7 @@ const checkUniquenessFromServer = async (input, field, value) => {
 ----------------------------------------------------------------------- */
 
 function shouldSkip(input) {
-    return input.type === 'hidden' || input.type === 'file' || input.readOnly;
+    return input.type === 'hidden' || input.readOnly;
 }
 
 /**
@@ -224,6 +224,11 @@ function getFieldType(input) {
     if (n === 'precio' || id === 'precio' || n.includes('precio') || id.includes('precio')
         || n === 'valor' || id === 'valor') {
         return 'precio';
+    }
+
+    // Archivos / Imágenes
+    if (input.type === 'file') {
+        return 'file';
     }
 
     return null;
@@ -540,66 +545,64 @@ function validateField(input, showUI) {
         // ── DIRECCIÓN ─────────────────────────────────────────────────────
         // Mínimo 5 chars, debe tener letras Y números (Ej: "Calle 12 # 34-56")
         case 'direccion': {
-            if (value.length < 8) {
+
+            const direccion = value.trim();
+
+            // 🔹 Longitud mínima y máxima
+            if (direccion.length < 8) {
                 isValid = false;
-                errorMessage = 'La dirección es demasiado corta. Ej: "Calle 12 # 34-56".';
+                errorMessage = 'La dirección es demasiado corta. Ej: "Calle 12 # 34-56" o "Vereda San José".';
                 break;
             }
 
-            if (value.length > 150) {
+            if (direccion.length > 150) {
                 isValid = false;
                 errorMessage = 'La dirección no puede superar los 150 caracteres.';
                 break;
             }
 
-            // 🔹 Debe tener letras y números
-            if (!/[a-zA-ZñÑáéíóúÁÉÍÓÚ]/.test(value) || !/\d/.test(value)) {
+            // 🔹 Debe contener al menos letras
+            if (!/[a-zA-ZñÑáéíóúÁÉÍÓÚ]/.test(direccion)) {
                 isValid = false;
-                errorMessage = 'La dirección debe contener letras y números. Ej: "Calle 12 # 34-56".';
+                errorMessage = 'La dirección debe contener texto válido.';
                 break;
             }
 
             // 🔹 Evitar caracteres repetidos tipo "aaaaaa"
-            if (/(.)\1{4,}/.test(value)) {
+            if (/(.)\1{4,}/.test(direccion)) {
                 isValid = false;
                 errorMessage = 'La dirección no puede contener caracteres repetidos excesivos.';
                 break;
             }
 
             // 🔹 Detectar texto basura tipo "asdfasdf"
-            const soloLetras = value.replace(/[^a-zA-Z]/g, '');
+            const soloLetras = direccion.replace(/[^a-zA-Z]/g, '');
             if (soloLetras.length >= 6) {
                 const vocales = soloLetras.match(/[aeiou]/gi) || [];
                 const porcentaje = vocales.length / soloLetras.length;
 
                 if (porcentaje < 0.3) {
                     isValid = false;
-                    errorMessage = 'La dirección no parece válida (texto sin sentido).';
+                    errorMessage = 'La dirección no parece válida.';
                     break;
                 }
             }
 
-            // 🔹 Debe tener estructura básica colombiana
-            const regexDireccionCol = /(calle|carrera|cra|cl|av|avenida|transversal|diagonal)/i;
-            if (!regexDireccionCol.test(value)) {
-                isValid = false;
-                errorMessage = 'Incluye tipo de vía. Ej: Calle, Carrera, Avenida, etc.';
-                break;
-            }
+            // 🔹 Regex urbana Colombia
+            const regexUrbana = /^(calle|cl|carrera|cra|avenida|av|transversal|tv|diagonal|dg)\s+\d+[a-zA-Z]?\s*#\s*\d+[a-zA-Z]?\s*-\s*\d+[a-zA-Z]?$/i;
 
-            // 🔹 Debe tener símbolo típico (# o -)
-            if (!/[#\-]/.test(value)) {
-                isValid = false;
-                errorMessage = 'La dirección debe incluir formato como "# 34-56".';
-                break;
-            }
+            // 🔹 Regex rural Colombia
+            const regexRural = /^(vereda|finca|corregimiento|sector)\s+[a-zA-Z0-9\s]+$/i;
 
-            // Validar formato tipo: Calle 12 # 34-56
-            const regexCompleta = /(calle|carrera|cra|cl|av|avenida|transversal|diagonal)\s+\d+\s*#\s*\d+-\d+/i;
+            // 🔹 Regex kilómetro
+            const regexKm = /^(km|kil[oó]metro)\s*\d+(\s*\+\s*\d+)?(\s*v[ií]a\s+[a-zA-Z0-9\s\-]+)?$/i;
 
-            if (!regexCompleta.test(value)) {
+            if (!regexUrbana.test(direccion) &&
+                !regexRural.test(direccion) &&
+                !regexKm.test(direccion)) {
+
                 isValid = false;
-                errorMessage = 'La dirección debe tener formato completo. Ej: "Calle 12 # 34-56".';
+                errorMessage = 'Formato inválido. Ej: "Calle 12 # 34-56", "Vereda San José" o "Km 5 Vía Bogotá".';
                 break;
             }
 
@@ -643,6 +646,23 @@ function validateField(input, showUI) {
                 errorMessage = 'Ingresa un precio válido mayor a 0.';
             }
             break;
+
+        // ── ARCHIVOS (Tamaño) ──────────────────────────────────────────────
+        case 'file': {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                const maxSize = 2 * 1024 * 1024; // 2MB
+
+                if (file.size > maxSize) {
+                    isValid = false;
+                    errorMessage = 'El archivo es demasiado pesado (máx 2MB).';
+                }
+            } else if (isRequired) {
+                isValid = false;
+                errorMessage = 'Este campo es obligatorio.';
+            }
+            break;
+        }
 
         // Sin regla especial → solo requerido (ya chequeado arriba)
         default:
