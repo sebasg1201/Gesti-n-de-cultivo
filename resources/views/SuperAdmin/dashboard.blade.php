@@ -4,32 +4,56 @@
 
 <div class="space-y-6">
 
-    <div class="flex justify-between items-center">
-        <div>
-            <h1 class="text-2xl font-bold text-gray-800">Gestión de Licencias</h1>
-            <p class="text-sm text-gray-500">Administra las licencias y asignaciones del sistema</p>
+    <div class="relative flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-8 border-b border-slate-100">
+
+        <div class="relative">
+            <div class="flex items-center gap-2 mb-2">
+                <span class="flex h-2 w-2">
+                    <span class="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-emerald-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                </span>
+                <span class="text-[10px] font-black text-emerald-600 uppercase tracking-[0.3em] bg-emerald-50 px-3 py-1 rounded-full">
+                    Sistema de Control Real-time
+                </span>
+            </div>
+
+            <h1 class="text-4xl md:text-5xl font-black text-slate-900 tracking-tighter">
+                Gestión de <span class="bg-clip-text text-transparent bg-gradient-to-r from-[#006b58] to-[#004d3d]">Licencias</span>
+                <span class="text-[#006b58]">.</span>
+            </h1>
+
+            <p class="text-slate-500 font-medium mt-2 max-w-md leading-relaxed">
+                Administra, vincula y monitorea los estados empresariales y planes activos de <span class="font-bold text-slate-700">AgriManager</span>.
+            </p>
         </div>
-        <div class="flex items-center gap-2">
-            <!-- REPORT BUTTON -->
-            <button onclick="document.getElementById('exportModal').classList.remove('hidden')"
-                class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 shadow-sm transition">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                    stroke="currentColor" class="w-4 h-4">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+
+        <div class="flex flex-wrap items-center gap-4">
+
+            <div class="hidden md:flex items-center gap-3 bg-white border border-slate-100 px-5 py-3 rounded-2xl shadow-sm">
+                <div class="p-2 bg-slate-50 rounded-lg text-slate-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 9v7.5" />
+                    </svg>
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">Fecha de corte</span>
+                    <span class="text-sm font-bold text-slate-700 mt-1 italic">{{ now()->format('d M, Y') }}</span>
+                </div>
+            </div>
+
+            <button id="downloadPdfBtn" onclick="document.getElementById('exportModal').classList.remove('hidden')"
+                class="group relative inline-flex items-center justify-center px-8 py-4 font-bold text-white transition-all duration-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#006b58] 
+                bg-gradient-to-br from-[#006b58] to-[#004d3d] hover:from-[#004d3d] hover:to-[#00362b] 
+                shadow-xl shadow-emerald-900/10 hover:shadow-emerald-900/20 hover:-translate-y-1 active:scale-95 overflow-hidden">
+
+                <div class="absolute inset-0 w-full h-full bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+
+                <svg class="w-5 h-5 mr-3 relative z-10 transition-transform group-hover:rotate-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                 </svg>
-                Exportar Reporte
+                <span class="relative z-10 uppercase tracking-wider text-xs font-black">Exportar Informe</span>
             </button>
 
-            <span
-                class="text-sm text-gray-500 bg-white px-3 py-2 rounded shadow-sm border border-gray-100 flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                    stroke="currentColor" class="w-4 h-4 text-gray-400">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 9v7.5" />
-                </svg>
-                {{ now()->format('d M, Y') }}
-            </span>
         </div>
     </div>
 
@@ -37,98 +61,90 @@
 
         <!-- 1. ASIGNAR LICENCIA FORM (Left Side) -->
         <div class="lg:col-span-1">
-            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 sticky top-4">
-                <div class="flex items-center gap-3 mb-6 border-b border-gray-100 pb-4">
-                    <div class="w-10 h-10 rounded-full bg-green-50 flex items-center justify-center text-green-600">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="currentColor" class="w-5 h-5">
+            <div class="bg-white p-8 rounded-[2rem] shadow-xl shadow-slate-200/60 border border-slate-100 sticky top-4">
+                <div class="flex items-center gap-4 mb-8 border-b border-slate-50 pb-6">
+                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#006b58] to-[#004d3d] flex items-center justify-center text-white shadow-lg shadow-emerald-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                         </svg>
                     </div>
                     <div>
-                        <h3 class="text-lg font-bold text-gray-800">Asignar Licencia</h3>
-                        <p class="text-xs text-gray-400">Vincular plan a empresa</p>
+                        <h3 class="text-xl font-black text-slate-800 tracking-tight">Asignar Licencia</h3>
+                        <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Vincular plan a empresa</p>
                     </div>
                 </div>
 
-                <form action="{{ route('licencias.asignar') }}" method="POST" class="space-y-5">
+                <form action="{{ route('licencias.asignar') }}" method="POST" class="space-y-6">
                     @csrf
 
                     {{-- Campo NIT --}}
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">NIT de la Empresa</label>
-                        <div class="relative">
+                        <label class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">NIT de la Empresa</label>
+                        <div class="relative group">
                             <input type="text" id="nitBusqueda" placeholder="Ingrese el NIT..."
-                                class="w-full border border-gray-200 bg-gray-50 rounded-lg p-2.5 text-sm focus:ring-green-500 focus:border-green-500 transition-colors pr-10"
+                                class="w-full border-2 border-slate-50 bg-slate-50 rounded-2xl p-4 text-sm font-medium focus:bg-white focus:border-[#006b58] focus:ring-4 focus:ring-emerald-50 transition-all outline-none pr-12"
                                 autocomplete="off">
-                            <div id="nitSpinner" class="hidden absolute right-3 top-3">
-                                <svg class="animate-spin h-4 w-4 text-green-500" xmlns="http://www.w3.org/2000/svg"
-                                    fill="none" viewBox="0 0 24 24">
-                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
-                                        stroke-width="4"></circle>
+
+                            {{-- Spinner --}}
+                            <div id="nitSpinner" class="hidden absolute right-4 top-4">
+                                <svg class="animate-spin h-5 w-5 text-[#006b58]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
                                 </svg>
                             </div>
                         </div>
-                        {{-- Campo oculto que envía el id_empresa real --}}
                         <input type="hidden" id="id_empresa" name="id_empresa">
                     </div>
 
-                    {{-- Info empresa encontrada --}}
-                    <div id="empresaInfo" class="hidden p-3 bg-green-50 rounded-lg border border-green-100">
-                        <p class="text-xs font-semibold text-green-800" id="empresaNombre"></p>
-                        <p class="text-xs text-green-600" id="empresaNit"></p>
+                    {{-- ALERTAS (Mantienen tus IDs para el JS) --}}
+                    <div id="empresaInfo" class="hidden p-4 bg-emerald-50 rounded-2xl border border-emerald-100 transition-all">
+                        <p class="text-sm font-bold text-emerald-800" id="empresaNombre"></p>
+                        <p class="text-xs text-emerald-600 font-medium tracking-wide" id="empresaNit"></p>
                     </div>
 
-                    {{-- Empresa no encontrada --}}
-                    <div id="empresaNoEncontrada" class="hidden p-3 bg-red-50 rounded-lg border border-red-100">
-                        <p class="text-xs text-red-700">No se encontró ninguna empresa con ese NIT.</p>
-                    </div>
-
-                    {{-- Empresa ya tiene licencia activa --}}
-                    <div id="empresaConLicencia" class="hidden p-3 bg-yellow-50 rounded-lg border border-yellow-200">
-                        <p class="text-xs text-yellow-800 font-semibold">Atención</p>
-                        <p class="text-xs text-yellow-700 mt-1">Esta empresa ya cuenta con una licencia Asignada.</p>
-                    </div>
-
-                    {{-- Solicitud no aprobada --}}
-                    <div id="solicitudNoAprobada" class="hidden p-3 bg-red-50 rounded-lg border border-red-100">
-                        <p class="text-xs text-red-800 font-semibold">Acción Requerida</p>
-                        <p class="text-xs text-red-700 mt-1">Debes aprobar la solicitud de la empresa antes de asignarle
-                            una licencia.</p>
-                    </div>
-
-                    {{-- Plan (readonly, se llena automáticamente) --}}
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Plan de Licencia</label>
-                        <div class="relative">
-                            <input type="text" id="planNombre"
-                                class="w-full border border-gray-200 bg-gray-100 rounded-lg p-2.5 text-sm text-gray-500 cursor-not-allowed"
-                                placeholder="Se llenará automáticamente..." readonly>
+                    <div id="empresaNoEncontrada" class="hidden p-4 bg-red-50 rounded-2xl border border-red-100">
+                        <div class="flex gap-2">
+                            <svg class="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" />
+                            </svg>
+                            <p class="text-xs text-red-700 font-bold">No se encontró ninguna empresa con ese NIT.</p>
                         </div>
-                        {{-- Campo oculto que envía el id_tipo_licencia real --}}
+                    </div>
+
+                    <div id="empresaConLicencia" class="hidden p-4 bg-amber-50 rounded-2xl border border-amber-200">
+                        <p class="text-xs text-amber-800 font-black uppercase mb-1">Atención</p>
+                        <p class="text-xs text-amber-700 font-medium">Esta empresa ya cuenta con una licencia Asignada.</p>
+                    </div>
+
+                    <div id="solicitudNoAprobada" class="hidden p-4 bg-rose-50 rounded-2xl border border-rose-100">
+                        <p class="text-xs text-rose-800 font-black uppercase mb-1">Acción Requerida</p>
+                        <p class="text-xs text-rose-700 font-medium leading-relaxed">Debes aprobar la solicitud de la empresa antes de asignarle una licencia.</p>
+                    </div>
+
+                    {{-- Plan --}}
+                    <div>
+                        <label class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">Plan de Licencia</label>
+                        <input type="text" id="planNombre"
+                            class="w-full bg-slate-100 border-none rounded-2xl p-4 text-sm text-slate-400 font-bold italic cursor-not-allowed"
+                            placeholder="Se llenará automáticamente..." readonly>
                         <input type="hidden" id="id_tipo_licencia" name="id_tipo_licencia">
                     </div>
 
-                    <div class="p-3 bg-blue-50 rounded-lg flex gap-3 items-start">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="currentColor" class="w-5 h-5 text-blue-500 flex-shrink-0">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+                    {{-- Nota Informativa --}}
+                    <div class="p-4 bg-blue-50/50 rounded-2xl flex gap-3 items-start border border-blue-100/50">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 text-blue-500 flex-shrink-0">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
                         </svg>
-                        <p class="text-xs text-blue-700 leading-relaxed">
-                            El plan se asigna automáticamente según la solicitud de la empresa. La fecha de inicio será
-                            el día de hoy.
+                        <p class="text-[11px] text-blue-700 font-medium leading-relaxed">
+                            El plan se asigna automáticamente según la solicitud. La vigencia inicia hoy.
                         </p>
                     </div>
 
                     <button type="submit" id="btnAsignar" disabled
-                        class="w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-bold py-3 px-4 rounded-lg transform active:scale-95 transition-all shadow-md hover:shadow-lg flex justify-center items-center gap-2">
+                        class="w-full bg-gradient-to-br from-[#006b58] to-[#004d3d] hover:shadow-xl hover:shadow-emerald-900/20 disabled:from-slate-200 disabled:to-slate-300 disabled:cursor-not-allowed text-white font-black py-4 rounded-2xl transform active:scale-95 transition-all flex justify-center items-center gap-3 uppercase tracking-widest text-xs">
                         <span>Confirmar Asignación</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="currentColor" class="w-4 h-4">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
                         </svg>
                     </button>
                 </form>
@@ -137,109 +153,84 @@
 
         <!-- 2. TABLE AND STATS (Right Side) -->
         <div class="lg:col-span-2 space-y-6">
+            <div class="bg-white rounded-[2rem] shadow-sm border border-slate-100 overflow-hidden">
+                <div class="p-8 border-b border-slate-50 flex flex-col sm:flex-row justify-between items-center gap-6 bg-slate-50/30">
+                    <h3 class="text-xl font-black text-slate-800 tracking-tight">Historial de Licencias</h3>
 
-            <!-- LICENSES TABLE -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                <div class="p-5 border-b border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-4">
-                    <h3 class="font-bold text-gray-800">Historial de Licencias</h3>
-
-                    <!-- Search -->
-                    <form action="{{ route('dashboard') }}" method="GET" class="relative w-full sm:w-64">
-                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Buscar empresa..."
-                            class="w-full pl-10 pr-4 py-2 bg-gray-50 border-none rounded-lg text-sm focus:ring-2 focus:ring-green-500">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="currentColor" class="w-4 h-4 text-gray-400 absolute left-3 top-2.5">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                    <form action="{{ route('dashboard') }}" method="GET" class="relative w-full sm:w-80">
+                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Buscar por empresa o NIT..."
+                            class="w-full pl-12 pr-4 py-3 bg-white border-none rounded-2xl shadow-sm text-sm focus:ring-2 focus:ring-[#006b58]/20 transition-all">
+                        <svg class="w-5 h-5 text-slate-400 absolute left-4 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="2.5" />
                         </svg>
                     </form>
                 </div>
 
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
-                        <thead class="bg-gray-50 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                    <table class="w-full text-left">
+                        <thead class="bg-slate-50/50 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">
                             <tr>
-                                <th class="px-6 py-4">Empresa</th>
-                                <th class="px-6 py-4">Plan</th>
-                                <th class="px-6 py-4">Fecha Inicio</th>
-                                <th class="px-6 py-4">Estado</th>
-                                <th class="px-6 py-4 text-right">Acción</th>
+                                <th class="px-8 py-5">Empresa</th>
+                                <th class="px-8 py-5">Plan de Servicio</th>
+                                <th class="px-8 py-5">Fecha Inicio</th>
+                                <th class="px-8 py-5">Estado Actual</th>
+                                <th class="px-8 py-5 text-right">Acciones</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-gray-100">
+                        <tbody class="divide-y divide-slate-50">
                             @forelse($licencasTable as $licencia)
-                            <tr class="hover:bg-gray-50 transition-colors group">
-                                <td class="px-6 py-4">
-                                    <div class="font-medium text-gray-900">
+                            <tr class="hover:bg-emerald-50/30 transition-colors group">
+                                <td class="px-8 py-5">
+                                    <div class="font-bold text-slate-800 group-hover:text-[#006b58] transition-colors">
                                         {{ $licencia->empresa->nombre_empresa ?? 'N/A' }}
                                     </div>
-                                    <div class="text-xs text-gray-400">NIT: {{ $licencia->id_empresa }}</div>
+                                    <div class="text-[10px] font-bold text-slate-400 tracking-widest mt-0.5">NIT: {{ $licencia->id_empresa }}</div>
                                 </td>
-                                <td class="px-6 py-4">
-                                    <span
-                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                <td class="px-8 py-5">
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black uppercase bg-indigo-50 text-indigo-600 border border-indigo-100">
                                         {{ $licencia->tipoLicencia->nombre_licencia ?? 'N/A' }}
                                     </span>
                                 </td>
-                                <td class="px-6 py-4 text-sm text-gray-600">
-                                    {{ \Carbon\Carbon::parse($licencia->fecha_inicio)->format('d M, Y') }}
+                                <td class="px-8 py-5">
+                                    <div class="text-sm font-bold text-slate-600">
+                                        {{ \Carbon\Carbon::parse($licencia->fecha_inicio)->format('d M, Y') }}
+                                    </div>
                                 </td>
-                                <td class="px-6 py-4">
+                                <td class="px-8 py-5">
                                     @php
                                     $statusClass = match ($licencia->id_estado) {
-                                    3 => 'bg-green-100 text-green-700',
-                                    1 => 'bg-yellow-100 text-yellow-700',
-                                    2 => 'bg-red-100 text-red-700',
-                                    default => 'bg-gray-100 text-gray-700'
+                                    3 => 'bg-emerald-100 text-emerald-700 border-emerald-200',
+                                    1 => 'bg-amber-100 text-amber-700 border-amber-200',
+                                    2 => 'bg-rose-100 text-rose-700 border-rose-200',
+                                    default => 'bg-slate-100 text-slate-700 border-slate-200'
                                     };
-                                    $statusText = match ($licencia->id_estado) {
-                                    3 => 'Activa',
-                                    1 => 'Pendiente',
-                                    2 => 'Inactiva',
-                                    default => 'Desconocido'
-                                    };
+                                    $statusText = match ($licencia->id_estado) { 3 => 'Activa', 1 => 'Pendiente', 2 => 'Inactiva', default => 'Desconocido' };
                                     @endphp
-                                    <span
-                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $statusClass }}">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-current mr-1.5"></span>
+                                    <span class="inline-flex items-center px-3 py-1 rounded-lg text-[10px] font-black uppercase border {{ $statusClass }}">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-current mr-2 animate-pulse"></span>
                                         {{ $statusText }}
                                     </span>
                                 </td>
-                                <td class="px-6 py-4 text-right">
+                                <td class="px-8 py-5 text-right">
                                     <button data-licencia="{{ json_encode($licencia) }}"
                                         onclick="openEditModal(JSON.parse(this.getAttribute('data-licencia')))"
-                                        class="text-gray-400 hover:text-green-600 transition-colors p-2 rounded-full hover:bg-green-50">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                                        class="p-2.5 bg-white border border-slate-200 rounded-xl text-slate-400 hover:text-[#006b58] hover:border-[#006b58] hover:shadow-lg transition-all active:scale-90">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
                                         </svg>
                                     </button>
                                 </td>
                             </tr>
                             @empty
-                            <tr>
-                                <td colspan="5" class="px-6 py-8 text-center text-gray-500">
-                                    <div class="flex flex-col items-center gap-2">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="1.5" stroke="currentColor" class="w-8 h-8 text-gray-300">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m3.75 9v6m3-3H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
-                                        </svg>
-                                        <p>No se encontraron licencias recientes</p>
-                                    </div>
-                                </td>
-                            </tr>
                             @endforelse
                         </tbody>
                     </table>
                 </div>
 
-                <div class="flex justify-center mt-6">
+                <div class="p-8 bg-slate-50/30 flex justify-center border-t border-slate-50">
                     {{ $licencasTable->withQueryString()->links() }}
                 </div>
             </div>
-
         </div>
 
     </div>
