@@ -17,7 +17,7 @@
                 </span>
             </div>
 
-            <h1 class="text-4xl md:text-5xl font-black text-slate-900 tracking-tighter">
+            <h1 class="text-4xl md:text-5xl font-black text-green-700 tracking-tighter">
                 Gestión de <span class="bg-clip-text text-transparent bg-gradient-to-r from-[#006b58] to-[#004d3d]">Licencias</span>
                 <span class="text-[#006b58]">.</span>
             </h1>

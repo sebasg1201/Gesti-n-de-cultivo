@@ -7,8 +7,8 @@
     <div class="relative flex flex-col sm:flex-row sm:justify-between sm:items-end gap-6 pb-6 border-b border-gray-100">
         <div>
             <span class="text-xs font-bold text-green-600 uppercase tracking-widest bg-green-50 px-3 py-1 rounded-full">Analytics Real-time</span>
-            <h1 class="text-4xl font-extrabold text-slate-900 tracking-tight mt-2">
-                Panel de Reportes <span class="text-green-600">.</span>
+            <h1 class="text-4xl font-extrabold text-green-800 tracking-tight mt-2">
+                Panel De <span class="bg-clip-text text-transparent bg-gradient-to-r from-[#006b58] to-[#004d3d]">Reportes</span><span class="text-green-600"> .</span>
             </h1>
             <p class="text-slate-500 font-medium mt-1">
                 Monitoreo inteligente de licencias y estados empresariales.
