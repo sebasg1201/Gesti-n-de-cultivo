@@ -92,15 +92,35 @@
                                 <div class="flex justify-center gap-3">
 
                                     {{-- BOTON EDITAR --}}
-                                    <a href="{{ route('licencias.edit', $licencia->id_tipo_licencia) }}"
-                                        class="flex items-center gap-1 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg shadow-sm transition duration-300">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none"
-                                            viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
-                                        </svg>
-                                        Editar
-                                    </a>
+                                    @if($enUso)
+                                        <div class="relative group">
+                                            <button type="button" disabled
+                                                class="flex items-center gap-1 bg-gray-300 text-gray-500 px-4 py-2 rounded-lg shadow-sm cursor-not-allowed">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none"
+                                                    viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                                                </svg>
+                                                Editar
+                                            </button>
+                                            <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 hidden group-hover:block z-10 pointer-events-none">
+                                                <div class="bg-gray-800 text-white text-xs rounded-lg py-2 px-3 text-center shadow-lg leading-relaxed">
+                                                    No se puede editar: este plan tiene solicitudes de compra o licencias asignadas a empresas.
+                                                    <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @else
+                                        <a href="{{ route('licencias.edit', $licencia->id_tipo_licencia) }}"
+                                            class="flex items-center gap-1 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg shadow-sm transition duration-300">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none"
+                                                viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                                            </svg>
+                                            Editar
+                                        </a>
+                                    @endif
 
                                     {{-- BOTON ELIMINAR --}}
                                     @if($enUso)

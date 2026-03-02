@@ -66,157 +66,159 @@
                     </form>
                 </div>
 
-                <table class="w-full text-left">
-                    <thead class="bg-gray-50 text-xs uppercase text-gray-700">
-                        <tr>
-                            <th class="p-4">Empresa y NIT</th>
-                            <th class="p-4">Propietario</th>
-                            <th class="p-4">Fecha Registro</th>
-                            <th class="p-4">Estado</th>
-                            <th class="p-4">Accion</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-200">
-                        @forelse($empresas as $empresa)
-                        <tr class="hover:bg-gray-50">
-                            <td class="p-4">
-                                <div class="flex items-center gap-3">
-                                    <div
-                                        class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600 font-bold">
-                                        {{ substr($empresa->nombre_empresa, 0, 2) }}
-                                    </div>
-                                    <div>
-                                        <div class="font-bold text-gray-900">{{ $empresa->nombre_empresa }}</div>
-                                        <div class="text-sm text-gray-500 flex items-center gap-2">
-                                            NIT: <span id="nit-emp-{{ $empresa->id_empresa }}">{{ $empresa->id_empresa }}</span>
-                                            <button type="button" onclick="copyToClipboard('{{ $empresa->id_empresa }}', this)"
-                                                title="Copiar NIT"
-                                                class="text-gray-400 hover:text-green-600 transition-colors cursor-pointer">
-                                                <svg class="w-4 h-4 icon-copy" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                        d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                                </svg>
-                                                <svg class="w-4 h-4 hidden text-green-500 icon-check" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m4.5 12.75 6 6 9-13.5" />
-                                                </svg>
-                                            </button>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left min-w-[800px]">
+                        <thead class="bg-gray-50 text-xs uppercase text-gray-700">
+                            <tr>
+                                <th class="p-4">Empresa y NIT</th>
+                                <th class="p-4">Propietario</th>
+                                <th class="p-4">Fecha Registro</th>
+                                <th class="p-4">Estado</th>
+                                <th class="p-4">Accion</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                            @forelse($empresas as $empresa)
+                            <tr class="hover:bg-gray-50">
+                                <td class="p-4">
+                                    <div class="flex items-center gap-3">
+                                        <div
+                                            class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600 font-bold shrink-0">
+                                            {{ substr($empresa->nombre_empresa, 0, 2) }}
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-gray-900">{{ $empresa->nombre_empresa }}</div>
+                                            <div class="text-sm text-gray-500 flex items-center gap-2">
+                                                NIT: <span id="nit-emp-{{ $empresa->id_empresa }}">{{ $empresa->id_empresa }}</span>
+                                                <button type="button" onclick="copyToClipboard('{{ $empresa->id_empresa }}', this)"
+                                                    title="Copiar NIT"
+                                                    class="text-gray-400 hover:text-green-600 transition-colors cursor-pointer">
+                                                    <svg class="w-4 h-4 icon-copy" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                                    </svg>
+                                                    <svg class="w-4 h-4 hidden text-green-500 icon-check" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m4.5 12.75 6 6 9-13.5" />
+                                                    </svg>
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </td>
-                            <td class="p-4">
-                                <div class="font-medium text-gray-900">{{ $empresa->nombre_repre_legal }}</div>
-                                <div class="text-sm text-gray-500">{{ $empresa->correo }}</div>
-                            </td>
-                            <td class="p-4">
-                                <div class="font-medium text-gray-900">
-                                    {{ \Carbon\Carbon::parse($empresa->fecha_creacion)->timezone('America/Bogota')->format('d M, Y') }}
-                                </div>
-                                <div class="text-xs text-gray-500">
-                                    {{ \Carbon\Carbon::parse($empresa->fecha_creacion)->timezone('America/Bogota')->locale('es')->diffForHumans() }}
-                                </div>
-                            </td>
-                            <td class="p-4">
-                                @if($empresa->estado)
-                                @php
-                                $color = match ($empresa->estado->id_estado) {
-                                1 => 'text-yellow-700 bg-yellow-100', // pendiente
-                                2 => 'text-red-700 bg-red-100', // bloqueada
-                                3 => 'text-green-700 bg-green-100', // activa
-                                default => 'text-gray-700 bg-gray-100',
-                                };
-                                @endphp
-
-                                <span class="px-2 py-1 font-semibold leading-tight rounded-full {{ $color }}">
-                                    {{ ucfirst($empresa->estado->nombre_estado) }}
-                                </span>
-                                @else
-                                <span class="px-2 py-1 font-semibold leading-tight text-gray-700 bg-gray-100 rounded-full">
-                                    Desconocido
-                                </span>
-                                @endif
-                            </td>
-
-                            <td class="p-4">
-                                <div class="flex gap-2">
-                                    {{-- Botón Activar --}}
-                                    @if($empresa->id_estado != 3)
-                                    @if($empresa->licencia)
-                                    <form action="{{ route('SuperAdmin.activar', $empresa->id_empresa) }}" method="POST"
-                                        class="inline">
-                                        @csrf
-                                        @method('PUT')
-                                        <button type="submit"
-                                            class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3 rounded text-xs flex items-center gap-1 cursor-pointer"
-                                            onclick="return confirm('¿Estás seguro de activar esta empresa?')">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                stroke-width="1.5" stroke="currentColor" class="w-3 h-3">
+                                </td>
+                                <td class="p-4">
+                                    <div class="font-medium text-gray-900">{{ $empresa->nombre_repre_legal }}</div>
+                                    <div class="text-sm text-gray-500">{{ $empresa->correo }}</div>
+                                </td>
+                                <td class="p-4 whitespace-nowrap">
+                                    <div class="font-medium text-gray-900">
+                                        {{ \Carbon\Carbon::parse($empresa->fecha_creacion)->timezone('America/Bogota')->format('d M, Y') }}
+                                    </div>
+                                    <div class="text-xs text-gray-500">
+                                        {{ \Carbon\Carbon::parse($empresa->fecha_creacion)->timezone('America/Bogota')->locale('es')->diffForHumans() }}
+                                    </div>
+                                </td>
+                                <td class="p-4 whitespace-nowrap">
+                                    @if($empresa->estado)
+                                    @php
+                                    $color = match ($empresa->estado->id_estado) {
+                                    1 => 'text-yellow-700 bg-yellow-100', // pendiente
+                                    2 => 'text-red-700 bg-red-100', // bloqueada
+                                    3 => 'text-green-700 bg-green-100', // activa
+                                    default => 'text-gray-700 bg-gray-100',
+                                    };
+                                    @endphp
+    
+                                    <span class="px-2 py-1 font-semibold leading-tight rounded-full {{ $color }}">
+                                        {{ ucfirst($empresa->estado->nombre_estado) }}
+                                    </span>
+                                    @else
+                                    <span class="px-2 py-1 font-semibold leading-tight text-gray-700 bg-gray-100 rounded-full">
+                                        Desconocido
+                                    </span>
+                                    @endif
+                                </td>
+    
+                                <td class="p-4">
+                                    <div class="flex gap-2">
+                                        {{-- Botón Activar --}}
+                                        @if($empresa->id_estado != 3)
+                                        @if($empresa->licencia)
+                                        <form action="{{ route('SuperAdmin.activar', $empresa->id_empresa) }}" method="POST"
+                                            class="inline">
+                                            @csrf
+                                            @method('PUT')
+                                            <button type="submit"
+                                                class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3 rounded text-xs flex items-center gap-1 cursor-pointer"
+                                                onclick="return confirm('¿Estás seguro de activar esta empresa?')">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                    stroke-width="1.5" stroke="currentColor" class="w-3 h-3">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" />
+                                                </svg>
+                                                Activar
+                                            </button>
+                                        </form>
+                                        @else
+                                        <button type="button"
+                                            onclick="alert('Debes asignarle una licencia en el Dashboard a esta empresa antes de poder activarla.')"
+                                            class="bg-gray-300 text-gray-500 hover:text-gray-600 font-bold py-1 px-3 rounded text-xs flex items-center gap-1 cursor-not-allowed"
+                                            title="Requiere asignar licencia">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                                stroke="currentColor" class="w-3 h-3">
                                                 <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" />
+                                                    d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
                                             </svg>
                                             Activar
                                         </button>
-                                    </form>
-                                    @else
-                                    <button type="button"
-                                        onclick="alert('Debes asignarle una licencia en el Dashboard a esta empresa antes de poder activarla.')"
-                                        class="bg-gray-300 text-gray-500 hover:text-gray-600 font-bold py-1 px-3 rounded text-xs flex items-center gap-1 cursor-not-allowed"
-                                        title="Requiere asignar licencia">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                            stroke="currentColor" class="w-3 h-3">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
-                                        </svg>
-                                        Activar
-                                    </button>
-                                    @endif
-                                    @else
-                                    <button disabled
-                                        class="bg-gray-300 text-gray-500 font-bold py-1 px-3 rounded text-xs flex items-center gap-1 cursor-not-allowed">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                            stroke="currentColor" class="w-3 h-3">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-                                        </svg>
-                                        Activa
-                                    </button>
-                                    @endif
-
-                                    {{-- Botón Ver Detalles --}}
-                                    <button type="button" data-empresa="{{ json_encode($empresa) }}"
-                                        onclick="openModal(JSON.parse(this.getAttribute('data-empresa')))"
-                                        class="bg-green-600 hover:bg-green-700 text-white font-bold py-1 px-3 rounded text-xs flex items-center gap-1 cursor-pointer">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                            stroke="currentColor" class="w-3 h-3">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                                        </svg>
-                                        Detalles
-                                    </button>
-
-                                    {{-- Botón Editar --}}
-                                    <button type="button" data-empresa="{{ json_encode($empresa) }}"
-                                        onclick="openEditModal(JSON.parse(this.getAttribute('data-empresa')))"
-                                        class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-1 px-3 rounded text-xs flex items-center gap-1 cursor-pointer">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                            stroke="currentColor" class="w-3 h-3">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
-                                        </svg>
-                                        Editar
-                                    </button>
-                                </div>
-                                <!-- More actions could be added here -->
-                            </td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="5" class="p-4 text-center text-gray-500">No se encontraron empresas.</td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+                                        @endif
+                                        @else
+                                        <button disabled
+                                            class="bg-gray-300 text-gray-500 font-bold py-1 px-3 rounded text-xs flex items-center gap-1 cursor-not-allowed">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                                stroke="currentColor" class="w-3 h-3">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                                            </svg>
+                                            Activa
+                                        </button>
+                                        @endif
+    
+                                        {{-- Botón Ver Detalles --}}
+                                        <button type="button" data-empresa="{{ json_encode($empresa) }}"
+                                            onclick="openModal(JSON.parse(this.getAttribute('data-empresa')))"
+                                            class="bg-green-600 hover:bg-green-700 text-white font-bold py-1 px-3 rounded text-xs flex items-center gap-1 cursor-pointer">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                                stroke="currentColor" class="w-3 h-3">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                                            </svg>
+                                            Detalles
+                                        </button>
+    
+                                        {{-- Botón Editar --}}
+                                        <button type="button" data-empresa="{{ json_encode($empresa) }}"
+                                            onclick="openEditModal(JSON.parse(this.getAttribute('data-empresa')))"
+                                            class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-1 px-3 rounded text-xs flex items-center gap-1 cursor-pointer">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                                stroke="currentColor" class="w-3 h-3">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                                            </svg>
+                                            Editar
+                                        </button>
+                                    </div>
+                                    <!-- More actions could be added here -->
+                                </td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="5" class="p-4 text-center text-gray-500">No se encontraron empresas.</td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
 
                 <div class="flex justify-center mt-6 p-4">
                     {{ $empresas->withQueryString()->links() }}

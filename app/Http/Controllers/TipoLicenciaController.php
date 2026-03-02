@@ -50,19 +50,36 @@ class TipoLicenciaController extends Controller
     public function edit($id)
     {
         $licencia = TipoLicencia::findOrFail($id);
+
+        $enSolicitudes = SolicitudCompra::where('id_tipo_licencia', $id)->exists();
+        $enAsignaciones = DB::table('venta_licencias')->where('id_tipo_licencia', $id)->exists();
+
+        if ($enSolicitudes || $enAsignaciones) {
+            return redirect()->route('licencias.index')
+                ->with('error', 'No se puede editar el plan "' . $licencia->nombre_licencia . '" porque ya está en uso.');
+        }
+
         return view('SuperAdmin.edit_licencia', compact('licencia'));
     }
 
     public function update(Request $request, $id)
     {
+        $licencia = TipoLicencia::findOrFail($id);
+
+        $enSolicitudes = SolicitudCompra::where('id_tipo_licencia', $id)->exists();
+        $enAsignaciones = DB::table('venta_licencias')->where('id_tipo_licencia', $id)->exists();
+
+        if ($enSolicitudes || $enAsignaciones) {
+            return redirect()->route('licencias.index')
+                ->with('error', 'No se puede editar el plan "' . $licencia->nombre_licencia . '" porque ya está en uso.');
+        }
+
         $request->validate([
             'nombre_licencia' => 'required|string|max:100',
             'tiempo' => 'required|string|max:50',
             'descripcion' => 'nullable|string|max:255',
             'precio' => 'required|numeric|min:0'
         ]);
-
-        $licencia = TipoLicencia::findOrFail($id);
 
         $licencia->update([
             'nombre_licencia' => $request->nombre_licencia,
