@@ -18,7 +18,7 @@
             </div>
 
             <h1 class="text-4xl md:text-5xl font-black text-green-700 tracking-tighter">
-                Gestión de <span class="bg-clip-text text-transparent bg-gradient-to-r from-[#006b58] to-[#004d3d]">Licencias</span>
+                Gestión de <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-green-500">Licencias</span>
                 <span class="text-[#006b58]">.</span>
             </h1>
 
@@ -29,29 +29,30 @@
 
         <div class="flex flex-wrap items-center gap-4">
 
-            <div class="hidden md:flex items-center gap-3 bg-white border border-slate-100 px-5 py-3 rounded-2xl shadow-sm">
-                <div class="p-2 bg-slate-50 rounded-lg text-slate-400">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 9v7.5" />
-                    </svg>
-                </div>
-                <div class="flex flex-col">
-                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">Fecha de corte</span>
-                    <span class="text-sm font-bold text-slate-700 mt-1 italic">{{ now()->format('d M, Y') }}</span>
-                </div>
+            <div class="hidden md:flex flex-col items-end">
+                <span class="text-[10px] font-bold text-gray-400 uppercase">Fecha de corte</span>
+                <span class="text-sm font-semibold text-slate-700 italic">{{ now()->format('d M, Y') }}</span>
             </div>
 
-            <button id="downloadPdfBtn" onclick="document.getElementById('exportModal').classList.remove('hidden')"
-                class="group relative inline-flex items-center justify-center px-8 py-4 font-bold text-white transition-all duration-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#006b58] 
-                bg-gradient-to-br from-[#006b58] to-[#004d3d] hover:from-[#004d3d] hover:to-[#00362b] 
-                shadow-xl shadow-emerald-900/10 hover:shadow-emerald-900/20 hover:-translate-y-1 active:scale-95 overflow-hidden">
+            <button id="downloadPdfBtn"
+                onclick="document.getElementById('exportModal').classList.remove('hidden')"
+                class="group inline-flex items-center justify-center
+           h-11 px-6
+           text-sm font-bold uppercase tracking-wider
+           text-white rounded-xl
+           transition-all duration-300
+           bg-gradient-to-r from-[#34d399] via-[#22c55e] to-[#16a34a]
+           hover:from-[#22c55e] hover:via-[#16a34a] hover:to-[#15803d]
+           shadow-md hover:shadow-lg
+           active:scale-95">
 
-                <div class="absolute inset-0 w-full h-full bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-
-                <svg class="w-5 h-5 mr-3 relative z-10 transition-transform group-hover:rotate-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                <svg class="w-4 h-4 mr-2 transition-transform group-hover:rotate-6"
+                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                 </svg>
-                <span class="relative z-10 uppercase tracking-wider text-xs font-black">Exportar Informe</span>
+
+                Exportar Informe
             </button>
 
         </div>
@@ -63,14 +64,14 @@
         <div class="lg:col-span-1">
             <div class="bg-white p-8 rounded-[2rem] shadow-xl shadow-slate-200/60 border border-slate-100 sticky top-4">
                 <div class="flex items-center gap-4 mb-8 border-b border-slate-50 pb-6">
-                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#006b58] to-[#004d3d] flex items-center justify-center text-white shadow-lg shadow-emerald-200">
+                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-r from-[#34d399] via-[#22c55e] to-[#16a34a] hover:from-[#22c55e] hover:via-[#16a34a] hover:to-[#15803d] flex items-center justify-center text-white shadow-lg shadow-emerald-200">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                         </svg>
                     </div>
                     <div>
-                        <h3 class="text-xl font-black text-slate-800 tracking-tight">Asignar Licencia</h3>
-                        <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Vincular plan a empresa</p>
+                        <h3 class="text-xl font-extrabold text-green-800 tracking-tight">Asignar <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-green-500">Licencia</span></h3>
+                        <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mt-0.5">Vincular plan a empresa activa</p>
                     </div>
                 </div>
 
@@ -97,28 +98,49 @@
                     </div>
 
                     {{-- ALERTAS (Mantienen tus IDs para el JS) --}}
-                    <div id="empresaInfo" class="hidden p-4 bg-emerald-50 rounded-2xl border border-emerald-100 transition-all">
-                        <p class="text-sm font-bold text-emerald-800" id="empresaNombre"></p>
-                        <p class="text-xs text-emerald-600 font-medium tracking-wide" id="empresaNit"></p>
-                    </div>
-
-                    <div id="empresaNoEncontrada" class="hidden p-4 bg-red-50 rounded-2xl border border-red-100">
-                        <div class="flex gap-2">
-                            <svg class="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" />
+                    <div id="empresaInfo" class="hidden p-4 bg-gradient-to-r from-emerald-50 to-green-50/50 rounded-xl border border-emerald-200/60 shadow-sm flex items-start gap-3.5 transition-all">
+                        <div class="p-2.5 bg-emerald-100 rounded-lg shadow-inner mt-0.5">
+                            <svg class="w-5 h-5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
                             </svg>
-                            <p class="text-xs text-red-700 font-bold">No se encontró ninguna empresa con ese NIT.</p>
+                        </div>
+                        <div>
+                            <p class="text-sm font-extrabold text-emerald-900" id="empresaNombre"></p>
+                            <p class="text-xs font-medium text-emerald-600 mt-0.5" id="empresaNit"></p>
                         </div>
                     </div>
 
-                    <div id="empresaConLicencia" class="hidden p-4 bg-amber-50 rounded-2xl border border-amber-200">
-                        <p class="text-xs text-amber-800 font-black uppercase mb-1">Atención</p>
-                        <p class="text-xs text-amber-700 font-medium">Esta empresa ya cuenta con una licencia Asignada.</p>
+                    <div id="empresaNoEncontrada" class="hidden p-4 bg-gradient-to-r from-red-50 to-rose-50/50 rounded-xl border border-red-200/60 shadow-sm flex items-center gap-3.5 transition-all">
+                        <div class="p-2.5 bg-red-100 rounded-lg shadow-inner">
+                            <svg class="w-5 h-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                            </svg>
+                        </div>
+                        <p class="text-sm font-bold text-red-800">No se encontró ninguna empresa con ese NIT.</p>
                     </div>
 
-                    <div id="solicitudNoAprobada" class="hidden p-4 bg-rose-50 rounded-2xl border border-rose-100">
-                        <p class="text-xs text-rose-800 font-black uppercase mb-1">Acción Requerida</p>
-                        <p class="text-xs text-rose-700 font-medium leading-relaxed">Debes aprobar la solicitud de la empresa antes de asignarle una licencia.</p>
+                    <div id="empresaConLicencia" class="hidden p-4 bg-gradient-to-r from-amber-50 to-orange-50/50 rounded-xl border border-amber-200/60 shadow-sm flex items-start gap-3.5 transition-all">
+                        <div class="p-2.5 bg-amber-100 rounded-lg shadow-inner mt-0.5">
+                            <svg class="w-5 h-5 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-sm font-extrabold text-amber-900">Atención</p>
+                            <p class="text-xs font-medium text-amber-700 mt-1">Esta empresa ya cuenta con una licencia Asignada.</p>
+                        </div>
+                    </div>
+
+                    <div id="solicitudNoAprobada" class="hidden p-4 bg-gradient-to-r from-rose-50 to-pink-50/30 rounded-xl border border-rose-200/60 shadow-sm flex items-start gap-3.5 transition-all">
+                        <div class="p-2.5 bg-rose-100 rounded-lg shadow-inner mt-0.5">
+                            <svg class="w-5 h-5 text-rose-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-sm font-extrabold text-rose-900">Acción Requerida</p>
+                            <p class="text-xs font-medium text-rose-700 mt-1 leading-relaxed">Debes aprobar la solicitud de la empresa antes de asignarle una licencia.</p>
+                        </div>
                     </div>
 
                     {{-- Plan --}}
@@ -141,10 +163,10 @@
                     </div>
 
                     <button type="submit" id="btnAsignar" disabled
-                        class="w-full bg-gradient-to-br from-[#006b58] to-[#004d3d] hover:shadow-xl hover:shadow-emerald-900/20 disabled:from-slate-200 disabled:to-slate-300 disabled:cursor-not-allowed text-white font-black py-4 rounded-2xl transform active:scale-95 transition-all flex justify-center items-center gap-3 uppercase tracking-widest text-xs">
+                        class="w-full group relative flex items-center justify-center gap-3 bg-gradient-to-r from-[#34d399] via-[#22c55e] to-[#16a34a] hover:from-[#22c55e] hover:via-[#16a34a] hover:to-[#15803d] disabled:from-emerald-100 disabled:via-emerald-50 disabled:to-green-100 disabled:shadow-none disabled:text-emerald-400/80 disabled:cursor-not-allowed text-white font-black py-4 rounded-2xl shadow-xl shadow-emerald-200/50 transition-all transform hover:-translate-y-0.5 active:scale-95 uppercase tracking-widest text-xs cursor-pointer">
                         <span>Confirmar Asignación</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                        <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                         </svg>
                     </button>
                 </form>
@@ -155,7 +177,17 @@
         <div class="lg:col-span-2 space-y-6">
             <div class="bg-white rounded-[2rem] shadow-sm border border-slate-100 overflow-hidden">
                 <div class="p-8 border-b border-slate-50 flex flex-col sm:flex-row justify-between items-center gap-6 bg-slate-50/30">
-                    <h3 class="text-xl font-black text-slate-800 tracking-tight">Historial de Licencias</h3>
+                    <h3 class="text-xl font-black tracking-tight">
+
+                        <span class="text-slate-800">
+                            Historial
+                        </span>
+
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-green-500">
+                            de Licencias
+                        </span>
+
+                    </h3>
 
                     <form action="{{ route('dashboard') }}" method="GET" class="relative w-full sm:w-80">
                         <input type="text" name="search" value="{{ request('search') }}" placeholder="Buscar por empresa o NIT..."

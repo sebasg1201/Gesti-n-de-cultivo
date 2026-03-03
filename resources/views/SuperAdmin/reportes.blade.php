@@ -8,7 +8,7 @@
         <div>
             <span class="text-xs font-bold text-green-600 uppercase tracking-widest bg-green-50 px-3 py-1 rounded-full">Analytics Real-time</span>
             <h1 class="text-4xl font-extrabold text-green-800 tracking-tight mt-2">
-                Panel De <span class="bg-clip-text text-transparent bg-gradient-to-r from-[#006b58] to-[#004d3d]">Reportes</span><span class="text-green-600"> .</span>
+                Panel De <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-green-500">Reportes .</span>
             </h1>
             <p class="text-slate-500 font-medium mt-1">
                 Monitoreo inteligente de licencias y estados empresariales.
@@ -23,8 +23,8 @@
 
             <button id="downloadPdfBtn"
                 class="group relative inline-flex items-center justify-center px-6 py-3 font-bold text-white transition-all duration-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#006b58] 
-                bg-gradient-to-br from-[#006b58] to-[#004d3d] hover:from-[#004d3d] hover:to-[#00362b] 
-                shadow-xl shadow-[#006b58]/20 hover:shadow-[#006b58]/40 hover:-translate-y-0.5 active:scale-95">
+                bg-gradient-to-r from-[#34d399] via-[#22c55e] to-[#16a34a] 
+hover:from-[#22c55e] hover:via-[#16a34a] hover:to-[#15803d] hover:-translate-y-0.5 active:scale-95">
 
                 <div class="absolute inset-0 w-full h-full rounded-2xl bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
 
@@ -138,7 +138,17 @@
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div class="bg-white border border-slate-100 p-8 rounded-[2rem] shadow-sm relative overflow-hidden">
             <div class="flex justify-between items-center mb-6">
-                <h3 class="text-xl font-bold text-slate-800">Tendencia de Renovación</h3>
+                <h3 class="text-xl font-bold tracking-tight">
+
+                    <span class="text-slate-800">
+                        Tendencia
+                    </span>
+
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-green-500">
+                        de Renovación
+                    </span>
+
+                </h3>
                 <select class="text-xs font-bold border-none bg-slate-50 rounded-lg focus:ring-0">
                     <option>Últimos 6 meses</option>
                 </select>
@@ -150,7 +160,17 @@
 
         <div class="bg-white border border-slate-100 p-8 rounded-[2rem] shadow-sm">
             <div class="flex justify-between items-center mb-6">
-                <h3 class="text-xl font-bold text-slate-800">Distribución de Estados</h3>
+                <h3 class="text-xl font-bold tracking-tight">
+
+                    <span class="text-slate-800">
+                        Distribución
+                    </span>
+
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-green-500">
+                        de Estados
+                    </span>
+
+                </h3>
             </div>
             <div class="h-72 flex justify-center items-center">
                 <canvas id="statusChart"></canvas>

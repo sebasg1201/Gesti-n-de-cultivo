@@ -599,24 +599,6 @@ function validateField(input, showUI) {
                 }
             }
 
-            // 🔹 Regex urbana Colombia
-            const regexUrbana = /^(calle|cl|carrera|cra|avenida|av|transversal|tv|diagonal|dg)\s+\d+[a-zA-Z]?\s*#\s*\d+[a-zA-Z]?\s*-\s*\d+[a-zA-Z]?$/i;
-
-            // 🔹 Regex rural Colombia
-            const regexRural = /^(vereda|finca|corregimiento|sector)\s+[a-zA-Z0-9\s]+$/i;
-
-            // 🔹 Regex kilómetro
-            const regexKm = /^(km|kil[oó]metro)\s*\d+(\s*\+\s*\d+)?(\s*v[ií]a\s+[a-zA-Z0-9\s\-]+)?$/i;
-
-            if (!regexUrbana.test(direccion) &&
-                !regexRural.test(direccion) &&
-                !regexKm.test(direccion)) {
-
-                isValid = false;
-                errorMessage = 'Formato inválido. Ej: "Calle 12 # 34-56", "Vereda San José" o "Km 5 Vía Bogotá".';
-                break;
-            }
-
             break;
         }
 

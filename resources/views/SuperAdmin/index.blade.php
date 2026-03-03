@@ -4,29 +4,46 @@
 
 <div class="space-y-6">
 
-    <div class="flex justify-between items-center">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
         <div>
-            <h1 class="text-2xl font-bold text-gray-800">Gestión de Empresas</h1>
-            <p class="text-sm text-gray-500">Administra las empresas inscritas y sus asignaciones</p>
+            <h1 class="text-3xl font-extrabold text-green-800 tracking-tight">
+                Gestión de <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-green-500">Empresas</span>
+            </h1>
+            <p class="text-slate-500 font-medium">Control centralizado de organizaciones y licencias.</p>
         </div>
-        <div class="flex items-center gap-2">
-            <!-- EXCEL BUTTON -->
+
+        <div class="flex items-center gap-3 w-full md:w-auto">
             <button onclick="openExcelModal()"
-                class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 shadow-sm transition">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                    stroke="currentColor" class="w-4 h-4">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                class="flex-1 md:flex-none h-11
+               border border-emerald-200 hover:border-emerald-600
+               text-emerald-700 hover:bg-emerald-50
+               px-6 rounded-xl text-sm font-bold
+               flex items-center justify-center gap-2
+               transition-all duration-300">
+
+                <svg class="w-5 h-5 transition-transform group-hover:-translate-y-1"
+                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
-                Exportar Reporte
+                Exportar
             </button>
 
-            <!-- NUEVA EMPRESA BUTTON -->
+            <!-- BOTÓN NUEVA EMPRESA -->
             <button onclick="openCreateModal()"
-                class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 shadow-sm transition cursor-pointer">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                    stroke="currentColor" class="w-4 h-4">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                class="flex-1 md:flex-none h-11
+               bg-gradient-to-r from-[#34d399] via-[#22c55e] to-[#16a34a]
+               hover:from-[#22c55e] hover:via-[#16a34a] hover:to-[#15803d]
+               text-white
+               px-6 rounded-xl text-sm font-bold
+               flex items-center justify-center gap-2
+               shadow-md
+               transition-all duration-300">
+
+                <svg class="w-5 h-5"
+                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                        d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                 </svg>
                 Nueva Empresa
             </button>
@@ -38,229 +55,252 @@
 
         <!-- LEFT PANEL: COMPANIES TABLE (2 cols) -->
         <div class="lg:col-span-2 space-y-6">
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-200/60 overflow-hidden transition-all hover:shadow-md">
 
-            <!-- COMPANIES TABLE -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                <div class="p-5 border-b border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-4">
-                    <h3 class="font-bold text-gray-800 flex items-center gap-2">
-                        Historial de Empresas
-                        <span class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded">{{ $stats['nuevas'] }} Pendientes</span>
-                    </h3>
+                <div class="p-6 border-b border-gray-100 bg-gradient-to-r from-white to-gray-50/50">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
 
-                    <form action="{{ route('SuperAdmin.index') }}" method="GET" class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-                        <div class="relative w-full sm:w-64">
-                            <input type="text" name="search" value="{{ request('search') }}" placeholder="Buscar por Empresa o NIT..."
-                                class="w-full pl-10 pr-4 py-2 bg-gray-50 border-none rounded-lg text-sm focus:ring-2 focus:ring-green-500">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-gray-400 absolute left-3 top-2.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-                            </svg>
+                        <div>
+                            <h3 class="text-2xl font-extrabold tracking-tight flex items-center gap-2">
+
+                                <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-green-500">
+                                    Historial De
+                                </span>
+
+                                <span class="text-green-800">
+                                    Empresas
+                                </span>
+
+                                <span class="inline-flex items-center mt-2 px-2.5 py-0.2 rounded-full text-xs font-bold bg-amber-100 text-amber-700 animate-pulse">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-amber-500 mr-1.5"></span>
+                                    {{ $stats['nuevas'] }} Pendientes
+                                </span>
+                            </h3>
+                            <p class="text-sm text-gray-500 mt-1">Gestiona y supervisa las organizaciones registradas.</p>
                         </div>
-                        <select name="status" onchange="this.form.submit()"
-                            class="rounded-lg px-3 py-2 text-sm bg-gray-50 text-gray-700 focus:ring-2 focus:ring-green-500 w-full sm:w-auto">
 
-                            <option value="">Todas</option>
-                            <option value="pendiente">Pendientes</option>
-                            <option value="activa">Activas</option>
-                            <option value="bloqueada">Bloqueadas</option>
-                        </select>
-                    </form>
+                        <!-- 🔥 CONTENEDOR DERECHO -->
+                        <div class="flex items-center w-full md:w-auto md:ml-auto">
+
+                            <!-- BUSCADOR -->
+                            <form action="{{ route('SuperAdmin.index') }}" method="GET" class="relative group">
+                                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                                    <svg class="h-4 w-4 text-slate-400 group-focus-within:text-emerald-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                    </svg>
+                                </div>
+
+                                <input type="search" name="search" value="{{ request('search') }}"
+                                    class="block w-full md:w-64 pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-bold text-slate-700 placeholder-slate-400 focus:ring-4 focus:ring-emerald-50 focus:border-emerald-500 focus:w-80 outline-none transition-all"
+                                    placeholder="Empresa o NIT...">
+
+                                @if(request('search'))
+                                <a href="{{ route('SuperAdmin.index') }}" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-rose-500 transition-colors" title="Limpiar filtro">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                                    </svg>
+                                </a>
+                                @endif
+                            </form>
+
+                            <!-- SELECT -->
+                            <select name="status" onchange="this.form.submit()"
+                                class="ml-2 bg-white border border-gray-200 text-gray-700 text-sm rounded-xl focus:ring-emerald-500 focus:border-emerald-500 p-2.5 transition-all cursor-pointer">
+                                <option value="">Todos los estados</option>
+                                <option value="pendiente" {{ request('status') == 'pendiente' ? 'selected' : '' }}>⏳ Pendientes</option>
+                                <option value="activa" {{ request('status') == 'activa' ? 'selected' : '' }}>✅ Activas</option>
+                                <option value="bloqueada" {{ request('status') == 'bloqueada' ? 'selected' : '' }}>🚫 Bloqueadas</option>
+                            </select>
+
+                        </div>
+
+                    </div>
                 </div>
 
-                <table class="w-full text-left">
-                    <thead class="bg-gray-50 text-xs uppercase text-gray-700">
-                        <tr>
-                            <th class="p-4">Empresa y NIT</th>
-                            <th class="p-4">Propietario</th>
-                            <th class="p-4">Fecha Registro</th>
-                            <th class="p-4">Estado</th>
-                            <th class="p-4">Accion</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-200">
-                        @forelse($empresas as $empresa)
-                        <tr class="hover:bg-gray-50">
-                            <td class="p-4">
-                                <div class="flex items-center gap-3">
-                                    <div
-                                        class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600 font-bold">
-                                        {{ substr($empresa->nombre_empresa, 0, 2) }}
-                                    </div>
-                                    <div>
-                                        <div class="font-bold text-gray-900">{{ $empresa->nombre_empresa }}</div>
-                                        <div class="text-sm text-gray-500 flex items-center gap-2">
-                                            NIT: <span id="nit-emp-{{ $empresa->id_empresa }}">{{ $empresa->id_empresa }}</span>
-                                            <button type="button" onclick="copyToClipboard('{{ $empresa->id_empresa }}', this)"
-                                                title="Copiar NIT"
-                                                class="text-gray-400 hover:text-green-600 transition-colors cursor-pointer">
-                                                <svg class="w-4 h-4 icon-copy" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                        d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                                </svg>
-                                                <svg class="w-4 h-4 hidden text-green-500 icon-check" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m4.5 12.75 6 6 9-13.5" />
-                                                </svg>
-                                            </button>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-gray-50/50 border-b border-gray-100">
+                                <th class="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] border-b border-slate-100">Empresa</th>
+                                <th class="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] border-b border-slate-100">Representante</th>
+                                <th class="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] border-b border-slate-100">Registro</th>
+                                <th class="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] border-b border-slate-100 text-center">Estado</th>
+                                <th class="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] border-b border-slate-100 text-right">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100">
+                            @forelse($empresas as $empresa)
+                            <tr class="group hover:bg-emerald-50/30 transition-colors">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center gap-4">
+                                        <div class="relative group">
+                                            <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white font-bold shadow-sm group-hover:scale-105 transition-transform text-sm">
+                                                {{ strtoupper(substr($empresa->nombre_empresa, 0, 2)) }}
+                                            </div>
+
+                                            @if($empresa->id_estado == 3)
+                                            <div class="absolute -bottom-1 -right-1 flex h-3 w-3">
+                                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                                <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500 border-2 border-white"></span>
+                                            </div>
+                                            @endif
+                                        </div>
+
+                                        <div>
+                                            <span class="text-sm font-bold text-slate-800">{{ $empresa->nombre_empresa ?? 'N/A' }}</span>
+                                            <div class="flex items-center gap-2 mt-0.5">
+                                                <span class="text-[11px] font-medium text-slate-400">NIT: {{ $empresa->id_empresa }}</span>
+                                                <button type="button"
+                                                    onclick="copyToClipboard('{{ $empresa->id_empresa }}', this)"
+                                                    class="text-slate-300 hover:text-emerald-500 transition-all duration-300 opacity-0 group-hover:opacity-100 focus:outline-none cursor-pointer"
+                                                    title="Copiar NIT">
+
+                                                    <svg class="w-3.5 h-3.5 icon-copy" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                                    </svg>
+
+                                                    <svg class="w-3.5 h-3.5 hidden text-emerald-500 icon-check" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                                                    </svg>
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </td>
-                            <td class="p-4">
-                                <div class="font-medium text-gray-900">{{ $empresa->nombre_repre_legal }}</div>
-                                <div class="text-sm text-gray-500">{{ $empresa->correo }}</div>
-                            </td>
-                            <td class="p-4">
-                                <div class="font-medium text-gray-900">
-                                    {{ \Carbon\Carbon::parse($empresa->fecha_creacion)->timezone('America/Bogota')->format('d M, Y') }}
-                                </div>
-                                <div class="text-xs text-gray-500">
-                                    {{ \Carbon\Carbon::parse($empresa->fecha_creacion)->timezone('America/Bogota')->locale('es')->diffForHumans() }}
-                                </div>
-                            </td>
-                            <td class="p-4">
-                                @if($empresa->estado)
-                                @php
-                                $color = match ($empresa->estado->id_estado) {
-                                1 => 'text-yellow-700 bg-yellow-100', // pendiente
-                                2 => 'text-red-700 bg-red-100', // bloqueada
-                                3 => 'text-green-700 bg-green-100', // activa
-                                default => 'text-gray-700 bg-gray-100',
-                                };
-                                @endphp
+                                </td>
 
-                                <span class="px-2 py-1 font-semibold leading-tight rounded-full {{ $color }}">
-                                    {{ ucfirst($empresa->estado->nombre_estado) }}
-                                </span>
-                                @else
-                                <span class="px-2 py-1 font-semibold leading-tight text-gray-700 bg-gray-100 rounded-full">
-                                    Desconocido
-                                </span>
-                                @endif
-                            </td>
+                                <td class="px-6 py-5 whitespace-nowrap">
+                                    <div class="flex flex-col">
+                                        <span class="text-sm font-bold text-slate-700 leading-none">{{ $empresa->nombre_repre_legal ?? 'N/A' }}</span>
+                                        <span class="text-[11px] font-medium text-slate-400 mt-1 italic">{{ $empresa->correo ?? 'N/A' }}</span>
+                                    </div>
+                                </td>
 
-                            <td class="p-4">
-                                <div class="flex gap-2">
-                                    {{-- Botón Activar --}}
-                                    @if($empresa->id_estado != 3)
-                                    @if($empresa->licencia)
-                                    <form action="{{ route('SuperAdmin.activar', $empresa->id_empresa) }}" method="POST"
-                                        class="inline">
-                                        @csrf
-                                        @method('PUT')
-                                        <button type="submit"
-                                            class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3 rounded text-xs flex items-center gap-1 cursor-pointer"
-                                            onclick="return confirm('¿Estás seguro de activar esta empresa?')">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                stroke-width="1.5" stroke="currentColor" class="w-3 h-3">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" />
+                                <td class="px-6 py-5 whitespace-nowrap">
+                                    <div class="flex flex-col">
+                                        <span class="text-sm font-bold text-slate-700 uppercase leading-none">
+                                            {{ \Carbon\Carbon::parse($empresa->fecha_creacion)->format('d M, Y') }}
+                                        </span>
+                                        <span class="text-[10px] font-medium text-slate-400 mt-1 uppercase tracking-tighter">
+                                            Hace {{ \Carbon\Carbon::parse($empresa->fecha_creacion)->diffForHumans(null, true) }}
+                                        </span>
+                                    </div>
+                                </td>
+
+                                <td class="px-6 py-4 whitespace-nowrap text-center">
+                                    @php
+                                    $statusColor = match ($empresa->id_estado) {
+                                    1 => 'bg-amber-50 text-amber-700 border-amber-200',
+                                    2 => 'bg-rose-50 text-rose-700 border-rose-200',
+                                    3 => 'bg-emerald-50 text-emerald-700 border-emerald-200',
+                                    default => 'bg-gray-50 text-gray-700 border-gray-200',
+                                    };
+                                    @endphp
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold border {{ $statusColor }}">
+                                        {{ ucfirst($empresa->estado->nombre_estado ?? 'Desconocido') }}
+                                    </span>
+                                </td>
+
+                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
+                                    <div class="flex justify-end gap-2">
+                                        {{-- Activar --}}
+                                        @if($empresa->id_estado != 3)
+                                        @if($empresa->licencia)
+                                        <form action="{{ route('SuperAdmin.activar', $empresa->id_empresa) }}" method="POST" class="inline">
+                                            @csrf @method('PUT')
+                                            <button type="submit" onclick="return confirm('¿Activar esta empresa?')"
+                                                class="p-2 text-emerald-600 hover:bg-emerald-100 rounded-lg transition-colors cursor-pointer" title="Activar">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                                </svg>
+                                            </button>
+                                        </form>
+                                        @else
+                                        <button type="button" onclick="alert('Asigna una licencia primero')" class="p-2 text-gray-300 cursor-not-allowed" title="Requiere Asignar Licencia">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 00-2 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                                             </svg>
-                                            Activar
                                         </button>
-                                    </form>
-                                    @else
-                                    <button type="button"
-                                        onclick="alert('Debes asignarle una licencia en el Dashboard a esta empresa antes de poder activarla.')"
-                                        class="bg-gray-300 text-gray-500 hover:text-gray-600 font-bold py-1 px-3 rounded text-xs flex items-center gap-1 cursor-not-allowed"
-                                        title="Requiere asignar licencia">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                            stroke="currentColor" class="w-3 h-3">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
-                                        </svg>
-                                        Activar
-                                    </button>
-                                    @endif
-                                    @else
-                                    <button disabled
-                                        class="bg-gray-300 text-gray-500 font-bold py-1 px-3 rounded text-xs flex items-center gap-1 cursor-not-allowed">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                            stroke="currentColor" class="w-3 h-3">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-                                        </svg>
-                                        Activa
-                                    </button>
-                                    @endif
+                                        @endif
+                                        @endif
 
-                                    {{-- Botón Ver Detalles --}}
-                                    <button type="button" data-empresa="{{ json_encode($empresa) }}"
-                                        onclick="openModal(JSON.parse(this.getAttribute('data-empresa')))"
-                                        class="bg-green-600 hover:bg-green-700 text-white font-bold py-1 px-3 rounded text-xs flex items-center gap-1 cursor-pointer">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                            stroke="currentColor" class="w-3 h-3">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                                        </svg>
-                                        Detalles
-                                    </button>
+                                        {{-- Detalles (JSON corregido) --}}
+                                        <button type="button"
+                                            data-empresa="{{ json_encode($empresa) }}"
+                                            onclick="openModal(JSON.parse(this.getAttribute('data-empresa')))"
+                                            class="p-2 text-green-600 hover:bg-green-100 rounded-lg transition-colors cursor-pointer" title="Ver Detalles">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                            </svg>
+                                        </button>
 
-                                    {{-- Botón Editar --}}
-                                    <button type="button" data-empresa="{{ json_encode($empresa) }}"
-                                        onclick="openEditModal(JSON.parse(this.getAttribute('data-empresa')))"
-                                        class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-1 px-3 rounded text-xs flex items-center gap-1 cursor-pointer">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                            stroke="currentColor" class="w-3 h-3">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
-                                        </svg>
-                                        Editar
-                                    </button>
-                                </div>
-                                <!-- More actions could be added here -->
-                            </td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="5" class="p-4 text-center text-gray-500">No se encontraron empresas.</td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+                                        {{-- Editar (JSON corregido) --}}
+                                        <button type="button"
+                                            data-empresa="{{ json_encode($empresa) }}"
+                                            onclick="openEditModal(JSON.parse(this.getAttribute('data-empresa')))"
+                                            class="p-2 text-amber-600 hover:bg-amber-100 rounded-lg transition-colors cursor-pointer" title="Editar">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="5" class="px-6 py-12 text-center">
+                                    <p class="text-gray-500 font-medium">No se encontraron empresas.</p>
+                                </td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
 
-                <div class="flex justify-center mt-6 p-4">
+                <div class="px-6 py-4 bg-gray-50/50 border-t border-gray-100 flex justify-center">
                     {{ $empresas->withQueryString()->links() }}
                 </div>
             </div>
-        </div> <!-- Ends Left Panel Container -->
+        </div>
 
         <!-- RIGHT PANEL: ASIGNAR ADMINISTRADOR FORM -->
         <div class="lg:col-span-1">
-            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 sticky top-4">
-                <!-- Header del panel -->
-                <div class="flex items-center gap-3 mb-6 border-b border-gray-100 pb-4">
-                    <div class="w-10 h-10 rounded-full bg-green-50 flex items-center justify-center text-green-600">
-                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div class="bg-gray-50 p-7 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-200/60 backdrop-blur-xl sticky top-4 transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)]">
+
+                <div class="flex items-center gap-4 mb-6 border-b border-gray-100/80 pb-5">
+                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-green-50 to-emerald-100 flex items-center justify-center text-emerald-600 shadow-inner border border-emerald-200/50">
+                        <svg class="h-6 w-6 drop-shadow-sm" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" />
                         </svg>
                     </div>
                     <div>
-                        <h3 class="text-lg font-bold text-gray-800">Asignar Administrador</h3>
-                        <p class="text-xs text-gray-400">Crea un usuario para una empresa activa</p>
+                        <h3 class="text-xl font-extrabold text-green-800 tracking-tight">Asignar <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-green-500">Administrador</span></h3>
+                        <p class="text-sm font-medium text-gray-500 mt-0.5">Crea un usuario para una empresa activa</p>
                     </div>
                 </div>
 
-                <!-- Formulario -->
                 <form action="{{ route('administradores.store') }}" method="POST" enctype="multipart/form-data"
-                    id="formAdminInline" class="p-5 space-y-4 validate-form">
+                    id="formAdminInline" class="space-y-5 validate-form">
                     @csrf
 
                     {{-- Buscar Empresa por NIT --}}
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1.5 flex items-center gap-1.5">
-                            <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
-                            </svg>
+                    <div class="group">
+                        <label class="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
+                            <div class="p-1 bg-green-50 rounded-md">
+                                <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                        d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                                </svg>
+                            </div>
                             Buscar Empresa por NIT
                         </label>
                         <div class="relative">
                             <input type="text" id="inline_nit_busqueda" placeholder="Ingrese el NIT..."
-                                class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all pr-10"
+                                class="w-full bg-gray-50/50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 focus:bg-white transition-all duration-300 pr-12 shadow-sm"
                                 autocomplete="off" data-no-async="true" required>
-                            <div id="inlineNitSpinner" class="hidden absolute right-3 top-2.5">
-                                <svg class="animate-spin h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <div id="inlineNitSpinner" class="hidden absolute right-4 top-3.5">
+                                <svg class="animate-spin h-5 w-5 text-emerald-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
                                 </svg>
@@ -270,164 +310,171 @@
                     </div>
 
                     {{-- Empresa encontrada --}}
-                    <div id="inlineEmpresaInfo" class="hidden p-3 bg-green-50 rounded-xl border border-green-100 flex items-center gap-3">
-                        <div class="p-2 bg-green-100 rounded-lg">
-                            <svg class="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    <div id="inlineEmpresaInfo" class="hidden p-4 bg-gradient-to-r from-emerald-50 to-green-50/50 rounded-xl border border-emerald-200/60 shadow-sm flex items-start gap-3.5 transition-all">
+                        <div class="p-2.5 bg-emerald-100 rounded-lg shadow-inner mt-0.5">
+                            <svg class="w-5 h-5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
                             </svg>
                         </div>
                         <div>
-                            <p class="text-sm font-bold text-green-800" id="inlineEmpresaNombre"></p>
-                            <p class="text-xs text-green-600" id="inlineEmpresaNit"></p>
+                            <p class="text-sm font-extrabold text-emerald-900" id="inlineEmpresaNombre"></p>
+                            <p class="text-xs font-medium text-emerald-600 mt-0.5" id="inlineEmpresaNit"></p>
                         </div>
                     </div>
 
                     {{-- Empresa no encontrada --}}
-                    <div id="inlineEmpresaNoEncontrada" class="hidden p-3 bg-red-50 rounded-xl border border-red-100 flex items-center gap-3">
-                        <div class="p-2 bg-red-100 rounded-lg">
+                    <div id="inlineEmpresaNoEncontrada" class="hidden p-4 bg-gradient-to-r from-red-50 to-rose-50/50 rounded-xl border border-red-200/60 shadow-sm flex items-center gap-3.5 transition-all">
+                        <div class="p-2.5 bg-red-100 rounded-lg shadow-inner">
                             <svg class="w-5 h-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                                     d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                             </svg>
                         </div>
-                        <p class="text-sm font-semibold text-red-800">No se encontró ninguna empresa con ese NIT.</p>
+                        <p class="text-sm font-bold text-red-800">No se encontró ninguna empresa con ese NIT.</p>
                     </div>
 
                     {{-- Empresa inactiva --}}
-                    <div id="inlineEmpresaInactiva" class="hidden p-3 bg-amber-50 rounded-xl border border-amber-100 flex items-center gap-3">
-                        <div class="p-2 bg-amber-100 rounded-lg">
+                    <div id="inlineEmpresaInactiva" class="hidden p-4 bg-gradient-to-r from-amber-50 to-orange-50/50 rounded-xl border border-amber-200/60 shadow-sm flex items-start gap-3.5 transition-all">
+                        <div class="p-2.5 bg-amber-100 rounded-lg shadow-inner mt-0.5">
                             <svg class="w-5 h-5 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                                     d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                             </svg>
                         </div>
                         <div>
-                            <p class="text-sm font-bold text-amber-800">Acción Requerida</p>
-                            <p class="text-xs text-amber-700">La empresa debe estar activa para asignarle un administrador. Actívala primero desde la tabla.</p>
+                            <p class="text-sm font-extrabold text-amber-900">Acción Requerida</p>
+                            <p class="text-xs font-medium text-amber-700 mt-1 leading-relaxed">La empresa debe estar activa para asignarle un administrador. Actívala primero desde la tabla.</p>
                         </div>
                     </div>
 
                     {{-- Empresa ya tiene administrador --}}
-                    <div id="inlineEmpresaConAdmin" class="hidden p-3 bg-yellow-50 rounded-xl border border-yellow-100 flex items-center gap-3">
-                        <div class="p-2 bg-yellow-100 rounded-lg">
+                    <div id="inlineEmpresaConAdmin" class="hidden p-4 bg-gradient-to-r from-yellow-50 to-amber-50/30 rounded-xl border border-yellow-200/60 shadow-sm flex items-start gap-3.5 transition-all">
+                        <div class="p-2.5 bg-yellow-100 rounded-lg shadow-inner mt-0.5">
                             <svg class="w-5 h-5 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                                     d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                             </svg>
                         </div>
                         <div>
-                            <p class="text-sm font-bold text-yellow-800">No permitido</p>
-                            <p class="text-xs text-yellow-700">Esta empresa ya tiene un administrador.</p>
+                            <p class="text-sm font-extrabold text-yellow-900">No permitido</p>
+                            <p class="text-xs font-medium text-yellow-700 mt-0.5">Esta empresa ya tiene un administrador asignado.</p>
                         </div>
                     </div>
 
-                    {{-- Documento --}}
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1.5 flex items-center gap-1.5">
-                            <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0" />
-                            </svg>
-                            Documento de Identidad
-                        </label>
-                        <input type="text" name="documento" id="inline_admin_documento"
-                            class="w-full bg-gray-100 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-400 focus:outline-none cursor-not-allowed transition-all"
-                            data-table="usuarios" disabled required>
-                        <p id="v-err-inline_admin_documento" class="v-error-msg text-red-500 text-xs mt-1 hidden"></p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-2">
+                        {{-- Documento --}}
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
+                                <svg class="w-4 h-4 text-emerald-500 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0" />
+                                </svg>
+                                Documento
+                            </label>
+                            <input type="text" name="documento" id="inline_admin_documento"
+                                class="w-full bg-gray-50/80 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 disabled:opacity-75 disabled:bg-gray-100 disabled:cursor-not-allowed transition-all duration-200"
+                                data-table="usuarios" disabled required>
+                            <p id="v-err-inline_admin_documento" class="v-error-msg text-red-500 text-xs font-medium mt-1.5 hidden"></p>
+                        </div>
+
+                        {{-- Teléfono --}}
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
+                                <svg class="w-4 h-4 text-emerald-500 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                                </svg>
+                                Teléfono
+                            </label>
+                            <input type="text" name="telefono" id="inline_admin_telefono"
+                                class="w-full bg-gray-50/80 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 disabled:opacity-75 disabled:bg-gray-100 disabled:cursor-not-allowed transition-all duration-200"
+                                data-table="usuarios" disabled required>
+                            <p id="v-err-inline_admin_telefono" class="v-error-msg text-red-500 text-xs font-medium mt-1.5 hidden"></p>
+                        </div>
                     </div>
 
                     {{-- Nombre --}}
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1.5 flex items-center gap-1.5">
-                            <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <label class="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
+                            <svg class="w-4 h-4 text-emerald-500 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                             </svg>
                             Nombre Completo
                         </label>
                         <input type="text" name="nombre" id="inline_admin_nombre"
-                            class="w-full bg-gray-100 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-400 focus:outline-none cursor-not-allowed transition-all"
+                            class="w-full bg-gray-50/80 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 disabled:opacity-75 disabled:bg-gray-100 disabled:cursor-not-allowed transition-all duration-200"
                             disabled required>
-                        <p id="v-err-inline_admin_nombre" class="v-error-msg text-red-500 text-xs mt-1 hidden"></p>
+                        <p id="v-err-inline_admin_nombre" class="v-error-msg text-red-500 text-xs font-medium mt-1.5 hidden"></p>
                     </div>
 
                     {{-- Correo --}}
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1.5 flex items-center gap-1.5">
-                            <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <label class="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
+                            <svg class="w-4 h-4 text-emerald-500 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                             </svg>
                             Correo Electrónico
                         </label>
                         <input type="email" name="correo" id="inline_admin_correo"
-                            class="w-full bg-gray-100 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-400 focus:outline-none cursor-not-allowed transition-all"
+                            class="w-full bg-gray-50/80 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 disabled:opacity-75 disabled:bg-gray-100 disabled:cursor-not-allowed transition-all duration-200"
                             data-table="usuarios" disabled required>
-                        <p id="v-err-inline_admin_correo" class="v-error-msg text-red-500 text-xs mt-1 hidden"></p>
-                    </div>
-
-                    {{-- Teléfono --}}
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1.5 flex items-center gap-1.5">
-                            <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                            </svg>
-                            Teléfono
-                        </label>
-                        <input type="text" name="telefono" id="inline_admin_telefono"
-                            class="w-full bg-gray-100 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-400 focus:outline-none cursor-not-allowed transition-all"
-                            data-table="usuarios" disabled required>
-                        <p id="v-err-inline_admin_telefono" class="v-error-msg text-red-500 text-xs mt-1 hidden"></p>
+                        <p id="v-err-inline_admin_correo" class="v-error-msg text-red-500 text-xs font-medium mt-1.5 hidden"></p>
                     </div>
 
                     {{-- Contraseña (auto-generated, readonly) --}}
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1.5 flex items-center gap-1.5">
-                            <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="bg-gray-50/50 p-4 rounded-xl border border-gray-100">
+                        <label class="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
+                            <svg class="w-4 h-4 text-emerald-500 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                             </svg>
                             Contraseña
-                            <span class="ml-auto text-xs font-normal text-green-600 bg-green-50 px-2 py-0.5 rounded-full">Generada automáticamente</span>
+                            <span class="ml-auto text-[10px] font-bold uppercase tracking-wider text-emerald-600 bg-emerald-100/80 px-2.5 py-1 rounded-md">Autogenerada</span>
                         </label>
                         <input type="hidden" name="contrasena" id="inline_contrasena">
-                        <div class="relative flex items-center">
+                        <div class="relative flex items-center group/pass">
                             <input type="text" id="inline_contrasena_display" readonly
-                                class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-500 font-mono focus:outline-none cursor-not-allowed tracking-widest"
-                                placeholder="Se generará al buscar el NIT...">
+                                class="w-full bg-white border border-gray-200 rounded-lg px-4 py-3 text-sm text-gray-600 font-mono focus:outline-none cursor-not-allowed tracking-widest shadow-sm transition-all group-hover/pass:border-gray-300"
+                                placeholder="Se generará al buscar...">
                             <button type="button" onclick="copiarContrasenaInline()" title="Copiar contraseña"
-                                class="absolute right-3 text-gray-400 hover:text-green-600 transition-colors">
+                                class="absolute right-2.5 p-1.5 bg-gray-50 hover:bg-emerald-50 rounded-md text-gray-400 hover:text-emerald-600 border border-transparent hover:border-emerald-200 transition-all duration-200 active:scale-95">
                                 <svg id="iconCopyInline" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                                 </svg>
-                                <svg id="iconCheckInline" class="w-4 h-4 hidden text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m4.5 12.75 6 6 9-13.5" />
+                                <svg id="iconCheckInline" class="w-4 h-4 hidden text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="m4.5 12.75 6 6 9-13.5" />
                                 </svg>
                             </button>
                         </div>
-                        <p class="text-xs text-gray-400 mt-1">Copia esta contraseña antes de crear el administrador.</p>
+                        <p class="text-[11px] font-medium text-gray-500 mt-2 flex items-center gap-1.5">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            Copia esta contraseña antes de crear el administrador.
+                        </p>
                     </div>
 
                     {{-- Foto de Perfil --}}
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1.5 flex items-center gap-1.5">
-                            <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <label class="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
+                            <svg class="w-4 h-4 text-emerald-500 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                             </svg>
                             Foto de Perfil
                         </label>
                         <input type="file" name="imagen" id="inline_admin_imagen" accept="image/*"
-                            class="w-full text-sm text-gray-400 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-gray-100 file:text-gray-400 transition-all focus:outline-none cursor-not-allowed"
+                            class="block w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed border border-gray-200 rounded-xl bg-gray-50/80 cursor-not-allowed file:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
                             disabled required>
                     </div>
 
                     {{-- Botón Submit --}}
-                    <button type="submit" id="btnCrearAdminInline" disabled
-                        class="w-full px-4 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-green-500 to-emerald-400 rounded-xl hover:from-green-600 hover:to-emerald-500 transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer flex items-center justify-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <button type="submit" id="id_btn_admin" disabled
+                        class="w-full mt-2 px-5 py-3.5 text-sm font-bold text-white bg-gradient-to-r from-emerald-500 to-teal-400 rounded-xl hover:from-emerald-600 hover:to-teal-500 transition-all duration-300 shadow-[0_4px_14px_0_rgb(16,185,129,0.39)] hover:shadow-[0_6px_20px_rgba(16,185,129,0.23)] hover:-translate-y-0.5 active:translate-y-0 disabled:from-emerald-100 disabled:to-emerald-100 disabled:text-emerald-400/80 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:shadow-none flex items-center justify-center gap-2.5 group">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 transition-transform group-hover:scale-110" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
                         </svg>
