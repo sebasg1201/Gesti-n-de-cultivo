@@ -237,6 +237,19 @@
                     </div>
                 </div>
 
+                <div class="bg-gray-50 rounded-xl p-4 flex items-start gap-3 sm:col-span-2">
+                    <div class="mt-0.5 p-2 bg-green-100 rounded-lg flex-shrink-0">
+                        <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                        </svg>
+                    </div>
+                    <div class="min-w-0">
+                        <p class="text-xs text-gray-400 font-medium">Teléfono</p>
+                        <p class="text-sm font-semibold text-gray-800" id="modal-sol-telefono"></p>
+                    </div>
+                </div>
+
                 <div class="bg-gray-50 rounded-xl p-4 flex items-start gap-3">
                     <div class="mt-0.5 p-2 bg-blue-100 rounded-lg flex-shrink-0">
                         <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -282,7 +295,7 @@
                 class="bg-gray-50 border-t border-gray-100 px-6 py-4 rounded-b-2xl flex flex-wrap items-center justify-between gap-2">
                 {{-- Botón Reportar (Eliminar) --}}
                 <form id="formReportar" action="" method="POST"
-                    onsubmit="return confirm('¿Estás seguro? Esta acción eliminará la solicitud y el registro de la empresa. No se puede deshacer.')">
+                    onsubmit="if(confirm('¿Estás seguro? Esta acción eliminará la solicitud y el registro de la empresa. No se puede deshacer.')) { sendWhatsApp('reject'); return true; } return false;">
                     @csrf
                     @method('DELETE')
                     <button type="submit" id="btnReportar"
@@ -298,7 +311,7 @@
 
                 <div class="flex gap-2 items-center">
                     {{-- Botón Aprobar: visible solo si está pendiente --}}
-                    <form id="formAprobar" action="" method="POST">
+                    <form id="formAprobar" action="" method="POST" onsubmit="sendWhatsApp('approve')">
                         @csrf
                         @method('PUT')
                         <button id="btnAprobar" type="submit"
@@ -335,6 +348,22 @@
     const solicitudesData = document.getElementById('solicitudes-data').getAttribute('data-json');
     const solicitudes = solicitudesData ? JSON.parse(solicitudesData) : [];
     const baseUrl = "{{ url('/dashboard/solicitudes') }}";
+    let currentPhoneNumber = '';
+
+    function sendWhatsApp(type) {
+        if (!currentPhoneNumber) return;
+
+        let message = '';
+        if (type === 'approve') {
+            message = "¡Hola! 👋🌱\n\nNos complace informarte que tu solicitud de compra en Gestión de Cultivo ha sido *aprobada* ✅.\n\nEn breve uno de nuestros asesores se pondrá en contacto contigo para continuar con el proceso.\n\n¡Gracias por confiar en nosotros! 🤝";
+        } else if (type === 'reject') {
+            message = "Hola 👋🌱\n\nHemos revisado tu solicitud de compra en Gestión de Cultivo, pero presenta *inconsistencias en la información suministrada* ❌.\n\nPor esta razón, no fue posible procesarla. Te recomendamos verificar los datos y realizar nuevamente la solicitud.\n\nSi necesitas ayuda, estaremos atentos a apoyarte 🤝.";
+        }
+
+        const encodedMessage = encodeURIComponent(message);
+        const whatsappUrl = `https://wa.me/57${currentPhoneNumber}?text=${encodedMessage}`;
+        window.open(whatsappUrl, '_blank');
+    }
 
     function openModal(id) {
         const solicitud = solicitudes.find(s => s.id_solicitud == id);
@@ -353,6 +382,8 @@
         document.getElementById('modal-sol-nit').innerText = solicitud.id_empresa || 'N/A';
         document.getElementById('modal-sol-repre').innerText = empresa.nombre_repre_legal || 'N/A';
         document.getElementById('modal-sol-correo').innerText = empresa.correo || 'N/A';
+        document.getElementById('modal-sol-telefono').innerText = empresa.telefono || 'N/A';
+        currentPhoneNumber = empresa.telefono || '';
 
         // Plan
         document.getElementById('modal-sol-plan').innerText = solicitud.tipo_licencia ? solicitud.tipo_licencia.nombre_licencia : 'N/A';
