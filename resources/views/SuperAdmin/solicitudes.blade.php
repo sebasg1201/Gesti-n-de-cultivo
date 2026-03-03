@@ -1,10 +1,10 @@
 @extends('layouts.barra_lateral')
 
 @section('content')
-    <div class="px-6 pb-8 pt-0 bg-slate-50/50">
+    <div class="px-6 pb-6 pt-0 bg-slate-50/50">
 
         {{-- HEADER & ACTIONS INTEGRATED --}}
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-2">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
             <div>
                 <h2 class="text-3xl font-black text-green-800 tracking-tight">Solicitudes De <span
                         class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-green-500">Compra</span>
@@ -41,11 +41,11 @@
 
                 {{-- EXPORT BUTTON --}}
                 <button onclick="document.getElementById('exportSolicitudesModal').classList.remove('hidden')" class="bg-gradient-to-r from-emerald-400 via-green-500 to-emerald-600
-                                   hover:from-emerald-500 hover:via-green-600 hover:to-emerald-700
-                                   text-white border border-emerald-500/30
-                                   px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest
-                                   flex items-center gap-2 shadow-md transition-all duration-300
-                                   active:scale-95 cursor-pointer">
+                                                   hover:from-emerald-500 hover:via-green-600 hover:to-emerald-700
+                                                   text-white border border-emerald-500/30
+                                                   px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest
+                                                   flex items-center gap-2 shadow-md transition-all duration-300
+                                                   active:scale-95 cursor-pointer">
 
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5"
                         stroke="currentColor" class="w-4 h-4 text-white">
