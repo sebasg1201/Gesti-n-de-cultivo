@@ -3,7 +3,11 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
+<<<<<<< HEAD:cultivos.sql
 -- Tiempo de generación: 02-03-2026 a las 02:43:52
+=======
+-- Tiempo de generación: 25-02-2026 a las 20:27:16
+>>>>>>> 9977e1cabc1af26a0dec19a39d860c9d0b73a25b:cultivos (5).sql
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -63,7 +67,8 @@ CREATE TABLE `cosecha` (
   `id_cosecha` int(11) NOT NULL,
   `Cantidad` int(11) DEFAULT NULL,
   `fecha_inicio` date DEFAULT NULL,
-  `fecha_fin` date DEFAULT NULL
+  `fecha_fin` date DEFAULT NULL,
+  `id_tipo_cosecha` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -149,10 +154,17 @@ CREATE TABLE `empresa` (
 --
 
 INSERT INTO `empresa` (`id_empresa`, `nombre_empresa`, `nombre_repre_legal`, `cedula_repre`, `telefono`, `correo`, `direccion`, `fecha_creacion`, `id_estado`) VALUES
+<<<<<<< HEAD:cultivos.sql
 ('103455657789', 'Colombia', 'Sebas Alvarez', 1006511653, '3103524334', 'sombrahdepaz76@gmail.com', 'MzN Casa 1 El_Pedregal', '2026-02-25 23:20:02', 3),
 ('411234141412', 'Agro-Valle', 'didier reyes', 1004546565, '2123141434', 'juansuaza1528@gmail.com', 'MzN Casa 1 El_Pedregal', '2026-02-25 23:20:54', 3),
 ('834324234', 'Huila construye', 'Sebastian Rodriguez', 1034334234, '3203242424', 'david@gmail.com', 'Carrera 10 # 20-32', '2026-02-27 01:05:52', 3),
 ('876767657', 'Agro Huila', 'Sebas Martinez', 1032342344, '3223243434', 'sombrahdepaz@gmail.com', 'CALLE 23 # 34-32', '2026-03-01 19:50:43', 3);
+=======
+('3421213', '1232', 'brayan', NULL, '320133', 'braya@gmail.com', 'cra 8 sur', '2026-02-18', 3),
+('35363738', 'josepo', 'maicol', '12345678', '72143456', 'sebastiangarciaalvarez123@gmail.com', 'CL 6 10 61', '2026-02-18', 3),
+('43211342131', 'nose', 'maicol', '12333241231', '3176066850', 'gasrciasebastian019@gmail.com', 'CL 6 10 61', '2026-02-25', 3),
+('9090909090', 'SENA', 'Didier reyes', '1005423812', '3204562182', 'didier123456@gmail.com', 'cra 36 sur', '2026-02-18', 3);
+>>>>>>> 9977e1cabc1af26a0dec19a39d860c9d0b73a25b:cultivos (5).sql
 
 -- --------------------------------------------------------
 
@@ -278,7 +290,8 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (3, '0001_01_01_000002_create_jobs_table', 1),
 (4, '2026_02_09_181957_create_tipo_licencias_table', 2),
 (5, '2026_02_11_192209_add_id_tipo_licencia_to_solicitud_compra_table', 2),
-(6, '2026_02_11_192642_add_foreign_key_to_solicitud_compra_table', 3);
+(6, '2026_02_11_192642_add_foreign_key_to_solicitud_compra_table', 3),
+(7, '2026_02_17_232000_add_nit_empresa_to_solicitud_compra_table', 4);
 
 -- --------------------------------------------------------
 
@@ -291,6 +304,13 @@ CREATE TABLE `password_reset_tokens` (
   `token` varchar(255) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `password_reset_tokens`
+--
+
+INSERT INTO `password_reset_tokens` (`email`, `token`, `created_at`) VALUES
+('gasrciasebastian019@gmail.com', '$2y$12$o7b.PSZVa4EyUqU/dhA1jeRg8wnb4cy67JdlQWCg7ZFSPxVyHRj.i', '2026-02-26 00:15:31');
 
 -- --------------------------------------------------------
 
@@ -334,6 +354,14 @@ CREATE TABLE `riego` (
   `id_tipo_riego` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `riego`
+--
+
+INSERT INTO `riego` (`id_riego`, `fecha`, `cant_agua_apl`, `id_tipo_riego`) VALUES
+(1, '2026-02-23', '500l', 1),
+(2, '2026-02-11', '800l', 2);
+
 -- --------------------------------------------------------
 
 --
@@ -354,8 +382,12 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
+<<<<<<< HEAD:cultivos.sql
 ('DlPFgr6PH118SzpuWSSvJCmEIJUMFwjtoT2aZks2', 1006511657, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiSzBzeWdKUlVkNWNySW1xTmNJcFpGYnROZWF4cWN4UVFCa0tlUFZ1USI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzI6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9TdXBlckFkbWluIjtzOjU6InJvdXRlIjtzOjE2OiJTdXBlckFkbWluLmluZGV4Ijt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo1NzoibG9naW5fc3VwZXJhZG1pbl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjEwMDY1MTE2NTc7fQ==', 1772415769),
 ('kdrpYMmlhENVv6hK6PGKyNBRlUqvqJyIts6tM2fF', 1006511657, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiMHpPN20xSThEMW93dm9zejAxMmQyYXhoQzc3SFRNOU5Jb284N2NMRiI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMC9TdXBlckFkbWluIjtzOjU6InJvdXRlIjtzOjE2OiJTdXBlckFkbWluLmluZGV4Ijt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czozOiJ1cmwiO2E6MTp7czo4OiJpbnRlbmRlZCI7czozMjoiaHR0cDovL2xvY2FsaG9zdDo4MDAwL1N1cGVyQWRtaW4iO31zOjU3OiJsb2dpbl9zdXBlcmFkbWluXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MTAwNjUxMTY1Nzt9', 1772412011);
+=======
+('Iwif1NTzCLXsZKlb97R2arzOURMxO03VqL82eFhd', 1234567891, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiRTJ6eXEzeTR1c2lrQnRVeUtrblJRb2pYR2hHcmg4c01qUGtuNVNzUSI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6NjM6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZG1pbi91c3Vhcmlvcy8xMjM0NTY3ODk0L2FzaWduYXItdHJhYmFqbyI7czo1OiJyb3V0ZSI7czozMDoiYWRtaW4udXN1YXJpb3MuYXNpZ25hcl90cmFiYWpvIjt9czo1NDoibG9naW5fdXN1YXJpb181OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjEyMzQ1Njc4OTE7fQ==', 1772047614);
+>>>>>>> 9977e1cabc1af26a0dec19a39d860c9d0b73a25b:cultivos (5).sql
 
 -- --------------------------------------------------------
 
@@ -365,8 +397,13 @@ INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, 
 
 CREATE TABLE `solicitud_compra` (
   `id_solicitud` int(11) NOT NULL,
+<<<<<<< HEAD:cultivos.sql
   `id_empresa` varchar(14) NOT NULL,
   `comprobante_pago` varchar(500) DEFAULT NULL,
+=======
+  `nit_empresa` varchar(14) DEFAULT NULL,
+  `comprobante_pago` varchar(500) NOT NULL,
+>>>>>>> 9977e1cabc1af26a0dec19a39d860c9d0b73a25b:cultivos (5).sql
   `id_tipo_licencia` int(11) DEFAULT NULL,
   `id_estado` int(11) NOT NULL,
   `fecha_solicitud` datetime DEFAULT current_timestamp(),
@@ -377,11 +414,18 @@ CREATE TABLE `solicitud_compra` (
 -- Volcado de datos para la tabla `solicitud_compra`
 --
 
+<<<<<<< HEAD:cultivos.sql
 INSERT INTO `solicitud_compra` (`id_solicitud`, `id_empresa`, `comprobante_pago`, `id_tipo_licencia`, `id_estado`, `fecha_solicitud`, `fecha_revision`) VALUES
 (23, '103455657789', 'comprobantes/1772079602.png', 2, 5, '2026-02-25 23:20:02', '2026-02-25 23:21:55'),
 (24, '411234141412', 'comprobantes/1772079654.png', 1, 5, '2026-02-25 23:20:54', '2026-02-25 23:27:15'),
 (25, '834324234', NULL, 3, 5, '2026-02-27 01:05:52', '2026-02-27 01:05:52'),
 (26, '876767657', NULL, 2, 5, '2026-03-01 19:50:43', '2026-03-01 19:50:43');
+=======
+INSERT INTO `solicitud_compra` (`id_solicitud`, `nit_empresa`, `comprobante_pago`, `id_tipo_licencia`, `id_estado`, `fecha_solicitud`, `fecha_revision`) VALUES
+(9, '35363738', 'comprobantes/1771392293.png', 2, 5, '2026-02-18 05:24:53', '2026-02-18 05:31:53'),
+(11, '9090909090', 'comprobantes/1771439583.png', 2, 5, '2026-02-18 18:33:04', '2026-02-18 18:34:42'),
+(12, '43211342131', 'comprobantes/1772046633.png', 2, 5, '2026-02-25 19:10:33', '2026-02-25 19:11:08');
+>>>>>>> 9977e1cabc1af26a0dec19a39d860c9d0b73a25b:cultivos (5).sql
 
 -- --------------------------------------------------------
 
@@ -409,9 +453,15 @@ CREATE TABLE `super_admin` (
 --
 
 INSERT INTO `super_admin` (`id_super_admin`, `nombre`, `usuario`, `correo`, `password_hash`, `id_estado`, `ultimo_login`, `fecha_creacion`, `fecha_actualizacion`, `remember_token`, `created_at`, `updated_at`) VALUES
+<<<<<<< HEAD:cultivos.sql
 (121121222, 'Sebastian Garcia', 'sebas', 'sebastiangarciaalvarez123@gmail.com', '$2y$12$YoWr9W3m9DTOdIq9lQl5v.UUywmt.V8dWL.E6.BS8jtcLy9xzzoPG', 3, NULL, '2026-02-17 02:13:13', '2026-02-17 02:13:13', NULL, NULL, NULL),
 (1006511657, 'Brayan Basto', 'Stevan', 'bastobrayan246@gmail.com', '$2y$12$Qh0yFs6SfldIhbRSw2gfguC8OukaAtB1KnOBga5XY/dKXi.2070X.', 3, NULL, '2026-02-10 03:51:59', '2026-02-27 06:08:38', '0CqKzqc1RBu5ZsV0zQxXdhO0KXCywQsdg9CjSTg6YJtNAOrMw3P8ID8DgRa5', NULL, '2026-02-13 02:07:57'),
 (1110495789, 'Didier Reyes', 'dires123', 'didierreyes003@gmail.com', '$2y$12$CKXs7SUsNzetpilgVTY19udZyQIjCesQsJb5QL0y1mR4nhZmvnkvq', 3, NULL, '2026-02-09 19:43:33', '2026-02-25 18:19:55', 'E1xAHunpYj7x7v7U75M5jrWqbDB6UrlaXZ1wBBpZiI0TjAaZ7LGtpatrtJvu', NULL, '2026-02-24 18:07:11');
+=======
+(1006511657, 'Brayan Basto', 'Stevan', 'bastobrayan246@gmail.com', '$2y$12$Qh0yFs6SfldIhbRSw2gfguC8OukaAtB1KnOBga5XY/dKXi.2070X.', 3, NULL, '2026-02-10 03:51:59', '2026-02-17 02:10:22', 'aegJSp6QIMpg95egR7NJXAnaE5njCRkax1I5ss63F6MT9YHZs4Q3cINlIMw9', NULL, '2026-02-13 02:07:57'),
+(1105461467, 'Sebastian Garcia', 'sebas', 'sebastiangarciaalvarez123@gmail.com', '$2y$12$HiWyptu369n4pYVh2s1fw.3eam9pB7yf92tYoFAJnLTJb8LgZZg1W', 3, NULL, '2026-02-17 02:13:13', '2026-02-25 19:14:38', '5S2OIadFoegMuspyN1WFnbOQXPIGLpfx9nhUPldkQUJItZZ8KYDPSbmgZj3W', NULL, '2026-02-17 23:28:31'),
+(1110495789, 'Didier Reyes', 'dires123', 'didierreyes003@gmail.com', '$2y$12$wmB4kxXaFlmdPaBoh2udXuqkB1L6iPFzrISuCIEoVOLOlTOEgO8wa', 3, NULL, '2026-02-09 19:43:33', '2026-02-16 16:04:46', '75wAEHbAZ2DHmlMOPncWAw4MeYBfUL4VkgWvMX1jeqWD4KhPDeLZLrSxi1gG', NULL, '2026-02-16 21:04:11');
+>>>>>>> 9977e1cabc1af26a0dec19a39d860c9d0b73a25b:cultivos (5).sql
 
 -- --------------------------------------------------------
 
@@ -441,6 +491,13 @@ CREATE TABLE `tipo_cosecha` (
   `id_semilla` int(11) DEFAULT NULL,
   `id_riego` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `tipo_cosecha`
+--
+
+INSERT INTO `tipo_cosecha` (`id_tipo_cosecha`, `tiempo`, `terreno`, `id_semilla`, `id_riego`) VALUES
+(23, 18, 'lkjhgf', 2, 1);
 
 -- --------------------------------------------------------
 
@@ -477,6 +534,17 @@ CREATE TABLE `tipo_riego` (
   `tipo_riego` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `tipo_riego`
+--
+
+INSERT INTO `tipo_riego` (`id_tipo_riego`, `tipo_riego`) VALUES
+(1, 'goteo'),
+(2, 'aspersión'),
+(3, 'gravedad'),
+(4, 'subsuperficial'),
+(5, 'sdkjlfgk');
+
 -- --------------------------------------------------------
 
 --
@@ -487,6 +555,15 @@ CREATE TABLE `tipo_semilla` (
   `id_semilla` int(11) NOT NULL,
   `Tipo_semilla` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `tipo_semilla`
+--
+
+INSERT INTO `tipo_semilla` (`id_semilla`, `Tipo_semilla`) VALUES
+(1, 'criollas'),
+(2, ' híbridas'),
+(3, 'transgénicas');
 
 -- --------------------------------------------------------
 
@@ -547,8 +624,15 @@ CREATE TABLE `usuario` (
 --
 
 INSERT INTO `usuario` (`documento`, `imagen`, `nombre`, `telefono`, `correo`, `contrasena`, `id_tipo_usuario`, `id_estado`, `id_empresa`) VALUES
+<<<<<<< HEAD:cultivos.sql
 (1006511653, 'usuarios/TPn5OuzBFcUMBMTb27MDcG8KrMQg0nUiQau4ExxO.png', 'Sebas Alvarez', '3103524334', 'sombrahdepaz76@gmail.com', '$2y$12$ShO2KxmULq2i87gGWluCyeAy/C5fhUJt26ceeK7Nt/BKxRxQl/DRa', 1, 3, '103455657789'),
 (1034345454, 'usuarios/ohtjEMXYnEtIKQV6uXFyhSx4giqPArWo1ABQmYEk.jpg', 'Javier Gonza', '3223243434', 'bastobrayan246@gmail.com', '$2y$12$IXfjWMnY6Ul6L6B0trEKK.6obRkullnh7zI5H/sAO3/nHgpsQWjqq', 1, 3, '876767657');
+=======
+(1234567, 'usuarios/FA5BFVlZojq5VdxiEDAFNmMYTqJM76ZjfZf1v0Il.png', 'prueba', '54321345', 'gasrciasebastian019@gmail.com', '$2y$12$0EoAnL9zjLq6cqURa02HcuaPn.wirAcm6iHPJ/A8ihRZP/skYaywe', 1, 3, '43211342131'),
+(1105461467, 'usuarios/7rAn8fNr1Ix7oz8ZB2Yc0rbYHBMLCoF0HUuyMNBF.png', 'sebas', '3176066850', 'brayan@gmail.com', '$2y$12$V3Hqu94gtUtat4zntLpqd.qq/06mFu0D7zT3613aTUpLG1y0Akp4G', 1, 3, '35363738'),
+(1234567891, 'usuarios/r8PWHgbSshmfJsLQWWcJGM3kHYhQHQxQv7EkPSky.png', 'sebastian', '3176066890', 'maicol@gmail.com', '$2y$12$TVSHh3Zw/6LK96ikjX732uT.v/BDWv9zNsd4fgNLeLcfe7fU9s9sq', 1, 3, '35363738'),
+(1234567894, 'usuarios/R30t8XlNWQvgQu2mP736vvwCCyp1eYCQvPDUieol.png', 'lkjhgfdsa', '123456778', 'sebastiangarciaalvarez123@gmail.com', '$2y$12$DUKyDrQWsq/hsJ2.CEDW0uG3ZA4EpBcI5WXYAT8SNxKiZYIzluT9K', 3, 1, '35363738');
+>>>>>>> 9977e1cabc1af26a0dec19a39d860c9d0b73a25b:cultivos (5).sql
 
 -- --------------------------------------------------------
 
@@ -570,10 +654,15 @@ CREATE TABLE `venta_licencias` (
 --
 
 INSERT INTO `venta_licencias` (`id_key`, `fecha_inicio`, `observacione`, `id_tipo_licencia`, `id_empresa`, `id_estado`) VALUES
+<<<<<<< HEAD:cultivos.sql
 ('CHscjT93rnsFdj', '2026-03-01 20:04:57', 'Asignada desde Dashboard', 2, '876767657', 3),
 ('DNPSVVPFfsJOUx', '2026-02-25 23:22:48', 'Asignada desde Dashboard', 2, '103455657789', 3),
 ('GTJ8xgFGPHkNZn', '2026-02-25 23:27:54', 'Asignada desde Dashboard', 1, '411234141412', 3),
 ('Q3zZJYBvH2PISC', '2026-03-01 20:29:45', 'Asignada desde Dashboard', 3, '834324234', 3);
+=======
+('3XHUVML0QTABxp', '2026-02-18 05:28:59', 'Asignada desde Dashboard', 2, '35363738', 3),
+('53URiqLAJUAPb9', '2026-02-25 19:14:32', 'Asignada desde Dashboard', 2, '43211342131', 3);
+>>>>>>> 9977e1cabc1af26a0dec19a39d860c9d0b73a25b:cultivos (5).sql
 
 --
 -- Índices para tablas volcadas
@@ -597,7 +686,8 @@ ALTER TABLE `cache_locks`
 -- Indices de la tabla `cosecha`
 --
 ALTER TABLE `cosecha`
-  ADD PRIMARY KEY (`id_cosecha`);
+  ADD PRIMARY KEY (`id_cosecha`),
+  ADD KEY `id_tipo_cosecha` (`id_tipo_cosecha`);
 
 --
 -- Indices de la tabla `cultivo`
@@ -728,7 +818,11 @@ ALTER TABLE `solicitud_compra`
   ADD PRIMARY KEY (`id_solicitud`),
   ADD KEY `fk_solicitud_estado` (`id_estado`),
   ADD KEY `solicitud_compra_id_tipo_licencia_foreign` (`id_tipo_licencia`),
+<<<<<<< HEAD:cultivos.sql
   ADD KEY `id_empresa` (`id_empresa`);
+=======
+  ADD KEY `solicitud_compra_nit_empresa_foreign` (`nit_empresa`);
+>>>>>>> 9977e1cabc1af26a0dec19a39d860c9d0b73a25b:cultivos (5).sql
 
 --
 -- Indices de la tabla `super_admin`
@@ -853,7 +947,7 @@ ALTER TABLE `failed_jobs`
 -- AUTO_INCREMENT de la tabla `fases_programadas`
 --
 ALTER TABLE `fases_programadas`
-  MODIFY `id_fase` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_fase` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `insumo`
@@ -871,7 +965,7 @@ ALTER TABLE `jobs`
 -- AUTO_INCREMENT de la tabla `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de la tabla `producto`
@@ -889,13 +983,17 @@ ALTER TABLE `proveedor`
 -- AUTO_INCREMENT de la tabla `riego`
 --
 ALTER TABLE `riego`
-  MODIFY `id_riego` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_riego` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `solicitud_compra`
 --
 ALTER TABLE `solicitud_compra`
+<<<<<<< HEAD:cultivos.sql
   MODIFY `id_solicitud` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+=======
+  MODIFY `id_solicitud` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+>>>>>>> 9977e1cabc1af26a0dec19a39d860c9d0b73a25b:cultivos (5).sql
 
 --
 -- AUTO_INCREMENT de la tabla `super_admin`
@@ -913,7 +1011,7 @@ ALTER TABLE `terreno`
 -- AUTO_INCREMENT de la tabla `tipo_cosecha`
 --
 ALTER TABLE `tipo_cosecha`
-  MODIFY `id_tipo_cosecha` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_tipo_cosecha` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT de la tabla `tipo_licencia`
@@ -925,13 +1023,13 @@ ALTER TABLE `tipo_licencia`
 -- AUTO_INCREMENT de la tabla `tipo_riego`
 --
 ALTER TABLE `tipo_riego`
-  MODIFY `id_tipo_riego` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_tipo_riego` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `tipo_semilla`
 --
 ALTER TABLE `tipo_semilla`
-  MODIFY `id_semilla` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_semilla` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `tipo_usuario`
@@ -942,6 +1040,12 @@ ALTER TABLE `tipo_usuario`
 --
 -- Restricciones para tablas volcadas
 --
+
+--
+-- Filtros para la tabla `cosecha`
+--
+ALTER TABLE `cosecha`
+  ADD CONSTRAINT `cosecha_ibfk_1` FOREIGN KEY (`id_tipo_cosecha`) REFERENCES `tipo_cosecha` (`id_tipo_cosecha`);
 
 --
 -- Filtros para la tabla `cultivo`
@@ -1004,8 +1108,13 @@ ALTER TABLE `riego`
 --
 ALTER TABLE `solicitud_compra`
   ADD CONSTRAINT `fk_solicitud_estado` FOREIGN KEY (`id_estado`) REFERENCES `estado` (`id_estado`),
+<<<<<<< HEAD:cultivos.sql
   ADD CONSTRAINT `solicitud_compra_ibfk_1` FOREIGN KEY (`id_empresa`) REFERENCES `empresa` (`id_empresa`),
   ADD CONSTRAINT `solicitud_compra_id_tipo_licencia_foreign` FOREIGN KEY (`id_tipo_licencia`) REFERENCES `tipo_licencia` (`id_tipo_licencia`) ON DELETE SET NULL;
+=======
+  ADD CONSTRAINT `solicitud_compra_id_tipo_licencia_foreign` FOREIGN KEY (`id_tipo_licencia`) REFERENCES `tipo_licencia` (`id_tipo_licencia`) ON DELETE SET NULL,
+  ADD CONSTRAINT `solicitud_compra_nit_empresa_foreign` FOREIGN KEY (`nit_empresa`) REFERENCES `empresa` (`id_empresa`) ON DELETE CASCADE;
+>>>>>>> 9977e1cabc1af26a0dec19a39d860c9d0b73a25b:cultivos (5).sql
 
 --
 -- Filtros para la tabla `super_admin`

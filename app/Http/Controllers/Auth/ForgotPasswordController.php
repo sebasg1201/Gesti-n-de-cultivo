@@ -24,6 +24,10 @@ class ForgotPasswordController extends Controller
         $user = SuperAdmin::where('correo', $request->correo)->first();
 
         if (!$user) {
+            $user = \App\Models\Usuario::where('correo', $request->correo)->first();
+        }
+
+        if (!$user) {
             return back()->withErrors(['correo' => 'No podemos encontrar un usuario con ese correo electrónico.']);
         }
 

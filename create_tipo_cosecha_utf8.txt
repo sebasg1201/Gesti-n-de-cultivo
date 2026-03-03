@@ -1,0 +1,12 @@
+﻿CREATE TABLE `tipo_cosecha` (
+  `id_tipo_cosecha` int(11) NOT NULL AUTO_INCREMENT,
+  `tiempo` int(11) DEFAULT NULL,
+  `terreno` varchar(100) DEFAULT NULL,
+  `id_semilla` int(11) DEFAULT NULL,
+  `id_riego` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id_tipo_cosecha`),
+  KEY `id_semilla` (`id_semilla`),
+  KEY `id_riego` (`id_riego`),
+  CONSTRAINT `tipo_cosecha_ibfk_1` FOREIGN KEY (`id_semilla`) REFERENCES `tipo_semilla` (`id_semilla`),
+  CONSTRAINT `tipo_cosecha_ibfk_2` FOREIGN KEY (`id_riego`) REFERENCES `riego` (`id_riego`)
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci

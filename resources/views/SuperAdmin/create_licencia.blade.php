@@ -107,6 +107,7 @@
                     class="w-full bg-slate-50 border-2 border-slate-50 rounded-2xl pl-12 pr-4 py-5 text-2xl font-black text-slate-800 focus:bg-white focus:border-[#006b58] focus:ring-4 focus:ring-emerald-50 outline-none transition-all placeholder:text-slate-200"
                     placeholder="0.00" required>
             </div>
+            @error('precio') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
         </div>
 
         {{-- BOTONES --}}

@@ -154,7 +154,7 @@ class SolicitudCompraController extends Controller
             'id_empresa' => $empresa->id_empresa,
             'comprobante_pago' => $rutaComprobante,
             'id_tipo_licencia' => $request->licencia_id,
-            'id_estado' => 1, // 1 = Pendiente
+            'id_estado' => 1,
             'fecha_solicitud' => now(),
             'fecha_revision' => null,
         ]);

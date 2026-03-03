@@ -3,11 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class Usuario extends Model
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+use Illuminate\Auth\Passwords\CanResetPassword;
+
+class Usuario extends Authenticatable implements CanResetPasswordContract
 {
-    use HasFactory;
+    use HasFactory, Notifiable, CanResetPassword;
 
     protected $table = 'usuario';
     protected $primaryKey = 'documento';
@@ -25,4 +29,19 @@ class Usuario extends Model
         'id_estado',
         'id_empresa'
     ];
+
+    public function getAuthPassword()
+    {
+        return $this->contrasena;
+    }
+
+    public function getEmailForPasswordReset()
+    {
+        return $this->correo;
+    }
+
+    public function routeNotificationForMail($notification)
+    {
+        return $this->correo;
+    }
 }

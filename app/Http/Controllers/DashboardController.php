@@ -150,7 +150,7 @@ class DashboardController extends Controller
     public function storeEmpresa(Request $request)
     {
         $request->validate([
-            'id_empresa' => 'required|numeric|unique:empresa,id_empresa',
+            'id_empresa' => 'required|numeric|digits_between:8,12|unique:empresa,id_empresa',
             'nombre_empresa' => 'required|string|max:200',
             'nombre_repre_legal' => 'required|string|max:100',
             'cedula_repre' => 'required|numeric|digits_between:7,11',
@@ -238,10 +238,10 @@ class DashboardController extends Controller
     public function storeAdministrador(Request $request)
     {
         $request->validate([
-            'documento' => 'required|numeric|digits_between:7,10|unique:usuario,documento',
-            'nombre' => 'required|string',
+            'documento' => 'required|numeric|digits_between:8,12|unique:usuario,documento',
+            'nombre' => 'required|string|max:150',
             'correo' => 'required|email|unique:usuario,correo',
-            'telefono' => 'required|numeric|digits_between:7,10',
+            'telefono' => 'required|numeric|digits_between:10,15',
             'contrasena' => 'required|min:8',
             'id_empresa' => 'required|exists:empresa,id_empresa',
             'imagen' => 'required|image|max:2048',
