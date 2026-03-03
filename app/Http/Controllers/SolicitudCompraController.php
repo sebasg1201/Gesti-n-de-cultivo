@@ -89,7 +89,7 @@ class SolicitudCompraController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nit_empresa' => 'required|string|max:20',
+            'nit_empresa' => 'required|numeric|digits_between:10,14',
             'nombre_empresa' => 'required|string|max:200',
             'nombre_repre_legal' => 'required|string|max:150',
             'cedula_repre' => 'required|numeric|digits_between:8,11',
@@ -122,28 +122,19 @@ class SolicitudCompraController extends Controller
                 'telefono' => $request->telefono,
                 'correo' => $request->correo,
                 'direccion' => $request->direccion,
-                'fecha_creacion' => now(), // O mantener la original si solo se actualiza
-                'id_estado' => 1 // Asumimos estado 'activa' o 'pendiente' según lógica de negocio. 1=pendiente? Revisando SQL dump: 1=pendiente, 3=activa.
-                                 // Si es nueva empresa registrandose, quizás debería ser 1 (pendiente) o 3 (activa).
-                                 // El dump muesta id_estado 1 y 3. Usaremos 1 (pendiente) o lo que el usuario prefiera.
-                                 // Viendo el dump, empresas creadas tienen estado 1 o 3.
-                                 // Vamos a poner 3 (activa) por defecto para que puedan operar, o 1 si requiere aprobación.
-                                 // Dejaré 1 (pendiente) para ser conservador, o 3 si la empresa ya "existe".
-                                 // Mejor: 'id_estado' => 1 (pendiente) si se crea.
+                'fecha_creacion' => now(),
+                'id_estado' => 1
             ]
         );
 
-        // Si la empresa se creó recién, asegurarse de que tenga estado.
-        // updateOrCreate llena los campos. Si empresa ya existía, actualiza.
-        // Nota: Si 'fecha_creacion' no debería cambiar al actualizar, se debe usar firstOrNew logic.
-        // Pero updateOrCreate es práctico aquí.
+
 
         // 3. Crear Solicitud de Compra
         SolicitudCompra::create([
             'nit_empresa' => $empresa->id_empresa,
             'comprobante_pago' => $rutaComprobante,
             'id_tipo_licencia' => $request->licencia_id,
-            'id_estado' => 1, // 1 = Pendiente
+            'id_estado' => 1,
             'fecha_solicitud' => now(),
             'fecha_revision' => null,
         ]);

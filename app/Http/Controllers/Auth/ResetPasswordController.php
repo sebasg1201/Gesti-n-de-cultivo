@@ -53,8 +53,20 @@ class ResetPasswordController extends Controller
             'password.confirmed' => 'Las contraseñas no coinciden.',
         ]);
 
-        // Broker 'superadmins'
-        $status = Password::broker('superadmins')->reset(
+        $user = \App\Models\SuperAdmin::where('correo', $request->correo)->first();
+        $brokerName = 'superadmins';
+        
+        if (!$user) {
+            $user = \App\Models\Usuario::where('correo', $request->correo)->first();
+            $brokerName = 'usuarios';
+        }
+
+        if (!$user) {
+            return back()->withErrors(['correo' => 'No podemos encontrar un usuario con ese correo electrónico.']);
+        }
+
+        // Broker 
+        $status = Password::broker($brokerName)->reset(
             $request->only('correo', 'password', 'password_confirmation', 'token'),
             function ($user, $password) {
                 // Here we define how to update the password
@@ -74,7 +86,11 @@ class ResetPasswordController extends Controller
      */
     protected function resetPassword(Authenticatable $user, $password)
     {
-        $user->password_hash = Hash::make($password);
+        if ($user instanceof \App\Models\SuperAdmin) {
+            $user->password_hash = Hash::make($password);
+        } else {
+            $user->contrasena = Hash::make($password);
+        }
         $user->setRememberToken(Str::random(60));
         $user->save();
 

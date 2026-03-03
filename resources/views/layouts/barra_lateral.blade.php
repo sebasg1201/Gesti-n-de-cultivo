@@ -252,6 +252,7 @@
         }
     </script>
 @stack('scripts')
+    <script src="{{ asset('js/validation.js') }}"></script>
 </body>
 
 </html>

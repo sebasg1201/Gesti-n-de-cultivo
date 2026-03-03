@@ -36,9 +36,10 @@
             <label class="block text-gray-600 font-medium mb-2">Nombre</label>
             <input type="text"
                    name="nombre_licencia"
-                   value="{{ $licencia->nombre_licencia }}"
-                   class="w-full border border-gray-300 rounded-xl px-4 py-2 focus:ring-2 focus:ring-green-300 focus:outline-none transition"
+                   value="{{ old('nombre_licencia', $licencia->nombre_licencia) }}"
+                   class="w-full border border-gray-300 rounded-xl px-4 py-2 focus:ring-2 focus:ring-green-300 focus:outline-none transition @error('nombre_licencia') border-red-500 @enderror"
                    required>
+            @error('nombre_licencia') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
         </div>
 
         {{-- Tiempo --}}
@@ -47,16 +48,16 @@
             <input type="text"
                    name="tiempo"
                    value="{{ $licencia->tiempo }}"
-                   class="w-full border border-gray-300 rounded-xl px-4 py-2 focus:ring-2 focus:ring-green-300 focus:outline-none transition"
+                   class="w-full border border-gray-300 rounded-xl px-4 py-2 focus:ring-2 focus:ring-green-300 focus:outline-none transition @error('tiempo') border-red-500 @enderror"
                    required>
+            @error('tiempo') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
         </div>
 
         {{-- Descripción --}}
         <div>
             <label class="block text-gray-600 font-medium mb-2">Descripción</label>
-            <textarea name="descripcion"
-                      rows="3"
-                      class="w-full border border-gray-300 rounded-xl px-4 py-2 focus:ring-2 focus:ring-green-300 focus:outline-none transition">{{ $licencia->descripcion }}</textarea>
+                      class="w-full border border-gray-300 rounded-xl px-4 py-2 focus:ring-2 focus:ring-green-300 focus:outline-none transition @error('descripcion') border-red-500 @enderror">{{ old('descripcion', $licencia->descripcion) }}</textarea>
+            @error('descripcion') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
         </div>
 
         {{-- Precio --}}
@@ -64,9 +65,10 @@
             <label class="block text-gray-600 font-medium mb-2">Precio</label>
             <input type="number"
                    name="precio"
-                   value="{{ $licencia->precio }}"
-                   class="w-full border border-gray-300 rounded-xl px-4 py-2 focus:ring-2 focus:ring-green-300 focus:outline-none transition"
+                   value="{{ old('precio', $licencia->precio) }}"
+                   class="w-full border border-gray-300 rounded-xl px-4 py-2 focus:ring-2 focus:ring-green-300 focus:outline-none transition @error('precio') border-red-500 @enderror"
                    required>
+            @error('precio') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
         </div>
 
         {{-- BOTONES --}}

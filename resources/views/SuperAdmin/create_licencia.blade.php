@@ -49,9 +49,10 @@
                    pattern="[A-Za-zÁÉÍÓÚáéíóúñÑ ]+"
                    name="nombre_licencia"
                    value="{{ old('nombre_licencia') }}"
-                   class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-400 focus:border-green-400 outline-none transition"
+                   class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-400 focus:border-green-400 outline-none transition @error('nombre_licencia') border-red-500 @enderror"
                    placeholder="Ej: Plan Premium"
                    required>
+            @error('nombre_licencia') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
         </div>
 
         {{-- TIEMPO --}}
@@ -71,9 +72,10 @@
             <input type="text"
                    name="tiempo"
                    value="{{ old('tiempo') }}"
-                   class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-400 focus:border-green-400 outline-none transition"
+                   class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-400 focus:border-green-400 outline-none transition @error('tiempo') border-red-500 @enderror"
                    placeholder="Ej: 1 año, 6 meses, 30 días"
                    required>
+            @error('tiempo') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
         </div>
 
         {{-- DESCRIPCION --}}
@@ -91,8 +93,9 @@
 
             <textarea name="descripcion"
                       rows="3"
-                      class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-400 focus:border-green-400 outline-none transition"
+                      class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-400 focus:border-green-400 outline-none transition @error('descripcion') border-red-500 @enderror"
                       placeholder="Describe el plan...">{{ old('descripcion') }}</textarea>
+            @error('descripcion') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
         </div>
 
         {{-- PRECIO --}}
@@ -114,10 +117,11 @@
                 <input type="number"
                        name="precio"
                        value="{{ old('precio') }}"
-                       class="w-full pl-8 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-400 focus:border-green-400 outline-none transition"
+                       class="w-full pl-8 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-400 focus:border-green-400 outline-none transition @error('precio') border-red-500 @enderror"
                        placeholder="Ej: 50000"
                        required>
             </div>
+            @error('precio') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
         </div>
 
         {{-- BOTONES --}}

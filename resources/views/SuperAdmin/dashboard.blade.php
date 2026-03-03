@@ -26,39 +26,50 @@
             <div>
                 <label class="block text-sm font-medium text-gray-600">Nit de la empresa</label>
                 <input type="number" id="nit_empresa" name="id_empresa"
-                    class="w-full border-gray-300 rounded p-2 text-sm focus:ring-green-500 focus:border-green-500"
-                    placeholder="9088123456" required>
+                    class="w-full border-gray-300 rounded p-2 text-sm focus:ring-green-500 focus:border-green-500 @error('id_empresa') border-red-500 @enderror"
+                    placeholder="9088123456" value="{{ old('id_empresa') }}" required>
+                @error('id_empresa') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
             </div>
 
             <div>
                 <label class="block text-sm font-medium text-gray-600">Nombre de la empresa</label>
                 <input type="text" id="nombre_empresa" name="nombre_empresa"
-                    class="w-full border-gray-300 rounded p-2 text-sm focus:ring-green-500 focus:border-green-500" required>
+                    class="w-full border-gray-300 rounded p-2 text-sm focus:ring-green-500 focus:border-green-500 @error('nombre_empresa') border-red-500 @enderror" 
+                    value="{{ old('nombre_empresa') }}" required>
+                @error('nombre_empresa') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
             </div>
 
             <div>
                 <label class="block text-sm font-medium text-gray-600">Representante Legal</label>
                 <input type="text" id="nombre_repre_legal" name="nombre_repre_legal"
-                    class="w-full border-gray-300 rounded p-2 text-sm focus:ring-green-500 focus:border-green-500" required>
+                    class="w-full border-gray-300 rounded p-2 text-sm focus:ring-green-500 focus:border-green-500 @error('nombre_repre_legal') border-red-500 @enderror" 
+                    value="{{ old('nombre_repre_legal') }}" required>
+                @error('nombre_repre_legal') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
             </div>
 
             <div class="grid grid-cols-2 gap-2">
                 <div>
                     <label class="block text-sm font-medium text-gray-600">Teléfono</label>
                     <input type="text" id="telefono" name="telefono"
-                        class="w-full border-gray-300 rounded p-2 text-sm focus:ring-green-500 focus:border-green-500" required>
+                        class="w-full border-gray-300 rounded p-2 text-sm focus:ring-green-500 focus:border-green-500 @error('telefono') border-red-500 @enderror" 
+                        value="{{ old('telefono') }}" required>
+                    @error('telefono') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-600">Dirección</label>
                     <input type="text" id="direccion" name="direccion"
-                        class="w-full border-gray-300 rounded p-2 text-sm focus:ring-green-500 focus:border-green-500" required>
+                        class="w-full border-gray-300 rounded p-2 text-sm focus:ring-green-500 focus:border-green-500 @error('direccion') border-red-500 @enderror" 
+                        value="{{ old('direccion') }}" required>
+                    @error('direccion') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
             </div>
 
             <div>
                 <label class="block text-sm font-medium text-gray-600">Correo</label>
                 <input type="email" id="correo" name="correo"
-                    class="w-full border-gray-300 rounded p-2 text-sm focus:ring-green-500 focus:border-green-500" required>
+                    class="w-full border-gray-300 rounded p-2 text-sm focus:ring-green-500 focus:border-green-500 @error('correo') border-red-500 @enderror" 
+                    value="{{ old('correo') }}" required>
+                @error('correo') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
             </div>
 
             <button type="submit"
@@ -125,37 +136,48 @@
             <div>
                 <label class="block text-sm font-medium text-gray-600">Foto</label>
                 <input type="file" name="imagen" accept="image/*" required
-                    class="w-full border-gray-300 rounded p-2 text-sm">
+                    class="w-full border-gray-300 rounded p-2 text-sm @error('imagen') border-red-500 @enderror">
+                @error('imagen') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
             </div>
 
             <div>
                 <label class="block text-sm font-medium text-gray-600">Empresa</label>
                 <select name="id_empresa"
-                    class="w-full border-gray-300 rounded p-2 text-sm focus:ring-green-500 focus:border-green-500"
+                    class="w-full border-gray-300 rounded p-2 text-sm focus:ring-green-500 focus:border-green-500 @error('id_empresa') border-red-500 @enderror"
                     required>
                     <option value="">Seleccione Empresa</option>
                     @foreach($empresas as $empresa)
-                        <option value="{{ $empresa->id_empresa }}">{{ $empresa->nombre_empresa }}</option>
+                        <option value="{{ $empresa->id_empresa }}" {{ old('id_empresa') == $empresa->id_empresa ? 'selected' : '' }}>{{ $empresa->nombre_empresa }}</option>
                     @endforeach
                 </select>
+                @error('id_empresa') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
             </div>
 
             <div class="grid grid-cols-2 gap-2">
                 <input type="number" name="documento" placeholder="Documento"
-                    class="border-gray-300 rounded p-2 text-sm" required>
-
+                    class="border-gray-300 rounded p-2 text-sm @error('documento') border-red-500 @enderror" 
+                    value="{{ old('documento') }}" required>
+                
                 <input type="text" name="telefono" placeholder="Teléfono"
-                    class="border-gray-300 rounded p-2 text-sm" required>
+                    class="border-gray-300 rounded p-2 text-sm @error('telefono') border-red-500 @enderror" 
+                    value="{{ old('telefono') }}" required>
             </div>
+            @error('documento') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+            @error('telefono') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
 
             <input type="text" name="nombre" placeholder="Nombre"
-                class="w-full border-gray-300 rounded p-2 text-sm" required>
+                class="w-full border-gray-300 rounded p-2 text-sm @error('nombre') border-red-500 @enderror" 
+                value="{{ old('nombre') }}" required>
+            @error('nombre') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
 
             <input type="email" name="correo" placeholder="Correo"
-                class="w-full border-gray-300 rounded p-2 text-sm" required>
+                class="w-full border-gray-300 rounded p-2 text-sm @error('correo') border-red-500 @enderror" 
+                value="{{ old('correo') }}" required>
+            @error('correo') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
 
             <input type="password" name="contrasena" placeholder="Contraseña"
-                class="w-full border-gray-300 rounded p-2 text-sm" required>
+                class="w-full border-gray-300 rounded p-2 text-sm @error('contrasena') border-red-500 @enderror" required>
+            @error('contrasena') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
 
             <button type="submit"
                 class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition">

@@ -33,6 +33,12 @@ class CodeVerificationController extends Controller
 
             /** @var CanResetPassword $user */
             $user = SuperAdmin::where('correo', $email)->first();
+            $brokerName = 'superadmins';
+
+            if (!$user) {
+                $user = \App\Models\Usuario::where('correo', $email)->first();
+                $brokerName = 'usuarios';
+            }
 
             if (!$user) {
                 return back()->with('error', 'Usuario no encontrado.');
@@ -40,7 +46,7 @@ class CodeVerificationController extends Controller
 
             // Generate standard password reset token
             /** @var \Illuminate\Auth\Passwords\PasswordBroker $broker */
-            $broker = Password::broker('superadmins');
+            $broker = Password::broker($brokerName);
             $token = $broker->createToken($user);
 
             // Clear the code

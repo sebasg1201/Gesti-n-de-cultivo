@@ -23,6 +23,7 @@
     {{-- FOOTER (se repite) --}}
     @include('layouts.footer')
 
+    <script src="{{ asset('js/validation.js') }}"></script>
 </body>
 
 </html>
