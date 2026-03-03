@@ -4,7 +4,7 @@
 
     <div class="space-y-6">
 
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+        <div class=" flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
             <div>
                 <h1 class="text-3xl font-extrabold text-green-800 tracking-tight">
                     Gestión de <span
@@ -15,11 +15,11 @@
 
             <div class="flex items-center gap-3 w-full md:w-auto">
                 <button onclick="openExcelModal()" class="flex-1 md:flex-none h-11
-                   border border-emerald-200 hover:border-emerald-600
-                   text-emerald-700 hover:bg-emerald-50
-                   px-6 rounded-xl text-sm font-bold
-                   flex items-center justify-center gap-2
-                   transition-all duration-300">
+                                           border border-emerald-200 hover:border-emerald-600
+                                           text-emerald-700 hover:bg-emerald-50
+                                           px-6 rounded-xl text-sm font-bold
+                                           flex items-center justify-center gap-2
+                                           transition-all duration-300">
 
                     <svg class="w-5 h-5 transition-transform group-hover:-translate-y-1" fill="none" stroke="currentColor"
                         viewBox="0 0 24 24">
@@ -31,13 +31,13 @@
 
                 <!-- BOTÓN NUEVA EMPRESA -->
                 <button onclick="openCreateModal()" class="flex-1 md:flex-none h-11
-                   bg-gradient-to-r from-[#34d399] via-[#22c55e] to-[#16a34a]
-                   hover:from-[#22c55e] hover:via-[#16a34a] hover:to-[#15803d]
-                   text-white
-                   px-6 rounded-xl text-sm font-bold
-                   flex items-center justify-center gap-2
-                   shadow-md
-                   transition-all duration-300">
+                                           bg-gradient-to-r from-[#34d399] via-[#22c55e] to-[#16a34a]
+                                           hover:from-[#22c55e] hover:via-[#16a34a] hover:to-[#15803d]
+                                           text-white
+                                           px-6 rounded-xl text-sm font-bold
+                                           flex items-center justify-center gap-2
+                                           shadow-md
+                                           transition-all duration-300">
 
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
@@ -54,7 +54,7 @@
             <!-- LEFT PANEL: COMPANIES TABLE (2 cols) -->
             <div class="lg:col-span-2 space-y-6">
                 <div
-                    class="bg-white rounded-2xl shadow-sm border border-gray-200/60 overflow-hidden transition-all hover:shadow-md">
+                    class="bg-gray-50 rounded-2xl shadow-sm border border-gray-200/60 overflow-hidden transition-all hover:shadow-md">
 
                     <div class="p-6 border-b border-gray-100 bg-gradient-to-r from-white to-gray-50/50">
                         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
@@ -85,45 +85,49 @@
                             <!-- 🔥 CONTENEDOR DERECHO -->
                             <div class="flex flex-wrap items-center gap-2 w-full md:w-auto md:ml-auto">
 
-    <!-- BUSCADOR -->
-    <form action="{{ route('SuperAdmin.index') }}" method="GET"
-        class="relative group flex-1 min-w-[180px]">
+                                <!-- BUSCADOR -->
+                                <form action="{{ route('SuperAdmin.index') }}" method="GET"
+                                    class="relative group flex-1 min-w-[180px]">
 
-        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <svg class="h-4 w-4 text-slate-400 group-focus-within:text-emerald-500 transition-colors"
-                fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-        </div>
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <svg class="h-4 w-4 text-slate-400 group-focus-within:text-emerald-500 transition-colors"
+                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                        </svg>
+                                    </div>
 
-        <input type="search" name="search" value="{{ request('search') }}"
-            class="w-full pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 placeholder-slate-400 focus:ring-4 focus:ring-emerald-50 focus:border-emerald-500 outline-none"
-            placeholder="Empresa o NIT...">
+                                    <input type="search" name="search" value="{{ request('search') }}"
+                                        class="w-full pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 placeholder-slate-400 focus:ring-4 focus:ring-emerald-50 focus:border-emerald-500 outline-none"
+                                        placeholder="Empresa o NIT...">
 
-    </form>
+                                </form>
 
-    <!-- SELECT -->
-    <div class="relative min-w-[140px]">
-        <select name="status" onchange="this.form.submit()"
-            class="w-full appearance-none bg-white border border-slate-200 text-slate-700 text-sm font-semibold rounded-xl pl-3 pr-8 py-2 focus:ring-4 focus:ring-emerald-50 focus:border-emerald-500 outline-none cursor-pointer">
+                                <!-- SELECT -->
+                                <div class="relative min-w-[140px]">
+                                    <select name="status" onchange="this.form.submit()"
+                                        class="w-full appearance-none bg-white border border-slate-200 text-slate-700 text-sm font-semibold rounded-xl pl-3 pr-8 py-2 focus:ring-4 focus:ring-emerald-50 focus:border-emerald-500 outline-none cursor-pointer">
 
-            <option value="">Todas</option>
-            <option value="pendiente" {{ request('status') == 'pendiente' ? 'selected' : '' }}>Pendientes</option>
-            <option value="activa" {{ request('status') == 'activa' ? 'selected' : '' }}>Activas</option>
-            <option value="bloqueada" {{ request('status') == 'bloqueada' ? 'selected' : '' }}>Bloqueadas</option>
-        </select>
+                                        <option value="">Todas</option>
+                                        <option value="pendiente" {{ request('status') == 'pendiente' ? 'selected' : '' }}>
+                                            Pendientes</option>
+                                        <option value="activa" {{ request('status') == 'activa' ? 'selected' : '' }}>Activas
+                                        </option>
+                                        <option value="bloqueada" {{ request('status') == 'bloqueada' ? 'selected' : '' }}>
+                                            Bloqueadas</option>
+                                    </select>
 
-        <!-- Flecha -->
-        <div class="pointer-events-none absolute inset-y-0 right-2 flex items-center text-slate-400">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M6 9l6 6 6-6" />
-            </svg>
-        </div>
-    </div>
+                                    <!-- Flecha -->
+                                    <div
+                                        class="pointer-events-none absolute inset-y-0 right-2 flex items-center text-slate-400">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M6 9l6 6 6-6" />
+                                        </svg>
+                                    </div>
+                                </div>
 
-</div>
+                            </div>
 
                         </div>
                     </div>
