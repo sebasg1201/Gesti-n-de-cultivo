@@ -1,101 +1,112 @@
 @extends('layouts.barra_lateral')
 @section('content')
 
-    <div class="max-w-3xl mx-auto bg-white shadow-xl rounded-2xl p-8 border border-gray-100">
+<div class="max-w-3xl mx-auto bg-white shadow-[0_20px_60px_rgba(0,0,0,0.07)] rounded-[3rem] p-10 border border-slate-50 relative overflow-hidden">
 
-        {{-- TITULO --}}
-        <h2 class="text-2xl font-bold text-gray-700 mb-6 flex items-center gap-2">
+    {{-- Decoración abstracta de edición --}}
+    <div class="absolute top-0 right-0 w-32 h-32 bg-amber-50 rounded-full -mr-16 -mt-16 opacity-60 blur-2xl"></div>
 
-            {{-- Icono editar --}}
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-green-600" fill="none" viewBox="0 0 24 24"
-                stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M11 5h2M12 20h9M16.5 3.5l4 4L7 21H3v-4L16.5 3.5z" />
-            </svg>
-
-            Editar Plan de Licencia
-        </h2>
-
-        {{-- ERRORES --}}
-        @if ($errors->any())
-            <div class="bg-red-100 border border-red-300 text-red-700 p-4 rounded-lg mb-5">
-                <ul class="space-y-1">
-                    @foreach ($errors->all() as $error)
-                        <li>• {{ $error }}</li>
-                    @endforeach
-                </ul>
+    {{-- CABECERA DEL EDITOR --}}
+    <div class="relative mb-12">
+        <div class="flex items-center gap-5">
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center text-white shadow-lg shadow-green-200 ring-4 ring-green-50">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5h2M12 20h9M16.5 3.5l4 4L7 21H3v-4L16.5 3.5z" />
+                </svg>
             </div>
-        @endif
-
-        <form action="{{ route('licencias.update', $licencia->id_tipo_licencia) }}" method="POST"
-            class="space-y-5 validate-form">
-            @csrf
-            @method('PUT')
-
-            {{-- Nombre --}}
             <div>
-                <label class="block text-gray-600 font-medium mb-2">Nombre</label>
-                <input type="text" name="nombre_licencia" value="{{ $licencia->nombre_licencia }}"
-                    class="w-full border border-gray-300 rounded-xl px-4 py-2 focus:ring-2 focus:ring-green-300 focus:outline-none transition"
-                    required>
+                <span class="text-[10px] font-black text-green-600 uppercase tracking-[0.3em]">Modo Editor</span>
+                <h2 class="text-3xl font-black text-green-800 tracking-tighter">Editar Plan : <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-green-500">{{ $licencia->nombre_licencia }}</span></h2>
+            </div>
+        </div>
+    </div>
+
+    {{-- GESTIÓN DE ERRORES --}}
+    @if ($errors->any())
+    <div class="bg-rose-50 border-l-4 border-rose-500 p-6 rounded-2xl mb-8 animate-shake">
+        <div class="flex items-center gap-3 text-rose-800 font-bold mb-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+            </svg>
+            Atención requerida
+        </div>
+        <ul class="space-y-1 ml-8">
+            @foreach ($errors->all() as $error)
+            <li class="text-rose-600 text-sm font-medium list-disc">{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+    @endif
+
+    <form action="{{ route('licencias.update', $licencia->id_tipo_licencia) }}" method="POST" class="space-y-8 validate-form">
+        @csrf
+        @method('PUT')
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {{-- Nombre del Plan --}}
+            <div class="space-y-2">
+                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Identificador del Plan</label>
+                <div class="relative group">
+                    <input type="text" name="nombre_licencia" value="{{ $licencia->nombre_licencia }}"
+                        class="w-full bg-slate-50 border-2 border-slate-50 rounded-2xl px-5 py-4 text-slate-700 font-bold focus:bg-white focus:border-amber-500 focus:ring-4 focus:ring-amber-50 outline-none transition-all shadow-sm group-hover:border-slate-200"
+                        placeholder="Nombre comercial" required>
+                </div>
             </div>
 
             {{-- Tiempo --}}
-            <div>
-                <label class="block text-gray-600 font-medium mb-2">Tiempo</label>
-                <input type="text" name="tiempo" value="{{ $licencia->tiempo }}"
-                    class="w-full border border-gray-300 rounded-xl px-4 py-2 focus:ring-2 focus:ring-green-300 focus:outline-none transition"
-                    required>
+            <div class="space-y-2">
+                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Periodo de Vigencia</label>
+                <div class="relative group">
+                    <input type="text" name="tiempo" value="{{ $licencia->tiempo }}"
+                        class="w-full bg-slate-50 border-2 border-slate-50 rounded-2xl px-5 py-4 text-slate-700 font-bold focus:bg-white focus:border-amber-500 focus:ring-4 focus:ring-amber-50 outline-none transition-all shadow-sm group-hover:border-slate-200"
+                        placeholder="Ej: 365 días" required>
+                </div>
             </div>
+        </div>
 
-            {{-- Descripción --}}
-            <div>
-                <label class="block text-gray-600 font-medium mb-2">Descripción</label>
-                <textarea name="descripcion" rows="3"
-                    class="w-full border border-gray-300 rounded-xl px-4 py-2 focus:ring-2 focus:ring-green-300 focus:outline-none transition">{{ $licencia->descripcion }}</textarea>
-            </div>
+        {{-- Descripción --}}
+        <div class="space-y-2">
+            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Especificaciones Técnicas</label>
+            <textarea name="descripcion" rows="4"
+                class="w-full bg-slate-50 border-2 border-slate-50 rounded-3xl px-6 py-4 text-slate-700 font-medium focus:bg-white focus:border-amber-500 focus:ring-4 focus:ring-amber-50 outline-none transition-all shadow-sm resize-none group-hover:border-slate-200"
+                placeholder="¿Qué incluye este plan?">{{ $licencia->descripcion }}</textarea>
+        </div>
 
-            {{-- Precio --}}
-            <div>
-                <label class="block text-gray-600 font-medium mb-2">Precio</label>
+        {{-- Precio --}}
+        <div class="space-y-2">
+            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Costo de Suscripción</label>
+            <div class="relative group max-w-xs">
+                <div class="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
+                    <span class="text-green-600 font-black text-xl">$</span>
+                </div>
                 <input type="number" name="precio" value="{{ $licencia->precio }}"
-                    class="w-full border border-gray-300 rounded-xl px-4 py-2 focus:ring-2 focus:ring-green-300 focus:outline-none transition"
+                    class="w-full bg-slate-50 border-2 border-slate-50 rounded-2xl pl-12 pr-6 py-5 text-2xl font-black text-slate-800 focus:bg-white focus:border-amber-500 focus:ring-4 focus:ring-amber-50 outline-none transition-all shadow-sm"
                     required>
             </div>
+        </div>
 
-            {{-- BOTONES --}}
-            <div class="flex justify-between items-center pt-4">
+        {{-- ACCIONES --}}
+        <div class="flex flex-col sm:flex-row items-center gap-4 pt-8 border-t border-slate-50">
 
-                {{-- VOLVER --}}
-                <a href="{{ route('licencias.index') }}"
-                    class="flex items-center gap-2 bg-gray-400 hover:bg-gray-500 text-white px-5 py-2 rounded-lg shadow transition duration-300">
+            {{-- BOTÓN VOLVER --}}
+            <a href="{{ route('licencias.index') }}"
+                class="w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-4 text-slate-400 font-bold hover:text-slate-600 transition-colors uppercase text-[11px] tracking-widest">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7" />
+                </svg>
+                Descartar cambios
+            </a>
 
-                    {{-- Icono flecha --}}
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                    </svg>
-
-                    Volver
-                </a>
-
-                {{-- ACTUALIZAR --}}
-                <button type="submit"
-                    class="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg shadow-md transition duration-300 cursor-pointer">
-
-                    {{-- Icono guardar --}}
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                    </svg>
-
-                    Actualizar Plan
-                </button>
-
-            </div>
-
-        </form>
-
-    </div>
+            {{-- BOTÓN ACTUALIZAR --}}
+            <button type="submit"
+                class="w-full sm:flex-1 group relative flex items-center justify-center gap-3 bg-gradient-to-r from-[#34d399] via-[#22c55e] to-[#16a34a] hover:from-[#22c55e] hover:via-[#16a34a] hover:to-[#15803d] text-white font-black py-5 rounded-2xl shadow-xl shadow-emerald-900/10 transition-all transform active:scale-95 uppercase tracking-[0.2em] text-xs cursor-pointer">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-transform group-hover:scale-110" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                </svg>
+                Confirmar Actualización
+            </button>
+        </div>
+    </form>
+</div>
 
 @endsection

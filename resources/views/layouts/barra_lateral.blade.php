@@ -29,12 +29,12 @@
             <nav class="flex-1 px-4 py-6 space-y-2">
 
                 @php
-                    function active($pattern)
-                    {
-                        return request()->routeIs($pattern)
-                            ? 'bg-white/10 text-white shadow-lg border border-white/10'
-                            : 'hover:bg-white/10 hover:text-white';
-                    }
+                function active($pattern)
+                {
+                return request()->routeIs($pattern)
+                ? 'bg-white/10 text-white shadow-lg border border-white/10'
+                : 'hover:bg-white/10 hover:text-white';
+                }
                 @endphp
 
                 <a href="{{ route('reportes.index') }}"
@@ -66,7 +66,7 @@
                 </a>
 
                 @php
-                    $nuevasSolicitudes = \App\Models\SolicitudCompra::where('id_estado', 1)->count();
+                $nuevasSolicitudes = \App\Models\SolicitudCompra::where('id_estado', 1)->count();
                 @endphp
                 <a href="{{ route('solicitudes.index') }}"
                     class="group flex justify-between items-center px-4 py-3 rounded-xl transition-all duration-200 {{ active('solicitudes.*') }}">
@@ -77,9 +77,9 @@
                         <span class="font-medium">Solicitudes</span>
                     </div>
                     @if($nuevasSolicitudes > 0 && !request()->routeIs('solicitudes.*'))
-                        <span class="bg-green-500 text-white text-xs font-bold px-2 py-0.5 rounded-full shadow-md">
-                            {{ $nuevasSolicitudes }}
-                        </span>
+                    <span class="bg-green-500 text-white text-xs font-bold px-2 py-0.5 rounded-full shadow-md">
+                        {{ $nuevasSolicitudes }}
+                    </span>
                     @endif
                 </a>
 
@@ -223,6 +223,28 @@
 
             </header>
 
+            <style>
+                @layer utilities {
+                    @keyframes loadingBar {
+                        0% {
+                            transform: translateX(-100%);
+                        }
+
+                        50% {
+                            transform: translateX(30%);
+                        }
+
+                        100% {
+                            transform: translateX(100%);
+                        }
+                    }
+
+                    .animate-loading-bar {
+                        animation: loadingBar 1.5s ease-in-out infinite;
+                    }
+                }
+            </style>
+
 
 
 
@@ -265,12 +287,14 @@
     </script>
     <script src="{{ asset('js/form-validation.js') }}"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            document.querySelectorAll('.auto-dismiss').forEach(function (el) {
-                setTimeout(function () {
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.auto-dismiss').forEach(function(el) {
+                setTimeout(function() {
                     el.style.transition = 'opacity 0.6s ease';
                     el.style.opacity = '0';
-                    setTimeout(function () { el.remove(); }, 600);
+                    setTimeout(function() {
+                        el.remove();
+                    }, 600);
                 }, 10000);
             });
         });

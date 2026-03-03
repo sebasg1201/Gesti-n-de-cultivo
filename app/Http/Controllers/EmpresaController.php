@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Empresa;
 use App\Models\Estado;
 use App\Models\TipoLicencia;
+use App\Models\Usuario;
 use Illuminate\Http\Request;
 
 class EmpresaController extends Controller
@@ -34,7 +35,7 @@ class EmpresaController extends Controller
             }
         }
 
-        $empresas = $query->paginate(3);
+        $empresas = $query->paginate(7);
 
         // Calculate stats
         $stats = [
@@ -46,7 +47,17 @@ class EmpresaController extends Controller
         $allEmpresas = Empresa::select('id_empresa', 'nombre_empresa')->get();
         $tiposLicencia = TipoLicencia::all();
 
-        return view('SuperAdmin.index', compact('empresas', 'stats', 'allEmpresas', 'tiposLicencia'));
+        // Empresas activas sin administrador asignado
+        $nitsConAdmin = Usuario::whereNotNull('id_empresa')
+            ->where('id_tipo_usuario', 2)
+            ->pluck('id_empresa');
+        $empresasParaAdmin = Empresa::where('id_estado', 3)
+            ->whereNotIn('id_empresa', $nitsConAdmin)
+            ->select('id_empresa', 'nombre_empresa')
+            ->orderBy('nombre_empresa')
+            ->get();
+
+        return view('SuperAdmin.index', compact('empresas', 'stats', 'allEmpresas', 'tiposLicencia', 'empresasParaAdmin'));
     }
 
     public function update(Request $request, $id)
@@ -180,20 +191,38 @@ class EmpresaController extends Controller
         $field = $request->input('field');
         $value = $request->input('value');
         $excludeId = $request->input('id_excluir'); // Para actualizaciones
+        $table = $request->input('table', 'empresas'); // Por defecto 'empresas'
 
-        // Mapeo selectivo por seguridad
-        $camposPermitidos = ['id_empresa', 'nombre_empresa', 'cedula_repre', 'telefono', 'correo'];
-        if (!in_array($field, $camposPermitidos)) {
-            return response()->json(['exists' => false]);
+        if ($table === 'usuarios') {
+            // Mapeo selectivo para usuarios
+            $camposPermitidosUsuarios = ['documento', 'correo', 'telefono']; // Asumiendo los campos en la DB
+
+            // Mapeo de campos del form al de la DB usuario
+            $dbField = $field;
+            if ($field === 'cedula_repre' || $field === 'admin_documento') $dbField = 'documento';
+
+            if (!in_array($dbField, $camposPermitidosUsuarios)) {
+                return response()->json(['exists' => false]);
+            }
+
+            $query = \App\Models\Usuario::where($dbField, $value);
+            if ($excludeId) {
+                $query->where('id_usuario', '!=', $excludeId);
+            }
+            $exists = $query->exists();
+        } else {
+            // Mapeo selectivo para empresas
+            $camposPermitidosEmpresas = ['id_empresa', 'nombre_empresa', 'cedula_repre', 'telefono', 'correo'];
+            if (!in_array($field, $camposPermitidosEmpresas)) {
+                return response()->json(['exists' => false]);
+            }
+
+            $query = Empresa::where($field, $value);
+            if ($excludeId) {
+                $query->where('id_empresa', '!=', $excludeId);
+            }
+            $exists = $query->exists();
         }
-
-        $query = Empresa::where($field, $value);
-
-        if ($excludeId) {
-            $query->where('id_empresa', '!=', $excludeId);
-        }
-
-        $exists = $query->exists();
 
         return response()->json([
             'exists' => $exists,

@@ -92,7 +92,6 @@ class SolicitudCompraController extends Controller
 
             // Reactivar FK checks
             DB::statement('SET FOREIGN_KEY_CHECKS=1');
-
         } catch (\Exception $e) {
             DB::statement('SET FOREIGN_KEY_CHECKS=1'); // Siempre reactivar
             return redirect()->back()->with('error', 'Error al eliminar: ' . $e->getMessage());
@@ -207,6 +206,7 @@ class SolicitudCompraController extends Controller
                 'Empresa',
                 'NIT',
                 'Representante Legal',
+                'Cédula Representante',
                 'Correo Electrónico',
                 'Teléfono',
                 'Plan Solicitado',
@@ -224,6 +224,7 @@ class SolicitudCompraController extends Controller
                     $empresa->nombre_empresa ?? 'N/A',
                     $sol->id_empresa,
                     $empresa->nombre_repre_legal ?? 'N/A',
+                    $empresa->cedula_repre ?? 'N/A',
                     $empresa->correo ?? 'N/A',
                     $empresa->telefono ?? 'N/A',
                     $sol->tipoLicencia->nombre_licencia ?? 'N/A',

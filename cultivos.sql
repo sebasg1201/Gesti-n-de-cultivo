@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 26-02-2026 a las 19:54:29
+-- Tiempo de generación: 02-03-2026 a las 02:43:52
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -38,7 +38,6 @@ CREATE TABLE `cache` (
 --
 
 INSERT INTO `cache` (`key`, `value`, `expiration`) VALUES
-('agrotech-cache-password_reset_code_didierreyes003@gmail.com', 'i:707596;', 1772057537),
 ('laravel-cache-password_reset_code_bastobrayan246@gmail.com', 'i:342369;', 1771258013),
 ('laravel-cache-password_reset_code_reyesz2803@gmail.com', 'i:728743;', 1770953137);
 
@@ -150,8 +149,10 @@ CREATE TABLE `empresa` (
 --
 
 INSERT INTO `empresa` (`id_empresa`, `nombre_empresa`, `nombre_repre_legal`, `cedula_repre`, `telefono`, `correo`, `direccion`, `fecha_creacion`, `id_estado`) VALUES
-('1212355444', 'Medellin', 'Yuber', 1110465231, '3022609743', 'yuber@gmail.com', 'MzN Casa# 1 Zona 4', '2026-02-26 13:13:35', 1),
-('9880912400', 'AgroTech', 'johan', 1110495788, '3103527239', 'johsn@gmail.com', 'MzN Casa# 1 Picaleña', '2026-02-26 13:10:52', 1);
+('103455657789', 'Colombia', 'Sebas Alvarez', 1006511653, '3103524334', 'sombrahdepaz76@gmail.com', 'MzN Casa 1 El_Pedregal', '2026-02-25 23:20:02', 3),
+('411234141412', 'Agro-Valle', 'didier reyes', 1004546565, '2123141434', 'juansuaza1528@gmail.com', 'MzN Casa 1 El_Pedregal', '2026-02-25 23:20:54', 3),
+('834324234', 'Huila construye', 'Sebastian Rodriguez', 1034334234, '3203242424', 'david@gmail.com', 'Carrera 10 # 20-32', '2026-02-27 01:05:52', 3),
+('876767657', 'Agro Huila', 'Sebas Martinez', 1032342344, '3223243434', 'sombrahdepaz@gmail.com', 'CALLE 23 # 34-32', '2026-03-01 19:50:43', 3);
 
 -- --------------------------------------------------------
 
@@ -172,7 +173,7 @@ INSERT INTO `estado` (`id_estado`, `nombre_estado`) VALUES
 (1, 'pendiente'),
 (2, 'bloqueada'),
 (3, 'activa'),
-(5, 'visto');
+(5, 'aprobada');
 
 -- --------------------------------------------------------
 
@@ -353,9 +354,8 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('dCvmXQhrCC2XVHcSNR7bgJFYeeOaReILaIk9Ju9J', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiM3M4WWZicWZDdWdIMGVMVEVYcGNwd3d4bFo4ZGZ0akNJN2tLMHVZNSI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6NDA6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9zb2xpY2l0dWQtY29tcHJhLzMiO3M6NToicm91dGUiO3M6MTY6InNvbGljaXR1ZC5jcmVhdGUiO319', 1772128167),
-('gNZauQF7VnIpxYgTAAuSoyFriM3sZkHk6qOrKR7K', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiTjFRZk1HN3pzc0RveE02QjBMcW81dTVCQVVBN0U1Sm56UFhEb2tsSCI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6NDA6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9zb2xpY2l0dWQtY29tcHJhLzMiO3M6NToicm91dGUiO3M6MTY6InNvbGljaXR1ZC5jcmVhdGUiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX19', 1772128230),
-('YaaXChRSjPIvjocGkqgWpGOEDIle73nPmoDcs7X1', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiVmRSbjJubExLbkljeHlZNG5YQ0tsUFdOMnVKTDE1Wjc1T3NPWDdyUiI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6NDA6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9zb2xpY2l0dWQtY29tcHJhLzIiO3M6NToicm91dGUiO3M6MTY6InNvbGljaXR1ZC5jcmVhdGUiO319', 1772131942);
+('DlPFgr6PH118SzpuWSSvJCmEIJUMFwjtoT2aZks2', 1006511657, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiSzBzeWdKUlVkNWNySW1xTmNJcFpGYnROZWF4cWN4UVFCa0tlUFZ1USI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzI6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9TdXBlckFkbWluIjtzOjU6InJvdXRlIjtzOjE2OiJTdXBlckFkbWluLmluZGV4Ijt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo1NzoibG9naW5fc3VwZXJhZG1pbl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjEwMDY1MTE2NTc7fQ==', 1772415769),
+('kdrpYMmlhENVv6hK6PGKyNBRlUqvqJyIts6tM2fF', 1006511657, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiMHpPN20xSThEMW93dm9zejAxMmQyYXhoQzc3SFRNOU5Jb284N2NMRiI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMC9TdXBlckFkbWluIjtzOjU6InJvdXRlIjtzOjE2OiJTdXBlckFkbWluLmluZGV4Ijt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czozOiJ1cmwiO2E6MTp7czo4OiJpbnRlbmRlZCI7czozMjoiaHR0cDovL2xvY2FsaG9zdDo4MDAwL1N1cGVyQWRtaW4iO31zOjU3OiJsb2dpbl9zdXBlcmFkbWluXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MTAwNjUxMTY1Nzt9', 1772412011);
 
 -- --------------------------------------------------------
 
@@ -378,8 +378,10 @@ CREATE TABLE `solicitud_compra` (
 --
 
 INSERT INTO `solicitud_compra` (`id_solicitud`, `id_empresa`, `comprobante_pago`, `id_tipo_licencia`, `id_estado`, `fecha_solicitud`, `fecha_revision`) VALUES
-(23, '9880912400', 'comprobantes/1772129452.png', 3, 1, '2026-02-26 13:10:52', NULL),
-(24, '1212355444', 'comprobantes/1772129615.png', 3, 5, '2026-02-26 13:13:35', '2026-02-26 13:41:53');
+(23, '103455657789', 'comprobantes/1772079602.png', 2, 5, '2026-02-25 23:20:02', '2026-02-25 23:21:55'),
+(24, '411234141412', 'comprobantes/1772079654.png', 1, 5, '2026-02-25 23:20:54', '2026-02-25 23:27:15'),
+(25, '834324234', NULL, 3, 5, '2026-02-27 01:05:52', '2026-02-27 01:05:52'),
+(26, '876767657', NULL, 2, 5, '2026-03-01 19:50:43', '2026-03-01 19:50:43');
 
 -- --------------------------------------------------------
 
@@ -408,8 +410,8 @@ CREATE TABLE `super_admin` (
 
 INSERT INTO `super_admin` (`id_super_admin`, `nombre`, `usuario`, `correo`, `password_hash`, `id_estado`, `ultimo_login`, `fecha_creacion`, `fecha_actualizacion`, `remember_token`, `created_at`, `updated_at`) VALUES
 (121121222, 'Sebastian Garcia', 'sebas', 'sebastiangarciaalvarez123@gmail.com', '$2y$12$YoWr9W3m9DTOdIq9lQl5v.UUywmt.V8dWL.E6.BS8jtcLy9xzzoPG', 3, NULL, '2026-02-17 02:13:13', '2026-02-17 02:13:13', NULL, NULL, NULL),
-(1006511657, 'Brayan Basto', 'Stevan', 'bastobrayan246@gmail.com', '$2y$12$Qh0yFs6SfldIhbRSw2gfguC8OukaAtB1KnOBga5XY/dKXi.2070X.', 3, NULL, '2026-02-10 03:51:59', '2026-02-26 18:51:59', 'VP7FUMElK9VcB6bLVQKms0wO9szkni2vUklcHmbTAlnp9yP3smsLlM6KwNIE', NULL, '2026-02-13 02:07:57'),
-(1110495789, 'Didier Reyes', 'dires123', 'didierreyes003@gmail.com', '$2y$12$Fsbgdwa0dvw0ifmmHXSg7.mPbKWgnPQEcHMOz.6fKhHxgy8kUaOaS', 3, NULL, '2026-02-09 19:43:33', '2026-02-26 18:50:49', '4RNgNmM077wU9EGpn138v8hZluXWltW3FERqj1F2DrNB5dI4EXN32X8rwZk4', NULL, '2026-02-25 21:01:21');
+(1006511657, 'Brayan Basto', 'Stevan', 'bastobrayan246@gmail.com', '$2y$12$Qh0yFs6SfldIhbRSw2gfguC8OukaAtB1KnOBga5XY/dKXi.2070X.', 3, NULL, '2026-02-10 03:51:59', '2026-02-27 06:08:38', '0CqKzqc1RBu5ZsV0zQxXdhO0KXCywQsdg9CjSTg6YJtNAOrMw3P8ID8DgRa5', NULL, '2026-02-13 02:07:57'),
+(1110495789, 'Didier Reyes', 'dires123', 'didierreyes003@gmail.com', '$2y$12$CKXs7SUsNzetpilgVTY19udZyQIjCesQsJb5QL0y1mR4nhZmvnkvq', 3, NULL, '2026-02-09 19:43:33', '2026-02-25 18:19:55', 'E1xAHunpYj7x7v7U75M5jrWqbDB6UrlaXZ1wBBpZiI0TjAaZ7LGtpatrtJvu', NULL, '2026-02-24 18:07:11');
 
 -- --------------------------------------------------------
 
@@ -540,6 +542,14 @@ CREATE TABLE `usuario` (
   `id_empresa` varchar(14) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `usuario`
+--
+
+INSERT INTO `usuario` (`documento`, `imagen`, `nombre`, `telefono`, `correo`, `contrasena`, `id_tipo_usuario`, `id_estado`, `id_empresa`) VALUES
+(1006511653, 'usuarios/TPn5OuzBFcUMBMTb27MDcG8KrMQg0nUiQau4ExxO.png', 'Sebas Alvarez', '3103524334', 'sombrahdepaz76@gmail.com', '$2y$12$ShO2KxmULq2i87gGWluCyeAy/C5fhUJt26ceeK7Nt/BKxRxQl/DRa', 1, 3, '103455657789'),
+(1034345454, 'usuarios/ohtjEMXYnEtIKQV6uXFyhSx4giqPArWo1ABQmYEk.jpg', 'Javier Gonza', '3223243434', 'bastobrayan246@gmail.com', '$2y$12$IXfjWMnY6Ul6L6B0trEKK.6obRkullnh7zI5H/sAO3/nHgpsQWjqq', 1, 3, '876767657');
+
 -- --------------------------------------------------------
 
 --
@@ -560,7 +570,10 @@ CREATE TABLE `venta_licencias` (
 --
 
 INSERT INTO `venta_licencias` (`id_key`, `fecha_inicio`, `observacione`, `id_tipo_licencia`, `id_empresa`, `id_estado`) VALUES
-('VvTVwUiRpGhPor', '2026-02-26 13:42:06', 'Asignada desde Dashboard', 3, '1212355444', 1);
+('CHscjT93rnsFdj', '2026-03-01 20:04:57', 'Asignada desde Dashboard', 2, '876767657', 3),
+('DNPSVVPFfsJOUx', '2026-02-25 23:22:48', 'Asignada desde Dashboard', 2, '103455657789', 3),
+('GTJ8xgFGPHkNZn', '2026-02-25 23:27:54', 'Asignada desde Dashboard', 1, '411234141412', 3),
+('Q3zZJYBvH2PISC', '2026-03-01 20:29:45', 'Asignada desde Dashboard', 3, '834324234', 3);
 
 --
 -- Índices para tablas volcadas
@@ -882,7 +895,7 @@ ALTER TABLE `riego`
 -- AUTO_INCREMENT de la tabla `solicitud_compra`
 --
 ALTER TABLE `solicitud_compra`
-  MODIFY `id_solicitud` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id_solicitud` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT de la tabla `super_admin`
@@ -906,7 +919,7 @@ ALTER TABLE `tipo_cosecha`
 -- AUTO_INCREMENT de la tabla `tipo_licencia`
 --
 ALTER TABLE `tipo_licencia`
-  MODIFY `id_tipo_licencia` int(14) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_tipo_licencia` int(14) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `tipo_riego`

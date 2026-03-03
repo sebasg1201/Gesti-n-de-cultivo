@@ -75,6 +75,14 @@ document.addEventListener('DOMContentLoaded', () => {
 let debounceTimers = {};
 
 const triggerAsyncValidation = (input, onComplete) => {
+    // Si el campo tiene data-no-async="true", no hacemos la petición al servidor (por ejemplo, al buscar empresa ya existe en DB pero no queremos que arroje "Ya registrado")
+    if (input.dataset.noAsync === 'true') {
+        input.dataset.asyncValid = 'true';
+        updateUI(input, true, '');
+        if (onComplete) onComplete();
+        return;
+    }
+
     const type = getFieldType(input);
     const fieldMapping = {
         'nit': 'id_empresa',
@@ -90,14 +98,16 @@ const triggerAsyncValidation = (input, onComplete) => {
     const value = input.value.trim();
     if (value.length < 3) return; // Mínimo de caracteres para disparar búsqueda asíncrona
 
+    const table = input.dataset.table || 'empresas';
+
     if (debounceTimers[fieldName]) clearTimeout(debounceTimers[fieldName]);
     debounceTimers[fieldName] = setTimeout(async () => {
-        await checkUniquenessFromServer(input, fieldName, value);
+        await checkUniquenessFromServer(input, fieldName, value, table);
         if (onComplete) onComplete();
     }, 500);
 };
 
-const checkUniquenessFromServer = async (input, field, value) => {
+const checkUniquenessFromServer = async (input, field, value, table) => {
     input.dataset.asyncChecking = 'true';
     updateUI(input, 'checking', 'Verificando disponibilidad...');
 
@@ -110,7 +120,7 @@ const checkUniquenessFromServer = async (input, field, value) => {
                 'X-CSRF-TOKEN': token,
                 'Accept': 'application/json'
             },
-            body: JSON.stringify({ field, value })
+            body: JSON.stringify({ field, value, table })
         });
 
         if (!response.ok) {
@@ -192,10 +202,11 @@ function getFieldType(input) {
         return 'password';
     }
 
-    // Nombre solo letras (representante legal)
+    // Nombre solo letras (representante legal / administrador)
     if (n === 'nombre_repre_legal' || id === 'nombre_repre_legal'
         || n.includes('representante') || id.includes('representante')
-        || n.includes('repre_legal') || id.includes('repre_legal')) {
+        || n.includes('repre_legal') || id.includes('repre_legal')
+        || n.includes('admin_nombre') || id.includes('admin_nombre')) {
         return 'nombre_repre';
     }
 
@@ -586,24 +597,6 @@ function validateField(input, showUI) {
                     errorMessage = 'La dirección no parece válida.';
                     break;
                 }
-            }
-
-            // 🔹 Regex urbana Colombia
-            const regexUrbana = /^(calle|cl|carrera|cra|avenida|av|transversal|tv|diagonal|dg)\s+\d+[a-zA-Z]?\s*#\s*\d+[a-zA-Z]?\s*-\s*\d+[a-zA-Z]?$/i;
-
-            // 🔹 Regex rural Colombia
-            const regexRural = /^(vereda|finca|corregimiento|sector)\s+[a-zA-Z0-9\s]+$/i;
-
-            // 🔹 Regex kilómetro
-            const regexKm = /^(km|kil[oó]metro)\s*\d+(\s*\+\s*\d+)?(\s*v[ií]a\s+[a-zA-Z0-9\s\-]+)?$/i;
-
-            if (!regexUrbana.test(direccion) &&
-                !regexRural.test(direccion) &&
-                !regexKm.test(direccion)) {
-
-                isValid = false;
-                errorMessage = 'Formato inválido. Ej: "Calle 12 # 34-56", "Vereda San José" o "Km 5 Vía Bogotá".';
-                break;
             }
 
             break;
