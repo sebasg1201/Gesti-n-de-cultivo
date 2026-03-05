@@ -87,14 +87,14 @@ use App\Http\Controllers\Admin\AdminController;
 Route::middleware(['auth:usuario'])->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
     Route::get('/admin/configuracion', [AdminController::class, 'configuracion'])->name('admin.configuracion');
-    
+
     // Rutas para la gestión de licencias del usuario administrador
     Route::get('/admin/licencias', [App\Http\Controllers\Admin\TipoLicenciaController::class, 'index'])->name('admin.licencias.index');
     Route::get('/admin/licencias/contacto', [App\Http\Controllers\Admin\TipoLicenciaController::class, 'contacto'])->name('admin.licencias.contacto');
     Route::post('/admin/licencias/contacto', [App\Http\Controllers\Admin\TipoLicenciaController::class, 'enviarContacto'])->name('admin.licencias.enviar_contacto');
     // Rutas para la gestión de usuarios (Supervisor y Trabajador) de la empresa
     Route::resource('/admin/usuarios', \App\Http\Controllers\Admin\UsuarioEmpresaController::class, ['as' => 'admin']);
-    
+
     // Ruta para asignar trabajo (Fases Programadas)
     Route::get('/admin/usuarios/{usuario}/asignar-trabajo', [\App\Http\Controllers\Admin\UsuarioEmpresaController::class, 'asignarTrabajo'])->name('admin.usuarios.asignar_trabajo');
     Route::post('/admin/usuarios/{usuario}/asignar-trabajo', [\App\Http\Controllers\Admin\UsuarioEmpresaController::class, 'storeTrabajo'])->name('admin.usuarios.store_trabajo');
