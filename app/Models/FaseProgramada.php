@@ -23,7 +23,7 @@ class FaseProgramada extends Model
 
     public function cosecha()
     {
-        return $this->belongsTo(TipoCosecha::class, 'id_cosecha', 'id_tipo_cosecha');
+        return $this->belongsTo(Cosecha::class, 'id_cosecha', 'id_cosecha');
     }
 
     public function usuario()

@@ -91,4 +91,12 @@ class TipoLicenciaController extends Controller
         return redirect()->route('admin.licencias.index')
             ->with('success', 'El mensaje ha sido enviado a Agrotech. Te contactaremos pronto.');
     }
+
+    public function licenciaExpirada()
+    {
+        $usuario = Auth::guard('usuario')->user();
+        $fechaExpiracion = session('fecha_expiracion', 'Desconocida');
+
+        return view('auth.licencia-expirada', compact('usuario', 'fechaExpiracion'));
+    }
 }

@@ -28,9 +28,15 @@ class ResetPasswordController extends Controller
         }
 
         $user = \App\Models\SuperAdmin::where('correo', $email)->first();
+        $brokerName = 'superadmins';
+
+        if (!$user) {
+            $user = \App\Models\Usuario::where('correo', $email)->first();
+            $brokerName = 'usuarios';
+        }
 
         /** @var \Illuminate\Auth\Passwords\PasswordBroker $broker */
-        $broker = \Illuminate\Support\Facades\Password::broker('superadmins');
+        $broker = \Illuminate\Support\Facades\Password::broker($brokerName);
 
         if (!$user || !$broker->tokenExists($user, $token)) {
             return redirect()->route('password.request')->withErrors(['correo' => 'El enlace de restablecimiento ya ha sido utilizado, ha expirado, o es inválido. Por favor, solicita uno nuevo.']);
@@ -71,7 +77,7 @@ class ResetPasswordController extends Controller
 
         $user = \App\Models\SuperAdmin::where('correo', $request->correo)->first();
         $brokerName = 'superadmins';
-        
+
         if (!$user) {
             $user = \App\Models\Usuario::where('correo', $request->correo)->first();
             $brokerName = 'usuarios';
@@ -91,7 +97,7 @@ class ResetPasswordController extends Controller
         );
 
         return $status == Password::PASSWORD_RESET
-            ? redirect()->route('login')->with('status', __($status))
+            ? redirect()->route('usuario.login')->with('status', __($status))
             : back()->withErrors(['correo' => __($status)]);
     }
 

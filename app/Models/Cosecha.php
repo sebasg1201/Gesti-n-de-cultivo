@@ -16,6 +16,12 @@ class Cosecha extends Model
     protected $fillable = [
         'Cantidad',
         'fecha_inicio',
-        'fecha_fin'
+        'fecha_fin',
+        'id_tipo_cosecha'
     ];
+
+    public function tipoCosecha()
+    {
+        return $this->belongsTo(TipoCosecha::class, 'id_tipo_cosecha', 'id_tipo_cosecha');
+    }
 }

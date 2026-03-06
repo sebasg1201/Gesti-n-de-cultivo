@@ -144,7 +144,7 @@ class UsuarioEmpresaController extends Controller
             ->firstOrFail();
 
         // Obtener solo las cosechas
-        $cosechas = \App\Models\TipoCosecha::with(['semilla', 'riego'])->get();
+        $cosechas = \App\Models\Cosecha::with(['tipoCosecha.semilla', 'tipoCosecha.riego'])->get();
 
         // Fases actualmente asignadas al usuario
         $fases = FaseProgramada::where('documento', $documento)->with('cosecha')->get();
@@ -162,7 +162,7 @@ class UsuarioEmpresaController extends Controller
             ->firstOrFail();
 
         $request->validate([
-            'id_cosecha' => 'required|exists:tipo_cosecha,id_tipo_cosecha',
+            'id_cosecha' => 'required|exists:cosecha,id_cosecha',
             'descripcion' => 'required|string',
             'estado' => 'required|string|max:50',
             'fecha_programada' => 'required|date'

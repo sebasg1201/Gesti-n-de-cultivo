@@ -37,6 +37,10 @@ class UsuarioLoginController extends Controller
                 ]);
             }
 
+            if (Auth::guard('usuario')->user()->id_tipo_usuario == 3) {
+                return redirect()->route('trabajador.dashboard');
+            }
+
             return redirect()->route('admin.dashboard');
         }
 
