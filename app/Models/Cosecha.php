@@ -17,7 +17,8 @@ class Cosecha extends Model
         'Cantidad',
         'fecha_inicio',
         'fecha_fin',
-        'id_tipo_cosecha'
+        'id_tipo_cosecha',
+        'id_empresa'
     ];
 
     public function tipoCosecha()

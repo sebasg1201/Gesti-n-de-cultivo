@@ -19,7 +19,7 @@ class TipoCosecha extends Model
 
     public $timestamps = false;
 
-    
+
     public function semilla()
     {
         return $this->belongsTo(TipoSemilla::class, 'id_semilla');
@@ -36,8 +36,8 @@ class TipoCosecha extends Model
         'tiempo',
         'terreno',
         'id_semilla',
-        'id_tipo_riego'
-
+        'id_tipo_riego',
+        'id_empresa'
     ];
 }
 

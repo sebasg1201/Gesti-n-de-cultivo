@@ -14,7 +14,8 @@ class TipoRiego extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'tipo_riego'
+        'tipo_riego',
+        'id_empresa'
     ];
 
     public function riegos()

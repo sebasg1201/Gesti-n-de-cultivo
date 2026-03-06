@@ -8,6 +8,7 @@ use App\Models\Usuario;
 use App\Models\TipoUsuario;
 use App\Models\Cosecha;
 use App\Models\FaseProgramada;
+use App\Models\TipoCosecha;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -17,7 +18,7 @@ class UsuarioEmpresaController extends Controller
     public function index()
     {
         $admin = Auth::guard('usuario')->user();
-        
+
         // Obtener usuarios de la misma empresa que sean Supervisor (2) o Trabajador (3)
         $usuarios = Usuario::where('id_empresa', $admin->id_empresa)
             ->whereIn('id_tipo_usuario', [2, 3])
@@ -70,7 +71,7 @@ class UsuarioEmpresaController extends Controller
     public function edit($documento)
     {
         $admin = Auth::guard('usuario')->user();
-        
+
         $usuario = Usuario::where('documento', $documento)
             ->where('id_empresa', $admin->id_empresa)
             ->whereIn('id_tipo_usuario', [2, 3])
@@ -84,7 +85,7 @@ class UsuarioEmpresaController extends Controller
     public function update(Request $request, $documento)
     {
         $admin = Auth::guard('usuario')->user();
-        
+
         $usuario = Usuario::where('documento', $documento)
             ->where('id_empresa', $admin->id_empresa)
             ->firstOrFail();
@@ -119,7 +120,7 @@ class UsuarioEmpresaController extends Controller
     public function destroy($documento)
     {
         $admin = Auth::guard('usuario')->user();
-        
+
         $usuario = Usuario::where('documento', $documento)
             ->where('id_empresa', $admin->id_empresa)
             ->whereIn('id_tipo_usuario', [2, 3])
@@ -137,14 +138,16 @@ class UsuarioEmpresaController extends Controller
     public function asignarTrabajo($documento)
     {
         $admin = Auth::guard('usuario')->user();
-        
+
         $usuario = Usuario::where('documento', $documento)
             ->where('id_empresa', $admin->id_empresa)
             ->whereIn('id_tipo_usuario', [2, 3])
             ->firstOrFail();
 
-        // Obtener solo las cosechas
-        $cosechas = \App\Models\Cosecha::with(['tipoCosecha.semilla', 'tipoCosecha.riego'])->get();
+        // Obtener solo las cosechas de la empresa del admin
+        $cosechas = \App\Models\Cosecha::with(['tipoCosecha.semilla', 'tipoCosecha.riego'])
+            ->where('id_empresa', $admin->id_empresa)
+            ->get();
 
         // Fases actualmente asignadas al usuario
         $fases = FaseProgramada::where('documento', $documento)->with('cosecha')->get();
@@ -155,7 +158,7 @@ class UsuarioEmpresaController extends Controller
     public function storeTrabajo(Request $request, $documento)
     {
         $admin = Auth::guard('usuario')->user();
-        
+
         // Verificar que el usuario pertenece a la empresa
         $usuario = Usuario::where('documento', $documento)
             ->where('id_empresa', $admin->id_empresa)

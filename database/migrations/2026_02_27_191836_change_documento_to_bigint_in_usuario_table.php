@@ -4,25 +4,35 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
     public function up(): void
     {
-        Schema::table('fases_programadas', function (Blueprint $table) {
-            $table->dropForeign('fases_programadas_ibfk_1');
-        });
+        // Safely drop FK if it exists (may already be gone)
+        try {
+            Schema::table('fases_programadas', function (Blueprint $table) {
+                $table->dropForeign('fases_programadas_ibfk_1');
+            });
+        } catch (\Exception $e) {
+            // FK doesn't exist, skip
+        }
 
-        Schema::table('usuario', function (Blueprint $table) {
-            $table->bigInteger('documento')->change();
-        });
+        // Change documento column type in usuario if needed
+        if (Schema::hasColumn('usuario', 'documento')) {
+            Schema::table('usuario', function (Blueprint $table) {
+                $table->bigInteger('documento')->change();
+            });
+        }
 
-        Schema::table('fases_programadas', function (Blueprint $table) {
-            $table->bigInteger('id_usuario')->change();
-            $table->foreign('id_usuario')->references('documento')->on('usuario');
-        });
+        // Only act on id_usuario if that column exists (it may be named 'documento')
+        if (Schema::hasColumn('fases_programadas', 'id_usuario')) {
+            Schema::table('fases_programadas', function (Blueprint $table) {
+                $table->bigInteger('id_usuario')->change();
+                $table->foreign('id_usuario')->references('documento')->on('usuario');
+            });
+        }
     }
 
     public function down(): void

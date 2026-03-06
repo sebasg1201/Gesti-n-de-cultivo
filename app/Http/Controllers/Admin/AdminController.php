@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
@@ -13,9 +14,9 @@ class AdminController extends Controller
         $id_empresa = $usuario->id_empresa;
 
         $stats = [
-            'cosechas' => \App\Models\TipoCosecha::count(),
-            'riegos'   => \App\Models\TipoRiego::count(),
-            'semillas' => \App\Models\TipoSemilla::count(),
+            'cosechas' => \App\Models\TipoCosecha::where('id_empresa', $id_empresa)->count(),
+            'riegos' => \App\Models\TipoRiego::where('id_empresa', $id_empresa)->count(),
+            'semillas' => \App\Models\TipoSemilla::where('id_empresa', $id_empresa)->count(),
             'usuarios' => \App\Models\Usuario::where('id_empresa', $id_empresa)->count(),
         ];
 
@@ -43,7 +44,7 @@ class AdminController extends Controller
     public function trabajadorInicio()
     {
         $usuario = auth()->guard('usuario')->user();
-        
+
         // Cambiar automáticamente estado Pendiente a En Progreso
         \App\Models\FaseProgramada::where('documento', $usuario->documento)
             ->where('estado', 'Pendiente')
@@ -61,11 +62,11 @@ class AdminController extends Controller
     public function finalizarTarea($id)
     {
         $usuario = auth()->guard('usuario')->user();
-        
+
         $tarea = \App\Models\FaseProgramada::where('id_fase', $id)
             ->where('documento', $usuario->documento)
             ->firstOrFail();
-            
+
         $tarea->update(['estado' => 'Realizado']);
 
         return redirect()->route('trabajador.dashboard')->with('success', 'Tarea marcada como finalizada correctamente.');

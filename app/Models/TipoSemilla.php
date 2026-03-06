@@ -14,6 +14,7 @@ class TipoSemilla extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'Tipo_semilla'
+        'Tipo_semilla',
+        'id_empresa'
     ];
 }

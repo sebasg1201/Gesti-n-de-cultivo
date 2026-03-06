@@ -4,23 +4,33 @@ namespace App\Http\Controllers;
 
 use App\Models\TipoSemilla;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TipoSemillaController extends Controller
 {
+    private function getEmpresaId()
+    {
+        return Auth::guard('usuario')->user()->id_empresa;
+    }
+
     public function index()
     {
-        $tipoSemillas = TipoSemilla::paginate(10);
+        $tipoSemillas = TipoSemilla::where('id_empresa', $this->getEmpresaId())
+            ->paginate(10);
         return view('admin.tipo_semillas.index', compact('tipoSemillas'));
     }
 
     public function store(Request $request)
     {
+        $idEmpresa = $this->getEmpresaId();
+
         $request->validate([
             'Tipo_semilla' => [
                 'required',
                 'string',
                 'max:255',
-                'unique:tipo_semilla,Tipo_semilla',
+                \Illuminate\Validation\Rule::unique('tipo_semilla', 'Tipo_semilla')
+                    ->where('id_empresa', $idEmpresa),
                 'regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/u'
             ],
         ], [
@@ -29,6 +39,7 @@ class TipoSemillaController extends Controller
 
         TipoSemilla::create([
             'Tipo_semilla' => $request->Tipo_semilla,
+            'id_empresa' => $idEmpresa,
         ]);
 
         return redirect()->route('tipo_semillas.index')
@@ -37,13 +48,20 @@ class TipoSemillaController extends Controller
 
     public function update(Request $request, $id)
     {
+        $idEmpresa = $this->getEmpresaId();
+        $tipoSemilla = TipoSemilla::where('id_semilla', $id)
+            ->where('id_empresa', $idEmpresa)
+            ->firstOrFail();
+
         try {
             $request->validate([
                 'Tipo_semilla' => [
                     'required',
                     'string',
                     'max:255',
-                    'unique:tipo_semilla,Tipo_semilla,' . $id . ',id_semilla',
+                    \Illuminate\Validation\Rule::unique('tipo_semilla', 'Tipo_semilla')
+                        ->ignore($id, 'id_semilla')
+                        ->where('id_empresa', $idEmpresa),
                     'regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/u'
                 ],
             ], [
@@ -57,8 +75,6 @@ class TipoSemillaController extends Controller
                 ->with('edit_action', route('tipo_semillas.update', $id));
         }
 
-        $tipoSemilla = TipoSemilla::findOrFail($id);
-
         $tipoSemilla->update([
             'Tipo_semilla' => $request->Tipo_semilla,
         ]);
@@ -69,7 +85,10 @@ class TipoSemillaController extends Controller
 
     public function destroy($id)
     {
-        $tipoSemilla = TipoSemilla::findOrFail($id);
+        $tipoSemilla = TipoSemilla::where('id_semilla', $id)
+            ->where('id_empresa', $this->getEmpresaId())
+            ->firstOrFail();
+
         $tipoSemilla->delete();
 
         return redirect()->route('tipo_semillas.index')
