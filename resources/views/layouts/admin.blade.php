@@ -95,6 +95,7 @@
                     <span class="font-medium whitespace-nowrap">Inicio</span>
                 </a>
 
+                @if(auth()->guard('usuario')->user()->id_tipo_usuario != 3)
                 <!-- ACORDEÓN GESTIÓN Y CONTROL -->
                 <div class="space-y-1">
                     <button onclick="toggleAccordion('gestion-menu')" 
@@ -146,6 +147,7 @@
                     <div class="w-1.5 h-6 bg-emerald-300 rounded-full opacity-0 group-hover:opacity-100 transition-all"></div>
                     <span class="font-medium whitespace-nowrap">Mi Plan de Licencia</span>
                 </a>
+                @endif
 
             </nav>
 

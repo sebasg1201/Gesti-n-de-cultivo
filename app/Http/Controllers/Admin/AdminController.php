@@ -39,4 +39,35 @@ class AdminController extends Controller
     {
         return view('admin.configuracion.index');
     }
+
+    public function trabajadorInicio()
+    {
+        $usuario = auth()->guard('usuario')->user();
+        
+        // Cambiar automáticamente estado Pendiente a En Progreso
+        \App\Models\FaseProgramada::where('documento', $usuario->documento)
+            ->where('estado', 'Pendiente')
+            ->update(['estado' => 'En Progreso']);
+
+        // Obtener tareas ordenadas por fecha
+        $tareas = \App\Models\FaseProgramada::with(['cosecha.tipoCosecha.semilla'])
+            ->where('documento', $usuario->documento)
+            ->orderBy('fecha_programada', 'asc')
+            ->get();
+
+        return view('admin.trabajador_dashboard', compact('tareas'));
+    }
+
+    public function finalizarTarea($id)
+    {
+        $usuario = auth()->guard('usuario')->user();
+        
+        $tarea = \App\Models\FaseProgramada::where('id_fase', $id)
+            ->where('documento', $usuario->documento)
+            ->firstOrFail();
+            
+        $tarea->update(['estado' => 'Realizado']);
+
+        return redirect()->route('trabajador.dashboard')->with('success', 'Tarea marcada como finalizada correctamente.');
+    }
 }

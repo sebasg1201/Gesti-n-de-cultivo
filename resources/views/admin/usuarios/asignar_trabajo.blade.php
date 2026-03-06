@@ -59,8 +59,8 @@
                                 class="w-full px-3 py-2.5 rounded-lg border @error('id_cosecha') border-red-500 @else border-gray-300 @enderror focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 bg-gray-50 text-sm">
                             <option value="">-- Selecciona una Cosecha --</option>
                             @foreach($cosechas as $cosecha)
-                                <option value="{{ $cosecha->id_tipo_cosecha }}" {{ old('id_cosecha') == $cosecha->id_tipo_cosecha ? 'selected' : '' }}>
-                                    Lote #{{ $cosecha->id_tipo_cosecha }} - {{ $cosecha->semilla ? $cosecha->semilla->Tipo_semilla : 'Sin semilla' }} (Tiempo: {{ $cosecha->tiempo }} días)
+                                <option value="{{ $cosecha->id_cosecha }}" {{ old('id_cosecha') == $cosecha->id_cosecha ? 'selected' : '' }}>
+                                    Lote #{{ $cosecha->id_cosecha }} - {{ optional(optional($cosecha->tipoCosecha)->semilla)->Tipo_semilla ?? 'Sin semilla' }} (Tiempo: {{ optional($cosecha->tipoCosecha)->tiempo ?? 0 }} días)
                                 </option>
                             @endforeach
                         </select>
@@ -76,13 +76,9 @@
                     </div>
 
                     <div>
-                        <label for="estado" class="block text-sm font-bold text-gray-700 mb-1">Estado <span class="text-red-500">*</span></label>
-                        <select name="estado" id="estado" required
-                                class="w-full px-3 py-2.5 rounded-lg border @error('estado') border-red-500 @else border-gray-300 @enderror focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 bg-gray-50 text-sm">
-                            <option value="Pendiente" {{ old('estado') == 'Pendiente' ? 'selected' : '' }}>Pendiente</option>
-                            <option value="En Progreso" {{ old('estado') == 'En Progreso' ? 'selected' : '' }}>En Progreso</option>
-                        </select>
-                        @error('estado') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                        <label for="estado" class="block text-sm font-bold text-gray-700 mb-1">Estado Predeterminado <span class="text-red-500">*</span></label>
+                        <input type="text" name="estado" id="estado" value="Pendiente" readonly
+                               class="w-full px-3 py-2.5 rounded-lg border border-gray-300 bg-gray-100 text-sm text-gray-500 cursor-not-allowed">
                     </div>
 
                     <div>
@@ -137,7 +133,7 @@
                                 </span>
                             </div>
                             <p class="text-sm text-gray-500 font-medium bg-gray-50 inline-block px-2 py-1 rounded">
-                                Lote Cosecha: #{{ $fase->id_cosecha }} {{ $fase->cosecha && $fase->cosecha->semilla ? '- ' . $fase->cosecha->semilla->nombre : '' }}
+                                Lote Cosecha: #{{ $fase->id_cosecha }} {{ optional(optional(optional($fase->cosecha)->tipoCosecha)->semilla)->Tipo_semilla ? '- ' . $fase->cosecha->tipoCosecha->semilla->Tipo_semilla : '' }}
                             </p>
                             
                             <p class="text-gray-700 mt-3">{{ $fase->descripcion }}</p>

@@ -84,9 +84,17 @@ Route::middleware(['auth:superadmin'])->group(function () {
 // Protected Routes (Usuario - Admin)
 use App\Http\Controllers\Admin\AdminController;
 
-Route::middleware(['auth:usuario'])->group(function () {
+Route::middleware(['auth:usuario', 'check.license'])->group(function () {
+    // Ruta para licencia expirada (el middleware la excluye de la verificación pero exige auth:usuario)
+    Route::get('/licencia-expirada', [App\Http\Controllers\Admin\TipoLicenciaController::class, 'licenciaExpirada'])->name('licencia.expirada');
+
+    // Dashboard original (Admin/Supervisor)
     Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
     Route::get('/admin/configuracion', [AdminController::class, 'configuracion'])->name('admin.configuracion');
+
+    // Rutas para trabajador
+    Route::get('/trabajador/dashboard', [AdminController::class, 'trabajadorInicio'])->name('trabajador.dashboard');
+    Route::post('/trabajador/tareas/{id}/finalizar', [AdminController::class, 'finalizarTarea'])->name('trabajador.tareas.finalizar');
 
     // Rutas para la gestión de licencias del usuario administrador
     Route::get('/admin/licencias', [App\Http\Controllers\Admin\TipoLicenciaController::class, 'index'])->name('admin.licencias.index');
