@@ -69,7 +69,7 @@
             </form>
 
             <div class="mt-6 text-center">
-                <a href="{{ route('login') }}" class="text-sm font-medium text-green-600 hover:text-green-500">
+                <a href="{{ route('usuario.login') }}" class="text-sm font-medium text-green-600 hover:text-green-500">
                     Volver al inicio de sesión
                 </a>
             </div>

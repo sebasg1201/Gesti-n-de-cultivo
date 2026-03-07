@@ -56,7 +56,9 @@
                             <label for="nombre_empresa" class="block text-sm font-medium text-gray-700">Nombre
                                 Empresa</label>
                             <input type="text" name="nombre_empresa" id="nombre_empresa" required
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm p-3 border">
+                                value="{{ old('nombre_empresa') }}"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm p-3 border @error('nombre_empresa') border-red-500 @enderror">
+                            @error('nombre_empresa') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                         </div>
 
                         <!-- Cedula Representante -->
@@ -64,7 +66,9 @@
                             <label for="nombre_empresa" class="block text-sm font-medium text-gray-700">Cedula
                                 Representante</label>
                             <input type="number" name="cedula_repre" id="cedula_repre" required
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm p-3 border">
+                                value="{{ old('cedula_repre') }}"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm p-3 border @error('cedula_repre') border-red-500 @enderror">
+                            @error('cedula_repre') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                         </div>
 
                         <!-- Representante Legal -->
@@ -72,28 +76,36 @@
                             <label for="nombre_repre_legal" class="block text-sm font-medium text-gray-700">Representante
                                 Legal</label>
                             <input type="text" name="nombre_repre_legal" id="nombre_repre_legal" required
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm p-3 border">
+                                value="{{ old('nombre_repre_legal') }}"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm p-3 border @error('nombre_repre_legal') border-red-500 @enderror">
+                            @error('nombre_repre_legal') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                         </div>
 
                         <!-- Teléfono -->
                         <div>
                             <label for="telefono" class="block text-sm font-medium text-gray-700">Teléfono</label>
                             <input type="text" name="telefono" id="telefono" required
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm p-3 border">
+                                value="{{ old('telefono') }}"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm p-3 border @error('telefono') border-red-500 @enderror">
+                            @error('telefono') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                         </div>
 
                         <!-- Correo -->
                         <div>
                             <label for="correo" class="block text-sm font-medium text-gray-700">Correo Electrónico</label>
                             <input type="email" name="correo" id="correo" required
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm p-3 border">
+                                value="{{ old('correo') }}"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm p-3 border @error('correo') border-red-500 @enderror">
+                            @error('correo') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                         </div>
 
                         <!-- Dirección -->
                         <div>
                             <label for="direccion" class="block text-sm font-medium text-gray-700">Dirección</label>
                             <input type="text" name="direccion" id="direccion" required
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm p-3 border">
+                                value="{{ old('direccion') }}"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm p-3 border @error('direccion') border-red-500 @enderror">
+                            @error('direccion') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                         </div>
 
                         <!-- Comprobante de Pago -->

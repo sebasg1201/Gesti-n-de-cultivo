@@ -14,7 +14,7 @@ A continuación, encontrarás tus credenciales de acceso para ingresar a la plat
 
 En el archivo adjunto encontrarás un **PDF** con un resumen de tu cuenta y el plan de licencia asociado a la empresa.
 
-@component('mail::button', ['url' => route('login')])
+@component('mail::button', ['url' => route('usuario.login')])
 Iniciar Sesión
 @endcomponent
 

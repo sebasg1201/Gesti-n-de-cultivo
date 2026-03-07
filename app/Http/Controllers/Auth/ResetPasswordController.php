@@ -28,9 +28,15 @@ class ResetPasswordController extends Controller
         }
 
         $user = \App\Models\SuperAdmin::where('correo', $email)->first();
+        $brokerName = 'superadmins';
+
+        if (!$user) {
+            $user = \App\Models\Usuario::where('correo', $email)->first();
+            $brokerName = 'usuarios';
+        }
 
         /** @var \Illuminate\Auth\Passwords\PasswordBroker $broker */
-        $broker = \Illuminate\Support\Facades\Password::broker('superadmins');
+        $broker = \Illuminate\Support\Facades\Password::broker($brokerName);
 
         if (!$user || !$broker->tokenExists($user, $token)) {
             return redirect()->route('password.request')->withErrors(['correo' => 'El enlace de restablecimiento ya ha sido utilizado, ha expirado, o es inválido. Por favor, solicita uno nuevo.']);
@@ -69,8 +75,20 @@ class ResetPasswordController extends Controller
             'password.confirmed' => 'Las contraseñas no coinciden.',
         ]);
 
-        // Broker 'superadmins'
-        $status = Password::broker('superadmins')->reset(
+        $user = \App\Models\SuperAdmin::where('correo', $request->correo)->first();
+        $brokerName = 'superadmins';
+
+        if (!$user) {
+            $user = \App\Models\Usuario::where('correo', $request->correo)->first();
+            $brokerName = 'usuarios';
+        }
+
+        if (!$user) {
+            return back()->withErrors(['correo' => 'No podemos encontrar un usuario con ese correo electrónico.']);
+        }
+
+        // Broker 
+        $status = Password::broker($brokerName)->reset(
             $request->only('correo', 'password', 'password_confirmation', 'token'),
             function ($user, $password) {
                 // Here we define how to update the password
@@ -79,7 +97,7 @@ class ResetPasswordController extends Controller
         );
 
         return $status == Password::PASSWORD_RESET
-            ? redirect()->route('login')->with('status', __($status))
+            ? redirect()->route('usuario.login')->with('status', __($status))
             : back()->withErrors(['correo' => __($status)]);
     }
 
@@ -90,7 +108,11 @@ class ResetPasswordController extends Controller
      */
     protected function resetPassword(Authenticatable $user, $password)
     {
-        $user->password_hash = Hash::make($password);
+        if ($user instanceof \App\Models\SuperAdmin) {
+            $user->password_hash = Hash::make($password);
+        } else {
+            $user->contrasena = Hash::make($password);
+        }
         $user->setRememberToken(Str::random(60));
         $user->save();
 
