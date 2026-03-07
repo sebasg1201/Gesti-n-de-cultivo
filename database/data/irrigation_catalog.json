@@ -1,0 +1,32 @@
+[
+    {
+        "nombre": "Goteo",
+        "impacto_dias": -3,
+        "descripcion_tecnica": "Suministro lento y directo a las raíces, ahorro máximo de agua."
+    },
+    {
+        "nombre": "Aspersión",
+        "impacto_dias": 0,
+        "descripcion_tecnica": "Simulación de lluvia, ideal para grandes superficies."
+    },
+    {
+        "nombre": "Micro-aspersión",
+        "impacto_dias": -1,
+        "descripcion_tecnica": "Riego fino para cultivos delicados o invernaderos."
+    },
+    {
+        "nombre": "Gravedad (Surcos)",
+        "impacto_dias": 2,
+        "descripcion_tecnica": "Distribución por canales, uso tradicional en terrenos planos."
+    },
+    {
+        "nombre": "Manual (Manguera/Balde)",
+        "impacto_dias": 3,
+        "descripcion_tecnica": "Aplicación directa controlada por el operario, menos eficiente."
+    },
+    {
+        "nombre": "Hidropónico",
+        "impacto_dias": -7,
+        "descripcion_tecnica": "Circulación de solución nutritiva en agua, crecimiento acelerado."
+    }
+]

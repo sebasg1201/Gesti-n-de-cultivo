@@ -33,6 +33,7 @@ Route::post('super-admin-logout', [LoginController::class, 'logout'])->name('log
 
 // Authentication Routes (Usuario - Admin/User)
 use App\Http\Controllers\Auth\UsuarioLoginController;
+
 Route::get('login', [UsuarioLoginController::class, 'showLoginForm'])->name('usuario.login');
 Route::post('login', [UsuarioLoginController::class, 'login'])->name('usuario.login.submit');
 Route::post('logout', [UsuarioLoginController::class, 'logout'])->name('usuario.logout');
@@ -111,11 +112,23 @@ Route::middleware(['auth:usuario', 'check.license'])->group(function () {
 Route::get('/', [HomeController::class, 'index'])->name('index_welcome');
 
 
-Route::resource('tipo_cosechas', TipoCosechaController::class);
+Route::resource('tipo_cosechas', TipoCosechaController::class)->except(['index', 'show', 'create', 'store', 'edit', 'update', 'destroy']);
+
 use App\Http\Controllers\TipoSemillaController;
+
+Route::get('tipo_semillas/catalog', [TipoSemillaController::class, 'catalog'])->name('tipo_semillas.catalog');
 Route::resource('tipo_semillas', TipoSemillaController::class);
+
 use App\Http\Controllers\TipoRiegoController;
+
+Route::get('tipo_riegos/catalog', [TipoRiegoController::class, 'catalog'])->name('tipo_riegos.catalog');
 Route::resource('tipo_riegos', TipoRiegoController::class);
 
+use App\Http\Controllers\TipoSueloController;
+
+Route::get('tipo_suelos/catalog', [TipoSueloController::class, 'catalog'])->name('tipo_suelos.catalog');
+Route::resource('tipo_suelos', TipoSueloController::class);
+
 use App\Http\Controllers\EstadoController;
+
 Route::resource('estados', EstadoController::class);

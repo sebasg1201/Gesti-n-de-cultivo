@@ -18,9 +18,9 @@
 </div>
 
 <div id="report-content" class="space-y-6 p-6" style="background-color: #ffffff; color: #1f2937;">
-    
+
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        
+
         <!-- Bar Chart -->
         <div class="p-6 rounded-3xl shadow-lg border flex flex-col justify-center items-center" style="background-color: #ffffff; border-color: #f3f4f6;">
             <h4 class="text-lg font-bold mb-4 self-start" style="color: #374151;">Registros por Categoría</h4>
@@ -114,8 +114,8 @@
                 backgroundColor: [
                     'rgba(16, 185, 129, 0.8)', // Emerald
                     'rgba(59, 130, 246, 0.8)', // Blue
-                    'rgba(234, 179, 8, 0.8)',  // Yellow
-                    'rgba(168, 85, 247, 0.8)'  // Purple
+                    'rgba(234, 179, 8, 0.8)', // Yellow
+                    'rgba(168, 85, 247, 0.8)' // Purple
                 ],
                 borderRadius: 8,
                 borderWidth: 0
@@ -124,10 +124,23 @@
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
             scales: {
-                y: { beginAtZero: true, grid: { borderDash: [5, 5] } },
-                x: { grid: { display: false } }
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        borderDash: [5, 5]
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    }
+                }
             }
         }
     });
@@ -143,8 +156,8 @@
                 backgroundColor: [
                     'rgba(16, 185, 129, 0.8)', // Emerald
                     'rgba(59, 130, 246, 0.8)', // Blue
-                    'rgba(234, 179, 8, 0.8)',  // Yellow
-                    'rgba(168, 85, 247, 0.8)'  // Purple
+                    'rgba(234, 179, 8, 0.8)', // Yellow
+                    'rgba(168, 85, 247, 0.8)' // Purple
                 ],
                 borderWidth: 2,
                 borderColor: '#ffffff'
@@ -155,7 +168,9 @@
             maintainAspectRatio: false,
             cutout: '65%',
             plugins: {
-                legend: { position: 'right' }
+                legend: {
+                    position: 'right'
+                }
             }
         }
     });
@@ -170,8 +185,8 @@
                 data: [dataStats.pendientes, dataStats.enProceso, dataStats.realizados],
                 backgroundColor: [
                     'rgba(156, 163, 175, 0.8)', // Gray for pending
-                    'rgba(249, 115, 22, 0.8)',  // Orange for in-progress
-                    'rgba(34, 197, 94, 0.8)'    // Green for completed
+                    'rgba(249, 115, 22, 0.8)', // Orange for in-progress
+                    'rgba(34, 197, 94, 0.8)' // Green for completed
                 ],
                 borderWidth: 2,
                 borderColor: '#ffffff'
@@ -182,7 +197,9 @@
             maintainAspectRatio: false,
             cutout: '65%',
             plugins: {
-                legend: { position: 'right' }
+                legend: {
+                    position: 'right'
+                }
             }
         }
     });
@@ -191,18 +208,21 @@
         // Guardar estilos originales para restaurar después
         const element = document.getElementById('report-content');
         const originalStyle = element.getAttribute('style') || '';
-        
+
         // Forzar un ancho fijo y layout de columna única para el PDF
         // Esto evita que las gráficas se encimen al capturar desde pantallas anchas
         element.style.width = '800px';
         element.style.flexDirection = 'column';
         element.style.display = 'flex';
-        
+
         // Forzar a los grids internos a ser de una sola columna también
         const grids = element.querySelectorAll('.grid');
         const originalGrids = [];
         grids.forEach(grid => {
-            originalGrids.push({el: grid, className: grid.className});
+            originalGrids.push({
+                el: grid,
+                className: grid.className
+            });
             grid.classList.remove('md:grid-cols-2', 'md:grid-cols-3', 'md:grid-cols-4', 'grid-cols-2');
             grid.classList.add('grid-cols-1');
         });
@@ -211,12 +231,12 @@
 
         const button = document.querySelector('button[onclick="downloadReport()"]');
         const originalText = button.innerHTML;
-        
+
         button.innerHTML = 'Generando PDF...';
         button.disabled = true;
 
-        html2canvas(element, { 
-            scale: 2, 
+        html2canvas(element, {
+            scale: 2,
             useCORS: true,
             logging: false,
             width: 800,
@@ -233,15 +253,17 @@
             });
             try {
                 const imgData = canvas.toDataURL('image/jpeg', 1.0);
-                
+
                 // Access jsPDF from the window.jspdf namespace
-                const { jsPDF } = window.jspdf;
-                
+                const {
+                    jsPDF
+                } = window.jspdf;
+
                 // Calculate dimensions to fit content
                 // A4 width is 595.28 pt
                 const imgWidth = 595.28;
                 const imgHeight = (canvas.height * imgWidth) / canvas.width;
-                
+
                 // Create PDF with dynamic height to avoid clipping
                 const pdf = new jsPDF('p', 'pt', [imgWidth, imgHeight]);
 

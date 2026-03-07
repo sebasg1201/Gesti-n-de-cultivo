@@ -1,0 +1,32 @@
+[
+    {
+        "nombre": "Arcilloso",
+        "impacto_dias": 5,
+        "descripcion": "Suelo pesado con alta retención de humedad, pero drenaje lento."
+    },
+    {
+        "nombre": "Arenoso",
+        "impacto_dias": -3,
+        "descripcion": "Drenaje rápido, requiere riego frecuente, acelera ciclo en algunos cultivos."
+    },
+    {
+        "nombre": "Limoso",
+        "impacto_dias": 0,
+        "descripcion": "Suelo fértil con buena retención de nutrientes y humedad equilibrada."
+    },
+    {
+        "nombre": "Franco",
+        "impacto_dias": -1,
+        "descripcion": "Mezcla ideal de arena, limo y arcilla para la mayoría de cultivos."
+    },
+    {
+        "nombre": "Salino",
+        "impacto_dias": 10,
+        "descripcion": "Alta concentración de sales que retrasa el crecimiento vegetal."
+    },
+    {
+        "nombre": "Turba / Orgánico",
+        "impacto_dias": -2,
+        "descripcion": "Extremadamente fértil y rico en materia orgánica."
+    }
+]

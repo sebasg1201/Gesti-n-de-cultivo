@@ -3,68 +3,77 @@
 namespace App\Http\Controllers;
 
 use App\Models\TipoSemilla;
+use App\Models\CatalogoSemilla;
 use Illuminate\Http\Request;
 
 class TipoSemillaController extends Controller
 {
     public function index()
     {
-        $tipoSemillas = TipoSemilla::paginate(10);
+        $id_empresa = auth()->guard('usuario')->user()->id_empresa;
+        $tipoSemillas = TipoSemilla::with('catalogo')
+            ->where('id_empresa', $id_empresa)
+            ->paginate(10);
+
         return view('admin.tipo_semillas.index', compact('tipoSemillas'));
+    }
+
+    public function catalog(Request $request)
+    {
+        $search = $request->get('q');
+        $seeds = CatalogoSemilla::where('nombre', 'LIKE', "%{$search}%")->get();
+        return response()->json($seeds);
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'Tipo_semilla' => [
-                'required',
-                'string',
-                'max:255',
-                'unique:tipo_semilla,Tipo_semilla',
-                'regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/u'
-            ],
-        ], [
-            'Tipo_semilla.regex' => 'El tipo de semilla solo puede contener letras y espacios.'
+            'id_catalogo' => 'required|exists:catalogo_semillas,id',
+            'nombre_semilla' => 'required|string|max:100',
+            'descripcion' => 'nullable|string|max:250',
         ]);
 
+        $catalogItem = CatalogoSemilla::findOrFail($request->id_catalogo);
+        $id_empresa = auth()->guard('usuario')->user()->id_empresa;
+
+        $exists = TipoSemilla::where('id_empresa', $id_empresa)
+            ->where('id_catalogo', $catalogItem->id)
+            ->exists();
+
+        if ($exists) {
+            return redirect()->back()->with('error', 'Esta variedad de semilla ya está registrada en su inventario.');
+        }
+
         TipoSemilla::create([
-            'Tipo_semilla' => $request->Tipo_semilla,
+            'id_empresa' => $id_empresa,
+            'id_catalogo' => $catalogItem->id,
+            'nombre_semilla' => $request->nombre_semilla,
+            'tiempo_base_dias' => $catalogItem->tiempo_base_dias, // PREDETERMINADO
+            'descripcion' => $request->descripcion ?? $catalogItem->descripcion,
+            'rendimiento_promedio' => $catalogItem->rendimiento_promedio, // PREDETERMINADO
         ]);
 
         return redirect()->route('tipo_semillas.index')
-            ->with('success', 'Tipo de semilla creado correctamente');
+            ->with('success', 'Semilla configurada y añadida correctamente.');
     }
 
     public function update(Request $request, $id)
     {
-        try {
-            $request->validate([
-                'Tipo_semilla' => [
-                    'required',
-                    'string',
-                    'max:255',
-                    'unique:tipo_semilla,Tipo_semilla,' . $id . ',id_semilla',
-                    'regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/u'
-                ],
-            ], [
-                'Tipo_semilla.regex' => 'El tipo de semilla solo puede contener letras y espacios.'
-            ]);
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return redirect()->back()
-                ->withErrors($e->validator)
-                ->withInput()
-                ->with('editing', true)
-                ->with('edit_action', route('tipo_semillas.update', $id));
-        }
+        $request->validate([
+            'nombre_semilla' => 'required|string|max:100',
+            'descripcion' => 'required|string|max:250',
+        ]);
 
         $tipoSemilla = TipoSemilla::findOrFail($id);
 
+        // Only allow updating custom name and description
         $tipoSemilla->update([
-            'Tipo_semilla' => $request->Tipo_semilla,
+            'nombre_semilla' => $request->nombre_semilla,
+            'descripcion' => $request->descripcion,
         ]);
 
         return redirect()->route('tipo_semillas.index')
-            ->with('success', 'Tipo de semilla actualizado correctamente');
+            ->with('success', 'Información de la semilla actualizada.');
     }
 
     public function destroy($id)
@@ -73,6 +82,6 @@ class TipoSemillaController extends Controller
         $tipoSemilla->delete();
 
         return redirect()->route('tipo_semillas.index')
-            ->with('success', 'Tipo de semilla eliminado correctamente');
+            ->with('success', 'Semilla eliminada de su catálogo correctamente.');
     }
 }

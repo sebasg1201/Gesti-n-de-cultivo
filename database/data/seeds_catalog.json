@@ -1,0 +1,74 @@
+[
+    {
+        "nombre": "Tomate Chonto",
+        "descripcion": "Variedad de tomate muy resistente, ideal para salsas.",
+        "tiempo_base_dias": 90,
+        "rendimiento_promedio": 12.0
+    },
+    {
+        "nombre": "Café Arábigo",
+        "descripcion": "Variedad premium de café con aroma intenso y acidez equilibrada.",
+        "tiempo_base_dias": 210,
+        "rendimiento_promedio": 1.5
+    },
+    {
+        "nombre": "Maíz Dulce",
+        "descripcion": "Maíz de grano tierno y dulce, ideal para consumo humano directo.",
+        "tiempo_base_dias": 85,
+        "rendimiento_promedio": 4.5
+    },
+    {
+        "nombre": "Cebolla Cabezona",
+        "descripcion": "Bulbo de sabor fuerte, uso esencial en cocina.",
+        "tiempo_base_dias": 120,
+        "rendimiento_promedio": 15.0
+    },
+    {
+        "nombre": "Papa Pastusa",
+        "descripcion": "Variedad de papa de textura harinosa, muy popular en Colombia.",
+        "tiempo_base_dias": 135,
+        "rendimiento_promedio": 25.0
+    },
+    {
+        "nombre": "Papa Criolla",
+        "descripcion": "Papa pequeña y amarilla, ciclo corto y sabor suave.",
+        "tiempo_base_dias": 110,
+        "rendimiento_promedio": 10.0
+    },
+    {
+        "nombre": "Zanahoria",
+        "descripcion": "Raíz naranja rica en carotenos, ciclo productivo estándar.",
+        "tiempo_base_dias": 110,
+        "rendimiento_promedio": 20.0
+    },
+    {
+        "nombre": "Fresa",
+        "descripcion": "Fruta roja pequeña, requiere suelos ácidos y buen riego.",
+        "tiempo_base_dias": 150,
+        "rendimiento_promedio": 0.8
+    },
+    {
+        "nombre": "Cacao Forastero",
+        "descripcion": "Variedad de cacao muy productiva y resistente.",
+        "tiempo_base_dias": 165,
+        "rendimiento_promedio": 1.2
+    },
+    {
+        "nombre": "Plátano Hartón",
+        "descripcion": "Plátano de gran tamaño usado principalmente para cocinar.",
+        "tiempo_base_dias": 360,
+        "rendimiento_promedio": 14.0
+    },
+    {
+        "nombre": "Aguacate Hass",
+        "descripcion": "Variedad de aguacate con piel rugosa y alto contenido de aceite.",
+        "tiempo_base_dias": 240,
+        "rendimiento_promedio": 8.0
+    },
+    {
+        "nombre": "Fríjol Cargamanto",
+        "descripcion": "Leguminosa de grano grande, muy apreciada en la región andina.",
+        "tiempo_base_dias": 140,
+        "rendimiento_promedio": 2.2
+    }
+]
