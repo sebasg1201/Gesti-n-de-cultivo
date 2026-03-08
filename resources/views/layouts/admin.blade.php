@@ -16,10 +16,13 @@
         @media (max-width: 1023px) {
             #sidebar {
                 position: fixed !important;
-                inset: 0 auto 0 0; /* inset-y-0 left-0 */
+                inset: 0 auto 0 0;
+                /* inset-y-0 left-0 */
                 transform: translateX(-100%);
-                width: 18rem; /* w-72 */
+                width: 18rem;
+                /* w-72 */
             }
+
             #sidebar.sidebar-open {
                 transform: translateX(0);
             }
@@ -30,9 +33,11 @@
             #sidebar {
                 position: relative !important;
                 transform: translateX(0);
-                width: 18rem; /* w-72 */
+                width: 18rem;
+                /* w-72 */
                 opacity: 1;
             }
+
             #sidebar.sidebar-collapsed {
                 width: 0 !important;
                 transform: translateX(-100%);
@@ -44,9 +49,11 @@
         .custom-scrollbar::-webkit-scrollbar {
             width: 4px;
         }
+
         .custom-scrollbar::-webkit-scrollbar-track {
             background: rgba(255, 255, 255, 0.05);
         }
+
         .custom-scrollbar::-webkit-scrollbar-thumb {
             background: rgba(255, 255, 255, 0.2);
             border-radius: 10px;
@@ -75,18 +82,18 @@
             <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto custom-scrollbar">
 
                 @php
-                    function active($pattern) {
-                        return request()->routeIs($pattern)
-                            ? 'bg-white/10 text-white shadow-lg border border-white/10'
-                            : 'hover:bg-white/10 hover:text-white';
-                    }
+                function active($pattern) {
+                return request()->routeIs($pattern)
+                ? 'bg-white/10 text-white shadow-lg border border-white/10'
+                : 'hover:bg-white/10 hover:text-white';
+                }
 
-                    $gestionActive = request()->routeIs('tipo_cosechas.*') || 
-                                    request()->routeIs('tipo_riegos.*') || 
-                                    request()->routeIs('tipo_semillas.*') || 
-                                    request()->routeIs('estados.*') || 
-                                    request()->routeIs('admin.usuarios.*') ||
-                                    request()->routeIs('admin.configuracion*');
+                $gestionActive = request()->routeIs('tipo_cosechas.*') ||
+                request()->routeIs('tipo_riegos.*') ||
+                request()->routeIs('tipo_semillas.*') ||
+                request()->routeIs('estados.*') ||
+                request()->routeIs('admin.usuarios.*') ||
+                request()->routeIs('admin.terrenos.*');
                 @endphp
 
                 <a href="{{ route('admin.dashboard') }}"
@@ -98,7 +105,7 @@
                 @if(auth()->guard('usuario')->user()->id_tipo_usuario != 3)
                 <!-- ACORDEÓN GESTIÓN Y CONTROL -->
                 <div class="space-y-1">
-                    <button onclick="toggleAccordion('gestion-menu')" 
+                    <button onclick="toggleAccordion('gestion-menu')"
                         class="w-full group flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 {{ $gestionActive ? 'bg-white/5 text-white' : 'hover:bg-white/10 hover:text-white' }}">
                         <div class="flex items-center gap-3">
                             <div class="w-1.5 h-6 bg-emerald-300 rounded-full {{ $gestionActive ? 'opacity-100' : 'opacity-0' }} group-hover:opacity-100 transition-all"></div>
@@ -110,11 +117,8 @@
                     </button>
 
                     <div id="gestion-menu" class="{{ $gestionActive ? 'block' : 'hidden' }} pl-4 space-y-1 overflow-hidden transition-all duration-300">
-                        
-                        <a href="{{ route('tipo_cosechas.index') }}" class="group flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-200 {{ active('tipo_cosechas.*') }}">
-                            <div class="w-1 h-1 bg-emerald-400 rounded-full shrink-0"></div>
-                            <span class="whitespace-nowrap">Tipos de Cosecha</span>
-                        </a>
+
+
 
                         <a href="{{ route('tipo_riegos.index') }}" class="group flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-200 {{ active('tipo_riegos.*') }}">
                             <div class="w-1 h-1 bg-emerald-400 rounded-full shrink-0"></div>
@@ -124,6 +128,11 @@
                         <a href="{{ route('tipo_semillas.index') }}" class="group flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-200 {{ active('tipo_semillas.*') }}">
                             <div class="w-1 h-1 bg-emerald-400 rounded-full shrink-0"></div>
                             <span class="whitespace-nowrap">Tipos de Semilla</span>
+                        </a>
+
+                        <a href="{{ route('tipo_suelos.index') }}" class="group flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-200 {{ active('tipo_suelos.*') }}">
+                            <div class="w-1 h-1 bg-emerald-400 rounded-full shrink-0"></div>
+                            <span class="whitespace-nowrap">Tipos de Suelo</span>
                         </a>
 
                         <a href="{{ route('estados.index') }}" class="group flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-200 {{ active('estados.*') }}">
@@ -136,9 +145,9 @@
                             <span class="whitespace-nowrap">Gestión de Personal</span>
                         </a>
 
-                        <a href="{{ route('admin.configuracion') }}" class="group flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-200 {{ active('admin.configuracion*') }}">
+                        <a href="{{ route('admin.terrenos.index') }}" class="group flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-200 {{ active('admin.terrenos.*') }}">
                             <div class="w-1 h-1 bg-emerald-400 rounded-full shrink-0"></div>
-                            <span class="whitespace-nowrap">Configuración General</span>
+                            <span class="whitespace-nowrap">Gestión de Terrenos</span>
                         </a>
                     </div>
                 </div>
@@ -175,7 +184,7 @@
                     <!-- IZQUIERDA -->
                     <div class="flex items-center gap-4 lg:gap-8">
 
-                        <button id="sidebar-toggle" onclick="toggleSidebar()" 
+                        <button id="sidebar-toggle" onclick="toggleSidebar()"
                             class="p-3 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/30 z-50">
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24"
                                 stroke="currentColor">
@@ -279,61 +288,62 @@
 
     </div>
 
-<script>
-function toggleSidebar() {
-    const sidebar = document.getElementById("sidebar");
-    const overlay = document.getElementById("sidebar-overlay");
-    const isMobile = window.innerWidth < 1024;
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById("sidebar");
+            const overlay = document.getElementById("sidebar-overlay");
+            const isMobile = window.innerWidth < 1024;
 
-    if (isMobile) {
-        const isOpen = sidebar.classList.toggle("sidebar-open");
-        if (isOpen) {
-            overlay.classList.remove("hidden");
-        } else {
+            if (isMobile) {
+                const isOpen = sidebar.classList.toggle("sidebar-open");
+                if (isOpen) {
+                    overlay.classList.remove("hidden");
+                } else {
+                    overlay.classList.add("hidden");
+                }
+            } else {
+                sidebar.classList.toggle("sidebar-collapsed");
+            }
+
+            // Forzar redimensionado de componentes (como gráficas) tras la transición
+            setTimeout(() => {
+                window.dispatchEvent(new Event('resize'));
+            }, 350);
+        }
+
+        // Cerrar sidebar al hacer clic en el overlay (móvil)
+        function closeSidebar() {
+            const sidebar = document.getElementById("sidebar");
+            const overlay = document.getElementById("sidebar-overlay");
+            sidebar.classList.remove("sidebar-open");
             overlay.classList.add("hidden");
         }
-    } else {
-        sidebar.classList.toggle("sidebar-collapsed");
-    }
 
-    // Forzar redimensionado de componentes (como gráficas) tras la transición
-    setTimeout(() => {
-        window.dispatchEvent(new Event('resize'));
-    }, 350);
-}
+        // Asegurar estado consistente al redimensionar
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 1024) {
+                closeSidebar();
+            }
+        });
 
-// Cerrar sidebar al hacer clic en el overlay (móvil)
-function closeSidebar() {
-    const sidebar = document.getElementById("sidebar");
-    const overlay = document.getElementById("sidebar-overlay");
-    sidebar.classList.remove("sidebar-open");
-    overlay.classList.add("hidden");
-}
+        function toggleAccordion(id) {
+            const menu = document.getElementById(id);
+            const arrow = document.getElementById('arrow-' + id);
 
-// Asegurar estado consistente al redimensionar
-window.addEventListener('resize', () => {
-    if (window.innerWidth >= 1024) {
-        closeSidebar();
-    }
-});
+            if (menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden');
+                menu.classList.add('block');
+                arrow.classList.add('rotate-180');
+            } else {
+                menu.classList.add('hidden');
+                menu.classList.remove('block');
+                arrow.classList.remove('rotate-180');
+            }
+        }
+    </script>
 
-function toggleAccordion(id) {
-    const menu = document.getElementById(id);
-    const arrow = document.getElementById('arrow-' + id);
-    
-    if (menu.classList.contains('hidden')) {
-        menu.classList.remove('hidden');
-        menu.classList.add('block');
-        arrow.classList.add('rotate-180');
-    } else {
-        menu.classList.add('hidden');
-        menu.classList.remove('block');
-        arrow.classList.remove('rotate-180');
-    }
-}
-</script>
-
-@stack('scripts')
+    @stack('scripts')
     <script src="{{ asset('js/validation.js') }}"></script>
 </body>
+
 </html>

@@ -14,8 +14,8 @@ class AdminController extends Controller
         $id_empresa = $usuario->id_empresa;
 
         $stats = [
-            'cosechas' => \App\Models\TipoCosecha::where('id_empresa', $id_empresa)->count(),
-            'riegos' => \App\Models\TipoRiego::where('id_empresa', $id_empresa)->count(),
+            'cosechas' => \App\Models\Cosecha::where('id_empresa', $id_empresa)->count(),
+            'riegos'   => \App\Models\TipoRiego::count(),
             'semillas' => \App\Models\TipoSemilla::where('id_empresa', $id_empresa)->count(),
             'usuarios' => \App\Models\Usuario::where('id_empresa', $id_empresa)->count(),
         ];

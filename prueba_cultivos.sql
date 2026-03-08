@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 06-03-2026 a las 19:20:15
+-- Tiempo de generación: 08-03-2026 a las 02:19:01
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de datos: `cultivos`
+-- Base de datos: `prueba_cultivos`
 --
 
 -- --------------------------------------------------------
@@ -32,14 +32,6 @@ CREATE TABLE `cache` (
   `value` mediumtext NOT NULL,
   `expiration` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Volcado de datos para la tabla `cache`
---
-
-INSERT INTO `cache` (`key`, `value`, `expiration`) VALUES
-('laravel-cache-password_reset_code_bastobrayan246@gmail.com', 'i:342369;', 1771258013),
-('laravel-cache-password_reset_code_reyesz2803@gmail.com', 'i:728743;', 1770953137);
 
 -- --------------------------------------------------------
 
@@ -56,23 +48,113 @@ CREATE TABLE `cache_locks` (
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `catalogo_riegos`
+--
+
+CREATE TABLE `catalogo_riegos` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `nombre` varchar(255) NOT NULL,
+  `impacto_dias` int(11) NOT NULL DEFAULT 0,
+  `descripcion_tecnica` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `catalogo_riegos`
+--
+
+INSERT INTO `catalogo_riegos` (`id`, `nombre`, `impacto_dias`, `descripcion_tecnica`, `created_at`, `updated_at`) VALUES
+(1, 'Goteo', -3, 'Suministro lento y directo a las raíces, ahorro máximo de agua.', NULL, NULL),
+(2, 'Aspersión', 0, 'Simulación de lluvia, ideal para grandes superficies.', NULL, NULL),
+(3, 'Micro-aspersión', -1, 'Riego fino para cultivos delicados o invernaderos.', NULL, NULL),
+(4, 'Gravedad (Surcos)', 2, 'Distribución por canales, uso tradicional en terrenos planos.', NULL, NULL),
+(5, 'Manual (Manguera/Balde)', 3, 'Aplicación directa controlada por el operario, menos eficiente.', NULL, '2026-03-07 19:27:51'),
+(6, 'Hidropónico', -7, 'Circulación de solución nutritiva en agua, crecimiento acelerado.', NULL, '2026-03-07 19:27:51');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `catalogo_semillas`
+--
+
+CREATE TABLE `catalogo_semillas` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `nombre` varchar(255) NOT NULL,
+  `descripcion` text DEFAULT NULL,
+  `tiempo_base_dias` int(11) NOT NULL,
+  `rendimiento_promedio` decimal(8,2) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `catalogo_semillas`
+--
+
+INSERT INTO `catalogo_semillas` (`id`, `nombre`, `descripcion`, `tiempo_base_dias`, `rendimiento_promedio`, `created_at`, `updated_at`) VALUES
+(1, 'Tomate Chonto', 'Variedad de tomate muy resistente, ideal para salsas.', 90, 12.00, '2026-03-07 19:26:40', '2026-03-07 19:27:51'),
+(2, 'Café Arábigo', 'Variedad premium de café con aroma intenso y acidez equilibrada.', 210, 1.50, '2026-03-07 19:26:40', '2026-03-07 19:27:51'),
+(3, 'Maíz Amarillo', 'Cereal básico para la alimentación, ciclo corto.', 120, 3.50, NULL, NULL),
+(4, 'Papa Pastusa', 'Variedad de papa de textura harinosa, muy popular en Colombia.', 135, 25.00, '2026-03-07 19:26:40', '2026-03-07 19:27:51'),
+(5, 'Cacao', 'Cultivo de clima cálido, base para el chocolate.', 180, 0.80, NULL, NULL),
+(6, 'Arroz', 'Cereal de inundación o secano, base de la dieta.', 130, 6.00, NULL, NULL),
+(7, 'Maíz Dulce', 'Maíz de grano tierno y dulce, ideal para consumo humano directo.', 85, 4.50, '2026-03-07 19:26:40', '2026-03-07 19:27:51'),
+(8, 'Cebolla Cabezona', 'Bulbo de sabor fuerte, uso esencial en cocina.', 120, 15.00, '2026-03-07 19:26:40', '2026-03-07 19:27:51'),
+(9, 'Papa Criolla', 'Papa pequeña y amarilla, ciclo corto y sabor suave.', 110, 10.00, '2026-03-07 19:26:40', '2026-03-07 19:27:51'),
+(10, 'Zanahoria', 'Raíz naranja rica en carotenos, ciclo productivo estándar.', 110, 20.00, '2026-03-07 19:26:40', '2026-03-07 19:27:51'),
+(11, 'Fresa', 'Fruta roja pequeña, requiere suelos ácidos y buen riego.', 150, 0.80, '2026-03-07 19:26:40', '2026-03-07 19:27:51'),
+(12, 'Cacao Forastero', 'Variedad de cacao muy productiva y resistente.', 165, 1.20, '2026-03-07 19:26:40', '2026-03-07 19:27:51'),
+(13, 'Plátano Hartón', 'Plátano de gran tamaño usado principalmente para cocinar.', 360, 14.00, '2026-03-07 19:26:40', '2026-03-07 19:27:51'),
+(14, 'Aguacate Hass', 'Variedad de aguacate con piel rugosa y alto contenido de aceite.', 240, 8.00, '2026-03-07 19:26:40', '2026-03-07 19:27:51'),
+(15, 'Fríjol Cargamanto', 'Leguminosa de grano grande, muy apreciada en la región andina.', 140, 2.20, '2026-03-07 19:26:40', '2026-03-07 19:27:51');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `catalogo_suelos`
+--
+
+CREATE TABLE `catalogo_suelos` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `nombre` varchar(255) NOT NULL,
+  `impacto_dias` int(11) NOT NULL,
+  `descripcion` text DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `catalogo_suelos`
+--
+
+INSERT INTO `catalogo_suelos` (`id`, `nombre`, `impacto_dias`, `descripcion`, `created_at`, `updated_at`) VALUES
+(1, 'Arcilloso', 5, 'Suelo pesado con alta retención de humedad, pero drenaje lento.', NULL, '2026-03-07 19:27:51'),
+(2, 'Arenoso', -3, 'Drenaje rápido, requiere riego frecuente, acelera ciclo en algunos cultivos.', NULL, '2026-03-07 19:27:51'),
+(3, 'Franco-Arenoso', 0, NULL, NULL, NULL),
+(4, 'Limoso', 0, 'Suelo fértil con buena retención de nutrientes y humedad equilibrada.', NULL, '2026-03-07 19:27:51'),
+(5, 'Orgánico (Húmico)', -10, NULL, NULL, NULL),
+(6, 'Franco', -1, 'Mezcla ideal de arena, limo y arcilla para la mayoría de cultivos.', '2026-03-07 19:27:51', '2026-03-07 19:27:51'),
+(7, 'Salino', 10, 'Alta concentración de sales que retrasa el crecimiento vegetal.', '2026-03-07 19:27:51', '2026-03-07 19:27:51'),
+(8, 'Turba / Orgánico', -2, 'Extremadamente fértil y rico en materia orgánica.', '2026-03-07 19:27:51', '2026-03-07 19:27:51');
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `cosecha`
 --
 
 CREATE TABLE `cosecha` (
   `id_cosecha` int(11) NOT NULL,
+  `id_empresa` varchar(20) DEFAULT NULL,
   `Cantidad` int(11) DEFAULT NULL,
-  `fecha_inicio` date DEFAULT NULL,
-  `fecha_fin` date DEFAULT NULL,
-  `id_tipo_cosecha` int(11) NOT NULL
+  `id_terreno` int(11) DEFAULT NULL,
+  `id_semilla` int(11) DEFAULT NULL,
+  `id_estado` int(11) DEFAULT 1,
+  `fecha_siembra` date DEFAULT NULL,
+  `fecha_estimada` date DEFAULT NULL,
+  `produccion_estimada` decimal(10,2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `cosecha`
---
-
-INSERT INTO `cosecha` (`id_cosecha`, `Cantidad`, `fecha_inicio`, `fecha_fin`, `id_tipo_cosecha`) VALUES
-(4, 500, '2026-03-01', '2026-07-01', 1);
 
 -- --------------------------------------------------------
 
@@ -82,11 +164,11 @@ INSERT INTO `cosecha` (`id_cosecha`, `Cantidad`, `fecha_inicio`, `fecha_fin`, `i
 
 CREATE TABLE `cultivo` (
   `id_cultivo` int(11) NOT NULL,
-  `fecha_inicio` date DEFAULT NULL,
-  `fecha_fin` date DEFAULT NULL,
+  `fecha_recoleccion` date DEFAULT NULL,
   `id_cosecha` int(11) DEFAULT NULL,
-  `id_terreno` int(11) DEFAULT NULL,
-  `documento` int(11) NOT NULL
+  `documento` int(11) NOT NULL,
+  `cantidad_producida` decimal(10,2) DEFAULT NULL,
+  `observaciones` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -122,16 +204,15 @@ CREATE TABLE `detalle_fases_programadas` (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `detalle_producto_cosecha`
+-- Estructura de tabla para la tabla `detalle_producto_cultivo`
 --
 
-CREATE TABLE `detalle_producto_cosecha` (
+CREATE TABLE `detalle_producto_cultivo` (
   `id_detalle` int(11) NOT NULL,
-  `id_cosecha` int(11) DEFAULT NULL,
+  `id_cultivo` int(11) DEFAULT NULL,
   `id_producto` int(11) DEFAULT NULL,
   `cantidad` int(11) DEFAULT NULL,
-  `calidad` varchar(50) DEFAULT NULL,
-  `fecha_cosecha` date DEFAULT NULL
+  `calidad` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -183,7 +264,9 @@ INSERT INTO `estado` (`id_estado`, `nombre_estado`) VALUES
 (1, 'pendiente'),
 (2, 'bloqueada'),
 (3, 'activa'),
-(5, 'aprobada');
+(5, 'aprobada'),
+(6, 'ocupado'),
+(7, 'disponible');
 
 -- --------------------------------------------------------
 
@@ -216,13 +299,6 @@ CREATE TABLE `fases_programadas` (
   `id_cosecha` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Volcado de datos para la tabla `fases_programadas`
---
-
-INSERT INTO `fases_programadas` (`id_fase`, `descripcion`, `fecha_programada`, `estado`, `documento`, `id_cosecha`) VALUES
-(6, 'Fumigar', '2026-03-06', 'Pendiente', 1110722331, 4);
-
 -- --------------------------------------------------------
 
 --
@@ -233,9 +309,25 @@ CREATE TABLE `insumo` (
   `ID_insumo` int(11) NOT NULL,
   `Nombre` varchar(100) DEFAULT NULL,
   `Calidad` varchar(50) DEFAULT NULL,
+  `cantidad_stock` decimal(10,2) NOT NULL,
   `Fecha_ingreso` date DEFAULT NULL,
   `Fecha_vencimiento` date DEFAULT NULL,
+  `descripcion` text NOT NULL,
   `id_proveedor` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `insumo_cosecha`
+--
+
+CREATE TABLE `insumo_cosecha` (
+  `id_insumo_cosecha` int(11) NOT NULL,
+  `id_cosecha` int(11) DEFAULT NULL,
+  `id_insumo` int(11) DEFAULT NULL,
+  `cantidad_usada` decimal(10,2) DEFAULT NULL,
+  `impacto_dias` int(11) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -295,7 +387,21 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (3, '0001_01_01_000002_create_jobs_table', 1),
 (4, '2026_02_09_181957_create_tipo_licencias_table', 2),
 (5, '2026_02_11_192209_add_id_tipo_licencia_to_solicitud_compra_table', 2),
-(6, '2026_02_11_192642_add_foreign_key_to_solicitud_compra_table', 3);
+(6, '2026_02_11_192642_add_foreign_key_to_solicitud_compra_table', 3),
+(7, '2026_02_17_232000_add_nit_empresa_to_solicitud_compra_table', 4),
+(8, '2026_02_19_000000_make_comprobante_pago_nullable_in_solicitud_compra', 4),
+(9, '2026_02_23_212705_create_riegos_table', 4),
+(10, '2026_02_27_191836_change_documento_to_bigint_in_usuario_table', 5),
+(11, '2026_02_27_192702_fix_tipo_cosecha_riego_foreign_keycommunity', 6),
+(12, '2026_03_06_000001_add_id_empresa_to_tipo_semilla', 6),
+(13, '2026_03_06_000002_add_id_empresa_to_tipo_riego', 6),
+(14, '2026_03_06_000003_add_id_empresa_to_tipo_cosecha', 6),
+(15, '2026_03_06_000004_add_id_empresa_to_cosecha', 6),
+(16, '2026_03_07_000000_add_id_empresa_to_multiple_tables', 7),
+(17, '2026_03_07_000001_create_catalogs_tables', 8),
+(18, '2026_03_07_000002_create_irrigation_catalog', 9),
+(19, '2026_03_07_000003_add_impact_to_irrigation', 10),
+(20, '2026_03_07_000004_add_description_to_soil_catalog', 11);
 
 -- --------------------------------------------------------
 
@@ -348,16 +454,10 @@ CREATE TABLE `riego` (
   `id_riego` int(11) NOT NULL,
   `fecha` date DEFAULT NULL,
   `cant_agua_apl` varchar(50) DEFAULT NULL,
-  `id_tipo_riego` int(11) DEFAULT NULL
+  `observaciones` text NOT NULL,
+  `id_tipo_riego` int(11) DEFAULT NULL,
+  `id_cosecha` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `riego`
---
-
-INSERT INTO `riego` (`id_riego`, `fecha`, `cant_agua_apl`, `id_tipo_riego`) VALUES
-(1, '2026-03-03', '10l', 1),
-(2, '2026-03-06', '1000l', 2);
 
 -- --------------------------------------------------------
 
@@ -379,9 +479,8 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('d6YmSww3ElQmLYQNZcsVUOL8I47cQS97V81Mebhm', 1104921223, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 OPR/127.0.0.0', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiZXRQT24zdTBzekhzQ0FQT1FtdHNvQ0U1cmRlYWxEUTkwTHdUTEJ4NSI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6Mzc6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZG1pbi9saWNlbmNpYXMiO3M6NToicm91dGUiO3M6MjE6ImFkbWluLmxpY2VuY2lhcy5pbmRleCI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6NTQ6ImxvZ2luX3VzdWFyaW9fNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToxMTA0OTIxMjIzO3M6MTY6ImZlY2hhX2V4cGlyYWNpb24iO3M6MTU6IjAxIGRlIE1hciwgMjAyNyI7fQ==', 1772812881),
-('e5h9vLvZVsQ0YXR3qmXIXWn1fNUFMKj3y2BY6R88', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', 'YToyOntzOjY6Il90b2tlbiI7czo0MDoiSUlCREt2UGdlOW9UenVISFdmS21SVDNCbk52MkUzZW1YN2kzRmNVWiI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1772820904),
-('YXc5S8i89pkQhWIDubGEkQzbS1wQ03YDb4qehhLg', 1104921223, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiMWVBN0hCT0xWUUM3eU1Qa0VLTkxReU1KUkdmUHhRODM5WXE5cmJCNiI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6Mzc6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZG1pbi9kYXNoYm9hcmQiO3M6NToicm91dGUiO3M6MTU6ImFkbWluLmRhc2hib2FyZCI7fXM6NTQ6ImxvZ2luX3VzdWFyaW9fNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToxMTA0OTIxMjIzO30=', 1772820976);
+('3YWbH1k6E1CB6CwANXxwy892hWECQgpU1oXaRq8K', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 OPR/127.0.0.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiZmpWaHNNdmFha2FkQ1I1REN2NExRUmFHZjVlNXhSMkZzVEhHQ1VqYiI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzY6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZG1pbi90ZXJyZW5vcyI7czo1OiJyb3V0ZSI7czoyMDoiYWRtaW4udGVycmVub3MuaW5kZXgiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjU0OiJsb2dpbl91c3VhcmlvXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MTEwNDkyMTIyMzt9', 1772932551),
+('O2apUrLqH3VTWDUqTsRxbsM89RG3hnhroahQFrzy', 1110722345, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiOFN3eXJpdmpCbk5ma3BGVUlkTGc1ZDVJQVk4eEt5SGd2a2xnWHBiViI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6NDE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZG1pbi9jb25maWd1cmFjaW9uIjtzOjU6InJvdXRlIjtzOjE5OiJhZG1pbi5jb25maWd1cmFjaW9uIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo1NDoibG9naW5fdXN1YXJpb181OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjExMTA3MjIzNDU7fQ==', 1772926389);
 
 -- --------------------------------------------------------
 
@@ -392,7 +491,7 @@ INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, 
 CREATE TABLE `solicitud_compra` (
   `id_solicitud` int(11) NOT NULL,
   `id_empresa` varchar(14) NOT NULL,
-  `comprobante_pago` varchar(500) DEFAULT NULL,
+  `comprobante_pago` varchar(255) DEFAULT NULL,
   `id_tipo_licencia` int(11) DEFAULT NULL,
   `id_estado` int(11) NOT NULL,
   `fecha_solicitud` datetime DEFAULT current_timestamp(),
@@ -449,34 +548,21 @@ INSERT INTO `super_admin` (`id_super_admin`, `nombre`, `usuario`, `correo`, `pas
 
 CREATE TABLE `terreno` (
   `id_terreno` int(11) NOT NULL,
+  `id_empresa` varchar(20) DEFAULT NULL,
   `nombre` varchar(100) DEFAULT NULL,
   `ubicacion` varchar(150) DEFAULT NULL,
   `Ancho` decimal(10,0) NOT NULL,
   `Alto` decimal(10,0) NOT NULL,
-  `id_estado` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `tipo_cosecha`
---
-
-CREATE TABLE `tipo_cosecha` (
-  `id_tipo_cosecha` int(11) NOT NULL,
-  `tiempo` int(11) DEFAULT NULL,
-  `terreno` varchar(100) DEFAULT NULL,
-  `id_semilla` int(11) DEFAULT NULL,
-  `id_tipo_riego` int(11) DEFAULT NULL
+  `id_estado` int(11) DEFAULT NULL,
+  `id_tipo_suelo` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Volcado de datos para la tabla `tipo_cosecha`
+-- Volcado de datos para la tabla `terreno`
 --
 
-INSERT INTO `tipo_cosecha` (`id_tipo_cosecha`, `tiempo`, `terreno`, `id_semilla`, `id_tipo_riego`) VALUES
-(1, 250, '23', 1, 1),
-(2, 365, '25', 2, 2);
+INSERT INTO `terreno` (`id_terreno`, `id_empresa`, `nombre`, `ubicacion`, `Ancho`, `Alto`, `id_estado`, `id_tipo_suelo`) VALUES
+(3, '834324234', 'Cascada', 'Cascada del potrero las tribunas', 123, 76, 7, 2);
 
 -- --------------------------------------------------------
 
@@ -510,16 +596,18 @@ INSERT INTO `tipo_licencia` (`id_tipo_licencia`, `nombre_licencia`, `tiempo`, `d
 
 CREATE TABLE `tipo_riego` (
   `id_tipo_riego` int(11) NOT NULL,
-  `tipo_riego` varchar(50) DEFAULT NULL
+  `id_empresa` varchar(14) DEFAULT NULL,
+  `id_catalogo` bigint(20) UNSIGNED DEFAULT NULL,
+  `tipo_riego` varchar(50) DEFAULT NULL,
+  `impacto_dias` int(11) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `tipo_riego`
 --
 
-INSERT INTO `tipo_riego` (`id_tipo_riego`, `tipo_riego`) VALUES
-(1, 'goteo'),
-(2, 'aspersion');
+INSERT INTO `tipo_riego` (`id_tipo_riego`, `id_empresa`, `id_catalogo`, `tipo_riego`, `impacto_dias`) VALUES
+(4, '988091212', 1, 'Goteo', -3);
 
 -- --------------------------------------------------------
 
@@ -529,16 +617,42 @@ INSERT INTO `tipo_riego` (`id_tipo_riego`, `tipo_riego`) VALUES
 
 CREATE TABLE `tipo_semilla` (
   `id_semilla` int(11) NOT NULL,
-  `Tipo_semilla` varchar(100) DEFAULT NULL
+  `id_empresa` varchar(14) DEFAULT NULL,
+  `id_catalogo` bigint(20) UNSIGNED DEFAULT NULL,
+  `nombre_semilla` varchar(100) DEFAULT NULL,
+  `tiempo_base_dias` int(11) DEFAULT NULL,
+  `descripcion` varchar(250) NOT NULL,
+  `rendimiento_promedio` decimal(10,2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `tipo_semilla`
 --
 
-INSERT INTO `tipo_semilla` (`id_semilla`, `Tipo_semilla`) VALUES
-(1, 'trigo'),
-(2, 'Arroz');
+INSERT INTO `tipo_semilla` (`id_semilla`, `id_empresa`, `id_catalogo`, `nombre_semilla`, `tiempo_base_dias`, `descripcion`, `rendimiento_promedio`) VALUES
+(3, '988091212', 1, 'Tomate Chonto', 90, 'Variedad de tomate muy resistente, ideal para salsas.', 12.00);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `tipo_suelo`
+--
+
+CREATE TABLE `tipo_suelo` (
+  `id_tipo_suelo` int(11) NOT NULL,
+  `id_empresa` varchar(14) DEFAULT NULL,
+  `id_catalogo` bigint(20) UNSIGNED DEFAULT NULL,
+  `nombre` varchar(100) DEFAULT NULL,
+  `impacto_dias` int(11) DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `tipo_suelo`
+--
+
+INSERT INTO `tipo_suelo` (`id_tipo_suelo`, `id_empresa`, `id_catalogo`, `nombre`, `impacto_dias`) VALUES
+(1, '988091212', 1, 'Arcilloso', 5),
+(2, '834324234', 2, 'Arenoso', -3);
 
 -- --------------------------------------------------------
 
@@ -588,7 +702,7 @@ INSERT INTO `usuario` (`documento`, `imagen`, `nombre`, `telefono`, `correo`, `c
 (1034345454, 'usuarios/ohtjEMXYnEtIKQV6uXFyhSx4giqPArWo1ABQmYEk.jpg', 'Javier Gonza', '3223243434', 'bastobrayan246@gmail.com', '$2y$12$IXfjWMnY6Ul6L6B0trEKK.6obRkullnh7zI5H/sAO3/nHgpsQWjqq', '', 1, 3, '876767657'),
 (1104921223, 'usuarios/fxyI259nxaEdNx9meFLTLFkpNIRGXnj7nyy2Z8PX.png', 'julio profe', '3291231212', 'reyesz2803@gmail.com', '$2y$12$NcwOItyOjXK4jwD7js4ri.mghmiFTcxGEzjyPNbzJGOZ6lWJQ7Eou', 'L6ur0l8cTbySu6UszUtmUcokC1ulEVdseHMeNZvK2xhwpe4Ay1X84lfEgOHl', 1, 3, '834324234'),
 (1110722331, 'usuarios/useOl4EMIIlIsP0f8X6vMaoWPIjhX5Ml9tCDJ2bC.jpg', 'Didier', '3103527239', 'johsn@gmail.com', '$2y$12$vxkHUv.QeZAo9aWiUSLcNuVRnX.siC2vPlL8S1QY6vt6m6WTme7vK', '', 3, 1, '834324234'),
-(1110722345, 'usuarios/IEJRgrLlnPGGxJcaD5NFbzOnxj7DAVNxZXnoZjTr.jpg', 'Brayan Gutierez', '3029219231', 'sombrahdepaz@gmail.com', '$2y$12$dm2GPd2crqoaI8Fix1RNL.sVhS5C.F3CHpvmqvLO6oFZg0ry4Il0y', NULL, 1, 3, '988091212');
+(1110722345, 'usuarios/IEJRgrLlnPGGxJcaD5NFbzOnxj7DAVNxZXnoZjTr.jpg', 'Brayan Gutierez', '3029219231', 'sombrahdepaz@gmail.com', '$2y$12$ElMqaOG0Q30Gbt8q2RwPDudpzZPaIlhmEoA4Ldj0WQ6cW6zhcGAiK', 'ywIaTxfUUQbD4ST6rgeRbqS0R6ogTOcag8MDnlWwZYrJ2IRaPhpqCZgszcPy', 1, 3, '988091212');
 
 -- --------------------------------------------------------
 
@@ -635,18 +749,37 @@ ALTER TABLE `cache_locks`
   ADD KEY `cache_locks_expiration_index` (`expiration`);
 
 --
+-- Indices de la tabla `catalogo_riegos`
+--
+ALTER TABLE `catalogo_riegos`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indices de la tabla `catalogo_semillas`
+--
+ALTER TABLE `catalogo_semillas`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indices de la tabla `catalogo_suelos`
+--
+ALTER TABLE `catalogo_suelos`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indices de la tabla `cosecha`
 --
 ALTER TABLE `cosecha`
   ADD PRIMARY KEY (`id_cosecha`),
-  ADD KEY `id_tipo_cosecha` (`id_tipo_cosecha`);
+  ADD KEY `cosecha_terreno_fk` (`id_terreno`),
+  ADD KEY `cosecha_semilla_fk` (`id_semilla`),
+  ADD KEY `cosecha_estado_fk` (`id_estado`);
 
 --
 -- Indices de la tabla `cultivo`
 --
 ALTER TABLE `cultivo`
   ADD PRIMARY KEY (`id_cultivo`),
-  ADD KEY `id_terreno` (`id_terreno`),
   ADD KEY `id_cosecha` (`id_cosecha`),
   ADD KEY `id_trabajador` (`documento`);
 
@@ -669,11 +802,11 @@ ALTER TABLE `detalle_fases_programadas`
   ADD KEY `id_fase` (`id_fase`);
 
 --
--- Indices de la tabla `detalle_producto_cosecha`
+-- Indices de la tabla `detalle_producto_cultivo`
 --
-ALTER TABLE `detalle_producto_cosecha`
+ALTER TABLE `detalle_producto_cultivo`
   ADD PRIMARY KEY (`id_detalle`),
-  ADD KEY `id_cosecha` (`id_cosecha`),
+  ADD KEY `id_cultivo` (`id_cultivo`),
   ADD KEY `id_producto` (`id_producto`);
 
 --
@@ -708,7 +841,16 @@ ALTER TABLE `fases_programadas`
 -- Indices de la tabla `insumo`
 --
 ALTER TABLE `insumo`
-  ADD PRIMARY KEY (`ID_insumo`);
+  ADD PRIMARY KEY (`ID_insumo`),
+  ADD KEY `id_proveedor` (`id_proveedor`);
+
+--
+-- Indices de la tabla `insumo_cosecha`
+--
+ALTER TABLE `insumo_cosecha`
+  ADD PRIMARY KEY (`id_insumo_cosecha`),
+  ADD KEY `fk_insumo_cosecha_c` (`id_cosecha`),
+  ADD KEY `fk_insumo_cosecha_i` (`id_insumo`);
 
 --
 -- Indices de la tabla `jobs`
@@ -753,7 +895,8 @@ ALTER TABLE `proveedor`
 --
 ALTER TABLE `riego`
   ADD PRIMARY KEY (`id_riego`),
-  ADD KEY `id_tipo_riego` (`id_tipo_riego`);
+  ADD KEY `id_tipo_riego` (`id_tipo_riego`),
+  ADD KEY `fk_riego_cosecha` (`id_cosecha`);
 
 --
 -- Indices de la tabla `sessions`
@@ -786,15 +929,8 @@ ALTER TABLE `super_admin`
 --
 ALTER TABLE `terreno`
   ADD PRIMARY KEY (`id_terreno`),
-  ADD KEY `id_estado` (`id_estado`);
-
---
--- Indices de la tabla `tipo_cosecha`
---
-ALTER TABLE `tipo_cosecha`
-  ADD PRIMARY KEY (`id_tipo_cosecha`),
-  ADD KEY `id_semilla` (`id_semilla`),
-  ADD KEY `id_riego` (`id_tipo_riego`);
+  ADD KEY `id_estado` (`id_estado`),
+  ADD KEY `terreno_tipo_suelo_fk` (`id_tipo_suelo`);
 
 --
 -- Indices de la tabla `tipo_licencia`
@@ -807,13 +943,22 @@ ALTER TABLE `tipo_licencia`
 -- Indices de la tabla `tipo_riego`
 --
 ALTER TABLE `tipo_riego`
-  ADD PRIMARY KEY (`id_tipo_riego`);
+  ADD PRIMARY KEY (`id_tipo_riego`),
+  ADD KEY `id_empresa` (`id_empresa`);
 
 --
 -- Indices de la tabla `tipo_semilla`
 --
 ALTER TABLE `tipo_semilla`
-  ADD PRIMARY KEY (`id_semilla`);
+  ADD PRIMARY KEY (`id_semilla`),
+  ADD KEY `id_empresa` (`id_empresa`);
+
+--
+-- Indices de la tabla `tipo_suelo`
+--
+ALTER TABLE `tipo_suelo`
+  ADD PRIMARY KEY (`id_tipo_suelo`),
+  ADD KEY `id_empresa` (`id_empresa`);
 
 --
 -- Indices de la tabla `tipo_usuario`
@@ -844,6 +989,24 @@ ALTER TABLE `venta_licencias`
 --
 
 --
+-- AUTO_INCREMENT de la tabla `catalogo_riegos`
+--
+ALTER TABLE `catalogo_riegos`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT de la tabla `catalogo_semillas`
+--
+ALTER TABLE `catalogo_semillas`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+
+--
+-- AUTO_INCREMENT de la tabla `catalogo_suelos`
+--
+ALTER TABLE `catalogo_suelos`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
 -- AUTO_INCREMENT de la tabla `cosecha`
 --
 ALTER TABLE `cosecha`
@@ -868,16 +1031,16 @@ ALTER TABLE `detalle_fases_programadas`
   MODIFY `id_detalle_fases` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT de la tabla `detalle_producto_cosecha`
+-- AUTO_INCREMENT de la tabla `detalle_producto_cultivo`
 --
-ALTER TABLE `detalle_producto_cosecha`
+ALTER TABLE `detalle_producto_cultivo`
   MODIFY `id_detalle` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `estado`
 --
 ALTER TABLE `estado`
-  MODIFY `id_estado` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_estado` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de la tabla `failed_jobs`
@@ -898,6 +1061,12 @@ ALTER TABLE `insumo`
   MODIFY `ID_insumo` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT de la tabla `insumo_cosecha`
+--
+ALTER TABLE `insumo_cosecha`
+  MODIFY `id_insumo_cosecha` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT de la tabla `jobs`
 --
 ALTER TABLE `jobs`
@@ -907,7 +1076,7 @@ ALTER TABLE `jobs`
 -- AUTO_INCREMENT de la tabla `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT de la tabla `producto`
@@ -943,13 +1112,7 @@ ALTER TABLE `super_admin`
 -- AUTO_INCREMENT de la tabla `terreno`
 --
 ALTER TABLE `terreno`
-  MODIFY `id_terreno` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de la tabla `tipo_cosecha`
---
-ALTER TABLE `tipo_cosecha`
-  MODIFY `id_tipo_cosecha` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_terreno` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `tipo_licencia`
@@ -961,13 +1124,19 @@ ALTER TABLE `tipo_licencia`
 -- AUTO_INCREMENT de la tabla `tipo_riego`
 --
 ALTER TABLE `tipo_riego`
-  MODIFY `id_tipo_riego` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_tipo_riego` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `tipo_semilla`
 --
 ALTER TABLE `tipo_semilla`
-  MODIFY `id_semilla` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_semilla` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT de la tabla `tipo_suelo`
+--
+ALTER TABLE `tipo_suelo`
+  MODIFY `id_tipo_suelo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `tipo_usuario`
@@ -983,13 +1152,14 @@ ALTER TABLE `tipo_usuario`
 -- Filtros para la tabla `cosecha`
 --
 ALTER TABLE `cosecha`
-  ADD CONSTRAINT `cosecha_ibfk_1` FOREIGN KEY (`id_tipo_cosecha`) REFERENCES `tipo_cosecha` (`id_tipo_cosecha`);
+  ADD CONSTRAINT `cosecha_estado_fk` FOREIGN KEY (`id_estado`) REFERENCES `estado` (`id_estado`),
+  ADD CONSTRAINT `cosecha_semilla_fk` FOREIGN KEY (`id_semilla`) REFERENCES `tipo_semilla` (`id_semilla`),
+  ADD CONSTRAINT `cosecha_terreno_fk` FOREIGN KEY (`id_terreno`) REFERENCES `terreno` (`id_terreno`);
 
 --
 -- Filtros para la tabla `cultivo`
 --
 ALTER TABLE `cultivo`
-  ADD CONSTRAINT `cultivo_ibfk_1` FOREIGN KEY (`id_terreno`) REFERENCES `terreno` (`id_terreno`),
   ADD CONSTRAINT `cultivo_ibfk_2` FOREIGN KEY (`id_cosecha`) REFERENCES `cosecha` (`id_cosecha`),
   ADD CONSTRAINT `cultivo_ibfk_3` FOREIGN KEY (`documento`) REFERENCES `usuario` (`documento`);
 
@@ -1010,11 +1180,11 @@ ALTER TABLE `detalle_fases_programadas`
   ADD CONSTRAINT `detalle_fases_programadas_ibfk_4` FOREIGN KEY (`id_fase`) REFERENCES `fases_programadas` (`id_fase`);
 
 --
--- Filtros para la tabla `detalle_producto_cosecha`
+-- Filtros para la tabla `detalle_producto_cultivo`
 --
-ALTER TABLE `detalle_producto_cosecha`
-  ADD CONSTRAINT `detalle_producto_cosecha_ibfk_1` FOREIGN KEY (`id_cosecha`) REFERENCES `cosecha` (`id_cosecha`),
-  ADD CONSTRAINT `detalle_producto_cosecha_ibfk_2` FOREIGN KEY (`id_producto`) REFERENCES `producto` (`id_producto`);
+ALTER TABLE `detalle_producto_cultivo`
+  ADD CONSTRAINT `detalle_producto_cultivo_ibfk_1` FOREIGN KEY (`id_cultivo`) REFERENCES `cultivo` (`id_cultivo`),
+  ADD CONSTRAINT `detalle_producto_cultivo_ibfk_2` FOREIGN KEY (`id_producto`) REFERENCES `producto` (`id_producto`);
 
 --
 -- Filtros para la tabla `empresa`
@@ -1026,8 +1196,21 @@ ALTER TABLE `empresa`
 -- Filtros para la tabla `fases_programadas`
 --
 ALTER TABLE `fases_programadas`
-  ADD CONSTRAINT `fases_programadas_ibfk_1` FOREIGN KEY (`documento`) REFERENCES `usuario` (`documento`),
-  ADD CONSTRAINT `fases_programadas_ibfk_2` FOREIGN KEY (`id_cosecha`) REFERENCES `cosecha` (`id_cosecha`);
+  ADD CONSTRAINT `fases_programadas_ibfk_2` FOREIGN KEY (`id_cosecha`) REFERENCES `cosecha` (`id_cosecha`),
+  ADD CONSTRAINT `fases_programadas_ibfk_3` FOREIGN KEY (`documento`) REFERENCES `usuario` (`documento`);
+
+--
+-- Filtros para la tabla `insumo`
+--
+ALTER TABLE `insumo`
+  ADD CONSTRAINT `insumo_ibfk_1` FOREIGN KEY (`id_proveedor`) REFERENCES `proveedor` (`id_proveedor`);
+
+--
+-- Filtros para la tabla `insumo_cosecha`
+--
+ALTER TABLE `insumo_cosecha`
+  ADD CONSTRAINT `fk_insumo_cosecha_c` FOREIGN KEY (`id_cosecha`) REFERENCES `cosecha` (`id_cosecha`),
+  ADD CONSTRAINT `fk_insumo_cosecha_i` FOREIGN KEY (`id_insumo`) REFERENCES `insumo` (`ID_insumo`);
 
 --
 -- Filtros para la tabla `proveedor`
@@ -1039,6 +1222,7 @@ ALTER TABLE `proveedor`
 -- Filtros para la tabla `riego`
 --
 ALTER TABLE `riego`
+  ADD CONSTRAINT `fk_riego_cosecha` FOREIGN KEY (`id_cosecha`) REFERENCES `cosecha` (`id_cosecha`),
   ADD CONSTRAINT `riego_ibfk_1` FOREIGN KEY (`id_tipo_riego`) REFERENCES `tipo_riego` (`id_tipo_riego`);
 
 --
@@ -1059,20 +1243,32 @@ ALTER TABLE `super_admin`
 -- Filtros para la tabla `terreno`
 --
 ALTER TABLE `terreno`
-  ADD CONSTRAINT `terreno_ibfk_1` FOREIGN KEY (`id_estado`) REFERENCES `estado` (`id_estado`);
-
---
--- Filtros para la tabla `tipo_cosecha`
---
-ALTER TABLE `tipo_cosecha`
-  ADD CONSTRAINT `tipo_cosecha_ibfk_1` FOREIGN KEY (`id_semilla`) REFERENCES `tipo_semilla` (`id_semilla`),
-  ADD CONSTRAINT `tipo_cosecha_ibfk_2` FOREIGN KEY (`id_tipo_riego`) REFERENCES `tipo_riego` (`id_tipo_riego`);
+  ADD CONSTRAINT `terreno_ibfk_1` FOREIGN KEY (`id_estado`) REFERENCES `estado` (`id_estado`),
+  ADD CONSTRAINT `terreno_tipo_suelo_fk` FOREIGN KEY (`id_tipo_suelo`) REFERENCES `tipo_suelo` (`id_tipo_suelo`);
 
 --
 -- Filtros para la tabla `tipo_licencia`
 --
 ALTER TABLE `tipo_licencia`
   ADD CONSTRAINT `tipo_licencia_ibfk_1` FOREIGN KEY (`id_estado`) REFERENCES `estado` (`id_estado`);
+
+--
+-- Filtros para la tabla `tipo_riego`
+--
+ALTER TABLE `tipo_riego`
+  ADD CONSTRAINT `tipo_riego_ibfk_1` FOREIGN KEY (`id_empresa`) REFERENCES `empresa` (`id_empresa`);
+
+--
+-- Filtros para la tabla `tipo_semilla`
+--
+ALTER TABLE `tipo_semilla`
+  ADD CONSTRAINT `tipo_semilla_ibfk_1` FOREIGN KEY (`id_empresa`) REFERENCES `empresa` (`id_empresa`);
+
+--
+-- Filtros para la tabla `tipo_suelo`
+--
+ALTER TABLE `tipo_suelo`
+  ADD CONSTRAINT `tipo_suelo_ibfk_1` FOREIGN KEY (`id_empresa`) REFERENCES `empresa` (`id_empresa`);
 
 --
 -- Filtros para la tabla `usuario`

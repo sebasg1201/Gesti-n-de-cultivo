@@ -14,11 +14,14 @@ class Cosecha extends Model
     public $timestamps = false;
 
     protected $fillable = [
+        'id_empresa',
         'Cantidad',
-        'fecha_inicio',
-        'fecha_fin',
-        'id_tipo_cosecha',
-        'id_empresa'
+        'id_terreno',
+        'id_semilla',
+        'id_estado',
+        'fecha_siembra',
+        'fecha_estimada',
+        'produccion_estimada'
     ];
 
     public function tipoCosecha()
