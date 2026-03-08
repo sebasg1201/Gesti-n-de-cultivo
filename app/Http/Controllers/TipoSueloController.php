@@ -4,12 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Models\TipoSuelo;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TipoSueloController extends Controller
 {
+    private function getEmpresaId()
+    {
+        return Auth::guard('usuario')->user()->id_empresa;
+    }
     public function index()
     {
-        $id_empresa = auth()->guard('usuario')->user()->id_empresa;
+        $id_empresa = $this->getEmpresaId();
         $tipoSuelos = TipoSuelo::with('catalogo')
             ->where('id_empresa', $id_empresa)
             ->paginate(10);
@@ -26,13 +31,13 @@ class TipoSueloController extends Controller
 
     public function store(Request $request)
     {
+        $id_empresa = $this->getEmpresaId();
         $request->validate([
             'id_catalogo' => 'required|exists:catalogo_suelos,id',
             'nombre' => 'required|string|max:100',
         ]);
 
         $catalogItem = \App\Models\CatalogoSuelo::findOrFail($request->id_catalogo);
-        $id_empresa = auth()->guard('usuario')->user()->id_empresa;
 
         // Check if already registered
         $exists = TipoSuelo::where('id_empresa', $id_empresa)
@@ -58,10 +63,12 @@ class TipoSueloController extends Controller
     {
         $request->validate([
             'nombre' => 'required|string|max:100',
-            'impacto_dias' => 'required|integer',
         ]);
 
-        $tipoSuelo = TipoSuelo::findOrFail($id);
+        $tipoSuelo = TipoSuelo::where('id_tipo_suelo', $id)
+            ->where('id_empresa', $this->getEmpresaId())
+            ->firstOrFail();
+
         $tipoSuelo->update($request->all());
 
         return redirect()->route('tipo_suelos.index')
@@ -70,7 +77,10 @@ class TipoSueloController extends Controller
 
     public function destroy($id)
     {
-        $tipoSuelo = TipoSuelo::findOrFail($id);
+        $tipoSuelo = TipoSuelo::where('id_tipo_suelo', $id)
+            ->where('id_empresa', $this->getEmpresaId())
+            ->firstOrFail();
+
         $tipoSuelo->delete();
 
         return redirect()->route('tipo_suelos.index')

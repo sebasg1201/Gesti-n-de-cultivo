@@ -16,7 +16,7 @@ class TipoSemillaController extends Controller
 
     public function index()
     {
-        $id_empresa = auth()->guard('usuario')->user()->id_empresa;
+        $id_empresa = $this->getEmpresaId();
         $tipoSemillas = TipoSemilla::with('catalogo')
             ->where('id_empresa', $id_empresa)
             ->paginate(10);
@@ -42,9 +42,8 @@ class TipoSemillaController extends Controller
         ]);
 
         $catalogItem = CatalogoSemilla::findOrFail($request->id_catalogo);
-        $id_empresa = auth()->guard('usuario')->user()->id_empresa;
 
-        $exists = TipoSemilla::where('id_empresa', $id_empresa)
+        $exists = TipoSemilla::where('id_empresa', $idEmpresa)
             ->where('id_catalogo', $catalogItem->id)
             ->exists();
 
@@ -53,7 +52,7 @@ class TipoSemillaController extends Controller
         }
 
         TipoSemilla::create([
-            'id_empresa' => $id_empresa,
+            'id_empresa' => $idEmpresa,
             'id_catalogo' => $catalogItem->id,
             'nombre_semilla' => $request->nombre_semilla,
             'tiempo_base_dias' => $catalogItem->tiempo_base_dias, // PREDETERMINADO
@@ -72,7 +71,9 @@ class TipoSemillaController extends Controller
             'descripcion' => 'required|string|max:250',
         ]);
 
-        $tipoSemilla = TipoSemilla::findOrFail($id);
+        $tipoSemilla = TipoSemilla::where('id_semilla', $id)
+            ->where('id_empresa', $this->getEmpresaId())
+            ->firstOrFail();
 
         // Only allow updating custom name and description
         $tipoSemilla->update([

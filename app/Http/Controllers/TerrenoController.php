@@ -4,17 +4,22 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TerrenoController extends Controller
 {
+    private function getEmpresaId()
+    {
+        return Auth::guard('usuario')->user()->id_empresa;
+    }
     public function index()
     {
-        $id_empresa = auth()->guard('usuario')->user()->id_empresa;
-        
+        $id_empresa = $this->getEmpresaId();
+
         $terrenos = \App\Models\Terreno::with(['tipoSuelo', 'estado'])
             ->where('id_empresa', $id_empresa)
             ->paginate(10);
-            
+
         $tipoSuelos = \App\Models\TipoSuelo::where('id_empresa', $id_empresa)->get();
 
         return view('admin.terreno.index', compact('terrenos', 'tipoSuelos'));
@@ -22,6 +27,8 @@ class TerrenoController extends Controller
 
     public function store(Request $request)
     {
+        $id_empresa = $this->getEmpresaId();
+
         $request->validate([
             'nombre' => 'required|string|max:100',
             'ubicacion' => 'required|string|max:150',
@@ -29,8 +36,6 @@ class TerrenoController extends Controller
             'Alto' => 'required|numeric|min:1',
             'id_tipo_suelo' => 'required|exists:tipo_suelo,id_tipo_suelo'
         ]);
-
-        $id_empresa = auth()->guard('usuario')->user()->id_empresa;
 
         // Check if a Terreno with same name exists for the company
         $exists = \App\Models\Terreno::where('id_empresa', $id_empresa)
@@ -57,6 +62,8 @@ class TerrenoController extends Controller
 
     public function update(Request $request, $id)
     {
+        $id_empresa = $this->getEmpresaId();
+
         $request->validate([
             'nombre' => 'required|string|max:100',
             'ubicacion' => 'required|string|max:150',
@@ -65,13 +72,9 @@ class TerrenoController extends Controller
             'id_tipo_suelo' => 'required|exists:tipo_suelo,id_tipo_suelo'
         ]);
 
-        $terreno = \App\Models\Terreno::findOrFail($id);
-        
-        // Ensure the company owns the Terreno
-        $id_empresa = auth()->guard('usuario')->user()->id_empresa;
-        if ($terreno->id_empresa !== $id_empresa) {
-            return redirect()->route('admin.terrenos.index')->with('error', 'Acceso no autorizado.');
-        }
+        $terreno = \App\Models\Terreno::where('id_terreno', $id)
+            ->where('id_empresa', $id_empresa)
+            ->firstOrFail();
 
         $terreno->update([
             'nombre' => $request->nombre,
@@ -87,13 +90,12 @@ class TerrenoController extends Controller
 
     public function destroy($id)
     {
-        $terreno = \App\Models\Terreno::findOrFail($id);
-        
-        $id_empresa = auth()->guard('usuario')->user()->id_empresa;
-        if ($terreno->id_empresa !== $id_empresa) {
-            return redirect()->route('admin.terrenos.index')->with('error', 'Acceso no autorizado.');
-        }
-        
+        $id_empresa = $this->getEmpresaId();
+
+        $terreno = \App\Models\Terreno::where('id_terreno', $id)
+            ->where('id_empresa', $id_empresa)
+            ->firstOrFail();
+
         $terreno->delete();
 
         return redirect()->route('admin.terrenos.index')

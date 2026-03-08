@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\TipoRiego;
 use App\Models\CatalogoRiego;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TipoRiegoController extends Controller
 {
@@ -15,7 +16,7 @@ class TipoRiegoController extends Controller
 
     public function index()
     {
-        $id_empresa = auth()->guard('usuario')->user()->id_empresa;
+        $id_empresa = $this->getEmpresaId();
         $tipoRiegos = TipoRiego::with('catalogo')
             ->where('id_empresa', $id_empresa)
             ->paginate(10);
@@ -39,13 +40,11 @@ class TipoRiegoController extends Controller
             'tipo_riego' => 'required|string|max:100',
         ]);
 
-        $id_empresa = auth()->guard('usuario')->user()->id_empresa;
-
         // Fetch catalog item for data integrity
         $catalogItem = CatalogoRiego::findOrFail($request->id_catalogo);
 
         // Check already registered
-        $exists = TipoRiego::where('id_empresa', $id_empresa)
+        $exists = TipoRiego::where('id_empresa', $idEmpresa)
             ->where('id_catalogo', $request->id_catalogo)
             ->exists();
 
@@ -54,7 +53,7 @@ class TipoRiegoController extends Controller
         }
 
         TipoRiego::create([
-            'id_empresa' => $id_empresa,
+            'id_empresa' => $idEmpresa,
             'id_catalogo' => $request->id_catalogo,
             'tipo_riego' => $request->tipo_riego,
             'impacto_dias' => $catalogItem->impacto_dias, // FROM CATALOG
@@ -70,7 +69,10 @@ class TipoRiegoController extends Controller
             'tipo_riego' => 'required|string|max:100',
         ]);
 
-        $tipoRiego = TipoRiego::findOrFail($id);
+        $tipoRiego = TipoRiego::where('id_tipo_riego', $id)
+            ->where('id_empresa', $this->getEmpresaId())
+            ->firstOrFail();
+
         $tipoRiego->update($request->all());
 
         return redirect()->route('tipo_riegos.index')
@@ -79,7 +81,10 @@ class TipoRiegoController extends Controller
 
     public function destroy($id)
     {
-        $tipoRiego = TipoRiego::findOrFail($id);
+        $tipoRiego = TipoRiego::where('id_tipo_riego', $id)
+            ->where('id_empresa', $this->getEmpresaId())
+            ->firstOrFail();
+
         $tipoRiego->delete();
 
         return redirect()->route('tipo_riegos.index')

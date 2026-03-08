@@ -91,6 +91,7 @@
                 $gestionActive = request()->routeIs('tipo_cosechas.*') ||
                 request()->routeIs('tipo_riegos.*') ||
                 request()->routeIs('tipo_semillas.*') ||
+                request()->routeIs('tipo_suelos.*') ||
                 request()->routeIs('estados.*') ||
                 request()->routeIs('admin.usuarios.*') ||
                 request()->routeIs('admin.terrenos.*');
@@ -237,32 +238,33 @@
                             </div>
 
                             <!-- Dropdown -->
-                            <div class="absolute right-0 mt-4 w-56 bg-white rounded-2xl shadow-2xl border border-emerald-100 opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 transition-all duration-200 origin-top-right z-50 pointer-events-none group-hover:pointer-events-auto">
+                            <div class="absolute right-0 top-full pt-2 w-56 opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 transition-all duration-200 origin-top-right z-50 pointer-events-none group-hover:pointer-events-auto">
+                                <div class="bg-white rounded-2xl shadow-2xl border border-emerald-100">
 
-                                <div class="p-4 border-b border-gray-100">
-                                    <p class="text-sm font-semibold text-gray-800">
-                                        {{ Auth::guard('usuario')->user()->nombre ?? 'Admin' }}
-                                    </p>
-                                    <p class="text-xs text-emerald-600">
-                                        {{ Auth::guard('usuario')->user()->correo ?? '' }}
-                                    </p>
+                                    <div class="p-4 border-b border-gray-100">
+                                        <p class="text-sm font-semibold text-gray-800">
+                                            {{ Auth::guard('usuario')->user()->nombre ?? 'Admin' }}
+                                        </p>
+                                        <p class="text-xs text-emerald-600">
+                                            {{ Auth::guard('usuario')->user()->correo ?? '' }}
+                                        </p>
+                                    </div>
+
+                                    <form action="{{ route('usuario.logout') }}" method="POST">
+                                        @csrf
+                                        <button type="submit"
+                                            class="w-full text-left px-4 py-3 text-sm text-red-500 hover:bg-red-50 hover:text-red-600 rounded-b-2xl transition cursor-pointer">
+                                            Cerrar Sesión
+                                        </button>
+                                    </form>
+
                                 </div>
-
-                                <form action="{{ route('usuario.logout') }}" method="POST">
-                                    @csrf
-                                    <button type="submit"
-                                        class="w-full text-left px-4 py-3 text-sm text-red-500 hover:bg-red-50 hover:text-red-600 rounded-b-2xl transition cursor-pointer">
-                                        Cerrar Sesión
-                                    </button>
-                                </form>
 
                             </div>
 
                         </div>
 
                     </div>
-
-                </div>
 
             </header>
 
