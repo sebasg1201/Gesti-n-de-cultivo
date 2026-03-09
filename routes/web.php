@@ -110,6 +110,16 @@ Route::middleware(['auth:usuario', 'check.license'])->group(function () {
 
     // Gestión de Cosechas
     Route::resource('/admin/cosechas', \App\Http\Controllers\Admin\CosechaController::class, ['as' => 'admin']);
+
+    // Insumos y Proveedores
+    Route::resource('/admin/proveedores', \App\Http\Controllers\ProveedorController::class, ['as' => 'admin']);
+    Route::resource('/admin/insumos', \App\Http\Controllers\InsumoController::class, ['as' => 'admin']);
+
+    // Tipo Insumo (Configuración de Catálogo)
+    Route::get('/tipo_insumos/catalog', [\App\Http\Controllers\TipoInsumoController::class, 'catalog'])->name('tipo_insumos.catalog');
+    Route::resource('/admin/tipo_insumos', \App\Http\Controllers\TipoInsumoController::class, ['as' => 'admin'])->parameters([
+        'tipo_insumos' => 'tipo_insumo'
+    ]);
 });
 
 Route::get('/', [HomeController::class, 'index'])->name('index_welcome');
