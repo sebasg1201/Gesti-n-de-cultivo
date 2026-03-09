@@ -28,4 +28,14 @@ class Cosecha extends Model
     {
         return $this->belongsTo(TipoCosecha::class, 'id_tipo_cosecha', 'id_tipo_cosecha');
     }
+
+    public function terreno()
+    {
+        return $this->belongsTo(Terreno::class, 'id_terreno', 'id_terreno');
+    }
+
+    public function semilla()
+    {
+        return $this->belongsTo(TipoSemilla::class, 'id_semilla', 'id_semilla');
+    }
 }

@@ -107,6 +107,9 @@ Route::middleware(['auth:usuario', 'check.license'])->group(function () {
     // Ruta para asignar trabajo (Fases Programadas)
     Route::get('/admin/usuarios/{usuario}/asignar-trabajo', [\App\Http\Controllers\Admin\UsuarioEmpresaController::class, 'asignarTrabajo'])->name('admin.usuarios.asignar_trabajo');
     Route::post('/admin/usuarios/{usuario}/asignar-trabajo', [\App\Http\Controllers\Admin\UsuarioEmpresaController::class, 'storeTrabajo'])->name('admin.usuarios.store_trabajo');
+
+    // Gestión de Cosechas
+    Route::resource('/admin/cosechas', \App\Http\Controllers\Admin\CosechaController::class, ['as' => 'admin']);
 });
 
 Route::get('/', [HomeController::class, 'index'])->name('index_welcome');
@@ -134,4 +137,5 @@ use App\Http\Controllers\EstadoController;
 Route::resource('estados', EstadoController::class);
 
 use App\Http\Controllers\TerrenoController;
+
 Route::resource('admin/terrenos', TerrenoController::class, ['as' => 'admin']);

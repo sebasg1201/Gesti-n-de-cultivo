@@ -95,6 +95,8 @@
                 request()->routeIs('estados.*') ||
                 request()->routeIs('admin.usuarios.*') ||
                 request()->routeIs('admin.terrenos.*');
+
+                $seguimientoActive = request()->routeIs('admin.cosechas.*');
                 @endphp
 
                 <a href="{{ route('admin.dashboard') }}"
@@ -149,6 +151,27 @@
                         <a href="{{ route('admin.terrenos.index') }}" class="group flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-200 {{ active('admin.terrenos.*') }}">
                             <div class="w-1 h-1 bg-emerald-400 rounded-full shrink-0"></div>
                             <span class="whitespace-nowrap">Gestión de Terrenos</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- ACORDEÓN SEGUIMIENTO DE CULTIVOS -->
+                <div class="space-y-1">
+                    <button onclick="toggleAccordion('seguimiento-menu')"
+                        class="w-full group flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 {{ $seguimientoActive ? 'bg-white/5 text-white' : 'hover:bg-white/10 hover:text-white' }}">
+                        <div class="flex items-center gap-3">
+                            <div class="w-1.5 h-6 bg-emerald-300 rounded-full {{ $seguimientoActive ? 'opacity-100' : 'opacity-0' }} group-hover:opacity-100 transition-all"></div>
+                            <span class="font-medium whitespace-nowrap">Seguimiento de Cultivos</span>
+                        </div>
+                        <svg id="arrow-seguimiento-menu" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transition-transform duration-200 shrink-0 {{ $seguimientoActive ? 'rotate-180' : '' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+
+                    <div id="seguimiento-menu" class="{{ $seguimientoActive ? 'block' : 'hidden' }} pl-4 space-y-1 overflow-hidden transition-all duration-300">
+                        <a href="{{ route('admin.cosechas.index') }}" class="group flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-200 {{ active('admin.cosechas.*') }}">
+                            <div class="w-1 h-1 bg-emerald-400 rounded-full shrink-0"></div>
+                            <span class="whitespace-nowrap">Control de Cosechas</span>
                         </a>
                     </div>
                 </div>
