@@ -26,7 +26,7 @@
 
             <div class="flex items-center">
                 <button onclick="document.getElementById('modal-nueva-cosecha').classList.remove('hidden')"
-                    class="w-full bg-emerald-950 text-white rounded-3xl py-6 font-black uppercase tracking-tighter hover:bg-emerald-900 hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-emerald-200 flex items-center justify-center gap-4 group">
+                    class="w-full bg-emerald-700 text-white rounded-3xl py-6 font-black uppercase tracking-tighter hover:bg-emerald-800 hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-emerald-200 flex items-center justify-center gap-4 group">
                     <div
                         class="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center group-hover:rotate-90 transition-transform">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -172,14 +172,14 @@
                                     </div>
                                 </div>
 
-                                <button
+                                <a href="{{ route('admin.cosechas.show', $cosecha->id_cosecha) }}"
                                     class="w-full mt-4 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-sm py-2.5 rounded-xl transition-colors flex items-center justify-center gap-2">
                                     Ver Detalles
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M14 5l7 7m0 0l-7 7m7-7H3" />
                                     </svg>
-                                </button>
+                                </a>
                             </div>
                         </div>
                     @endforeach
@@ -227,7 +227,8 @@
                             class="w-full bg-emerald-50 border-2 border-emerald-50 rounded-2xl p-4 text-emerald-900 font-bold focus:border-emerald-500 transition-all">
                             <option value="" disabled selected>Seleccione Terreno</option>
                             @foreach($terrenos as $terreno)
-                                <option value="{{ $terreno->id_terreno }}" data-impacto="{{ $terreno->tipoSuelo->impacto_dias ?? 0 }}">
+                                <option value="{{ $terreno->id_terreno }}"
+                                    data-impacto="{{ $terreno->tipoSuelo->impacto_dias ?? 0 }}">
                                     {{ $terreno->nombre }} ({{ $terreno->Ancho * $terreno->Alto }} m²)
                                 </option>
                             @endforeach
@@ -242,7 +243,8 @@
                             class="w-full bg-emerald-50 border-2 border-emerald-50 rounded-2xl p-4 text-emerald-900 font-bold focus:border-emerald-500 transition-all">
                             <option value="" disabled selected>Seleccione Variedad</option>
                             @foreach($semillas as $semilla)
-                                <option value="{{ $semilla->id_semilla }}" data-yield="{{ $semilla->rendimiento_promedio }}" data-base-dias="{{ $semilla->tiempo_base_dias ?? 0 }}">
+                                <option value="{{ $semilla->id_semilla }}" data-yield="{{ $semilla->rendimiento_promedio }}"
+                                    data-base-dias="{{ $semilla->tiempo_base_dias ?? 0 }}">
                                     {{ $semilla->nombre_semilla }}
                                 </option>
                             @endforeach
@@ -311,7 +313,8 @@
                 <div id="preview-produccion"
                     class="hidden bg-emerald-50 rounded-3xl p-6 border-2 border-emerald-100 grid-cols-1 md:grid-cols-2 gap-4 items-center">
                     <div class="flex items-center gap-4 md:border-r-2 md:border-emerald-100 pr-4">
-                        <div class="w-12 h-12 bg-emerald-600 rounded-2xl flex items-center justify-center text-white shrink-0">
+                        <div
+                            class="w-12 h-12 bg-emerald-600 rounded-2xl flex items-center justify-center text-white shrink-0">
                             <!-- Icono para produccion -->
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -321,11 +324,13 @@
                         <div>
                             <p class="text-[10px] font-black text-emerald-400 uppercase tracking-widest">Est. Producción
                             </p>
-                            <h4 id="valor-estimado" class="text-2xl font-black text-emerald-950 leading-none truncate">0 kg</h4>
+                            <h4 id="valor-estimado" class="text-2xl font-black text-emerald-950 leading-none truncate">0 kg
+                            </h4>
                         </div>
                     </div>
                     <div class="flex items-center gap-4 md:pl-4">
-                        <div class="w-12 h-12 bg-emerald-600 rounded-2xl flex items-center justify-center text-white shrink-0">
+                        <div
+                            class="w-12 h-12 bg-emerald-600 rounded-2xl flex items-center justify-center text-white shrink-0">
                             <!-- Icono para calendario -->
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -335,7 +340,8 @@
                         <div>
                             <p class="text-[10px] font-black text-emerald-400 uppercase tracking-widest">Est. Cosecha
                             </p>
-                            <h4 id="fecha-estimada-preview" class="text-xl font-black text-emerald-950 leading-none truncate w-full">N/A</h4>
+                            <h4 id="fecha-estimada-preview"
+                                class="text-xl font-black text-emerald-950 leading-none truncate w-full">N/A</h4>
                         </div>
                     </div>
                 </div>
@@ -358,7 +364,7 @@
                 const selectRiego = document.getElementById('select-riego');
                 const inputCantidad = document.getElementById('input-cantidad');
                 const inputFecha = document.getElementById('input-fecha');
-                
+
                 const previewDiv = document.getElementById('preview-produccion');
                 const valorEstimado = document.getElementById('valor-estimado');
                 const fechaEstimadaPreview = document.getElementById('fecha-estimada-preview');
@@ -367,7 +373,7 @@
                     const optionSemilla = selectSemilla.options[selectSemilla.selectedIndex];
                     const optionTerreno = selectTerreno ? selectTerreno.options[selectTerreno.selectedIndex] : null;
                     const optionRiego = selectRiego ? selectRiego.options[selectRiego.selectedIndex] : null;
-                    
+
                     const yieldValue = optionSemilla && !optionSemilla.disabled ? parseFloat(optionSemilla.getAttribute('data-yield')) : 0;
                     const cantidad = parseFloat(inputCantidad.value) || 0;
 
@@ -382,7 +388,7 @@
                         valorEstimado.textContent = `${estimado} kg`;
                         showPreview = true;
                     } else {
-                         valorEstimado.textContent = `0 kg`;
+                        valorEstimado.textContent = `0 kg`;
                     }
 
                     // Update Date
@@ -390,19 +396,19 @@
                         const baseDias = parseInt(optionSemilla.getAttribute('data-base-dias') || 0);
                         const impactoSuelo = parseInt(optionTerreno.getAttribute('data-impacto') || 0);
                         const impactoRiego = parseInt(optionRiego.getAttribute('data-impacto') || 0);
-                        
+
                         const totalDias = baseDias + impactoSuelo + impactoRiego;
-                        
+
                         const fechaInicio = new Date(inputFecha.value);
                         fechaInicio.setDate(fechaInicio.getDate() + totalDias);
-                        
+
                         const opcionesFecha = { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' };
                         fechaEstimadaPreview.textContent = fechaInicio.toLocaleDateString('es-ES', opcionesFecha);
                         showPreview = true;
                     } else {
                         fechaEstimadaPreview.textContent = `N/A`;
                     }
-                    
+
                     if (showPreview) {
                         previewDiv.classList.remove('hidden');
                         previewDiv.classList.add('grid');

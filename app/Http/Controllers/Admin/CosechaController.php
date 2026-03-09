@@ -80,4 +80,53 @@ class CosechaController extends Controller
 
         return redirect()->route('admin.cosechas.index')->with('success', 'Siembra iniciada correctamente.');
     }
+
+    public function show($id)
+    {
+        $id_empresa = $this->getEmpresaId();
+
+        $cosecha = Cosecha::where('id_empresa', $id_empresa)
+            ->with(['terreno', 'terreno.tipoSuelo', 'semilla'])
+            ->findOrFail($id);
+
+        $fechaSiembra = \Carbon\Carbon::parse($cosecha->fecha_siembra);
+        $fechaEstimada = $cosecha->fecha_estimada ? \Carbon\Carbon::parse($cosecha->fecha_estimada) : null;
+
+        $now = \Carbon\Carbon::now();
+
+        $diasTotales = 0;
+        $diasTranscurridos = 0;
+        $porcentaje = 0;
+        $diasRestantes = 0;
+
+        if ($fechaEstimada) {
+            $diasTotales = $fechaSiembra->diffInDays($fechaEstimada);
+            $diasTranscurridos = $fechaSiembra->diffInDays($now, false); // false para permitir negativos si la siembra es futura
+
+            if ($diasTranscurridos < 0) {
+                $diasTranscurridos = 0;
+            }
+
+            $porcentaje = $diasTotales > 0 ? ($diasTranscurridos / $diasTotales) * 100 : 0;
+
+            if ($porcentaje > 100) {
+                $porcentaje = 100;
+            }
+
+            $diasRestantes = $now->diffInDays($fechaEstimada, false);
+        }
+
+        // Determinar fase actual basada en porcentaje (Aproximación general)
+        $faseActual = 'Siembra';
+        if ($porcentaje >= 20 && $porcentaje < 50)
+            $faseActual = 'Vegetativo';
+        elseif ($porcentaje >= 50 && $porcentaje < 75)
+            $faseActual = 'Floración';
+        elseif ($porcentaje >= 75 && $porcentaje < 90)
+            $faseActual = 'Llenado de Grano';
+        elseif ($porcentaje >= 90)
+            $faseActual = 'Cosecha';
+
+        return view('admin.cosechas.show', compact('cosecha', 'diasTotales', 'diasTranscurridos', 'porcentaje', 'diasRestantes', 'faseActual'));
+    }
 }
