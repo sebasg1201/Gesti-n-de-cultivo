@@ -63,7 +63,7 @@ class InsumoController extends Controller
             'Nombre' => $request->nombre,
             'descripcion' => $request->descripcion ?? $catalogItem->descripcion,
             'stock_actual' => 0.00,
-
+            'cantidad_stock' => 0.00,
         ]);
 
         return redirect()->route('insumos.index')

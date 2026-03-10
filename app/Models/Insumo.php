@@ -20,7 +20,6 @@ class Insumo extends Model
         'stock_actual',
         'Nombre',
         'Calidad',
-        'cantidad_stock',
         'Fecha_ingreso',
         'Fecha_vencimiento',
         'descripcion',

@@ -155,6 +155,12 @@
                                 <span class="whitespace-nowrap">Inventario de Suministros</span>
                             </a>
 
+                            <a href="{{ route('admin.proveedores.index') }}"
+                                class="group flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-200 {{ active('admin.proveedores.*') }}">
+                                <div class="w-1 h-1 bg-emerald-400 rounded-full shrink-0"></div>
+                                <span class="whitespace-nowrap">Proveedores</span>
+                            </a>
+
                             <a href="{{ route('estados.index') }}"
                                 class="group flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-200 {{ active('estados.*') }}">
                                 <div class="w-1 h-1 bg-emerald-400 rounded-full shrink-0"></div>

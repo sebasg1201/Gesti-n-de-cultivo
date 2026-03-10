@@ -299,12 +299,12 @@
                                     const categoria = item.tipo_insumo ? item.tipo_insumo.nombre : 'Insumo';
 
                                     div.innerHTML = `
-                                        <div>
-                                            <p class="font-black text-emerald-950 text-sm">${item.nombre_comercial}</p>
-                                            <p class="text-[10px] text-emerald-500 font-bold uppercase tracking-widest">${categoria}</p>
-                                        </div>
-                                        <svg class="w-4 h-4 text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
-                                    `;
+                                                <div>
+                                                    <p class="font-black text-emerald-950 text-sm">${item.nombre_comercial}</p>
+                                                    <p class="text-[10px] text-emerald-500 font-bold uppercase tracking-widest">${categoria}</p>
+                                                </div>
+                                                <svg class="w-4 h-4 text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                                            `;
                                     div.onclick = () => selectFromCatalog(item);
                                     searchResults.appendChild(div);
                                 });
