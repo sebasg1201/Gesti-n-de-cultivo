@@ -93,6 +93,7 @@
                         request()->routeIs('tipo_riegos.*') ||
                         request()->routeIs('tipo_semillas.*') ||
                         request()->routeIs('tipo_suelos.*') ||
+                        request()->routeIs('insumos.*') ||
                         request()->routeIs('estados.*') ||
                         request()->routeIs('admin.usuarios.*') ||
                         request()->routeIs('admin.terrenos.*');
@@ -146,6 +147,12 @@
                                 class="group flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-200 {{ active('tipo_suelos.*') }}">
                                 <div class="w-1 h-1 bg-emerald-400 rounded-full shrink-0"></div>
                                 <span class="whitespace-nowrap">Tipos de Suelo</span>
+                            </a>
+
+                            <a href="{{ route('insumos.index') }}"
+                                class="group flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-200 {{ active('insumos.*') }}">
+                                <div class="w-1 h-1 bg-emerald-400 rounded-full shrink-0"></div>
+                                <span class="whitespace-nowrap">Inventario de Suministros</span>
                             </a>
 
                             <a href="{{ route('estados.index') }}"

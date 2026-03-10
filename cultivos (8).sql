@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 10-03-2026 a las 19:48:05
+-- Tiempo de generación: 10-03-2026 a las 22:24:28
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de datos: `prueba_cultivos`
+-- Base de datos: `cultivos`
 --
 
 -- --------------------------------------------------------
@@ -58,6 +58,17 @@ CREATE TABLE `catalogo_insumos` (
   `impacto_dias` int(11) DEFAULT 0,
   `id_tipo_insumo` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `catalogo_insumos`
+--
+
+INSERT INTO `catalogo_insumos` (`id_catalogo_insumo`, `nombre_comercial`, `descripcion`, `impacto_dias`, `id_tipo_insumo`) VALUES
+(2, 'Fertilizante NPK 15-15-15', 'Fertilizante equilibrado para todo tipo de cultivos', 5, 6),
+(3, 'Urea Agrícola 46%', 'Fuente concentrada de nitrógeno', 3, 6),
+(4, 'Pala Punta Huevo', 'Herramienta resistente para trabajo de campo', 0, 8),
+(5, 'Machete 22 Pulgadas', 'Acero al carbono, ideal para desmonte', 0, 8),
+(6, 'Aceite Motor Diesel 15W40', 'Lubricante para tractores y maquinaria pesada', 0, 9);
 
 -- --------------------------------------------------------
 
@@ -264,6 +275,7 @@ CREATE TABLE `entrada_insumo` (
   `id_entrada` int(11) NOT NULL,
   `id_proveedor` int(11) NOT NULL,
   `id_insumo` int(11) NOT NULL,
+  `id_semilla` int(11) NOT NULL,
   `cantidad_recibida` decimal(10,2) NOT NULL,
   `fecha_entrada` timestamp NOT NULL DEFAULT current_timestamp(),
   `precio_unitario` decimal(10,2) DEFAULT NULL
@@ -331,15 +343,21 @@ CREATE TABLE `fases_programadas` (
 
 CREATE TABLE `insumo` (
   `ID_insumo` int(11) NOT NULL,
+  `id_empresa` varchar(20) DEFAULT NULL,
   `id_catalogo_insumo` int(11) DEFAULT NULL,
+  `stock_actual` decimal(10,2) DEFAULT 0.00,
   `Nombre` varchar(100) DEFAULT NULL,
-  `Calidad` varchar(50) DEFAULT NULL,
-  `cantidad_stock` decimal(10,2) NOT NULL,
-  `Fecha_ingreso` date DEFAULT NULL,
   `Fecha_vencimiento` date DEFAULT NULL,
   `descripcion` text NOT NULL,
   `id_proveedor` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `insumo`
+--
+
+INSERT INTO `insumo` (`ID_insumo`, `id_empresa`, `id_catalogo_insumo`, `stock_actual`, `Nombre`, `Fecha_vencimiento`, `descripcion`, `id_proveedor`) VALUES
+(2, '834324234', 3, 0.00, 'Urea Agrícola 46%', NULL, 'Fuente concentrada de nitrógeno', NULL);
 
 -- --------------------------------------------------------
 
@@ -431,7 +449,8 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (18, '2026_03_07_000002_create_irrigation_catalog', 9),
 (19, '2026_03_07_000003_add_impact_to_irrigation', 10),
 (20, '2026_03_07_000004_add_description_to_soil_catalog', 11),
-(21, '2026_03_07_000005_add_formal_foreign_keys_to_catalogs', 12);
+(21, '2026_03_07_000005_add_formal_foreign_keys_to_catalogs', 12),
+(22, '2026_03_10_145541_add_id_empresa_to_insumo_table', 13);
 
 -- --------------------------------------------------------
 
@@ -510,7 +529,9 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('NpeoEYDablaK4ponuUBCkqdr9k6oFLyScBGolBro', 1110722345, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiMDhqblZubG56aU1ZMmlVb1JQbXhQb1BYTUNQQ1FQTGJ3eGRPb0E3WiI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6Mzc6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZG1pbi9kYXNoYm9hcmQiO3M6NToicm91dGUiO3M6MTU6ImFkbWluLmRhc2hib2FyZCI7fXM6NTQ6ImxvZ2luX3VzdWFyaW9fNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToxMTEwNzIyMzQ1O30=', 1773168364);
+('5AGdGuSOHvPgZFdBLNGM3F7ZJyoN3720yRwWZ4k7', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiejN5bkpTWUxIRDZFcHcyV1ZkOGRnNmNwUVJZZEllYkhGc1BYRkdoSCI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzU6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC90aXBvX3NlbWlsbGFzIjtzOjU6InJvdXRlIjtzOjE5OiJ0aXBvX3NlbWlsbGFzLmluZGV4Ijt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo1NDoibG9naW5fdXN1YXJpb181OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjExMTA3MjIzNDU7fQ==', 1773094121),
+('BEGz8Pbx7Tee99ZgD9RLRylyBbmfEwrzw2IMRfhv', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiYnI4Znh3cVlCc2RCeTZ4OGVreldzSk9tMEVYUWpwbmxkc0puWXk0ZSI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6Mjk6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9pbnN1bW9zIjtzOjU6InJvdXRlIjtzOjEzOiJpbnN1bW9zLmluZGV4Ijt9czo1NDoibG9naW5fdXN1YXJpb181OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjExMDQ5MjEyMjM7fQ==', 1773177134),
+('bLiGObGk4PYpm7EZKfaq58tScabvdCK9ABuZK54p', 1110722345, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiaE1GNTBCUEVMTUluT0sxSU80dU9oUjRPQXFUV1oycUlnTnVaR2VxSSI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzY6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZG1pbi9jb3NlY2hhcyI7czo1OiJyb3V0ZSI7czoyMDoiYWRtaW4uY29zZWNoYXMuaW5kZXgiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjU0OiJsb2dpbl91c3VhcmlvXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MTExMDcyMjM0NTt9', 1773164138);
 
 -- --------------------------------------------------------
 
@@ -615,7 +636,12 @@ INSERT INTO `tipo_insumo` (`id_tipo_insumo`, `nombre`) VALUES
 (1, 'Fertilizante'),
 (2, 'Abono'),
 (3, 'Fungicida'),
-(4, 'Herbicida');
+(4, 'Herbicida'),
+(5, 'Semillas'),
+(6, 'Fertilizantes'),
+(7, 'Agroquímicos'),
+(8, 'Herramientas'),
+(9, 'Mantenimiento');
 
 -- --------------------------------------------------------
 
@@ -676,16 +702,17 @@ CREATE TABLE `tipo_semilla` (
   `nombre_semilla` varchar(100) DEFAULT NULL,
   `tiempo_base_dias` int(11) DEFAULT NULL,
   `descripcion` varchar(250) NOT NULL,
-  `rendimiento_promedio` decimal(10,2) DEFAULT NULL
+  `rendimiento_promedio` decimal(10,2) DEFAULT NULL,
+  `stock_actual` decimal(10,2) DEFAULT 0.00
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `tipo_semilla`
 --
 
-INSERT INTO `tipo_semilla` (`id_semilla`, `id_empresa`, `id_catalogo`, `nombre_semilla`, `tiempo_base_dias`, `descripcion`, `rendimiento_promedio`) VALUES
-(3, '988091212', 1, 'Tomate Chonto', 90, 'Variedad de tomate muy resistente, ideal para salsas.', 12.00),
-(4, '988091212', 3, 'Maíz Amarillo', 120, 'Cereal básico para la alimentación, ciclo corto.', 3.50);
+INSERT INTO `tipo_semilla` (`id_semilla`, `id_empresa`, `id_catalogo`, `nombre_semilla`, `tiempo_base_dias`, `descripcion`, `rendimiento_promedio`, `stock_actual`) VALUES
+(3, '988091212', 1, 'Tomate Chonto', 90, 'Variedad de tomate muy resistente, ideal para salsas.', 12.00, 0.00),
+(4, '988091212', 3, 'Maíz Amarillo', 120, 'Cereal básico para la alimentación, ciclo corto.', 3.50, 0.00);
 
 -- --------------------------------------------------------
 
@@ -755,9 +782,9 @@ CREATE TABLE `usuario` (
 INSERT INTO `usuario` (`documento`, `imagen`, `nombre`, `telefono`, `correo`, `contrasena`, `remember_token`, `id_tipo_usuario`, `id_estado`, `id_empresa`) VALUES
 (1006511653, 'usuarios/TPn5OuzBFcUMBMTb27MDcG8KrMQg0nUiQau4ExxO.png', 'Sebas Alvarez', '3103524334', 'sombrahdepaz76@gmail.com', '$2y$12$ShO2KxmULq2i87gGWluCyeAy/C5fhUJt26ceeK7Nt/BKxRxQl/DRa', '', 1, 3, '103455657789'),
 (1034345454, 'usuarios/ohtjEMXYnEtIKQV6uXFyhSx4giqPArWo1ABQmYEk.jpg', 'Javier Gonza', '3223243434', 'bastobrayan246@gmail.com', '$2y$12$IXfjWMnY6Ul6L6B0trEKK.6obRkullnh7zI5H/sAO3/nHgpsQWjqq', '', 1, 3, '876767657'),
-(1104921223, 'usuarios/fxyI259nxaEdNx9meFLTLFkpNIRGXnj7nyy2Z8PX.png', 'julio profe', '3291231212', 'reyesz2803@gmail.com', '$2y$12$NcwOItyOjXK4jwD7js4ri.mghmiFTcxGEzjyPNbzJGOZ6lWJQ7Eou', 'L6ur0l8cTbySu6UszUtmUcokC1ulEVdseHMeNZvK2xhwpe4Ay1X84lfEgOHl', 1, 3, '834324234'),
+(1104921223, 'usuarios/fxyI259nxaEdNx9meFLTLFkpNIRGXnj7nyy2Z8PX.png', 'julio profe', '3291231212', 'reyesz2803@gmail.com', '$2y$12$NcwOItyOjXK4jwD7js4ri.mghmiFTcxGEzjyPNbzJGOZ6lWJQ7Eou', '82bofanUqX4dcELHfjQ1pMfDcYlIQINEXOUiQnF4rCmDVuR8p1PSmBjzasXr', 1, 3, '834324234'),
 (1110722331, 'usuarios/useOl4EMIIlIsP0f8X6vMaoWPIjhX5Ml9tCDJ2bC.jpg', 'Didier', '3103527239', 'johsn@gmail.com', '$2y$12$vxkHUv.QeZAo9aWiUSLcNuVRnX.siC2vPlL8S1QY6vt6m6WTme7vK', '', 3, 1, '834324234'),
-(1110722345, 'usuarios/IEJRgrLlnPGGxJcaD5NFbzOnxj7DAVNxZXnoZjTr.jpg', 'Brayan Gutierez', '3029219231', 'sombrahdepaz@gmail.com', '$2y$12$ElMqaOG0Q30Gbt8q2RwPDudpzZPaIlhmEoA4Ldj0WQ6cW6zhcGAiK', 'IvEkU4OFvn3Ad8xx2hCwsO3Pe9nLo7Iq7Pdi2am0bqOBHVh941PkCf4wqDg8', 1, 3, '988091212');
+(1110722345, 'usuarios/IEJRgrLlnPGGxJcaD5NFbzOnxj7DAVNxZXnoZjTr.jpg', 'Brayan Gutierez', '3029219231', 'sombrahdepaz@gmail.com', '$2y$12$ElMqaOG0Q30Gbt8q2RwPDudpzZPaIlhmEoA4Ldj0WQ6cW6zhcGAiK', 'ZvNG62UWZAdnu1aCOus0E5kcsylRs6ExJmHDCOQNuZ6MqstDveVTUCa1XJJg', 1, 3, '988091212');
 
 -- --------------------------------------------------------
 
@@ -875,7 +902,8 @@ ALTER TABLE `empresa`
 ALTER TABLE `entrada_insumo`
   ADD PRIMARY KEY (`id_entrada`),
   ADD KEY `fk_entrada_proveedor` (`id_proveedor`),
-  ADD KEY `fk_entrada_insumo` (`id_insumo`);
+  ADD KEY `fk_entrada_insumo` (`id_insumo`),
+  ADD KEY `id_semilla` (`id_semilla`);
 
 --
 -- Indices de la tabla `estado`
@@ -905,7 +933,8 @@ ALTER TABLE `fases_programadas`
 ALTER TABLE `insumo`
   ADD PRIMARY KEY (`ID_insumo`),
   ADD KEY `id_proveedor` (`id_proveedor`),
-  ADD KEY `fk_insumo_al_catalogo` (`id_catalogo_insumo`);
+  ADD KEY `fk_insumo_al_catalogo` (`id_catalogo_insumo`),
+  ADD KEY `id_empresa` (`id_empresa`);
 
 --
 -- Indices de la tabla `insumo_cosecha`
@@ -1068,7 +1097,7 @@ ALTER TABLE `venta_licencias`
 -- AUTO_INCREMENT de la tabla `catalogo_insumos`
 --
 ALTER TABLE `catalogo_insumos`
-  MODIFY `id_catalogo_insumo` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_catalogo_insumo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de la tabla `catalogo_riegos`
@@ -1140,7 +1169,7 @@ ALTER TABLE `fases_programadas`
 -- AUTO_INCREMENT de la tabla `insumo`
 --
 ALTER TABLE `insumo`
-  MODIFY `ID_insumo` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID_insumo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `insumo_cosecha`
@@ -1158,7 +1187,7 @@ ALTER TABLE `jobs`
 -- AUTO_INCREMENT de la tabla `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT de la tabla `producto`
@@ -1200,7 +1229,7 @@ ALTER TABLE `terreno`
 -- AUTO_INCREMENT de la tabla `tipo_insumo`
 --
 ALTER TABLE `tipo_insumo`
-  MODIFY `id_tipo_insumo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_tipo_insumo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `tipo_licencia`
@@ -1282,6 +1311,7 @@ ALTER TABLE `empresa`
 -- Filtros para la tabla `entrada_insumo`
 --
 ALTER TABLE `entrada_insumo`
+  ADD CONSTRAINT `entrada_insumo_ibfk_1` FOREIGN KEY (`id_semilla`) REFERENCES `tipo_semilla` (`id_semilla`),
   ADD CONSTRAINT `fk_entrada_insumo` FOREIGN KEY (`id_insumo`) REFERENCES `insumo` (`ID_insumo`),
   ADD CONSTRAINT `fk_entrada_proveedor` FOREIGN KEY (`id_proveedor`) REFERENCES `proveedor` (`id_proveedor`);
 
@@ -1298,7 +1328,8 @@ ALTER TABLE `fases_programadas`
 --
 ALTER TABLE `insumo`
   ADD CONSTRAINT `fk_insumo_al_catalogo` FOREIGN KEY (`id_catalogo_insumo`) REFERENCES `catalogo_insumos` (`id_catalogo_insumo`),
-  ADD CONSTRAINT `insumo_ibfk_1` FOREIGN KEY (`id_proveedor`) REFERENCES `proveedor` (`id_proveedor`);
+  ADD CONSTRAINT `insumo_ibfk_1` FOREIGN KEY (`id_proveedor`) REFERENCES `proveedor` (`id_proveedor`),
+  ADD CONSTRAINT `insumo_ibfk_2` FOREIGN KEY (`id_empresa`) REFERENCES `empresa` (`id_empresa`);
 
 --
 -- Filtros para la tabla `insumo_cosecha`

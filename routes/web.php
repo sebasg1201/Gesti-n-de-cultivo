@@ -122,6 +122,11 @@ use App\Http\Controllers\TipoSemillaController;
 Route::get('tipo_semillas/catalog', [TipoSemillaController::class, 'catalog'])->name('tipo_semillas.catalog');
 Route::resource('tipo_semillas', TipoSemillaController::class);
 
+use App\Http\Controllers\InsumoController;
+
+Route::get('insumos/catalog', [InsumoController::class, 'catalog'])->name('insumos.catalog');
+Route::resource('insumos', InsumoController::class);
+
 use App\Http\Controllers\TipoRiegoController;
 
 Route::get('tipo_riegos/catalog', [TipoRiegoController::class, 'catalog'])->name('tipo_riegos.catalog');
