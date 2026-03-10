@@ -150,7 +150,7 @@ class UsuarioEmpresaController extends Controller
             ->get();
 
         // Fases actualmente asignadas al usuario
-        $fases = FaseProgramada::where('documento', $documento)->with('cosecha')->get();
+        $fases = FaseProgramada::where('documento_trabajador', $documento)->with('cosecha')->get();
 
         return view('admin.usuarios.asignar_trabajo', compact('usuario', 'cosechas', 'fases'));
     }
@@ -167,16 +167,15 @@ class UsuarioEmpresaController extends Controller
         $request->validate([
             'id_cosecha' => 'required|exists:cosecha,id_cosecha',
             'descripcion' => 'required|string',
-            'estado' => 'required|string|max:50',
             'fecha_programada' => 'required|date'
         ]);
 
         FaseProgramada::create([
             'id_cosecha' => $request->id_cosecha,
             'descripcion' => $request->descripcion,
-            'estado' => $request->estado,
+            'id_estado' => 1, // 1 = Pendiente
             'fecha_programada' => $request->fecha_programada,
-            'documento' => $usuario->documento
+            'documento_trabajador' => $usuario->documento
         ]);
 
         return redirect()->route('admin.usuarios.asignar_trabajo', $usuario->documento)

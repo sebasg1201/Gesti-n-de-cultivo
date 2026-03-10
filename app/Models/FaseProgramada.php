@@ -16,9 +16,9 @@ class FaseProgramada extends Model
     protected $fillable = [
         'descripcion',
         'fecha_programada',
-        'estado',
+        'id_estado',
         'id_cosecha',
-        'documento'
+        'documento_trabajador'
     ];
 
     public function cosecha()
@@ -28,6 +28,6 @@ class FaseProgramada extends Model
 
     public function usuario()
     {
-        return $this->belongsTo(Usuario::class, 'documento', 'documento');
+        return $this->belongsTo(Usuario::class, 'documento_trabajador', 'documento');
     }
 }
