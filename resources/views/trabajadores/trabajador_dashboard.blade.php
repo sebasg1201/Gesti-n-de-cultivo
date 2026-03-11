@@ -116,6 +116,8 @@
                                             data-estimada="{{ $details['estimada'] }}"
                                             data-cantidad="{{ $details['cantidad'] }}"
                                             data-produccion="{{ $details['produccion'] }}"
+                                            data-id-estado="{{ $fase->id_estado }}"
+                                            data-update-url="{{ route('trabajador.tareas.estado', ['id' => $details['fase_id'], 'tipo' => $fase->tipo_tarea]) }}"
                                             onclick="showTaskDetails(this)" 
                                             class="p-2.5 rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors border border-blue-100 flex items-center justify-center relative shadow-sm"
                                             title="Ver detalle">
@@ -123,31 +125,7 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                         </svg>
-                                        @if($fase->tipo_tarea != 'fase')
-                                            <span class="absolute -top-1 -right-1 flex h-3 w-3">
-                                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full {{ $fase->tipo_tarea == 'riego' ? 'bg-blue-400' : 'bg-purple-400' }} opacity-75"></span>
-                                                <span class="relative inline-flex rounded-full h-3 w-3 {{ $fase->tipo_tarea == 'riego' ? 'bg-blue-500' : 'bg-purple-500' }}"></span>
-                                            </span>
-                                        @endif
                                     </button>
-
-                                    {{-- Select de Estado --}}
-                                    <form id="form-estado-{{ $fase->tipo_tarea }}-{{ $details['fase_id'] }}" action="{{ route('trabajador.tareas.estado', ['id' => $details['fase_id'], 'tipo' => $fase->tipo_tarea]) }}" method="POST" class="flex-1">
-                                        @csrf
-                                        <div class="relative group/select">
-                                            <select name="id_estado" onchange="this.form.submit()" 
-                                                    class="w-full appearance-none bg-emerald-50 border border-emerald-100 text-emerald-900 font-bold py-2.5 px-4 pr-10 rounded-xl focus:outline-none focus:border-emerald-500 transition-all cursor-pointer text-sm shadow-sm hover:border-emerald-200">
-                                                <option value="1" {{ $fase->id_estado == 1 ? 'selected' : 'disabled' }}>Pendiente</option>
-                                                <option value="8" {{ $fase->id_estado == 8 ? 'selected' : '' }}>En Proceso</option>
-                                                <option value="9" {{ $fase->id_estado == 9 ? 'selected' : '' }}>Realizado</option>
-                                            </select>
-                                            <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-emerald-600">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                                                </svg>
-                                            </div>
-                                        </div>
-                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -279,7 +257,30 @@
                         </div>
                     </div>
 
-                    <div class="mt-10">
+                    {{-- Selector de Estado en el Modal --}}
+                    <div class="mt-8 pt-8 border-t border-gray-100">
+                        <h4 class="text-xs font-black text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                            <span class="w-2 h-2 bg-emerald-500 rounded-full"></span> Cambiar Estado de la Tarea
+                        </h4>
+                        <form id="modalFormEstado" action="" method="POST">
+                            @csrf
+                            <div class="relative group/select">
+                                <select name="id_estado" id="modalSelectEstado" onchange="this.form.submit()" 
+                                        class="w-full appearance-none bg-emerald-50 border border-emerald-100 text-emerald-900 font-bold py-4 px-6 pr-12 rounded-2xl focus:outline-none focus:border-emerald-500 transition-all cursor-pointer text-lg shadow-sm hover:border-emerald-200">
+                                    <option value="1">Pendiente</option>
+                                    <option value="8">En Proceso</option>
+                                    <option value="9">Realizado</option>
+                                </select>
+                                <div class="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-emerald-600">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="mt-8">
                         <button onclick="closeTaskModalWithUpdate()" class="w-full bg-gray-900 text-white font-bold py-5 rounded-[1.5rem] hover:bg-black transition-all shadow-xl shadow-gray-200 hover:-translate-y-1">
                             Entendido, cerrar detalles
                         </button>
@@ -316,6 +317,22 @@
             document.getElementById('modalCantidad').innerText = ds.cantidad || 'N/A';
             document.getElementById('modalProduccion').innerText = ds.produccion || 'N/A';
             
+            // Configurar formulario de estado
+            const modalForm = document.getElementById('modalFormEstado');
+            const modalSelect = document.getElementById('modalSelectEstado');
+            if (modalForm && modalSelect && ds.updateUrl) {
+                modalForm.action = ds.updateUrl;
+                modalSelect.value = ds.idEstado || '1';
+                
+                // Deshabilitar "Pendiente" si ya está en otro estado para forzar avance
+                const optPendiente = modalSelect.querySelector('option[value="1"]');
+                if (ds.idEstado != '1') {
+                    optPendiente.disabled = true;
+                } else {
+                    optPendiente.disabled = false;
+                }
+            }
+
             const modal = document.getElementById('modalTarea');
             modal.classList.remove('hidden');
             document.body.style.overflow = 'hidden';
@@ -330,23 +347,16 @@
     }
 
     function closeTaskModalWithUpdate() {
-        const faseId = document.getElementById('currentFaseId').value;
-        const estadoActual = document.getElementById('currentFaseEstado').value;
-        const tipoTarea = document.getElementById('currentTipoTarea').value;
-
-        if (faseId && estadoActual === 'Pendiente') {
-            const form = document.getElementById('form-estado-' + tipoTarea + '-' + faseId);
-            if (form) {
-                const select = form.querySelector('select[name="id_estado"]');
-                if (select) {
-                    select.value = '8'; // ID 8 = En Proceso
-                    form.submit();
-                    return; 
-                }
-            }
-        }
+        const modalSelect = document.getElementById('modalSelectEstado');
+        const modalForm = document.getElementById('modalFormEstado');
         
-        closeTaskModal();
+        if (modalSelect && modalSelect.value == '1') {
+            // Si está pendiente, pasar automáticamente a "En Proceso" (8)
+            modalSelect.value = '8';
+            modalForm.submit();
+        } else {
+            closeTaskModal();
+        }
     }
 </script>
 @endsection
