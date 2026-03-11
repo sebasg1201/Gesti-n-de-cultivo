@@ -96,7 +96,7 @@
             
             <div class="bg-white p-6 rounded-3xl shadow-sm border border-emerald-100 flex items-center gap-6">
                  @if($usuario->imagen)
-                    <img src="{{ asset('storage/' . $usuario->imagen) }}" alt="Avatar" class="w-16 h-16 rounded-full object-cover border-2 border-emerald-200">
+                    <img src="{{ asset('uploads/' . $usuario->imagen) }}" alt="Avatar" class="w-16 h-16 rounded-full object-cover border-2 border-emerald-200">
                 @else
                     <div class="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 text-2xl font-bold border-2 border-emerald-200">
                         {{ strtoupper(substr($usuario->nombre, 0, 1)) }}

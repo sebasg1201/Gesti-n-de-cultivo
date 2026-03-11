@@ -169,6 +169,7 @@
                                         </div>
                                     </div>
                                 </td>
+<<<<<<< HEAD
                                 <td class="px-8 py-6">
                                     <div class="space-y-1">
                                         <div class="flex items-center gap-2">
@@ -187,6 +188,43 @@
                                     <div class="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
                                         <button onclick='editSemilla(@json($semilla))' class="p-3 bg-amber-50 text-amber-600 rounded-2xl hover:bg-amber-100 transition-colors shadow-sm">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+=======
+                                 <td class="px-6 py-4">
+                                     <div class="space-y-1">
+                                         <div class="flex items-center gap-2">
+                                             <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                                             <span class="text-sm font-bold text-emerald-900">{{ $semilla->tiempo_base_dias }} <span class="text-[10px] font-normal text-emerald-500">días ciclo base</span></span>
+                                         </div>
+                                         <p class="text-xs text-emerald-400 italic max-w-[180px] truncate">{{ $semilla->descripcion }}</p>
+                                     </div>
+                                 </td>
+                                 <td class="px-6 py-4">
+                                     <div class="flex items-center gap-3">
+                                         <span class="text-xl font-black text-emerald-900">{{ number_format($semilla->stock_actual, 2) }}</span>
+                                         @if($semilla->stock_actual <= 0)
+                                             <span class="bg-red-50 text-red-600 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase flex items-center gap-1 border border-red-100">
+                                                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                                 </svg>
+                                                 Sin Stock
+                                             </span>
+                                         @else
+                                             <span class="bg-emerald-50 text-emerald-600 text-[9px] font-bold px-1.5 py-0.5 rounded-md uppercase border border-emerald-100">
+                                                 En Stock
+                                             </span>
+                                         @endif
+                                     </div>
+                                 </td>
+                                 <td class="px-6 py-4">
+                                     <div class="bg-emerald-50 rounded-xl px-3 py-1 border border-emerald-100 inline-block">
+                                         <span class="text-xs font-black text-emerald-700">{{ $semilla->rendimiento_promedio }} <span class="text-[9px] font-bold">kg/m²</span></span>
+                                     </div>
+                                 </td>
+                                <td class="px-6 py-4 text-right">
+                                    <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
+                                        <button data-semilla="{{ htmlspecialchars(json_encode($semilla), ENT_QUOTES, 'UTF-8') }}" onclick="editSemilla(JSON.parse(this.dataset.semilla))" class="p-2.5 bg-amber-50 text-amber-600 rounded-xl hover:bg-amber-100 transition-colors shadow-sm">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+>>>>>>> d7823c003e6078a34ad9eee0e15f0d5f9f9b53e3
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                             </svg>
                                         </button>
@@ -277,7 +315,12 @@
         document.getElementById('nombre_semilla').value = item.nombre;
         document.getElementById('display_dias').innerText = item.tiempo_base_dias;
         document.getElementById('display_rendimiento').innerText = item.rendimiento_promedio || '0.00';
+<<<<<<< HEAD
         document.getElementById('descripcion').value = item.descripcion || '';
+=======
+        document.getElementById('description').value = item.descripcion || '';
+        document.getElementById('stock_actual').value = item.stock_actual || 0;
+>>>>>>> d7823c003e6078a34ad9eee0e15f0d5f9f9b53e3
 
         // Toggle visibility
         formPlaceholder.classList.add('hidden');
@@ -306,7 +349,18 @@
         document.getElementById('descripcion').value = semilla.descripcion || '';
         
         searchInput.value = semilla.nombre_semilla;
+<<<<<<< HEAD
         searchInput.disabled = true;
+=======
+        selectFromCatalog(semilla.catalogo || {
+            id: semilla.id_catalogo,
+            nombre: semilla.nombre_semilla,
+            tiempo_base_dias: semilla.tiempo_base_dias,
+            rendimiento_promedio: semilla.rendimiento_promedio,
+            descripcion: semilla.descripcion,
+            stock_actual: semilla.stock_actual
+        });
+>>>>>>> d7823c003e6078a34ad9eee0e15f0d5f9f9b53e3
 
         // Adjust form for update mode
         seedForm.action = `/tipo_semillas/${semilla.id_semilla}`;

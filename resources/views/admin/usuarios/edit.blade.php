@@ -18,7 +18,7 @@
         
         <div class="bg-gradient-to-r from-emerald-600 to-green-500 p-8 text-white flex gap-6 items-center">
             @if($usuario->imagen)
-                <img src="{{ asset('storage/' . $usuario->imagen) }}" alt="Avatar" class="w-20 h-20 rounded-full object-cover border-4 border-white/30 shadow-lg">
+                <img src="{{ asset('uploads/' . $usuario->imagen) }}" alt="Avatar" class="w-20 h-20 rounded-full object-cover border-4 border-white/30 shadow-lg">
             @else
                 <div class="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center text-white text-2xl font-bold border-4 border-white/30 shadow-lg">
                     {{ strtoupper(substr($usuario->nombre, 0, 1)) }}
