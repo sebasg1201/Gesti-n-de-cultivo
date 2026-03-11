@@ -68,7 +68,7 @@ class TipoSemillaController extends Controller
     {
         $request->validate([
             'nombre_semilla' => 'required|string|max:100',
-            'descripcion' => 'required|string|max:250',
+            'descripcion' => 'nullable|string|max:250',
         ]);
 
         $tipoSemilla = TipoSemilla::where('id_semilla', $id)

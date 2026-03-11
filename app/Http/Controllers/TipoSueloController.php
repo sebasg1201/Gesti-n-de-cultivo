@@ -35,6 +35,7 @@ class TipoSueloController extends Controller
         $request->validate([
             'id_catalogo' => 'required|exists:catalogo_suelos,id',
             'nombre' => 'required|string|max:100',
+            'descripcion' => 'nullable|string|max:250',
         ]);
 
         $catalogItem = \App\Models\CatalogoSuelo::findOrFail($request->id_catalogo);
@@ -51,8 +52,9 @@ class TipoSueloController extends Controller
         TipoSuelo::create([
             'id_empresa' => $id_empresa,
             'id_catalogo' => $catalogItem->id,
-            'nombre' => $request->nombre, // Custom farm name for soil
-            'impacto_dias' => $catalogItem->impacto_dias, // STRICTLY from catalog
+            'nombre' => $request->nombre,
+            'descripcion' => $request->descripcion,
+            'impacto_dias' => $catalogItem->impacto_dias,
         ]);
 
         return redirect()->route('tipo_suelos.index')
@@ -63,13 +65,17 @@ class TipoSueloController extends Controller
     {
         $request->validate([
             'nombre' => 'required|string|max:100',
+            'descripcion' => 'nullable|string|max:250',
         ]);
 
         $tipoSuelo = TipoSuelo::where('id_tipo_suelo', $id)
             ->where('id_empresa', $this->getEmpresaId())
             ->firstOrFail();
 
-        $tipoSuelo->update($request->all());
+        $tipoSuelo->update([
+            'nombre' => $request->nombre,
+            'descripcion' => $request->descripcion,
+        ]);
 
         return redirect()->route('tipo_suelos.index')
             ->with('success', 'Tipo de suelo actualizado correctamente');

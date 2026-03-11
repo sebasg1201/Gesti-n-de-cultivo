@@ -96,6 +96,18 @@
                         </select>
                     </div>
 
+                    <div id="estadoContainer" class="hidden animate-in fade-in duration-300">
+                        <label class="block text-xs font-bold text-emerald-700 uppercase tracking-wider mb-2">Estado del Terreno</label>
+                        <select name="id_estado" id="id_estado" 
+                            class="w-full px-4 py-3 rounded-2xl border-emerald-100 focus:border-emerald-500 focus:ring-emerald-500 bg-emerald-50/30 text-sm transition-all">
+                            @foreach($estados as $estado)
+                                <option value="{{ $estado->id_estado }}">
+                                    {{ $estado->nombre_estado }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
 
 
                     <div class="flex gap-3 pt-2">
@@ -184,7 +196,10 @@
                                 </td>
                                 <td class="px-8 py-6 text-right">
                                     <div class="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
-                                        <button onclick="editTerreno(@json($terreno))" class="p-3 bg-amber-50 text-amber-600 rounded-2xl hover:bg-amber-100 transition-colors shadow-sm">
+                                        <button 
+                                            data-terreno='@json($terreno)'
+                                            onclick="openEdit(this)" 
+                                            class="p-3 bg-amber-50 text-amber-600 rounded-2xl hover:bg-amber-100 transition-colors shadow-sm">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                             </svg>
@@ -231,21 +246,43 @@
     const btnCancel = document.getElementById('btnCancel');
     const btnSubmit = document.getElementById('btnSubmit');
 
+    function openEdit(btn) {
+        const terreno = JSON.parse(btn.getAttribute('data-terreno'));
+        editTerreno(terreno);
+    }
+
     function editTerreno(terreno) {
         // Populate form fields
         document.getElementById('nombre').value = terreno.nombre;
         document.getElementById('ubicacion').value = terreno.ubicacion;
         document.getElementById('Ancho').value = terreno.Ancho;
         document.getElementById('Alto').value = terreno.Alto;
-        document.getElementById('id_tipo_suelo').value = terreno.id_tipo_suelo || '';
+        
+        if (document.getElementById('id_tipo_suelo')) {
+            document.getElementById('id_tipo_suelo').value = terreno.id_tipo_suelo || '';
+        }
+        
+        if (document.getElementById('id_estado')) {
+            document.getElementById('id_estado').value = terreno.id_estado || '';
+        }
+
+        // Show Estado field only on edit
+        const estadoContainer = document.getElementById('estadoContainer');
+        if (estadoContainer) estadoContainer.classList.remove('hidden');
 
         // Change Form Action & Method to Update
-        terrenoForm.action = `/admin/terrenos/${terreno.id_terreno}`;
+        // Use the store route as base and replace the end
+        const baseUrl = "{{ route('admin.terrenos.store') }}";
+        terrenoForm.action = `${baseUrl}/${terreno.id_terreno}`;
         methodField.innerHTML = '<input type="hidden" name="_method" value="PUT">';
         
         // Update UI
         formTitle.innerText = 'Editar Terreno';
         btnSubmit.innerText = 'Actualizar Datos';
+        
+        btnSubmit.classList.remove('bg-emerald-600');
+        btnSubmit.classList.add('bg-amber-600');
+        
         btnCancel.classList.remove('hidden');
 
         // Scroll to form (for mobile/small screens)
@@ -256,6 +293,10 @@
         // Reset inputs
         terrenoForm.reset();
         
+        // Hide Estado field
+        const estadoContainer = document.getElementById('estadoContainer');
+        if (estadoContainer) estadoContainer.classList.add('hidden');
+
         // Reset action and method to Store
         terrenoForm.action = '{{ route("admin.terrenos.store") }}';
         methodField.innerHTML = '';
@@ -263,6 +304,10 @@
         // Update UI
         formTitle.innerText = 'Registrar Terreno';
         btnSubmit.innerText = 'Guardar Terreno';
+        
+        btnSubmit.classList.remove('bg-amber-600');
+        btnSubmit.classList.add('bg-emerald-600');
+        
         btnCancel.classList.add('hidden');
     }
 </script>

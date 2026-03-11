@@ -73,7 +73,9 @@ class TipoRiegoController extends Controller
             ->where('id_empresa', $this->getEmpresaId())
             ->firstOrFail();
 
-        $tipoRiego->update($request->all());
+        $tipoRiego->update([
+            'tipo_riego' => $request->tipo_riego,
+        ]);
 
         return redirect()->route('tipo_riegos.index')
             ->with('success', 'Configuración de riego actualizada.');

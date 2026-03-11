@@ -17,6 +17,7 @@ class TipoSuelo extends Model
         'id_empresa',
         'id_catalogo',
         'nombre',
+        'descripcion',
         'impacto_dias'
     ];
 

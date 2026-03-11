@@ -126,13 +126,20 @@ class UsuarioEmpresaController extends Controller
             ->whereIn('id_tipo_usuario', [2, 3])
             ->firstOrFail();
 
-        if ($usuario->imagen) {
-            Storage::disk('public')->delete($usuario->imagen);
-        }
+        \Illuminate\Support\Facades\DB::transaction(function () use ($usuario) {
+            // Eliminar tareas asignadas primero para evitar error de clave foránea
+            FaseProgramada::where('documento', $usuario->documento)->delete();
 
-        $usuario->delete();
+            // Eliminar imagen si existe
+            if ($usuario->imagen) {
+                Storage::disk('public')->delete($usuario->imagen);
+            }
 
-        return redirect()->route('admin.usuarios.index')->with('success', 'Usuario eliminado correctamente.');
+            // Eliminar al usuario
+            $usuario->delete();
+        });
+
+        return redirect()->route('admin.usuarios.index')->with('success', 'Usuario y sus tareas asociadas eliminados correctamente.');
     }
 
     public function asignarTrabajo($documento)

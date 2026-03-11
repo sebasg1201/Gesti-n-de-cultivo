@@ -96,6 +96,7 @@ Route::middleware(['auth:usuario', 'check.license'])->group(function () {
     // Rutas para trabajador
     Route::get('/trabajador/dashboard', [AdminController::class, 'trabajadorInicio'])->name('trabajador.dashboard');
     Route::post('/trabajador/tareas/{id}/finalizar', [AdminController::class, 'finalizarTarea'])->name('trabajador.tareas.finalizar');
+    Route::post('/trabajador/tareas/{id}/estado', [AdminController::class, 'actualizarEstadoTarea'])->name('trabajador.tareas.estado');
 
     // Rutas para la gestión de licencias del usuario administrador
     Route::get('/admin/licencias', [App\Http\Controllers\Admin\TipoLicenciaController::class, 'index'])->name('admin.licencias.index');

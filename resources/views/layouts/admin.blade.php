@@ -66,6 +66,10 @@
     <div class="flex min-h-screen">
 
         <!-- SIDEBAR -->
+        @php
+            $isWorker = in_array(auth()->guard('usuario')->user()->id_tipo_usuario, [2, 3]);
+            $inicioRoute = $isWorker ? 'trabajador.dashboard' : 'admin.dashboard';
+        @endphp
         <aside id="sidebar"
             class="z-50 bg-gradient-to-b from-emerald-900 via-emerald-800 to-emerald-900 text-emerald-100 shadow-2xl flex flex-col overflow-hidden shrink-0">
 
@@ -75,7 +79,7 @@
                     <span class="text-white">Agri</span>
                     <span class="text-emerald-300">Manager</span>
                 </h1>
-                <p class="text-xs text-emerald-300 mt-1 opacity-80">Panel Administrativo</p>
+                <p class="text-xs text-emerald-300 mt-1 opacity-80">{{ $isWorker ? 'Panel del Trabajador' : 'Panel Administrativo' }}</p>
             </div>
 
             <!-- NAV -->
@@ -99,13 +103,15 @@
                 $seguimientoActive = request()->routeIs('admin.cosechas.*');
                 @endphp
 
-                <a href="{{ route('admin.dashboard') }}"
-                    class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {{ active('admin.dashboard') }}">
-                    <div class="w-1.5 h-6 bg-emerald-300 rounded-full opacity-0 group-hover:opacity-100 transition-all"></div>
+
+
+                <a href="{{ route($inicioRoute) }}"
+                    class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {{ active($inicioRoute) }}">
+                    <div class="w-1.5 h-6 bg-emerald-300 rounded-full {{ active($inicioRoute) ? 'opacity-100' : 'opacity-0' }} group-hover:opacity-100 transition-all"></div>
                     <span class="font-medium whitespace-nowrap">Inicio</span>
                 </a>
 
-                @if(auth()->guard('usuario')->user()->id_tipo_usuario != 3)
+                @if(!$isWorker)
                 <!-- ACORDEÓN GESTIÓN Y CONTROL -->
                 <div class="space-y-1">
                     <button onclick="toggleAccordion('gestion-menu')"
@@ -120,9 +126,6 @@
                     </button>
 
                     <div id="gestion-menu" class="{{ $gestionActive ? 'block' : 'hidden' }} pl-4 space-y-1 overflow-hidden transition-all duration-300">
-
-
-
                         <a href="{{ route('tipo_riegos.index') }}" class="group flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-200 {{ active('tipo_riegos.*') }}">
                             <div class="w-1 h-1 bg-emerald-400 rounded-full shrink-0"></div>
                             <span class="whitespace-nowrap">Tipos de Riego</span>
@@ -177,7 +180,7 @@
                 </div>
 
                 <a href="{{ route('admin.licencias.index') }}" class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {{ active('admin.licencias.*') }}">
-                    <div class="w-1.5 h-6 bg-emerald-300 rounded-full opacity-0 group-hover:opacity-100 transition-all"></div>
+                    <div class="w-1.5 h-6 bg-emerald-300 rounded-full {{ active('admin.licencias.*') ? 'opacity-100' : 'opacity-0' }} group-hover:opacity-100 transition-all"></div>
                     <span class="font-medium whitespace-nowrap">Mi Plan de Licencia</span>
                 </a>
                 @endif
@@ -219,10 +222,10 @@
 
                         <div>
                             <h1 class="text-xl lg:text-3xl font-extrabold tracking-tight">
-                                Panel de Administración
+                                {{ $isWorker ? 'Panel del Trabajador' : 'Panel de Administración' }}
                             </h1>
                             <p class="hidden sm:block text-emerald-100 text-xs lg:text-sm mt-1 opacity-90">
-                                Gestión del sistema
+                                {{ $isWorker ? 'Gestión de tus tareas asignadas' : 'Gestión del sistema' }}
                             </p>
                         </div>
 
@@ -254,7 +257,7 @@
                                         {{ Auth::guard('usuario')->user()->nombre ?? 'Admin' }}
                                     </p>
                                     <p class="text-[10px] lg:text-xs text-emerald-600 font-medium">
-                                        Administrador
+                                        {{ Auth::guard('usuario')->user()->tipoUsuario->tipo_usuario ?? 'Usuario' }}
                                     </p>
                                 </div>
 
