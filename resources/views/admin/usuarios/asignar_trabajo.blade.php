@@ -75,11 +75,7 @@
                         @error('descripcion') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
 
-                    <div>
-                        <label for="estado" class="block text-sm font-bold text-gray-700 mb-1">Estado Predeterminado <span class="text-red-500">*</span></label>
-                        <input type="text" name="estado" id="estado" value="Pendiente" readonly
-                               class="w-full px-3 py-2.5 rounded-lg border border-gray-300 bg-gray-100 text-sm text-gray-500 cursor-not-allowed">
-                    </div>
+
 
                     <div>
                         <label for="fecha_programada" class="block text-sm font-bold text-gray-700 mb-1">Fecha Programada <span class="text-red-500">*</span></label>
@@ -121,15 +117,15 @@
 
             @forelse($fases as $fase)
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:border-emerald-300 transition-colors relative overflow-hidden group">
-                    <div class="absolute left-0 top-0 bottom-0 w-1.5 {{ $fase->estado == 'Pendiente' ? 'bg-yellow-400' : 'bg-emerald-500' }}"></div>
+                    <div class="absolute left-0 top-0 bottom-0 w-1.5 {{ $fase->id_estado == 1 ? 'bg-yellow-400' : ($fase->id_estado == 9 ? 'bg-emerald-500' : 'bg-blue-400') }}"></div>
                     
                     <div class="flex flex-col md:flex-row md:items-start justify-between gap-4">
                         <div class="flex-1">
                             <div class="flex items-center gap-3 mb-1">
                                 <h4 class="text-lg font-bold text-emerald-900">Fase Programada</h4>
                                 <span class="px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider
-                                    {{ $fase->estado == 'Pendiente' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800' }}">
-                                    {{ $fase->estado }}
+                                    {{ $fase->id_estado == 1 ? 'bg-yellow-100 text-yellow-800' : ($fase->id_estado == 9 ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800') }}">
+                                    {{ $fase->id_estado == 1 ? 'Pendiente' : ($fase->id_estado == 8 ? 'En Proceso' : 'Realizado') }}
                                 </span>
                             </div>
                             <p class="text-sm text-gray-500 font-medium bg-gray-50 inline-block px-2 py-1 rounded">

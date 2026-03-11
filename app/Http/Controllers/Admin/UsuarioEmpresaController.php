@@ -78,8 +78,9 @@ class UsuarioEmpresaController extends Controller
             ->firstOrFail();
 
         $roles = TipoUsuario::whereIn('id_tipo_usuario', [2, 3])->get();
+        $estados = \App\Models\Estado::whereIn('id_estado', [1, 3, 10])->get(); // Pendiente, Activa, Suspendido
 
-        return view('admin.usuarios.edit', compact('usuario', 'roles'));
+        return view('admin.usuarios.edit', compact('usuario', 'roles', 'estados'));
     }
 
     public function update(Request $request, $documento)
@@ -95,10 +96,11 @@ class UsuarioEmpresaController extends Controller
             'correo' => 'required|email|unique:usuario,correo,' . $usuario->documento . ',documento',
             'telefono' => 'required|numeric|digits_between:10,15',
             'id_tipo_usuario' => 'required|in:2,3',
+            'id_estado' => 'required|exists:estado,id_estado',
             'imagen' => 'nullable|image|max:2048'
         ]);
 
-        $data = $request->only(['nombre', 'correo', 'telefono', 'id_tipo_usuario']);
+        $data = $request->only(['nombre', 'correo', 'telefono', 'id_tipo_usuario', 'id_estado']);
 
         if ($request->filled('contrasena')) {
             $request->validate(['contrasena' => 'string|min:8']);
@@ -157,7 +159,7 @@ class UsuarioEmpresaController extends Controller
             ->get();
 
         // Fases actualmente asignadas al usuario
-        $fases = FaseProgramada::where('documento', $documento)->with('cosecha')->get();
+        $fases = FaseProgramada::where('documento_trabajador', $documento)->with('cosecha')->get();
 
         return view('admin.usuarios.asignar_trabajo', compact('usuario', 'cosechas', 'fases'));
     }
@@ -174,16 +176,15 @@ class UsuarioEmpresaController extends Controller
         $request->validate([
             'id_cosecha' => 'required|exists:cosecha,id_cosecha',
             'descripcion' => 'required|string',
-            'estado' => 'required|string|max:50',
             'fecha_programada' => 'required|date'
         ]);
 
         FaseProgramada::create([
             'id_cosecha' => $request->id_cosecha,
             'descripcion' => $request->descripcion,
-            'estado' => $request->estado,
+            'id_estado' => 1, // 1 = Pendiente
             'fecha_programada' => $request->fecha_programada,
-            'documento' => $usuario->documento
+            'documento_trabajador' => $usuario->documento
         ]);
 
         return redirect()->route('admin.usuarios.asignar_trabajo', $usuario->documento)

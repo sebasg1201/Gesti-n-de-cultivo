@@ -1,0 +1,32 @@
+[
+    {
+        "nombre_comercial": "Fertilizante NPK 15-15-15",
+        "descripcion": "Fertilizante equilibrado para todo tipo de cultivos",
+        "impacto_dias": 5,
+        "tipo_insumo": "Fertilizantes"
+    },
+    {
+        "nombre_comercial": "Urea Agrícola 46%",
+        "descripcion": "Fuente concentrada de nitrógeno",
+        "impacto_dias": 3,
+        "tipo_insumo": "Fertilizantes"
+    },
+    {
+        "nombre_comercial": "Pala Punta Huevo",
+        "descripcion": "Herramienta resistente para trabajo de campo",
+        "impacto_dias": 0,
+        "tipo_insumo": "Herramientas"
+    },
+    {
+        "nombre_comercial": "Machete 22 Pulgadas",
+        "descripcion": "Acero al carbono, ideal para desmonte",
+        "impacto_dias": 0,
+        "tipo_insumo": "Herramientas"
+    },
+    {
+        "nombre_comercial": "Aceite Motor Diesel 15W40",
+        "descripcion": "Lubricante para tractores y maquinaria pesada",
+        "impacto_dias": 0,
+        "tipo_insumo": "Mantenimiento"
+    }
+]

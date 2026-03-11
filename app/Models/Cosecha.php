@@ -21,7 +21,8 @@ class Cosecha extends Model
         'id_estado',
         'fecha_siembra',
         'fecha_estimada',
-        'produccion_estimada'
+        'produccion_estimada',
+        'imagenes'
     ];
 
     public function tipoCosecha()

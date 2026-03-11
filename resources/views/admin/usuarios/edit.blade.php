@@ -93,6 +93,20 @@
                         @error('id_tipo_usuario') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
 
+                    {{-- Estado --}}
+                    <div>
+                        <label for="id_estado" class="block text-sm font-bold text-gray-700 mb-2">Estado de Cuenta <span class="text-red-500">*</span></label>
+                        <select name="id_estado" id="id_estado" required
+                                class="w-full px-4 py-3 rounded-xl border @error('id_estado') border-red-500 @else border-gray-300 @enderror focus:ring-4 focus:ring-emerald-500/20 focus:border-emerald-500 transition shadow-sm bg-white">
+                            @foreach($estados as $estado)
+                                <option value="{{ $estado->id_estado }}" {{ old('id_estado', $usuario->id_estado) == $estado->id_estado ? 'selected' : '' }}>
+                                    {{ ucfirst($estado->nombre_estado) }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('id_estado') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                    </div>
+
                     {{-- Contraseña (Opcional) --}}
                     <div>
                         <label for="contrasena" class="block text-sm font-bold text-gray-700 mb-2">Nueva Contraseña (Opcional)</label>

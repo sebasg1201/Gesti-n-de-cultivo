@@ -95,8 +95,14 @@ Route::middleware(['auth:usuario', 'check.license'])->group(function () {
 
     // Rutas para trabajador
     Route::get('/trabajador/dashboard', [AdminController::class, 'trabajadorInicio'])->name('trabajador.dashboard');
-    Route::post('/trabajador/tareas/{id}/finalizar', [AdminController::class, 'finalizarTarea'])->name('trabajador.tareas.finalizar');
-    Route::post('/trabajador/tareas/{id}/estado', [AdminController::class, 'actualizarEstadoTarea'])->name('trabajador.tareas.estado');
+    Route::post('/trabajador/tareas/{id}/finalizar/{tipo}', [AdminController::class, 'finalizarTarea'])->name('trabajador.tareas.finalizar');
+    Route::post('/trabajador/tareas/{id}/estado/{tipo}', [AdminController::class, 'actualizarEstadoTarea'])->name('trabajador.tareas.estado');
+
+    // Nueva ruta para tareas categorizadas de administrador
+    Route::get('/admin/tareas', [AdminController::class, 'tareasCategorizadas'])->name('admin.tareas.index');
+    Route::post('/admin/tareas/store-riego', [AdminController::class, 'storeRiego'])->name('admin.tareas.store.riego');
+    Route::post('/admin/tareas/store-insumo', [AdminController::class, 'storeInsumo'])->name('admin.tareas.store.insumo');
+    Route::post('/admin/tareas/store-general', [AdminController::class, 'storeGeneral'])->name('admin.tareas.store.general');
 
     // Rutas para la gestión de licencias del usuario administrador
     Route::get('/admin/licencias', [App\Http\Controllers\Admin\TipoLicenciaController::class, 'index'])->name('admin.licencias.index');
@@ -111,6 +117,18 @@ Route::middleware(['auth:usuario', 'check.license'])->group(function () {
 
     // Gestión de Cosechas
     Route::resource('/admin/cosechas', \App\Http\Controllers\Admin\CosechaController::class, ['as' => 'admin']);
+
+    // Insumos y Proveedores
+    Route::post('/admin/proveedores/{id}/entradas', [\App\Http\Controllers\ProveedorController::class, 'storeEntrada'])->name('admin.proveedores.entradas.store');
+    Route::get('/admin/proveedores/{id}/historial', [\App\Http\Controllers\ProveedorController::class, 'historial'])->name('admin.proveedores.historial');
+    Route::resource('/admin/proveedores', \App\Http\Controllers\ProveedorController::class, ['as' => 'admin']);
+    Route::resource('/admin/insumos', \App\Http\Controllers\InsumoController::class, ['as' => 'admin']);
+
+    // Tipo Insumo (Configuración de Catálogo)
+    Route::get('/tipo_insumos/catalog', [\App\Http\Controllers\TipoInsumoController::class, 'catalog'])->name('tipo_insumos.catalog');
+    Route::resource('/admin/tipo_insumos', \App\Http\Controllers\TipoInsumoController::class, ['as' => 'admin'])->parameters([
+        'tipo_insumos' => 'tipo_insumo'
+    ]);
 });
 
 Route::get('/', [HomeController::class, 'index'])->name('index_welcome');
@@ -122,6 +140,11 @@ use App\Http\Controllers\TipoSemillaController;
 
 Route::get('tipo_semillas/catalog', [TipoSemillaController::class, 'catalog'])->name('tipo_semillas.catalog');
 Route::resource('tipo_semillas', TipoSemillaController::class);
+
+use App\Http\Controllers\InsumoController;
+
+Route::get('insumos/catalog', [InsumoController::class, 'catalog'])->name('insumos.catalog');
+Route::resource('insumos', InsumoController::class);
 
 use App\Http\Controllers\TipoRiegoController;
 

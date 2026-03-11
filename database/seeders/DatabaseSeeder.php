@@ -21,5 +21,10 @@ class DatabaseSeeder extends Seeder
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
+
+        $this->call([
+            CatalogSeeder::class, // Just in case it's not being called natively although it seems they run it manually
+            CatalogoInsumoSeeder::class,
+        ]);
     }
 }
