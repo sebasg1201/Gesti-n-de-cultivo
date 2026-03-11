@@ -44,4 +44,9 @@ class Usuario extends Authenticatable implements CanResetPasswordContract
     {
         return $this->correo;
     }
+
+    public function tipoUsuario()
+    {
+        return $this->belongsTo(TipoUsuario::class, 'id_tipo_usuario', 'id_tipo_usuario');
+    }
 }

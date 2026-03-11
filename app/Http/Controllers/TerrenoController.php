@@ -21,8 +21,9 @@ class TerrenoController extends Controller
             ->paginate(10);
 
         $tipoSuelos = \App\Models\TipoSuelo::where('id_empresa', $id_empresa)->get();
+        $estados = \App\Models\Estado::all();
 
-        return view('admin.terreno.index', compact('terrenos', 'tipoSuelos'));
+        return view('admin.terreno.index', compact('terrenos', 'tipoSuelos', 'estados'));
     }
 
     public function store(Request $request)
@@ -69,7 +70,8 @@ class TerrenoController extends Controller
             'ubicacion' => 'required|string|max:150',
             'Ancho' => 'required|numeric|min:1',
             'Alto' => 'required|numeric|min:1',
-            'id_tipo_suelo' => 'required|exists:tipo_suelo,id_tipo_suelo'
+            'id_tipo_suelo' => 'required|exists:tipo_suelo,id_tipo_suelo',
+            'id_estado' => 'required|exists:estado,id_estado'
         ]);
 
         $terreno = \App\Models\Terreno::where('id_terreno', $id)
@@ -82,6 +84,7 @@ class TerrenoController extends Controller
             'Ancho' => $request->Ancho,
             'Alto' => $request->Alto,
             'id_tipo_suelo' => $request->id_tipo_suelo,
+            'id_estado' => $request->id_estado,
         ]);
 
         return redirect()->route('admin.terrenos.index')

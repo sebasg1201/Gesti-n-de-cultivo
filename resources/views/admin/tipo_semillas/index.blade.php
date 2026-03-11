@@ -44,7 +44,7 @@
                     <div class="relative">
                         <input type="text" id="catalogSearch" autocomplete="off"
                             placeholder="Ej. Tomate, Café, Maíz..."
-                            class="w-full pl-12 pr-4 py-4 rounded-2xl border-2 border-emerald-50 focus:border-emerald-500 focus:ring-0 bg-emerald-50/30 text-sm transition-all">
+                            class="w-full pl-12 pr-4 py-4 rounded-2xl border-2 border-emerald-50 focus:border-emerald-500 focus:ring-0 bg-emerald-50/30 text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed">
                         <div class="absolute left-4 top-1/2 -translate-y-1/2 text-emerald-400 group-focus-within:text-emerald-600 transition-colors">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -102,7 +102,7 @@
 
                     <div>
                         <label class="block text-xs font-bold text-emerald-700 uppercase tracking-wider mb-2">Descripción Personalizada</label>
-                        <textarea name="description" id="description" rows="3"
+                        <textarea name="descripcion" id="descripcion" rows="3"
                             class="w-full px-4 py-3 rounded-2xl border-emerald-100 focus:border-emerald-500 focus:ring-emerald-500 bg-white text-sm"></textarea>
                     </div>
 
@@ -306,12 +306,23 @@
         seedForm.classList.add('hidden');
         formPlaceholder.classList.remove('hidden');
         searchInput.value = '';
+        searchInput.disabled = false;
         seedForm.reset();
         document.getElementById('stock_actual').value = '';
     }
 
     function editSemilla(semilla) {
-        // Mock edit for UI feel, but keeping focus on catalog integrity
+        // Show form immediately
+        formPlaceholder.classList.add('hidden');
+        seedForm.classList.remove('hidden');
+
+        // Populate Form directly from record data
+        document.getElementById('input_id_catalogo').value = semilla.id_catalogo;
+        document.getElementById('nombre_semilla').value = semilla.nombre_semilla;
+        document.getElementById('display_dias').innerText = semilla.tiempo_base_dias;
+        document.getElementById('display_rendimiento').innerText = semilla.rendimiento_promedio || '0.00';
+        document.getElementById('descripcion').value = semilla.descripcion || '';
+        
         searchInput.value = semilla.nombre_semilla;
         selectFromCatalog(semilla.catalogo || {
             id: semilla.id_catalogo,

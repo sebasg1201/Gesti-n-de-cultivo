@@ -44,7 +44,7 @@
                     <div class="relative">
                         <input type="text" id="sueloSearch" autocomplete="off"
                             placeholder="Ej. Arcilloso, Arenoso, Limoso..."
-                            class="w-full pl-12 pr-4 py-4 rounded-2xl border-2 border-amber-50 focus:border-amber-500 focus:ring-0 bg-amber-50/20 text-sm transition-all">
+                            class="w-full pl-12 pr-4 py-4 rounded-2xl border-2 border-amber-50 focus:border-amber-500 focus:ring-0 bg-amber-50/20 text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed">
                         <div class="absolute left-4 top-1/2 -translate-y-1/2 text-amber-400 group-focus-within:text-amber-600 transition-colors">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -65,6 +65,13 @@
                         <input type="text" name="nombre" id="sw_nombre" required
                             class="w-full px-4 py-3 rounded-2xl border-amber-100 focus:border-amber-500 focus:ring-amber-500 bg-white text-sm"
                             placeholder="Ej. Tierra Negra Lote 1">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-amber-700 uppercase tracking-wider mb-2">Descripción (Opcional)</label>
+                        <textarea name="descripcion" id="sw_descripcion" rows="3"
+                            class="w-full px-4 py-3 rounded-2xl border-amber-100 focus:border-amber-500 focus:ring-amber-500 bg-white text-sm"
+                            placeholder="Especifique ubicación o calidad..."></textarea>
                     </div>
 
                     <!-- Impact Card -->
@@ -136,20 +143,32 @@
                                     </div>
                                 </td>
                                 <td class="px-8 py-6">
-                                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-2xl {{ $suelo->impacto_dias >= 0 ? 'bg-red-50 text-red-600 border-red-100' : 'bg-green-50 text-green-600 border-green-100' }} border font-black text-sm">
-                                        {{ $suelo->impacto_dias > 0 ? '+' : '' }}{{ $suelo->impacto_dias }}
-                                        <span class="text-[10px] font-bold uppercase opacity-60">días</span>
+                                    <div class="space-y-1">
+                                        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-2xl {{ $suelo->impacto_dias >= 0 ? 'bg-red-50 text-red-600 border-red-100' : 'bg-green-50 text-green-600 border-green-100' }} border font-black text-sm">
+                                            {{ $suelo->impacto_dias > 0 ? '+' : '' }}{{ $suelo->impacto_dias }}
+                                            <span class="text-[10px] font-bold uppercase opacity-60">días</span>
+                                        </div>
+                                        @if($suelo->descripcion)
+                                        <p class="text-xs text-emerald-400 italic max-w-[180px] truncate">{{ $suelo->descripcion }}</p>
+                                        @endif
                                     </div>
                                 </td>
                                 <td class="px-8 py-6 text-right">
-                                    <form action="{{ route('tipo_suelos.destroy', $suelo->id_tipo_suelo) }}" method="POST" class="inline">
-                                        @csrf @method('DELETE')
-                                        <button type="submit" onclick="return confirm('¿Eliminar este suelo?')" class="p-3 bg-red-50 text-red-600 rounded-2xl hover:bg-red-100 transition-all opacity-0 group-hover:opacity-100 translate-x-2 group-hover:translate-x-0 shadow-sm">
+                                    <div class="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
+                                        <button onclick='editSuelo(@json($suelo))' class="p-3 bg-amber-50 text-amber-600 rounded-2xl hover:bg-amber-100 transition-colors shadow-sm">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                             </svg>
                                         </button>
-                                    </form>
+                                        <form action="{{ route('tipo_suelos.destroy', $suelo->id_tipo_suelo) }}" method="POST" class="inline">
+                                            @csrf @method('DELETE')
+                                            <button type="submit" onclick="return confirm('¿Eliminar este suelo?')" class="p-3 bg-red-50 text-red-600 rounded-2xl hover:bg-red-100 transition-colors shadow-sm">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                </svg>
+                                            </button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                             @empty
@@ -218,6 +237,7 @@
 
         document.getElementById('sw_id_catalogo').value = item.id;
         document.getElementById('sw_nombre').value = item.nombre;
+        document.getElementById('sw_descripcion').value = item.descripcion || '';
 
         const impacto = parseInt(item.impacto_dias);
         const displayImpacto = document.getElementById('sw_display_impacto');
@@ -232,6 +252,44 @@
         sueloForm.classList.add('hidden');
         sueloPlaceholder.classList.remove('hidden');
         sueloSearch.value = '';
+        sueloSearch.disabled = false;
+        sueloForm.reset();
+
+        // Restore to store mode
+        sueloForm.action = "{{ route('tipo_suelos.store') }}";
+        const methodInput = sueloForm.querySelector('input[name="_method"]');
+        if (methodInput) methodInput.remove();
+        sueloForm.querySelector('button[type="submit"]').innerText = 'Habilitar Suelo';
+    }
+
+    function editSuelo(suelo) {
+        // Show form
+        sueloPlaceholder.classList.add('hidden');
+        sueloForm.classList.remove('hidden');
+
+        // Populate Form
+        document.getElementById('sw_id_catalogo').value = suelo.id_catalogo;
+        document.getElementById('sw_nombre').value = suelo.nombre;
+        document.getElementById('sw_descripcion').value = suelo.descripcion || '';
+
+        const impacto = parseInt(suelo.impacto_dias);
+        const displayImpacto = document.getElementById('sw_display_impacto');
+        displayImpacto.innerText = (impacto > 0 ? '+' : '') + impacto;
+        displayImpacto.className = 'text-3xl font-black tracking-tighter ' + (impacto >= 0 ? 'text-red-600' : 'text-green-600');
+        
+        sueloSearch.value = suelo.nombre;
+        sueloSearch.disabled = true;
+
+        // Adjust form for update mode
+        sueloForm.action = `/tipo_suelos/${suelo.id_tipo_suelo}`;
+        if (!sueloForm.querySelector('input[name="_method"]')) {
+            const methodInput = document.createElement('input');
+            methodInput.type = 'hidden';
+            methodInput.name = '_method';
+            methodInput.value = 'PUT';
+            sueloForm.appendChild(methodInput);
+        }
+        sueloForm.querySelector('button[type="submit"]').innerText = 'Actualizar Suelo';
     }
 
     document.addEventListener('click', function(e) {
