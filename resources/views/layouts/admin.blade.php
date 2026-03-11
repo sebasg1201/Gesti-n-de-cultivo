@@ -66,6 +66,10 @@
     <div class="flex min-h-screen">
 
         <!-- SIDEBAR -->
+        @php
+            $isWorker = in_array(auth()->guard('usuario')->user()->id_tipo_usuario, [2, 3]);
+            $inicioRoute = $isWorker ? 'trabajador.dashboard' : 'admin.dashboard';
+        @endphp
         <aside id="sidebar"
             class="z-50 bg-gradient-to-b from-emerald-900 via-emerald-800 to-emerald-900 text-emerald-100 shadow-2xl flex flex-col overflow-hidden shrink-0">
 
@@ -75,7 +79,7 @@
                     <span class="text-white">Agri</span>
                     <span class="text-emerald-300">Manager</span>
                 </h1>
-                <p class="text-xs text-emerald-300 mt-1 opacity-80">Panel Administrativo</p>
+                <p class="text-xs text-emerald-300 mt-1 opacity-80">{{ $isWorker ? 'Panel del Trabajador' : 'Panel Administrativo' }}</p>
             </div>
 
             <!-- NAV -->
@@ -205,6 +209,11 @@
                                 <div class="w-1 h-1 bg-emerald-400 rounded-full shrink-0"></div>
                                 <span class="whitespace-nowrap">Control de Cosechas</span>
                             </a>
+                            <a href="{{ route('admin.tareas.index') }}"
+                                class="group flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-200 {{ active('admin.tareas.index') }}">
+                                <div class="w-1 h-1 bg-emerald-400 rounded-full shrink-0"></div>
+                                <span class="whitespace-nowrap">Gestión de Tareas</span>
+                            </a>
                         </div>
                     </div>
 
@@ -257,10 +266,10 @@
 
                         <div>
                             <h1 class="text-xl lg:text-3xl font-extrabold tracking-tight">
-                                Panel de Administración
+                                {{ $isWorker ? 'Panel del Trabajador' : 'Panel de Administración' }}
                             </h1>
                             <p class="hidden sm:block text-emerald-100 text-xs lg:text-sm mt-1 opacity-90">
-                                Gestión del sistema
+                                {{ $isWorker ? 'Gestión de tus tareas asignadas' : 'Gestión del sistema' }}
                             </p>
                         </div>
 
@@ -295,7 +304,7 @@
                                         {{ Auth::guard('usuario')->user()->nombre ?? 'Admin' }}
                                     </p>
                                     <p class="text-[10px] lg:text-xs text-emerald-600 font-medium">
-                                        Administrador
+                                        {{ Auth::guard('usuario')->user()->tipoUsuario->tipo_usuario ?? 'Usuario' }}
                                     </p>
                                 </div>
 
@@ -345,6 +354,20 @@
                         </h3>
                         <div class="w-16 h-1 bg-gradient-to-r from-emerald-400 to-green-500 rounded-full mt-2"></div>
                     </div>
+
+                    @if(session('success'))
+                        <div class="mb-6 p-4 bg-emerald-100 border border-emerald-200 text-emerald-800 rounded-2xl flex items-center gap-3 shadow-sm animate-fade-in-down">
+                            <svg class="h-5 w-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            <span class="font-bold text-sm">{{ session('success') }}</span>
+                        </div>
+                    @endif
+
+                    @if(session('error'))
+                        <div class="mb-6 p-4 bg-red-100 border border-red-200 text-red-800 rounded-2xl flex items-center gap-3 shadow-sm animate-shake">
+                            <svg class="h-5 w-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                            <span class="font-bold text-sm">{{ session('error') }}</span>
+                        </div>
+                    @endif
 
                     @yield('content')
 

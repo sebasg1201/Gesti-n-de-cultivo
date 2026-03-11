@@ -44,7 +44,7 @@
                     <div class="relative">
                         <input type="text" id="catalogSearch" autocomplete="off"
                             placeholder="Ej. Tomate, Café, Maíz..."
-                            class="w-full pl-12 pr-4 py-4 rounded-2xl border-2 border-emerald-50 focus:border-emerald-500 focus:ring-0 bg-emerald-50/30 text-sm transition-all">
+                            class="w-full pl-12 pr-4 py-4 rounded-2xl border-2 border-emerald-50 focus:border-emerald-500 focus:ring-0 bg-emerald-50/30 text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed">
                         <div class="absolute left-4 top-1/2 -translate-y-1/2 text-emerald-400 group-focus-within:text-emerald-600 transition-colors">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -102,7 +102,7 @@
 
                     <div>
                         <label class="block text-xs font-bold text-emerald-700 uppercase tracking-wider mb-2">Descripción Personalizada</label>
-                        <textarea name="description" id="description" rows="3"
+                        <textarea name="descripcion" id="descripcion" rows="3"
                             class="w-full px-4 py-3 rounded-2xl border-emerald-100 focus:border-emerald-500 focus:ring-emerald-500 bg-white text-sm"></textarea>
                     </div>
 
@@ -169,41 +169,24 @@
                                         </div>
                                     </div>
                                 </td>
-                                 <td class="px-6 py-4">
-                                     <div class="space-y-1">
-                                         <div class="flex items-center gap-2">
-                                             <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                                             <span class="text-sm font-bold text-emerald-900">{{ $semilla->tiempo_base_dias }} <span class="text-[10px] font-normal text-emerald-500">días ciclo base</span></span>
-                                         </div>
-                                         <p class="text-xs text-emerald-400 italic max-w-[180px] truncate">{{ $semilla->descripcion }}</p>
-                                     </div>
-                                 </td>
-                                 <td class="px-6 py-4">
-                                     <div class="flex items-center gap-3">
-                                         <span class="text-xl font-black text-emerald-900">{{ number_format($semilla->stock_actual, 2) }}</span>
-                                         @if($semilla->stock_actual <= 0)
-                                             <span class="bg-red-50 text-red-600 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase flex items-center gap-1 border border-red-100">
-                                                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                                                 </svg>
-                                                 Sin Stock
-                                             </span>
-                                         @else
-                                             <span class="bg-emerald-50 text-emerald-600 text-[9px] font-bold px-1.5 py-0.5 rounded-md uppercase border border-emerald-100">
-                                                 En Stock
-                                             </span>
-                                         @endif
-                                     </div>
-                                 </td>
-                                 <td class="px-6 py-4">
-                                     <div class="bg-emerald-50 rounded-xl px-3 py-1 border border-emerald-100 inline-block">
-                                         <span class="text-xs font-black text-emerald-700">{{ $semilla->rendimiento_promedio }} <span class="text-[9px] font-bold">kg/m²</span></span>
-                                     </div>
-                                 </td>
-                                <td class="px-6 py-4 text-right">
-                                    <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
-                                        <button data-semilla="{{ htmlspecialchars(json_encode($semilla), ENT_QUOTES, 'UTF-8') }}" onclick="editSemilla(JSON.parse(this.dataset.semilla))" class="p-2.5 bg-amber-50 text-amber-600 rounded-xl hover:bg-amber-100 transition-colors shadow-sm">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <td class="px-8 py-6">
+                                    <div class="space-y-1">
+                                        <div class="flex items-center gap-2">
+                                            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                                            <span class="text-sm font-bold text-emerald-900">{{ $semilla->tiempo_base_dias }} <span class="text-[10px] font-normal text-emerald-500">días ciclo base</span></span>
+                                        </div>
+                                        <p class="text-xs text-emerald-400 italic max-w-[180px] truncate">{{ $semilla->descripcion }}</p>
+                                    </div>
+                                </td>
+                                <td class="px-8 py-6">
+                                    <div class="bg-emerald-50 rounded-xl px-4 py-2 border border-emerald-100 inline-block">
+                                        <span class="text-sm font-black text-emerald-700">{{ $semilla->rendimiento_promedio }} <span class="text-[10px] font-bold">kg/m²</span></span>
+                                    </div>
+                                </td>
+                                <td class="px-8 py-6 text-right">
+                                    <div class="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
+                                        <button onclick='editSemilla(@json($semilla))' class="p-3 bg-amber-50 text-amber-600 rounded-2xl hover:bg-amber-100 transition-colors shadow-sm">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                             </svg>
                                         </button>
@@ -294,8 +277,7 @@
         document.getElementById('nombre_semilla').value = item.nombre;
         document.getElementById('display_dias').innerText = item.tiempo_base_dias;
         document.getElementById('display_rendimiento').innerText = item.rendimiento_promedio || '0.00';
-        document.getElementById('description').value = item.descripcion || '';
-        document.getElementById('stock_actual').value = item.stock_actual || 0;
+        document.getElementById('descripcion').value = item.descripcion || '';
 
         // Toggle visibility
         formPlaceholder.classList.add('hidden');
@@ -306,21 +288,25 @@
         seedForm.classList.add('hidden');
         formPlaceholder.classList.remove('hidden');
         searchInput.value = '';
+        searchInput.disabled = false;
         seedForm.reset();
         document.getElementById('stock_actual').value = '';
     }
 
     function editSemilla(semilla) {
-        // Mock edit for UI feel, but keeping focus on catalog integrity
+        // Show form immediately
+        formPlaceholder.classList.add('hidden');
+        seedForm.classList.remove('hidden');
+
+        // Populate Form directly from record data
+        document.getElementById('input_id_catalogo').value = semilla.id_catalogo;
+        document.getElementById('nombre_semilla').value = semilla.nombre_semilla;
+        document.getElementById('display_dias').innerText = semilla.tiempo_base_dias;
+        document.getElementById('display_rendimiento').innerText = semilla.rendimiento_promedio || '0.00';
+        document.getElementById('descripcion').value = semilla.descripcion || '';
+        
         searchInput.value = semilla.nombre_semilla;
-        selectFromCatalog(semilla.catalogo || {
-            id: semilla.id_catalogo,
-            nombre: semilla.nombre_semilla,
-            tiempo_base_dias: semilla.tiempo_base_dias,
-            rendimiento_promedio: semilla.rendimiento_promedio,
-            descripcion: semilla.descripcion,
-            stock_actual: semilla.stock_actual
-        });
+        searchInput.disabled = true;
 
         // Adjust form for update mode
         seedForm.action = `/tipo_semillas/${semilla.id_semilla}`;

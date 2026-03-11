@@ -95,7 +95,14 @@ Route::middleware(['auth:usuario', 'check.license'])->group(function () {
 
     // Rutas para trabajador
     Route::get('/trabajador/dashboard', [AdminController::class, 'trabajadorInicio'])->name('trabajador.dashboard');
-    Route::post('/trabajador/tareas/{id}/finalizar', [AdminController::class, 'finalizarTarea'])->name('trabajador.tareas.finalizar');
+    Route::post('/trabajador/tareas/{id}/finalizar/{tipo}', [AdminController::class, 'finalizarTarea'])->name('trabajador.tareas.finalizar');
+    Route::post('/trabajador/tareas/{id}/estado/{tipo}', [AdminController::class, 'actualizarEstadoTarea'])->name('trabajador.tareas.estado');
+
+    // Nueva ruta para tareas categorizadas de administrador
+    Route::get('/admin/tareas', [AdminController::class, 'tareasCategorizadas'])->name('admin.tareas.index');
+    Route::post('/admin/tareas/store-riego', [AdminController::class, 'storeRiego'])->name('admin.tareas.store.riego');
+    Route::post('/admin/tareas/store-insumo', [AdminController::class, 'storeInsumo'])->name('admin.tareas.store.insumo');
+    Route::post('/admin/tareas/store-general', [AdminController::class, 'storeGeneral'])->name('admin.tareas.store.general');
 
     // Rutas para la gestión de licencias del usuario administrador
     Route::get('/admin/licencias', [App\Http\Controllers\Admin\TipoLicenciaController::class, 'index'])->name('admin.licencias.index');

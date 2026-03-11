@@ -78,8 +78,9 @@ class UsuarioEmpresaController extends Controller
             ->firstOrFail();
 
         $roles = TipoUsuario::whereIn('id_tipo_usuario', [2, 3])->get();
+        $estados = \App\Models\Estado::whereIn('id_estado', [1, 3, 10])->get(); // Pendiente, Activa, Suspendido
 
-        return view('admin.usuarios.edit', compact('usuario', 'roles'));
+        return view('admin.usuarios.edit', compact('usuario', 'roles', 'estados'));
     }
 
     public function update(Request $request, $documento)
@@ -95,10 +96,11 @@ class UsuarioEmpresaController extends Controller
             'correo' => 'required|email|unique:usuario,correo,' . $usuario->documento . ',documento',
             'telefono' => 'required|numeric|digits_between:10,15',
             'id_tipo_usuario' => 'required|in:2,3',
+            'id_estado' => 'required|exists:estado,id_estado',
             'imagen' => 'nullable|image|max:2048'
         ]);
 
-        $data = $request->only(['nombre', 'correo', 'telefono', 'id_tipo_usuario']);
+        $data = $request->only(['nombre', 'correo', 'telefono', 'id_tipo_usuario', 'id_estado']);
 
         if ($request->filled('contrasena')) {
             $request->validate(['contrasena' => 'string|min:8']);
@@ -126,13 +128,20 @@ class UsuarioEmpresaController extends Controller
             ->whereIn('id_tipo_usuario', [2, 3])
             ->firstOrFail();
 
-        if ($usuario->imagen) {
-            Storage::disk('public')->delete($usuario->imagen);
-        }
+        \Illuminate\Support\Facades\DB::transaction(function () use ($usuario) {
+            // Eliminar tareas asignadas primero para evitar error de clave foránea
+            FaseProgramada::where('documento', $usuario->documento)->delete();
 
-        $usuario->delete();
+            // Eliminar imagen si existe
+            if ($usuario->imagen) {
+                Storage::disk('public')->delete($usuario->imagen);
+            }
 
-        return redirect()->route('admin.usuarios.index')->with('success', 'Usuario eliminado correctamente.');
+            // Eliminar al usuario
+            $usuario->delete();
+        });
+
+        return redirect()->route('admin.usuarios.index')->with('success', 'Usuario y sus tareas asociadas eliminados correctamente.');
     }
 
     public function asignarTrabajo($documento)

@@ -44,7 +44,7 @@
                     <div class="relative">
                         <input type="text" id="riegoSearch" autocomplete="off"
                             placeholder="Ej. Goteo, Aspersión..."
-                            class="w-full pl-12 pr-4 py-4 rounded-2xl border-2 border-blue-50 focus:border-blue-500 focus:ring-0 bg-blue-50/20 text-sm transition-all focus:bg-white">
+                            class="w-full pl-12 pr-4 py-4 rounded-2xl border-2 border-blue-50 focus:border-blue-500 focus:ring-0 bg-blue-50/20 text-sm transition-all focus:bg-white disabled:opacity-50 disabled:cursor-not-allowed">
                         <div class="absolute left-4 top-1/2 -translate-y-1/2 text-blue-400 group-focus-within:text-blue-600 transition-colors">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -80,12 +80,7 @@
                         </div>
                     </div>
 
-                    <div>
-                        <label class="block text-xs font-bold text-emerald-700 uppercase tracking-wider mb-2">Dosificación (Opcional)</label>
-                        <input type="text" name="cant_agua_apl" id="cant_agua_apl"
-                            placeholder="Ej. 5L/m² por día"
-                            class="w-full px-4 py-3 rounded-2xl border-emerald-100 focus:border-blue-500 focus:ring-0 bg-gray-50/50 text-sm">
-                    </div>
+
 
                     <div class="flex gap-3">
                         <button type="button" onclick="resetRiegoForm()" class="px-6 py-4 bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold rounded-2xl transition-all">
@@ -126,7 +121,6 @@
                             <tr class="bg-white text-[10px] font-black text-emerald-400 uppercase tracking-[0.2em] border-b border-emerald-50">
                                 <th class="px-8 py-6">Tipo de Riego</th>
                                 <th class="px-8 py-6 text-center">Impacto</th>
-                                <th class="px-8 py-6">Dosificación</th>
                                 <th class="px-8 py-6 text-right">Acciones</th>
                             </tr>
                         </thead>
@@ -152,12 +146,10 @@
                                         <span class="text-[10px] font-bold uppercase opacity-60">días</span>
                                     </div>
                                 </td>
-                                <td class="px-8 py-6">
-                                    <span class="text-sm font-bold text-emerald-900 italic">{{ $riego->cant_agua_apl ?: '--' }}</span>
-                                </td>
+
                                 <td class="px-8 py-6 text-right">
                                     <div class="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all">
-                                        <button onclick="editRiego(@json($riego))" class="p-3 bg-amber-50 text-amber-600 rounded-2xl hover:bg-amber-100 shadow-sm transition-all">
+                                        <button onclick='editRiego(@json($riego))' class="p-3 bg-amber-50 text-amber-600 rounded-2xl hover:bg-amber-100 shadow-sm transition-all">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                             </svg>
@@ -254,17 +246,35 @@
         form.classList.add('hidden');
         placeholder.classList.remove('hidden');
         searchInput.value = '';
+        searchInput.disabled = false;
         form.reset();
+
+        // Restore to store mode
+        form.action = "{{ route('tipo_riegos.store') }}";
+        const methodInput = form.querySelector('input[name="_method"]');
+        if (methodInput) methodInput.remove();
+        form.querySelector('button[type="submit"]').innerText = 'Habilitar Sistema';
+        form.querySelector('button[type="submit"]').classList.replace('bg-amber-600', 'bg-blue-600');
     }
 
     function editRiego(riego) {
-        searchInput.value = riego.tipo_riego;
-        selectItem(riego.catalogo || {
-            id: riego.id_catalogo,
-            nombre: riego.tipo_riego,
-            impacto_dias: riego.impacto_dias
-        });
+        // Show form
+        placeholder.classList.add('hidden');
+        form.classList.remove('hidden');
 
+        // Populate Form
+        document.getElementById('input_id_catalogo').value = riego.id_catalogo;
+        document.getElementById('tipo_riego_name').value = riego.tipo_riego;
+
+        const impacto = parseInt(riego.impacto_dias);
+        const displayImpacto = document.getElementById('display_impacto');
+        displayImpacto.innerText = (impacto > 0 ? '+' : '') + impacto;
+        displayImpacto.className = 'text-3xl font-black tracking-tighter ' + (impacto >= 0 ? 'text-red-600' : 'text-green-600');
+        
+        searchInput.value = riego.tipo_riego;
+        searchInput.disabled = true;
+
+        // Adjust form for update mode
         form.action = `/tipo_riegos/${riego.id_tipo_riego}`;
         if (!form.querySelector('input[name="_method"]')) {
             const methodInput = document.createElement('input');
