@@ -19,7 +19,8 @@ class TipoSemilla extends Model
         'nombre_semilla',
         'tiempo_base_dias',
         'descripcion',
-        'rendimiento_promedio'
+        'rendimiento_promedio',
+        'stock_actual'
     ];
 
     public function catalogo()

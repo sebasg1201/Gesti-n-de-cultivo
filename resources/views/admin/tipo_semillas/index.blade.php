@@ -3,7 +3,7 @@
 @section('title', 'Catálogo Pro de Semillas')
 
 @section('content')
-<div class="space-y-8">
+<div class="space-y-6">
     @if(session('success'))
     <div class="bg-emerald-100 border-l-4 border-emerald-500 text-emerald-700 p-4 rounded-xl flex items-center shadow-sm">
         <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -25,8 +25,8 @@
     <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
         <!-- Advanced Search & Config Column -->
         <div class="xl:col-span-1">
-            <div class="bg-white rounded-3xl shadow-xl border border-emerald-50 p-8 sticky top-8">
-                <div class="flex items-center gap-3 mb-8">
+            <div class="bg-white rounded-3xl shadow-xl border border-emerald-50 p-6 sticky top-6">
+                <div class="flex items-center gap-3 mb-6">
                     <div class="bg-emerald-600 p-3 rounded-2xl text-white shadow-lg shadow-emerald-100">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -39,8 +39,8 @@
                 </div>
 
                 <!-- Professional AJAX Search Input -->
-                <div class="relative group mb-8">
-                    <label class="block text-xs font-bold text-emerald-700 uppercase tracking-wider mb-3">Buscar variedad técnica</label>
+                <div class="relative group mb-6">
+                    <label class="block text-xs font-bold text-emerald-700 uppercase tracking-wider mb-2">Buscar variedad técnica</label>
                     <div class="relative">
                         <input type="text" id="catalogSearch" autocomplete="off"
                             placeholder="Ej. Tomate, Café, Maíz..."
@@ -57,7 +57,7 @@
                     </div>
                 </div>
 
-                <form id="seedForm" action="{{ route('tipo_semillas.store') }}" method="POST" class="space-y-6 hidden animate-in zoom-in-95 duration-200">
+                <form id="seedForm" action="{{ route('tipo_semillas.store') }}" method="POST" class="space-y-4 hidden animate-in zoom-in-95 duration-200">
                     @csrf
                     <input type="hidden" name="id_catalogo" id="input_id_catalogo">
 
@@ -65,6 +65,13 @@
                         <label class="block text-xs font-bold text-emerald-700 uppercase tracking-wider mb-2">Nombre en su Finca</label>
                         <input type="text" name="nombre_semilla" id="nombre_semilla" required
                             class="w-full px-4 py-3 rounded-2xl border-emerald-100 focus:border-emerald-500 focus:ring-emerald-500 bg-white text-sm">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-emerald-700 uppercase tracking-wider mb-2">Stock Inicial</label>
+                        <input type="number" name="stock_actual" id="stock_actual" step="0.01" min="0" required
+                            class="w-full px-4 py-3 rounded-2xl border-emerald-100 focus:border-emerald-500 focus:ring-emerald-500 bg-white text-sm"
+                            placeholder="Ej: 500.00">
                     </div>
 
                     <div class="grid grid-cols-2 gap-4">
@@ -125,11 +132,11 @@
 
         <!-- Inventory List Column -->
         <div class="xl:col-span-2">
-            <div class="bg-white rounded-3xl shadow-xl border border-emerald-50 overflow-hidden min-h-[600px] flex flex-col">
-                <div class="p-8 border-b border-emerald-50 bg-gray-50/50 flex justify-between items-center">
+            <div class="bg-white rounded-3xl shadow-xl border border-emerald-50 overflow-hidden min-h-[500px] flex flex-col">
+                <div class="p-6 border-b border-emerald-50 bg-gray-50/50 flex justify-between items-center">
                     <div>
-                        <h3 class="text-2xl font-black text-emerald-950">Inventario de Semillas</h3>
-                        <p class="text-xs font-medium text-emerald-600 mt-1">Variedades adaptadas a su finca</p>
+                        <h3 class="text-xl font-black text-emerald-950">Inventario de Semillas</h3>
+                        <p class="text-[10px] font-medium text-emerald-600 mt-1">Variedades adaptadas a su finca</p>
                     </div>
                     <div class="bg-white border-2 border-emerald-100 px-6 py-2 rounded-2xl flex items-center gap-3">
                         <span class="text-2xl font-black text-emerald-600">{{ $tipoSemillas->total() }}</span>
@@ -141,18 +148,19 @@
                     <table class="w-full text-left">
                         <thead>
                             <tr class="bg-white text-[10px] font-black text-emerald-400 uppercase tracking-[0.2em] border-b border-emerald-50">
-                                <th class="px-8 py-6">Especie y Variedad</th>
-                                <th class="px-8 py-6">Parámetros Técnicos</th>
-                                <th class="px-8 py-6">Productividad</th>
-                                <th class="px-8 py-6 text-right">Acciones</th>
+                                <th class="px-6 py-4">Especie y Variedad</th>
+                                 <th class="px-6 py-4">Parámetros Técnicos</th>
+                                 <th class="px-6 py-4">Cantidad en Stock</th>
+                                 <th class="px-6 py-4">Productividad</th>
+                                 <th class="px-6 py-4 text-right">Acciones</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-emerald-50/50">
                             @forelse($tipoSemillas as $semilla)
                             <tr class="hover:bg-emerald-50/30 transition-all group">
-                                <td class="px-8 py-6">
-                                    <div class="flex items-center gap-4">
-                                        <div class="w-12 h-12 bg-emerald-600 rounded-2xl flex items-center justify-center text-white font-black text-lg shadow-lg shadow-emerald-100 transform group-hover:rotate-12 transition-transform">
+                                 <td class="px-6 py-4">
+                                     <div class="flex items-center gap-3">
+                                         <div class="w-10 h-10 bg-emerald-600 rounded-2xl flex items-center justify-center text-white font-black text-base shadow-lg shadow-emerald-100 transform group-hover:rotate-12 transition-transform">
                                             {{ substr($semilla->nombre_semilla, 0, 1) }}
                                         </div>
                                         <div>
@@ -161,31 +169,48 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td class="px-8 py-6">
-                                    <div class="space-y-1">
-                                        <div class="flex items-center gap-2">
-                                            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                                            <span class="text-sm font-bold text-emerald-900">{{ $semilla->tiempo_base_dias }} <span class="text-[10px] font-normal text-emerald-500">días ciclo base</span></span>
-                                        </div>
-                                        <p class="text-xs text-emerald-400 italic max-w-[180px] truncate">{{ $semilla->descripcion }}</p>
-                                    </div>
-                                </td>
-                                <td class="px-8 py-6">
-                                    <div class="bg-emerald-50 rounded-xl px-4 py-2 border border-emerald-100 inline-block">
-                                        <span class="text-sm font-black text-emerald-700">{{ $semilla->rendimiento_promedio }} <span class="text-[10px] font-bold">kg/m²</span></span>
-                                    </div>
-                                </td>
-                                <td class="px-8 py-6 text-right">
-                                    <div class="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
-                                        <button onclick="editSemilla(@json($semilla))" class="p-3 bg-amber-50 text-amber-600 rounded-2xl hover:bg-amber-100 transition-colors shadow-sm">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                 <td class="px-6 py-4">
+                                     <div class="space-y-1">
+                                         <div class="flex items-center gap-2">
+                                             <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                                             <span class="text-sm font-bold text-emerald-900">{{ $semilla->tiempo_base_dias }} <span class="text-[10px] font-normal text-emerald-500">días ciclo base</span></span>
+                                         </div>
+                                         <p class="text-xs text-emerald-400 italic max-w-[180px] truncate">{{ $semilla->descripcion }}</p>
+                                     </div>
+                                 </td>
+                                 <td class="px-6 py-4">
+                                     <div class="flex items-center gap-3">
+                                         <span class="text-xl font-black text-emerald-900">{{ number_format($semilla->stock_actual, 2) }}</span>
+                                         @if($semilla->stock_actual <= 0)
+                                             <span class="bg-red-50 text-red-600 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase flex items-center gap-1 border border-red-100">
+                                                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                                 </svg>
+                                                 Sin Stock
+                                             </span>
+                                         @else
+                                             <span class="bg-emerald-50 text-emerald-600 text-[9px] font-bold px-1.5 py-0.5 rounded-md uppercase border border-emerald-100">
+                                                 En Stock
+                                             </span>
+                                         @endif
+                                     </div>
+                                 </td>
+                                 <td class="px-6 py-4">
+                                     <div class="bg-emerald-50 rounded-xl px-3 py-1 border border-emerald-100 inline-block">
+                                         <span class="text-xs font-black text-emerald-700">{{ $semilla->rendimiento_promedio }} <span class="text-[9px] font-bold">kg/m²</span></span>
+                                     </div>
+                                 </td>
+                                <td class="px-6 py-4 text-right">
+                                    <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
+                                        <button onclick="editSemilla(@json($semilla))" class="p-2.5 bg-amber-50 text-amber-600 rounded-xl hover:bg-amber-100 transition-colors shadow-sm">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                             </svg>
                                         </button>
                                         <form action="{{ route('tipo_semillas.destroy', $semilla->id_semilla) }}" method="POST" class="inline">
                                             @csrf @method('DELETE')
-                                            <button type="submit" onclick="return confirm('¿Eliminar esta variedad?')" class="p-3 bg-red-50 text-red-600 rounded-2xl hover:bg-red-100 transition-colors shadow-sm">
-                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <button type="submit" onclick="return confirm('¿Eliminar esta variedad?')" class="p-2.5 bg-red-50 text-red-600 rounded-xl hover:bg-red-100 transition-colors shadow-sm">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7M10 11v6M14 11v6M4 7h16M9 7V4a1 1 0 011-1h4a1 1 0 011 1v3" />
                                                 </svg>
                                             </button>
@@ -195,8 +220,8 @@
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="4" class="px-8 py-32 text-center">
-                                    <p class="text-emerald-400 font-bold italic">Su inventario está vacío. Comience agregando variedades desde el buscador lateral.</p>
+                                <td colspan="5" class="px-6 py-20 text-center">
+                                    <p class="text-emerald-400 text-sm font-bold italic">Su inventario está vacío. Comience agregando variedades desde el buscador lateral.</p>
                                 </td>
                             </tr>
                             @endforelse
@@ -204,7 +229,7 @@
                     </table>
                 </div>
 
-                <div class="p-8 bg-gray-50/50 border-t border-emerald-50">
+                <div class="p-6 bg-gray-50/50 border-t border-emerald-50">
                     {{ $tipoSemillas->links() }}
                 </div>
             </div>
@@ -270,6 +295,7 @@
         document.getElementById('display_dias').innerText = item.tiempo_base_dias;
         document.getElementById('display_rendimiento').innerText = item.rendimiento_promedio || '0.00';
         document.getElementById('description').value = item.descripcion || '';
+        document.getElementById('stock_actual').value = item.stock_actual || 0;
 
         // Toggle visibility
         formPlaceholder.classList.add('hidden');
@@ -281,6 +307,7 @@
         formPlaceholder.classList.remove('hidden');
         searchInput.value = '';
         seedForm.reset();
+        document.getElementById('stock_actual').value = '';
     }
 
     function editSemilla(semilla) {
@@ -291,7 +318,8 @@
             nombre: semilla.nombre_semilla,
             tiempo_base_dias: semilla.tiempo_base_dias,
             rendimiento_promedio: semilla.rendimiento_promedio,
-            descripcion: semilla.descripcion
+            descripcion: semilla.descripcion,
+            stock_actual: semilla.stock_actual
         });
 
         // Adjust form for update mode

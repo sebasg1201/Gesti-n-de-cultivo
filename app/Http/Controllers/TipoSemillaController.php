@@ -39,6 +39,7 @@ class TipoSemillaController extends Controller
             'id_catalogo' => 'required|exists:catalogo_semillas,id',
             'nombre_semilla' => 'required|string|max:100',
             'descripcion' => 'nullable|string|max:250',
+            'stock_actual' => 'nullable|numeric|min:0',
         ]);
 
         $catalogItem = CatalogoSemilla::findOrFail($request->id_catalogo);
@@ -58,6 +59,7 @@ class TipoSemillaController extends Controller
             'tiempo_base_dias' => $catalogItem->tiempo_base_dias, // PREDETERMINADO
             'descripcion' => $request->descripcion ?? $catalogItem->descripcion,
             'rendimiento_promedio' => $catalogItem->rendimiento_promedio, // PREDETERMINADO
+            'stock_actual' => $request->stock_actual ?? 0,
         ]);
 
         return redirect()->route('tipo_semillas.index')
@@ -69,6 +71,7 @@ class TipoSemillaController extends Controller
         $request->validate([
             'nombre_semilla' => 'required|string|max:100',
             'descripcion' => 'required|string|max:250',
+            'stock_actual' => 'required|numeric|min:0',
         ]);
 
         $tipoSemilla = TipoSemilla::where('id_semilla', $id)
@@ -79,6 +82,7 @@ class TipoSemillaController extends Controller
         $tipoSemilla->update([
             'nombre_semilla' => $request->nombre_semilla,
             'descripcion' => $request->descripcion,
+            'stock_actual' => $request->stock_actual,
         ]);
 
         return redirect()->route('tipo_semillas.index')
