@@ -56,11 +56,6 @@ class AdminController extends Controller
     {
         $usuario = auth()->guard('usuario')->user();
 
-        // Cambiar automáticamente estado Pendiente a En Progreso
-        \App\Models\FaseProgramada::where('documento_trabajador', $usuario->documento)
-            ->where('id_estado', 1) // 1 = Pendiente
-            ->update(['id_estado' => 8]); // 8 = En Proceso
-
         // 1. Fase Programada
         $fases = \App\Models\FaseProgramada::with(['cosecha.semilla', 'cosecha.terreno.tipoSuelo'])
             ->where('documento_trabajador', $usuario->documento)
