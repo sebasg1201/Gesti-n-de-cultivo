@@ -225,14 +225,6 @@ class AdminController extends Controller
                 'id_estado' => 1
             ]);
 
-            \App\Models\FaseProgramada::create([
-                'descripcion' => 'Riego: ' . ($request->observaciones ?? ''),
-                'fecha_programada' => $request->fecha_programada,
-                'id_estado' => 1,
-                'id_cosecha' => $request->id_cosecha,
-                'documento_trabajador' => $request->documento_trabajador
-            ]);
-
             return redirect()->back()->with('success', 'Tarea de riego asignada correctamente.');
         } catch (\Exception $e) {
             Log::error("Error en storeRiego: " . $e->getMessage());
@@ -261,14 +253,6 @@ class AdminController extends Controller
                 'fecha_programada' => $request->fecha_programada,
                 'id_estado' => 1,
                 'impacto_dias' => 0
-            ]);
-
-            \App\Models\FaseProgramada::create([
-                'descripcion' => 'Aplicación de Insumo: ' . ($insumo->Nombre ?? 'N/A'),
-                'fecha_programada' => $request->fecha_programada,
-                'id_estado' => 1,
-                'id_cosecha' => $request->id_cosecha,
-                'documento_trabajador' => $request->documento_trabajador
             ]);
 
             return redirect()->back()->with('success', 'Tarea de insumo asignada correctamente.');

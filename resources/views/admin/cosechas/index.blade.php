@@ -91,7 +91,7 @@
                             <!-- Imagen Header -->
                             <div class="relative h-48 w-full overflow-hidden bg-emerald-50">
                                 @if($cosecha->imagenes)
-                                    <img src="{{ asset('storage/' . $cosecha->imagenes) }}"
+                                    <img src="{{ asset('uploads/' . $cosecha->imagenes) }}"
                                         alt="{{ $cosecha->semilla->nombre_semilla ?? 'Cultivo' }}"
                                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                                 @else

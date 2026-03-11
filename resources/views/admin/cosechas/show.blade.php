@@ -176,7 +176,7 @@
                 <div
                     class="bg-white rounded-[2rem] p-8 shadow-sm border border-emerald-50 flex flex-col items-center justify-center text-center">
                     @if($cosecha->imagenes)
-                        <img src="{{ asset('storage/' . $cosecha->imagenes) }}" alt="Foto Cultivo"
+                        <img src="{{ asset('uploads/' . $cosecha->imagenes) }}" alt="Foto Cultivo"
                             class="w-full max-h-64 object-cover rounded-2xl shadow-sm mb-4">
                     @else
                         <div

@@ -55,7 +55,7 @@
                             <td class="py-4 px-6">
                                 <div class="flex items-center gap-3">
                                     @if($user->imagen)
-                                        <img src="{{ asset('storage/' . $user->imagen) }}" alt="Avatar" class="w-10 h-10 rounded-full object-cover border-2 border-emerald-100 shadow-sm">
+                                        <img src="{{ asset('uploads/' . $user->imagen) }}" alt="Avatar" class="w-10 h-10 rounded-full object-cover border-2 border-emerald-100 shadow-sm">
                                     @else
                                         <div class="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-bold border-2 border-emerald-200 shadow-sm">
                                             {{ strtoupper(substr($user->nombre, 0, 1)) }}
