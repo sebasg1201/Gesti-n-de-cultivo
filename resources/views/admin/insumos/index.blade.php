@@ -224,7 +224,7 @@
                                         <td class="px-8 py-6 text-right">
                                             <div
                                                 class="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
-                                                <button data-insumo="{{ htmlspecialchars(json_encode($insumo), ENT_QUOTES, 'UTF-8') }}" onclick="editInsumo(JSON.parse(this.dataset.insumo))"
+                                                <button data-insumo="{{ json_encode($insumo) }}" onclick="editInsumo(JSON.parse(this.dataset.insumo))"
                                                     class="p-3 bg-amber-50 text-amber-600 rounded-2xl hover:bg-amber-100 transition-colors shadow-sm">
                                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
