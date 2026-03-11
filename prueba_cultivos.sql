@@ -3,7 +3,11 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
+<<<<<<< HEAD:cultivos (8).sql
 -- Tiempo de generación: 09-03-2026 a las 22:32:19
+=======
+-- Tiempo de generación: 10-03-2026 a las 23:24:44
+>>>>>>> d3cef923a8605bbd0c860b68e674f6789bccd2f1:prueba_cultivos.sql
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -186,8 +190,14 @@ CREATE TABLE `cosecha` (
 -- Volcado de datos para la tabla `cosecha`
 --
 
+<<<<<<< HEAD:cultivos (8).sql
 INSERT INTO `cosecha` (`id_cosecha`, `id_empresa`, `Cantidad`, `id_terreno`, `id_semilla`, `id_estado`, `fecha_siembra`, `fecha_estimada`, `produccion_estimada`) VALUES
 (5, '988091212', 100, 4, 3, 1, '2026-03-08', NULL, 1200.00);
+=======
+INSERT INTO `cosecha` (`id_cosecha`, `id_empresa`, `Cantidad`, `id_terreno`, `id_semilla`, `id_estado`, `fecha_siembra`, `fecha_estimada`, `imagenes`, `produccion_estimada`) VALUES
+(7, '988091212', 100, 4, 3, 1, '2026-03-09', '2026-06-09', 'cosechas/3UG5Hh8N5TuDaBwIdmXAPIFzC0dL9z3fZjYYPACH.jpg', 1200.00),
+(8, '988091212', 100, 5, 4, 1, '2026-03-09', '2026-07-09', 'cosechas/91JBs3AvzOsV68q8X30VdBBq15NsLi1xrfcR2Nd9.jpg', 350.00);
+>>>>>>> d3cef923a8605bbd0c860b68e674f6789bccd2f1:prueba_cultivos.sql
 
 -- --------------------------------------------------------
 
@@ -273,12 +283,21 @@ INSERT INTO `empresa` (`id_empresa`, `nombre_empresa`, `nombre_repre_legal`, `ce
 CREATE TABLE `entrada_insumo` (
   `id_entrada` int(11) NOT NULL,
   `id_proveedor` int(11) NOT NULL,
-  `id_insumo` int(11) NOT NULL,
-  `id_semilla` int(11) NOT NULL,
+  `id_insumo` int(11) DEFAULT NULL,
+  `id_semilla` int(11) DEFAULT NULL,
+  `id_empresa` varchar(14) NOT NULL,
   `cantidad_recibida` decimal(10,2) NOT NULL,
   `fecha_entrada` timestamp NOT NULL DEFAULT current_timestamp(),
   `precio_unitario` decimal(10,2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `entrada_insumo`
+--
+
+INSERT INTO `entrada_insumo` (`id_entrada`, `id_proveedor`, `id_insumo`, `id_semilla`, `id_empresa`, `cantidad_recibida`, `fecha_entrada`, `precio_unitario`) VALUES
+(1, 1, 2, NULL, '834324234', 10.00, '2026-03-10 22:13:45', 400000.00),
+(2, 1, NULL, 5, '834324234', 14.00, '2026-03-10 22:15:41', 14000.00);
 
 -- --------------------------------------------------------
 
@@ -348,18 +367,20 @@ CREATE TABLE `insumo` (
   `Nombre` varchar(100) DEFAULT NULL,
   `Fecha_vencimiento` date DEFAULT NULL,
   `descripcion` text NOT NULL,
-  `id_proveedor` int(11) NOT NULL,
-  `id_empresa` varchar(14) NOT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
+  `id_proveedor` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `insumo`
 --
 
+<<<<<<< HEAD:cultivos (8).sql
 INSERT INTO `insumo` (`ID_insumo`, `Nombre`, `Calidad`, `cantidad_stock`, `Fecha_ingreso`, `Fecha_vencimiento`, `descripcion`, `id_proveedor`, `id_empresa`, `created_at`, `updated_at`) VALUES
 (1, 'Abono', 'Bueno', 12.00, '2026-03-09', '2026-07-08', 'Producto bueno para el arroz', 2, '834324234', '2026-03-09 21:10:31', '2026-03-09 21:10:31');
+=======
+INSERT INTO `insumo` (`ID_insumo`, `id_empresa`, `id_catalogo_insumo`, `stock_actual`, `Nombre`, `Fecha_vencimiento`, `descripcion`, `id_proveedor`) VALUES
+(2, '834324234', 3, 10.00, 'Urea Agrícola 46%', NULL, 'Fuente concentrada de nitrógeno', NULL);
+>>>>>>> d3cef923a8605bbd0c860b68e674f6789bccd2f1:prueba_cultivos.sql
 
 -- --------------------------------------------------------
 
@@ -452,7 +473,11 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (19, '2026_03_07_000003_add_impact_to_irrigation', 10),
 (20, '2026_03_07_000004_add_description_to_soil_catalog', 11),
 (21, '2026_03_07_000005_add_formal_foreign_keys_to_catalogs', 12),
+<<<<<<< HEAD:cultivos (8).sql
 (25, '2026_03_09_141010_create_proveedors_table', 13);
+=======
+(22, '2026_03_10_145541_add_id_empresa_to_insumo_table', 13);
+>>>>>>> d3cef923a8605bbd0c860b68e674f6789bccd2f1:prueba_cultivos.sql
 
 -- --------------------------------------------------------
 
@@ -487,6 +512,7 @@ CREATE TABLE `producto` (
 
 CREATE TABLE `proveedor` (
   `id_proveedor` int(11) NOT NULL,
+<<<<<<< HEAD:cultivos (8).sql
   `nombre` varchar(255) NOT NULL,
   `correo` varchar(255) DEFAULT NULL,
   `telefono` varchar(255) DEFAULT NULL,
@@ -494,14 +520,27 @@ CREATE TABLE `proveedor` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+=======
+  `nombre` varchar(100) DEFAULT NULL,
+  `producto` varchar(100) DEFAULT NULL,
+  `contacto` varchar(50) DEFAULT NULL,
+  `ID_insumo` int(11) DEFAULT NULL,
+  `id_empresa` varchar(14) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+>>>>>>> d3cef923a8605bbd0c860b68e674f6789bccd2f1:prueba_cultivos.sql
 
 --
 -- Volcado de datos para la tabla `proveedor`
 --
 
+<<<<<<< HEAD:cultivos (8).sql
 INSERT INTO `proveedor` (`id_proveedor`, `nombre`, `correo`, `telefono`, `id_empresa`, `created_at`, `updated_at`) VALUES
 (2, 'Didier', 'johsn@gmail.com', '3029098801', '834324234', '2026-03-09 21:08:19', '2026-03-09 21:08:19'),
 (3, 'Didier', 'johsn@gmail.com', '3022609743', '834324234', '2026-03-09 21:11:16', '2026-03-09 21:11:16');
+=======
+INSERT INTO `proveedor` (`id_proveedor`, `nombre`, `producto`, `contacto`, `ID_insumo`, `id_empresa`) VALUES
+(1, 'Juan ortiz', 'Fertilizante', '3103527239', NULL, '834324234');
+>>>>>>> d3cef923a8605bbd0c860b68e674f6789bccd2f1:prueba_cultivos.sql
 
 -- --------------------------------------------------------
 
@@ -541,7 +580,13 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
+<<<<<<< HEAD:cultivos (8).sql
 ('WpmuNjiNgdLQiuVyYoE4p7AQgW8zdkVMsbJcTc5r', 1104921223, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiM0VGNUVYZktJZmQzTFF1WlpWclkxTG1DRWtOdFA5V2ZkVVp4MnNneiI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6Mzk6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZG1pbi9wcm92ZWVkb3JlcyI7czo1OiJyb3V0ZSI7czoyMzoiYWRtaW4ucHJvdmVlZG9yZXMuaW5kZXgiO31zOjU0OiJsb2dpbl91c3VhcmlvXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MTEwNDkyMTIyMzt9', 1773091061);
+=======
+('5AGdGuSOHvPgZFdBLNGM3F7ZJyoN3720yRwWZ4k7', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiejN5bkpTWUxIRDZFcHcyV1ZkOGRnNmNwUVJZZEllYkhGc1BYRkdoSCI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzU6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC90aXBvX3NlbWlsbGFzIjtzOjU6InJvdXRlIjtzOjE5OiJ0aXBvX3NlbWlsbGFzLmluZGV4Ijt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo1NDoibG9naW5fdXN1YXJpb181OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjExMTA3MjIzNDU7fQ==', 1773094121),
+('BEGz8Pbx7Tee99ZgD9RLRylyBbmfEwrzw2IMRfhv', 1104921223, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiYnI4Znh3cVlCc2RCeTZ4OGVreldzSk9tMEVYUWpwbmxkc0puWXk0ZSI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6NTE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZG1pbi9wcm92ZWVkb3Jlcy8xL2hpc3RvcmlhbCI7czo1OiJyb3V0ZSI7czoyNzoiYWRtaW4ucHJvdmVlZG9yZXMuaGlzdG9yaWFsIjt9czo1NDoibG9naW5fdXN1YXJpb181OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjExMDQ5MjEyMjM7fQ==', 1773181325),
+('bLiGObGk4PYpm7EZKfaq58tScabvdCK9ABuZK54p', 1110722345, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiaE1GNTBCUEVMTUluT0sxSU80dU9oUjRPQXFUV1oycUlnTnVaR2VxSSI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzY6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZG1pbi9jb3NlY2hhcyI7czo1OiJyb3V0ZSI7czoyMDoiYWRtaW4uY29zZWNoYXMuaW5kZXgiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjU0OiJsb2dpbl91c3VhcmlvXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MTExMDcyMjM0NTt9', 1773164138);
+>>>>>>> d3cef923a8605bbd0c860b68e674f6789bccd2f1:prueba_cultivos.sql
 
 -- --------------------------------------------------------
 
@@ -624,7 +669,38 @@ CREATE TABLE `terreno` (
 
 INSERT INTO `terreno` (`id_terreno`, `id_empresa`, `nombre`, `ubicacion`, `Ancho`, `Alto`, `id_estado`, `id_tipo_suelo`) VALUES
 (3, '834324234', 'Cascada', 'Cascada del potrero las tribunas', 123, 76, 7, 2),
+<<<<<<< HEAD:cultivos (8).sql
 (4, '988091212', 'Parcela Norte', 'Verdecito', 123, 76, 7, 1);
+=======
+(4, '988091212', 'Parcela Norte', 'Verdecito', 123, 76, 7, 1),
+(5, '988091212', 'Parcela Sur', 'Verdecito', 123, 76, 7, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `tipo_insumo`
+--
+
+CREATE TABLE `tipo_insumo` (
+  `id_tipo_insumo` int(11) NOT NULL,
+  `nombre` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `tipo_insumo`
+--
+
+INSERT INTO `tipo_insumo` (`id_tipo_insumo`, `nombre`) VALUES
+(1, 'Fertilizante'),
+(2, 'Abono'),
+(3, 'Fungicida'),
+(4, 'Herbicida'),
+(5, 'Semillas'),
+(6, 'Fertilizantes'),
+(7, 'Agroquímicos'),
+(8, 'Herramientas'),
+(9, 'Mantenimiento');
+>>>>>>> d3cef923a8605bbd0c860b68e674f6789bccd2f1:prueba_cultivos.sql
 
 -- --------------------------------------------------------
 
@@ -695,7 +771,8 @@ CREATE TABLE `tipo_semilla` (
 
 INSERT INTO `tipo_semilla` (`id_semilla`, `id_empresa`, `id_catalogo`, `nombre_semilla`, `tiempo_base_dias`, `descripcion`, `rendimiento_promedio`, `stock_actual`) VALUES
 (3, '988091212', 1, 'Tomate Chonto', 90, 'Variedad de tomate muy resistente, ideal para salsas.', 12.00, 0.00),
-(4, '988091212', 3, 'Maíz Amarillo', 120, 'Cereal básico para la alimentación, ciclo corto.', 3.50, 0.00);
+(4, '988091212', 3, 'Maíz Amarillo', 120, 'Cereal básico para la alimentación, ciclo corto.', 3.50, 0.00),
+(5, '834324234', 2, 'Café Arábigo', 210, 'Variedad premium de café con aroma intenso y acidez equilibrada.', 1.50, 14.00);
 
 -- --------------------------------------------------------
 
@@ -765,7 +842,11 @@ CREATE TABLE `usuario` (
 INSERT INTO `usuario` (`documento`, `imagen`, `nombre`, `telefono`, `correo`, `contrasena`, `remember_token`, `id_tipo_usuario`, `id_estado`, `id_empresa`) VALUES
 (1006511653, 'usuarios/TPn5OuzBFcUMBMTb27MDcG8KrMQg0nUiQau4ExxO.png', 'Sebas Alvarez', '3103524334', 'sombrahdepaz76@gmail.com', '$2y$12$ShO2KxmULq2i87gGWluCyeAy/C5fhUJt26ceeK7Nt/BKxRxQl/DRa', '', 1, 3, '103455657789'),
 (1034345454, 'usuarios/ohtjEMXYnEtIKQV6uXFyhSx4giqPArWo1ABQmYEk.jpg', 'Javier Gonza', '3223243434', 'bastobrayan246@gmail.com', '$2y$12$IXfjWMnY6Ul6L6B0trEKK.6obRkullnh7zI5H/sAO3/nHgpsQWjqq', '', 1, 3, '876767657'),
+<<<<<<< HEAD:cultivos (8).sql
 (1104921223, 'usuarios/fxyI259nxaEdNx9meFLTLFkpNIRGXnj7nyy2Z8PX.png', 'julio profe', '3291231212', 'reyesz2803@gmail.com', '$2y$12$NcwOItyOjXK4jwD7js4ri.mghmiFTcxGEzjyPNbzJGOZ6lWJQ7Eou', 'ybWsogRzHDcrOAaRG6vEt2ks0qCaH27kDD8c03IYnD0IiiKR1qdI7Z0J7R5u', 1, 3, '834324234'),
+=======
+(1104921223, 'usuarios/fxyI259nxaEdNx9meFLTLFkpNIRGXnj7nyy2Z8PX.png', 'julio profe', '3291231212', 'reyesz2803@gmail.com', '$2y$12$NcwOItyOjXK4jwD7js4ri.mghmiFTcxGEzjyPNbzJGOZ6lWJQ7Eou', '82bofanUqX4dcELHfjQ1pMfDcYlIQINEXOUiQnF4rCmDVuR8p1PSmBjzasXr', 1, 3, '834324234'),
+>>>>>>> d3cef923a8605bbd0c860b68e674f6789bccd2f1:prueba_cultivos.sql
 (1110722331, 'usuarios/useOl4EMIIlIsP0f8X6vMaoWPIjhX5Ml9tCDJ2bC.jpg', 'Didier', '3103527239', 'johsn@gmail.com', '$2y$12$vxkHUv.QeZAo9aWiUSLcNuVRnX.siC2vPlL8S1QY6vt6m6WTme7vK', '', 3, 1, '834324234'),
 (1110722345, 'usuarios/IEJRgrLlnPGGxJcaD5NFbzOnxj7DAVNxZXnoZjTr.jpg', 'Brayan Gutierez', '3029219231', 'sombrahdepaz@gmail.com', '$2y$12$ElMqaOG0Q30Gbt8q2RwPDudpzZPaIlhmEoA4Ldj0WQ6cW6zhcGAiK', 'ZvNG62UWZAdnu1aCOus0E5kcsylRs6ExJmHDCOQNuZ6MqstDveVTUCa1XJJg', 1, 3, '988091212');
 
@@ -915,8 +996,14 @@ ALTER TABLE `fases_programadas`
 --
 ALTER TABLE `insumo`
   ADD PRIMARY KEY (`ID_insumo`),
+<<<<<<< HEAD:cultivos (8).sql
   ADD KEY `id_empresa` (`id_empresa`),
   ADD KEY `id_proveedor` (`id_proveedor`);
+=======
+  ADD KEY `id_proveedor` (`id_proveedor`),
+  ADD KEY `fk_insumo_al_catalogo` (`id_catalogo_insumo`),
+  ADD KEY `id_empresa` (`id_empresa`);
+>>>>>>> d3cef923a8605bbd0c860b68e674f6789bccd2f1:prueba_cultivos.sql
 
 --
 -- Indices de la tabla `insumo_cosecha`
@@ -964,6 +1051,7 @@ ALTER TABLE `producto`
 --
 ALTER TABLE `proveedor`
   ADD PRIMARY KEY (`id_proveedor`),
+  ADD KEY `ID_insumo` (`ID_insumo`),
   ADD KEY `id_empresa` (`id_empresa`);
 
 --
@@ -1103,7 +1191,11 @@ ALTER TABLE `catalogo_suelos`
 -- AUTO_INCREMENT de la tabla `cosecha`
 --
 ALTER TABLE `cosecha`
+<<<<<<< HEAD:cultivos (8).sql
   MODIFY `id_cosecha` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+=======
+  MODIFY `id_cosecha` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+>>>>>>> d3cef923a8605bbd0c860b68e674f6789bccd2f1:prueba_cultivos.sql
 
 --
 -- AUTO_INCREMENT de la tabla `cultivo`
@@ -1127,7 +1219,7 @@ ALTER TABLE `detalle_producto_cultivo`
 -- AUTO_INCREMENT de la tabla `entrada_insumo`
 --
 ALTER TABLE `entrada_insumo`
-  MODIFY `id_entrada` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_entrada` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `estado`
@@ -1151,7 +1243,11 @@ ALTER TABLE `fases_programadas`
 -- AUTO_INCREMENT de la tabla `insumo`
 --
 ALTER TABLE `insumo`
+<<<<<<< HEAD:cultivos (8).sql
   MODIFY `ID_insumo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+=======
+  MODIFY `ID_insumo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+>>>>>>> d3cef923a8605bbd0c860b68e674f6789bccd2f1:prueba_cultivos.sql
 
 --
 -- AUTO_INCREMENT de la tabla `insumo_cosecha`
@@ -1169,7 +1265,11 @@ ALTER TABLE `jobs`
 -- AUTO_INCREMENT de la tabla `migrations`
 --
 ALTER TABLE `migrations`
+<<<<<<< HEAD:cultivos (8).sql
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+=======
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+>>>>>>> d3cef923a8605bbd0c860b68e674f6789bccd2f1:prueba_cultivos.sql
 
 --
 -- AUTO_INCREMENT de la tabla `producto`
@@ -1181,7 +1281,7 @@ ALTER TABLE `producto`
 -- AUTO_INCREMENT de la tabla `proveedor`
 --
 ALTER TABLE `proveedor`
-  MODIFY `id_proveedor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_proveedor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `riego`
@@ -1205,7 +1305,17 @@ ALTER TABLE `super_admin`
 -- AUTO_INCREMENT de la tabla `terreno`
 --
 ALTER TABLE `terreno`
+<<<<<<< HEAD:cultivos (8).sql
   MODIFY `id_terreno` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+=======
+  MODIFY `id_terreno` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT de la tabla `tipo_insumo`
+--
+ALTER TABLE `tipo_insumo`
+  MODIFY `id_tipo_insumo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+>>>>>>> d3cef923a8605bbd0c860b68e674f6789bccd2f1:prueba_cultivos.sql
 
 --
 -- AUTO_INCREMENT de la tabla `tipo_licencia`
@@ -1223,7 +1333,7 @@ ALTER TABLE `tipo_riego`
 -- AUTO_INCREMENT de la tabla `tipo_semilla`
 --
 ALTER TABLE `tipo_semilla`
-  MODIFY `id_semilla` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_semilla` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `tipo_suelo`
@@ -1303,8 +1413,14 @@ ALTER TABLE `fases_programadas`
 -- Filtros para la tabla `insumo`
 --
 ALTER TABLE `insumo`
+<<<<<<< HEAD:cultivos (8).sql
   ADD CONSTRAINT `insumo_ibfk_1` FOREIGN KEY (`id_empresa`) REFERENCES `empresa` (`id_empresa`),
   ADD CONSTRAINT `insumo_ibfk_2` FOREIGN KEY (`id_proveedor`) REFERENCES `proveedor` (`id_proveedor`);
+=======
+  ADD CONSTRAINT `fk_insumo_al_catalogo` FOREIGN KEY (`id_catalogo_insumo`) REFERENCES `catalogo_insumos` (`id_catalogo_insumo`),
+  ADD CONSTRAINT `insumo_ibfk_1` FOREIGN KEY (`id_proveedor`) REFERENCES `proveedor` (`id_proveedor`),
+  ADD CONSTRAINT `insumo_ibfk_2` FOREIGN KEY (`id_empresa`) REFERENCES `empresa` (`id_empresa`);
+>>>>>>> d3cef923a8605bbd0c860b68e674f6789bccd2f1:prueba_cultivos.sql
 
 --
 -- Filtros para la tabla `insumo_cosecha`
@@ -1319,6 +1435,7 @@ ALTER TABLE `insumo_cosecha`
 -- Filtros para la tabla `proveedor`
 --
 ALTER TABLE `proveedor`
+  ADD CONSTRAINT `proveedor_ibfk_1` FOREIGN KEY (`ID_insumo`) REFERENCES `insumo` (`ID_insumo`),
   ADD CONSTRAINT `proveedor_ibfk_2` FOREIGN KEY (`id_empresa`) REFERENCES `empresa` (`id_empresa`);
 
 --
