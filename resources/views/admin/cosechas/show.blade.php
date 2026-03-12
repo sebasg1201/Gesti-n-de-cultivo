@@ -146,6 +146,50 @@
                 </div>
             </div>
 
+            <!-- Cumplimiento de Hidratación (Barra Azul) -->
+            <div class="bg-white rounded-[2rem] p-8 shadow-sm border border-cyan-50">
+                <div class="flex justify-between items-end mb-8">
+                    <div>
+                        <h3 class="text-xl font-black text-slate-800">Cumplimiento de Riego</h3>
+                        <p class="text-sm font-bold mt-1 text-cyan-500">
+                            Estado hídrico: 
+                            <span class="uppercase tracking-wide">
+                                @if($porcentajeHidratacion >= 80) Óptimo
+                                @elseif($porcentajeHidratacion >= 50) Regular
+                                @else Crítico
+                                @endif
+                            </span>
+                        </p>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-3xl font-black text-slate-800">
+                            {{ number_format($porcentajeHidratacion, 0) }}%
+                        </div>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">
+                            {{ $riegosCompletados }} de {{ $totalRiegosCiclo }} riegos programados
+                        </p>
+                    </div>
+                </div>
+
+                <div class="relative pt-2">
+                    <!-- Barra de progreso Track -->
+                    <div class="h-4 w-full bg-slate-100 rounded-full overflow-hidden flex relative">
+                        <!-- Sombra o barra guía indicando la meta de crecimiento -->
+                        <div class="absolute left-0 top-0 bottom-0 bg-slate-200/50" style="width: {{ $porcentaje }}%"></div>
+                        <!-- Segmentos de la barra Azul -->
+                        <div class="h-full border-r-2 border-white bg-gradient-to-r from-cyan-400 to-blue-500 transition-all duration-1000 ease-out relative z-10 shadow-[0_0_10px_rgba(6,182,212,0.5)]"
+                            style="width: {{ $porcentajeHidratacion }}%"></div>
+                    </div>
+
+                    <!-- Indicadores (Visuales) -->
+                    <div class="relative top-4 flex justify-between text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-widest px-2">
+                        <div class="text-left text-cyan-600 font-black">0%</div>
+                        <div class="text-center">Progreso Total de Hidratación (Ciclo Completo)</div>
+                        <div class="text-right text-cyan-600 font-black">100%</div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Información Adicional (Opcional, estructurado abajo si se requiere) -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <div class="bg-white rounded-[2rem] p-8 shadow-sm border border-emerald-50">

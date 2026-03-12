@@ -282,6 +282,14 @@
                         <input type="date" name="fecha_siembra" id="input-fecha" required value="{{ date('Y-m-d') }}"
                             class="w-full bg-emerald-50 border-2 border-emerald-50 rounded-2xl p-4 text-emerald-900 font-bold focus:border-emerald-500 transition-all">
                     </div>
+
+                    <!-- Frecuencia de Riego -->
+                    <div class="space-y-3">
+                        <label class="block text-xs font-black text-emerald-950 uppercase tracking-widest ml-4">Frecuencia de Riego (Días)</label>
+                        <input type="number" name="frecuencia_riego_dias" id="input-frecuencia" required min="1" max="30"
+                            placeholder="Ej: 3" value="3"
+                            class="w-full bg-emerald-50 border-2 border-emerald-50 rounded-2xl p-4 text-emerald-900 font-bold placeholder:text-emerald-200 focus:border-emerald-500 transition-all">
+                    </div>
                 </div>
 
                 <!-- Imagen -->

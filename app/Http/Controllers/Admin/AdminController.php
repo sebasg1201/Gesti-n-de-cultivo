@@ -281,4 +281,131 @@ class AdminController extends Controller
             return redirect()->back()->with('error', 'Error en base de datos: ' . $e->getMessage())->withInput();
         }
     }
+
+    public function trabajadorCalendario()
+    {
+        return view('trabajadores.calendario');
+    }
+
+    public function getEventosCalendario()
+    {
+        $usuario = auth()->guard('usuario')->user();
+        $eventos = [];
+
+        // 1. Fase Programada
+        $fases = \App\Models\FaseProgramada::with(['cosecha.semilla'])
+            ->where('documento_trabajador', $usuario->documento)
+            ->get();
+        foreach ($fases as $fase) {
+            $nombreCultivo = $fase->cosecha && $fase->cosecha->semilla 
+                ? $fase->cosecha->semilla->nombre_semilla 
+                : 'Cultivo';
+            
+            $resumenFase = $fase->cosecha && $fase->cosecha->semilla 
+                ? $fase->cosecha->semilla->descripcion 
+                : 'Realizar labores de mantenimiento para la fase de ' . $fase->descripcion;
+
+            $eventos[] = [
+                'id' => 'fase_' . $fase->id_fase,
+                'title' => 'Fase: ' . $fase->descripcion,
+                'start' => $fase->fecha_programada,
+                'color' => $fase->id_estado == 9 ? '#10b981' : ($fase->id_estado == 8 ? '#f59e0b' : '#3b82f6'),
+                'extendedProps' => [
+                    'tipo' => 'fase',
+                    'descripcion' => $fase->descripcion,
+                    'cultivo' => $nombreCultivo,
+                    'resumen' => $resumenFase,
+                    'estado' => $fase->id_estado
+                ]
+            ];
+        }
+
+        // 2. Riego
+        $riegos = \App\Models\Riego::where('documento_trabajador', $usuario->documento)->get();
+        foreach ($riegos as $riego) {
+            $eventos[] = [
+                'id' => 'riego_' . $riego->id_riego,
+                'title' => 'Riego: ' . ($riego->observaciones ?: 'Programado'),
+                'start' => $riego->fecha_programada,
+                'color' => '#0ea5e9',
+                'extendedProps' => [
+                    'tipo' => 'riego',
+                    'descripcion' => $riego->observaciones,
+                    'estado' => $riego->id_estado
+                ]
+            ];
+        }
+
+        // 3. Insumos
+        $insumos = \App\Models\InsumoCosecha::with('insumo')->where('documento_trabajador', $usuario->documento)->get();
+        foreach ($insumos as $insumo) {
+            $eventos[] = [
+                'id' => 'insumo_' . $insumo->id_insumo_cosecha,
+                'title' => 'Insumo: ' . ($insumo->insumo->Nombre ?? 'Aplicación'),
+                'start' => $insumo->fecha_programada,
+                'color' => '#8b5cf6',
+                'extendedProps' => [
+                    'tipo' => 'insumo',
+                    'descripcion' => 'Aplicación de ' . ($insumo->insumo->Nombre ?? 'insumo'),
+                    'estado' => $insumo->id_estado
+                ]
+            ];
+        }
+
+        // 4. Días Trabajados (Marcados manualmente)
+        $registros = \App\Models\RegistroTrabajo::where('documento_trabajador', $usuario->documento)->get();
+        foreach ($registros as $reg) {
+            $eventos[] = [
+                'id' => 'registro_' . $reg->id_registro_trabajo,
+                'title' => 'Día Trabajado',
+                'start' => $reg->fecha_trabajada,
+                'rendering' => 'background',
+                'color' => '#dcfce7', // Un verde muy claro para el fondo
+                'allDay' => true,
+                'extendedProps' => [
+                    'tipo' => 'registro',
+                    'observacion' => $reg->observacion,
+                    'foto_url' => $reg->foto_evidencia ? asset('uploads/' . $reg->foto_evidencia) : null
+                ]
+            ];
+        }
+
+        return response()->json($eventos);
+    }
+
+    public function storeRegistroTrabajo(Request $request)
+    {
+        $usuario = auth()->guard('usuario')->user();
+
+        $request->validate([
+            'fecha_trabajada' => 'required|date',
+            'observacion' => 'nullable|string|max:500',
+            'foto_evidencia' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048'
+        ]);
+
+        // Verificar si ya registró ese día
+        $existe = \App\Models\RegistroTrabajo::where('documento_trabajador', $usuario->documento)
+            ->where('fecha_trabajada', $request->fecha_trabajada)
+            ->exists();
+
+        if ($existe) {
+            return response()->json(['error' => 'Ya has registrado trabajo para este día.'], 422);
+        }
+
+        $imagePath = null;
+        if ($request->hasFile('foto_evidencia')) {
+            $imagePath = $request->file('foto_evidencia')->store('evidencias', 'public');
+        }
+
+        \App\Models\RegistroTrabajo::create([
+            'documento_trabajador' => $usuario->documento,
+            'fecha_trabajada' => $request->fecha_trabajada,
+            'observacion' => $request->observacion,
+            'id_insumo_cosecha' => $request->id_insumo_cosecha ?? null,
+            'estado_aprobacion' => 'pendiente',
+            'foto_evidencia' => $imagePath
+        ]);
+
+        return response()->json(['success' => 'Día de trabajo registrado correctamente.']);
+    }
 }

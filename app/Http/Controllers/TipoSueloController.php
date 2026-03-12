@@ -33,28 +33,30 @@ class TipoSueloController extends Controller
     {
         $id_empresa = $this->getEmpresaId();
         $request->validate([
-            'id_catalogo' => 'required|exists:catalogo_suelos,id',
+            'id_catalogo' => 'nullable|exists:catalogo_suelos,id',
             'nombre' => 'required|string|max:100',
             'descripcion' => 'nullable|string|max:250',
+            'impacto_dias' => 'required|integer',
+            'consumo_agua_ideal' => 'nullable|numeric|min:0',
         ]);
 
-        $catalogItem = \App\Models\CatalogoSuelo::findOrFail($request->id_catalogo);
+        if ($request->filled('id_catalogo')) {
+            $exists = TipoSuelo::where('id_empresa', $id_empresa)
+                ->where('id_catalogo', $request->id_catalogo)
+                ->exists();
 
-        // Check if already registered
-        $exists = TipoSuelo::where('id_empresa', $id_empresa)
-            ->where('id_catalogo', $catalogItem->id)
-            ->exists();
-
-        if ($exists) {
-            return redirect()->back()->with('error', 'Este tipo de suelo ya está configurado en su empresa.');
+            if ($exists) {
+                return redirect()->back()->with('error', 'Este tipo de suelo ya está configurado en su empresa.');
+            }
         }
 
         TipoSuelo::create([
             'id_empresa' => $id_empresa,
-            'id_catalogo' => $catalogItem->id,
+            'id_catalogo' => $request->id_catalogo ?: null,
             'nombre' => $request->nombre,
             'descripcion' => $request->descripcion,
-            'impacto_dias' => $catalogItem->impacto_dias,
+            'impacto_dias' => $request->impacto_dias,
+            'consumo_agua_ideal' => $request->consumo_agua_ideal,
         ]);
 
         return redirect()->route('tipo_suelos.index')
@@ -66,6 +68,8 @@ class TipoSueloController extends Controller
         $request->validate([
             'nombre' => 'required|string|max:100',
             'descripcion' => 'nullable|string|max:250',
+            'impacto_dias' => 'required|integer',
+            'consumo_agua_ideal' => 'nullable|numeric|min:0',
         ]);
 
         $tipoSuelo = TipoSuelo::where('id_tipo_suelo', $id)
@@ -75,6 +79,8 @@ class TipoSueloController extends Controller
         $tipoSuelo->update([
             'nombre' => $request->nombre,
             'descripcion' => $request->descripcion,
+            'impacto_dias' => $request->impacto_dias,
+            'consumo_agua_ideal' => $request->consumo_agua_ideal,
         ]);
 
         return redirect()->route('tipo_suelos.index')

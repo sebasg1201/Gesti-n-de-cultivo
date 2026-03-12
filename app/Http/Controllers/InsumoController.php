@@ -6,6 +6,7 @@ use App\Models\Insumo;
 use App\Models\CatalogoInsumo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class InsumoController extends Controller
 {
@@ -22,7 +23,9 @@ class InsumoController extends Controller
             ->where('id_empresa', $id_empresa)
             ->paginate(10);
 
-        return view('admin.insumos.index', compact('insumos'));
+        $tiposInsumo = \App\Models\TipoInsumo::all();
+
+        return view('admin.insumos.index', compact('insumos', 'tiposInsumo'));
     }
 
     public function catalog(Request $request)
@@ -42,39 +45,40 @@ class InsumoController extends Controller
         $idEmpresa = $this->getEmpresaId();
 
         $request->validate([
-            'id_catalogo_insumo' => 'required|exists:catalogo_insumos,id_catalogo_insumo',
+            'id_catalogo_insumo' => 'nullable|exists:catalogo_insumos,id_catalogo_insumo',
             'nombre' => 'required|string|max:100',
             'descripcion' => 'nullable|string|max:250',
+            'categoria_manual' => 'nullable|exists:tipo_insumo,id_tipo_insumo',
         ]);
 
-        $catalogItem = CatalogoInsumo::findOrFail($request->id_catalogo_insumo);
+        if ($request->filled('id_catalogo_insumo')) {
+            $exists = Insumo::where('id_empresa', $idEmpresa)
+                ->where('id_catalogo_insumo', $request->id_catalogo_insumo)
+                ->exists();
 
-        $exists = Insumo::where('id_empresa', $idEmpresa)
-            ->where('id_catalogo_insumo', $catalogItem->id_catalogo_insumo)
-            ->exists();
-
-        if ($exists) {
-            return redirect()->back()->with('error', 'Este insumo ya está registrado en su inventario.');
+            if ($exists) {
+                return redirect()->back()->with('error', 'Este insumo ya está registrado en su inventario.');
+            }
         }
-
+        
         Insumo::create([
             'id_empresa' => $idEmpresa,
-            'id_catalogo_insumo' => $catalogItem->id_catalogo_insumo,
+            'id_catalogo_insumo' => $request->id_catalogo_insumo ?: null,
             'Nombre' => $request->nombre,
-            'descripcion' => $request->descripcion ?? $catalogItem->descripcion,
-            'stock_actual' => 0.00,
-            'cantidad_stock' => 0.00,
+            'descripcion' => $request->descripcion,
+            'stock_actual' => 0,
+            'cantidad_stock' => 0,
         ]);
 
         return redirect()->route('insumos.index')
-            ->with('success', 'Insumo configurado y añadido a su inventario (Stock 0).');
+            ->with('success', 'Insumo configurado y añadido a su inventario (con stock inicial de 0).');
     }
 
     public function update(Request $request, $id)
     {
         $request->validate([
             'nombre' => 'required|string|max:100',
-            'descripcion' => 'required|string|max:250',
+            'descripcion' => 'nullable|string|max:250',
         ]);
 
         $insumo = Insumo::where('ID_insumo', $id)

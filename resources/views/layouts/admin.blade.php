@@ -232,6 +232,15 @@
                     </a>
                 @endif
 
+                @if(auth()->guard('usuario')->user()->id_tipo_usuario == 3)
+                    <a href="{{ route('trabajador.calendario') }}"
+                        class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {{ active('trabajador.calendario') }}">
+                        <div class="w-1.5 h-6 bg-emerald-300 rounded-full opacity-0 group-hover:opacity-100 transition-all">
+                        </div>
+                        <span class="font-medium whitespace-nowrap">Mi Calendario</span>
+                    </a>
+                @endif
+
             </nav>
 
             <!-- FOOTER -->

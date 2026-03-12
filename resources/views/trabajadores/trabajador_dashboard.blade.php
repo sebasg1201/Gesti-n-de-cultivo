@@ -3,25 +3,51 @@
 @section('title', 'Mis Tareas Asignadas')
 
 @section('content')
-<div class="max-w-6xl mx-auto space-y-8">
+<div class="max-w-6xl mx-auto space-y-8 pb-20">
 
     @if (session('success'))
-        <div class="bg-emerald-100 border-l-4 border-emerald-500 text-emerald-800 p-4 rounded-r-lg shadow-sm">
-            <p class="font-medium flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                </svg>
-                {{ session('success') }}
-            </p>
+        <div id="notification-alert" class="fixed top-24 right-8 z-[100] transform transition-all duration-500 translate-x-0">
+            <div class="bg-emerald-500 text-white px-6 py-4 rounded-2xl shadow-2xl shadow-emerald-200/50 flex items-center gap-4 border border-emerald-400/20 backdrop-blur-md">
+                <div class="bg-white/20 p-2 rounded-xl">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                    </svg>
+                </div>
+                <p class="font-bold">{{ session('success') }}</p>
+                <button onclick="closeNotification()" class="ml-4 opacity-70 hover:opacity-100 transition-opacity">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
         </div>
     @endif
 
-    <div class="bg-emerald-50 border border-emerald-100 rounded-2xl p-6 mb-6">
-        <h2 class="text-xl font-bold text-emerald-900 mb-2">¡Bienvenido, {{ explode(' ', auth()->guard('usuario')->user()->nombre)[0] }}!</h2>
-        <p class="text-emerald-700">Aquí puedes ver tus tareas asignadas y el estado de tu progreso.</p>
+    <div class="relative overflow-hidden bg-gradient-to-br from-emerald-600 to-teal-700 rounded-[2.5rem] p-8 lg:p-12 shadow-2xl shadow-emerald-200/50 group">
+        <div class="absolute top-0 right-0 -mt-20 -mr-20 w-64 h-64 bg-white/10 rounded-full blur-3xl group-hover:bg-white/20 transition-all duration-700"></div>
+        <div class="absolute bottom-0 left-0 -mb-20 -ml-20 w-48 h-48 bg-emerald-400/20 rounded-full blur-2xl group-hover:bg-emerald-400/30 transition-all duration-700"></div>
+        
+        <div class="relative flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div class="space-y-2">
+                <span class="inline-flex items-center gap-2 bg-white/20 backdrop-blur-md px-4 py-1.5 rounded-full text-white text-[10px] font-black uppercase tracking-[0.2em]">
+                    <span class="w-2 h-2 bg-emerald-300 rounded-full animate-pulse"></span>
+                    Sesión Activa
+                </span>
+                <h2 class="text-3xl md:text-5xl font-black text-white tracking-tight">¡Hola, {{ explode(' ', auth()->guard('usuario')->user()->nombre)[0] }}!</h2>
+                <p class="text-emerald-50 text-lg opacity-90 max-w-md">Lleva el control de tu productividad. Tienes <span class="font-black underline decoration-emerald-300">{{ $tareas->flatten()->count() }}</span> acciones programadas hoy.</p>
+            </div>
+            <div class="flex gap-4">
+                <div class="bg-white/10 backdrop-blur-md p-6 rounded-[2rem] border border-white/10 text-center flex-1 md:flex-none md:min-w-[140px]">
+                    <p class="text-white/60 text-[10px] font-black uppercase mb-1">Pendientes</p>
+                    <p class="text-3xl font-black text-white">{{ $tareas->flatten()->where('id_estado', 1)->count() }}</p>
+                </div>
+                <div class="bg-white/10 backdrop-blur-md p-6 rounded-[2rem] border border-white/10 text-center flex-1 md:flex-none md:min-w-[140px]">
+                    <p class="text-white/60 text-[10px] font-black uppercase mb-1">En Proceso</p>
+                    <p class="text-3xl font-black text-white">{{ $tareas->flatten()->where('id_estado', 8)->count() }}</p>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="space-y-12">
+    <div class="space-y-16">
         @forelse($tareas as $id_cosecha => $grupoTareas)
             @php
                 $primeraTarea = $grupoTareas->first();
@@ -30,57 +56,55 @@
                 $parcelaNombre = optional($cosecha->terreno)->nombre ?? 'Sin Parcela';
             @endphp
             
-            <div class="space-y-4">
+            <div class="space-y-8">
                 {{-- Harvest Header --}}
-                <div class="flex items-center gap-4 px-2">
-                    <div class="h-px flex-1 bg-emerald-200"></div>
-                    <div class="flex items-center gap-2 bg-emerald-100 text-emerald-800 px-4 py-2 rounded-full font-black text-xs uppercase tracking-widest shadow-sm">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                        </svg>
-                        Lote #{{ $id_cosecha }} - {{ $semillaNombre }} ({{ $parcelaNombre }})
+                <div class="flex items-center gap-6 px-4">
+                    <h3 class="flex-none flex items-center gap-4 bg-white px-6 py-3 rounded-2xl shadow-xl shadow-gray-100/50 border border-gray-50">
+                        <div class="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-emerald-200">
+                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">Cosecha Activa</p>
+                            <span class="text-xl font-black text-gray-900 leading-none">Lote #{{ $id_cosecha }} <span class="text-emerald-600">|</span> {{ $semillaNombre }}</span>
+                        </div>
+                    </h3>
+                    <div class="h-px flex-1 bg-gradient-to-r from-gray-200 to-transparent"></div>
+                    <div class="flex-none px-4 py-2 bg-emerald-50 rounded-xl text-emerald-700 font-black text-[10px] uppercase tracking-widest border border-emerald-100">
+                        {{ $parcelaNombre }}
                     </div>
-                    <div class="h-px flex-1 bg-emerald-200"></div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     @foreach($grupoTareas as $fase)
-                        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 hover:border-emerald-300 transition-all flex flex-col overflow-hidden relative group">
-                            
-                            {{-- Border left to indicate state --}}
-                            <div class="absolute left-0 top-0 bottom-0 w-1.5 
-                                {{ $fase->id_estado == 8 ? 'bg-orange-400' : ($fase->id_estado == 9 ? 'bg-emerald-500' : 'bg-yellow-400') }}">
-                            </div>
+                        <div class="group/card bg-white rounded-[2.5rem] p-1 border border-gray-100 shadow-xl shadow-gray-100/50 hover:shadow-2xl hover:shadow-emerald-200/40 hover:-translate-y-2 transition-all duration-500">
+                            <div class="bg-gray-50/50 rounded-[2.2rem] p-7 h-full flex flex-col relative overflow-hidden">
+                                {{-- Background Pattern --}}
+                                <div class="absolute -right-4 -top-4 w-24 h-24 bg-emerald-500/5 rounded-full blur-2xl group-hover/card:bg-emerald-500/10 transition-colors"></div>
 
-                            <div class="p-6 flex-1 flex flex-col">
-                                <div class="flex justify-between items-start mb-4">
-                                    <span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider
-                                        {{ $fase->id_estado == 1 ? 'bg-yellow-100 text-yellow-800' : ($fase->id_estado == 8 ? 'bg-orange-100 text-orange-800' : 'bg-emerald-100 text-emerald-800') }}">
+                                <div class="flex justify-between items-start mb-6">
+                                    <span class="px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest shadow-sm
+                                        {{ $fase->id_estado == 1 ? 'bg-amber-100 text-amber-700 border border-amber-200' : ($fase->id_estado == 8 ? 'bg-sky-100 text-sky-700 border border-sky-200' : 'bg-emerald-100 text-emerald-700 border border-emerald-200') }}">
                                         {{ $fase->id_estado == 1 ? 'Pendiente' : ($fase->id_estado == 8 ? 'En Proceso' : 'Realizado') }}
                                     </span>
                                     
                                     <div class="text-right">
-                                        <p class="text-[10px] text-gray-400 font-bold uppercase">Fecha</p>
-                                        <p class="text-sm font-bold text-gray-700">{{ \Carbon\Carbon::parse($fase->fecha_programada)->format('d M, Y') }}</p>
+                                        <p class="text-[9px] text-gray-400 font-black uppercase tracking-widest leading-none mb-1">Entrega</p>
+                                        <p class="text-xs font-black text-gray-800 bg-white px-2 py-1 rounded-lg border border-gray-100 shadow-sm">{{ \Carbon\Carbon::parse($fase->fecha_programada)->format('d/m/Y') }}</p>
                                     </div>
                                 </div>
 
-                                <h3 class="text-lg font-bold text-gray-800 mb-2 flex-grow">
+                                <h3 class="text-xl font-black text-gray-900 mb-6 leading-tight flex-grow group-hover/card:text-emerald-700 transition-colors">
                                     {{ $fase->descripcion }}
                                 </h3>
 
-                                <div class="mt-4 pt-4 border-t border-gray-100 flex items-center gap-3">
-                                    {{-- Ver Detalle --}}
-                                    @php
+                                <div class="mt-auto flex items-center justify-between gap-4">
+                                     @php
                                         $terreno = optional($cosecha)->terreno ?? null;
-                                        
-                                        // Extra data according to task type
                                         $tipoEtiqueta = 'General';
-                                        if($fase->tipo_tarea == 'riego') {
-                                            $tipoEtiqueta = 'Riego (' . ($fase->tipoRiego->tipo_riego ?? 'N/A') . ')';
-                                        } elseif($fase->tipo_tarea == 'insumo') {
-                                            $tipoEtiqueta = 'Insumo (' . ($fase->insumo->Nombre ?? 'N/A') . ')';
-                                        }
+                                        if($fase->tipo_tarea == 'riego') $tipoEtiqueta = 'Riego';
+                                        elseif($fase->tipo_tarea == 'insumo') $tipoEtiqueta = 'Insumo';
 
                                         $details = [
                                             'fase_id' => $fase->tipo_tarea == 'riego' ? $fase->id_riego : ($fase->tipo_tarea == 'insumo' ? $fase->id_insumo_cosecha : $fase->id_fase),
@@ -100,32 +124,31 @@
                                             'produccion' => ($cosecha->produccion_estimada ?? '0') . ' kg est.'
                                         ];
                                     @endphp
+                                    
                                     <button 
-                                            data-fase-id="{{ $details['fase_id'] }}"
-                                            data-tipo-tarea="{{ $details['tipo_tarea'] }}"
-                                            data-tipo-label="{{ $details['tipo_label'] }}"
-                                            data-estado="{{ $details['estado'] }}"
-                                            data-descripcion="{{ $details['descripcion'] }}"
-                                            data-fecha="{{ $details['fecha'] }}"
-                                            data-parcela="{{ $details['parcela'] }}"
-                                            data-ubicacion="{{ $details['ubicacion'] }}"
-                                            data-dimensiones="{{ $details['dimensiones'] }}"
-                                            data-suelo="{{ $details['suelo'] }}"
-                                            data-cultivo="{{ $details['cultivo'] }}"
-                                            data-siembra="{{ $details['siembra'] }}"
-                                            data-estimada="{{ $details['estimada'] }}"
-                                            data-cantidad="{{ $details['cantidad'] }}"
-                                            data-produccion="{{ $details['produccion'] }}"
-                                            data-id-estado="{{ $fase->id_estado }}"
-                                            data-update-url="{{ route('trabajador.tareas.estado', ['id' => $details['fase_id'], 'tipo' => $fase->tipo_tarea]) }}"
-                                            onclick="showTaskDetails(this)" 
-                                            class="p-2.5 rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors border border-blue-100 flex items-center justify-center relative shadow-sm"
-                                            title="Ver detalle">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                        </svg>
+                                        data-fase-id="{{ $details['fase_id'] }}" data-tipo-tarea="{{ $details['tipo_tarea'] }}"
+                                        data-tipo-label="{{ $details['tipo_label'] }}" data-estado="{{ $details['estado'] }}"
+                                        data-descripcion="{{ $details['descripcion'] }}" data-fecha="{{ $details['fecha'] }}"
+                                        data-parcela="{{ $details['parcela'] }}" data-ubicacion="{{ $details['ubicacion'] }}"
+                                        data-dimensiones="{{ $details['dimensiones'] }}" data-suelo="{{ $details['suelo'] }}"
+                                        data-cultivo="{{ $details['cultivo'] }}" data-siembra="{{ $details['siembra'] }}"
+                                        data-estimada="{{ $details['estimada'] }}" data-cantidad="{{ $details['cantidad'] }}"
+                                        data-produccion="{{ $details['produccion'] }}" data-id-estado="{{ $fase->id_estado }}"
+                                        data-update-url="{{ route('trabajador.tareas.estado', ['id' => $details['fase_id'], 'tipo' => $fase->tipo_tarea]) }}"
+                                        onclick="showTaskDetails(this)" 
+                                        class="flex-1 bg-white hover:bg-emerald-600 text-gray-900 hover:text-white font-black py-4 px-6 rounded-2xl transition-all duration-300 border border-gray-100 hover:border-emerald-600 text-xs uppercase tracking-widest shadow-sm hover:shadow-xl hover:shadow-emerald-200">
+                                        Detalles de Tarea
                                     </button>
+
+                                    <div class="w-12 h-12 rounded-2xl bg-white border border-gray-100 flex items-center justify-center text-emerald-600 shadow-sm">
+                                         @if($fase->tipo_tarea == 'riego')
+                                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.059 2.14c.313-.314.82-.314 1.133 0l6.303 6.303a7.5 7.5 0 11-10.887 0l3.451-3.451z" /></svg>
+                                         @elseif($fase->tipo_tarea == 'insumo')
+                                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.638.319a2 2 0 01-1.833.027l-.634-.317a6 6 0 00-5.717-.254l-1.012.506a2 2 0 00-1.022.547l-.317 1.27c-.244.975.362 1.94 1.353 2.14L10 21.01l4.288-.853c.991-.198 1.597-1.164 1.353-2.14l-.317-1.27zM12 11V3L4 7v4" /></svg>
+                                         @else
+                                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
+                                         @endif
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -133,14 +156,14 @@
                 </div>
             </div>
         @empty
-            <div class="bg-white border-2 border-dashed border-gray-200 rounded-3xl p-12 text-center">
-                <div class="w-20 h-20 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div class="bg-white border-2 border-dashed border-gray-200 rounded-[3rem] p-16 text-center max-w-2xl mx-auto shadow-2xl shadow-gray-100">
+                <div class="w-32 h-32 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-8 animate-bounce">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
                     </svg>
                 </div>
-                <h3 class="text-xl font-bold text-gray-800 mb-2">Sin tareas asignadas</h3>
-                <p class="text-gray-500 max-w-sm mx-auto">No tienes ninguna fase programada en este momento. Cuando se te asigne trabajo, aparecerá aquí.</p>
+                <h3 class="text-3xl font-black text-gray-900 mb-4">Todo al día</h3>
+                <p class="text-gray-500 text-lg">No tienes fases o tareas programadas actualmente. ¡Buen trabajo!</p>
             </div>
         @endforelse
     </div>
@@ -149,141 +172,68 @@
 
 <!-- Modal de Detalle de Tarea -->
 <div id="modalTarea" class="fixed inset-0 z-[60] hidden">
-    <!-- Overlay backdrop -->
-    <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" onclick="closeTaskModal()"></div>
-    
-    <!-- Modal Container -->
+    <div class="fixed inset-0 bg-gray-900/80 backdrop-blur-md transition-opacity" onclick="closeTaskModal()"></div>
     <div class="fixed inset-0 z-10 overflow-y-auto">
-        <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
-            
-            <div class="relative transform overflow-hidden rounded-[2.5rem] bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-2xl">
-                <div class="bg-white p-8 lg:p-10">
-                    <div class="flex justify-between items-start mb-8">
-                        <div class="flex items-center gap-4">
-                            <div class="bg-emerald-100 p-4 rounded-2xl text-emerald-600">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-                                </svg>
-                            </div>
-                            <div>
-                                <p class="text-[10px] uppercase font-black text-emerald-600 tracking-widest" id="modalTipoTarea"></p>
-                                <h2 class="text-2xl font-black text-gray-900" id="modalFaseId"></h2>
-                                <input type="hidden" id="currentFaseId">
-                                <input type="hidden" id="currentFaseEstado">
-                                <input type="hidden" id="currentTipoTarea">
-                            </div>
-                        </div>
-                        <button onclick="closeTaskModal()" class="text-gray-400 hover:text-gray-600 p-3 rounded-2xl hover:bg-gray-100 transition-all">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        <div class="flex min-h-full items-center justify-center p-4">
+            <div class="relative bg-white rounded-[3rem] p-8 lg:p-12 w-full max-w-2xl shadow-2xl transform transition-all overflow-hidden">
+                {{-- Modal Header --}}
+                <div class="flex justify-between items-start mb-10">
+                    <div class="flex items-center gap-6">
+                        <div class="bg-emerald-600 p-5 rounded-[1.5rem] text-white shadow-xl shadow-emerald-200">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
                             </svg>
-                        </button>
-                    </div>
-
-                    <div class="space-y-8">
-                        {{-- Descripción Principal --}}
+                        </div>
                         <div>
-                            <h3 class="text-xl font-bold text-gray-800 mb-3 underline decoration-emerald-500/30" id="modalTituloTipo">Descripción de la Fase</h3>
-                            <p class="text-gray-600 text-lg leading-relaxed" id="modalDescripcion"></p>
-                            <p class="mt-4 inline-flex items-center gap-2 bg-emerald-50 text-emerald-700 px-4 py-2 rounded-xl font-bold text-sm">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                                Programado: <span id="modalFecha"></span>
-                            </p>
+                            <p class="text-[10px] uppercase font-black text-emerald-600 tracking-[0.2em]" id="modalTipoTarea"></p>
+                            <h2 class="text-3xl font-black text-gray-900 tracking-tight" id="modalFaseId"></h2>
+                            <input type="hidden" id="currentFaseId">
                         </div>
+                    </div>
+                    <button onclick="closeTaskModal()" class="bg-gray-50 text-gray-400 hover:text-gray-600 p-4 rounded-2xl hover:bg-gray-100 transition-all">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
+                </div>
 
-                        {{-- Grid de Información --}}
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            {{-- Columna 1: Terreno --}}
-                            <div class="space-y-4">
-                                <h4 class="text-xs font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
-                                    <span class="w-2 h-2 bg-blue-500 rounded-full"></span> Terreno / Parcela
-                                </h4>
-                                <div class="bg-gray-50 p-5 rounded-3xl border border-gray-100 space-y-3 shadow-inner">
-                                    <div>
-                                        <p class="text-[10px] text-gray-400 font-bold uppercase">Nombre</p>
-                                        <p class="font-bold text-gray-800" id="modalParcela"></p>
-                                    </div>
-                                    <div>
-                                        <p class="text-[10px] text-gray-400 font-bold uppercase">Ubicación</p>
-                                        <p class="text-sm text-gray-600" id="modalUbicacion"></p>
-                                    </div>
-                                    <div class="grid grid-cols-2 gap-2">
-                                        <div>
-                                            <p class="text-[10px] text-gray-400 font-bold uppercase">Área</p>
-                                            <p class="text-sm font-bold text-gray-700" id="modalDimensiones"></p>
-                                        </div>
-                                        <div>
-                                            <p class="text-[10px] text-gray-400 font-bold uppercase">Suelo</p>
-                                            <p class="text-sm font-bold text-gray-700" id="modalSuelo"></p>
-                                        </div>
-                                    </div>
-                                </div>
+                <div class="space-y-10">
+                    <div>
+                        <h3 class="text-xs font-black text-gray-400 uppercase tracking-widest mb-3 ml-1" id="modalTituloTipo">Descripción de la Tarea</h3>
+                        <p class="text-gray-700 text-xl font-bold leading-snug bg-gray-50 p-6 rounded-[2rem] border border-gray-100 shadow-inner" id="modalDescripcion"></p>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-8">
+                        <div class="space-y-4">
+                            <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Ubicación</p>
+                            <div class="bg-emerald-50/50 p-6 rounded-[2rem] border border-emerald-100">
+                                <p class="font-black text-emerald-900" id="modalParcela"></p>
+                                <p class="text-sm text-emerald-700" id="modalUbicacion"></p>
                             </div>
-
-                            {{-- Columna 2: Cultivo --}}
-                            <div class="space-y-4">
-                                <h4 class="text-xs font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
-                                    <span class="w-2 h-2 bg-orange-500 rounded-full"></span> Detalle del Cultivo
-                                </h4>
-                                <div class="bg-gray-50 p-5 rounded-3xl border border-gray-100 space-y-3 shadow-inner">
-                                    <div>
-                                        <p class="text-[10px] text-gray-400 font-bold uppercase">Semilla / Variedad</p>
-                                        <p class="font-bold text-gray-800" id="modalCultivo"></p>
-                                    </div>
-                                    <div class="grid grid-cols-2 gap-2">
-                                        <div>
-                                            <p class="text-[10px] text-gray-400 font-bold uppercase">Siembra</p>
-                                            <p class="text-sm font-bold text-gray-700" id="modalSiembra"></p>
-                                        </div>
-                                        <div>
-                                            <p class="text-[10px] text-gray-400 font-bold uppercase">Cosecha Est.</p>
-                                            <p class="text-sm font-bold text-gray-700" id="modalEstimada"></p>
-                                        </div>
-                                    </div>
-                                    <div class="grid grid-cols-2 gap-2">
-                                        <div>
-                                            <p class="text-[10px] text-gray-400 font-bold uppercase">Cantidad</p>
-                                            <p class="text-sm font-bold text-emerald-600" id="modalCantidad"></p>
-                                        </div>
-                                        <div>
-                                            <p class="text-[10px] text-gray-400 font-bold uppercase">Producción</p>
-                                            <p class="text-sm font-bold text-emerald-600" id="modalProduccion"></p>
-                                        </div>
-                                    </div>
-                                </div>
+                        </div>
+                        <div class="space-y-4">
+                            <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Programado</p>
+                            <div class="bg-blue-50/50 p-6 rounded-[2rem] border border-blue-100">
+                                <p class="font-black text-blue-900" id="modalFecha"></p>
+                                <p class="text-sm text-blue-700">Fecha de entrega</p>
                             </div>
                         </div>
                     </div>
 
-                    {{-- Selector de Estado en el Modal --}}
-                    <div class="mt-8 pt-8 border-t border-gray-100">
-                        <h4 class="text-xs font-black text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-2">
-                            <span class="w-2 h-2 bg-emerald-500 rounded-full"></span> Cambiar Estado de la Tarea
-                        </h4>
-                        <form id="modalFormEstado" action="" method="POST">
+                    <div class="pt-8 border-t border-gray-100">
+                        <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-6 text-center">Gestionar Progreso</p>
+                        <form id="modalFormEstado" method="POST" class="max-w-md mx-auto">
                             @csrf
-                            <div class="relative group/select">
+                            <div class="relative group">
                                 <select name="id_estado" id="modalSelectEstado" onchange="this.form.submit()" 
-                                        class="w-full appearance-none bg-emerald-50 border border-emerald-100 text-emerald-900 font-bold py-4 px-6 pr-12 rounded-2xl focus:outline-none focus:border-emerald-500 transition-all cursor-pointer text-lg shadow-sm hover:border-emerald-200">
-                                    <option value="1">Pendiente</option>
-                                    <option value="8">En Proceso</option>
-                                    <option value="9">Realizado</option>
+                                        class="w-full appearance-none bg-gray-900 text-white font-black py-6 px-10 rounded-[2rem] focus:outline-none transition-all cursor-pointer text-center text-lg hover:bg-black shadow-2xl shadow-gray-300">
+                                    <option value="1">Marcar como Pendiente</option>
+                                    <option value="8">Marcar En Proceso</option>
+                                    <option value="9">Finalizar Trabajo</option>
                                 </select>
-                                <div class="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-emerald-600">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                                    </svg>
+                                <div class="absolute right-8 top-1/2 -translate-y-1/2 pointer-events-none text-emerald-400">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7" /></svg>
                                 </div>
                             </div>
                         </form>
-                    </div>
-
-                    <div class="mt-8">
-                        <button onclick="closeTaskModalWithUpdate()" class="w-full bg-gray-900 text-white font-bold py-5 rounded-[1.5rem] hover:bg-black transition-all shadow-xl shadow-gray-200 hover:-translate-y-1">
-                            Entendido, cerrar detalles
-                        </button>
                     </div>
                 </div>
             </div>
@@ -292,71 +242,48 @@
 </div>
 
 <script>
-    function showTaskDetails(btn) {
-        try {
-            const ds = btn.dataset;
-            console.log('Cargando datos...', ds);
-
-            document.getElementById('modalFaseId').innerText = (ds.tipoLabel || 'Fase') + ' #' + (ds.faseId || '---');
-            document.getElementById('modalTipoTarea').innerText = (ds.tipoLabel || 'Detalle de Trabajo');
-            document.getElementById('modalTituloTipo').innerText = 'Descripción de ' + (ds.tipoLabel || 'la Fase');
-
-            document.getElementById('currentFaseId').value = ds.faseId || '';
-            document.getElementById('currentFaseEstado').value = ds.estado || '';
-            document.getElementById('currentTipoTarea').value = ds.tipoTarea || '';
-            
-            document.getElementById('modalDescripcion').innerText = ds.descripcion || 'Sin descripción';
-            document.getElementById('modalFecha').innerText = ds.fecha || 'No definida';
-            document.getElementById('modalParcela').innerText = ds.parcela || 'N/A';
-            document.getElementById('modalUbicacion').innerText = ds.ubicacion || 'N/A';
-            document.getElementById('modalDimensiones').innerText = ds.dimensiones || 'N/A';
-            document.getElementById('modalSuelo').innerText = ds.suelo || 'N/A';
-            document.getElementById('modalCultivo').innerText = ds.cultivo || 'N/A';
-            document.getElementById('modalSiembra').innerText = ds.siembra || 'N/A';
-            document.getElementById('modalEstimada').innerText = ds.estimada || 'N/A';
-            document.getElementById('modalCantidad').innerText = ds.cantidad || 'N/A';
-            document.getElementById('modalProduccion').innerText = ds.produccion || 'N/A';
-            
-            // Configurar formulario de estado
-            const modalForm = document.getElementById('modalFormEstado');
-            const modalSelect = document.getElementById('modalSelectEstado');
-            if (modalForm && modalSelect && ds.updateUrl) {
-                modalForm.action = ds.updateUrl;
-                modalSelect.value = ds.idEstado || '1';
-                
-                // Deshabilitar "Pendiente" si ya está en otro estado para forzar avance
-                const optPendiente = modalSelect.querySelector('option[value="1"]');
-                if (ds.idEstado != '1') {
-                    optPendiente.disabled = true;
-                } else {
-                    optPendiente.disabled = false;
-                }
-            }
-
-            const modal = document.getElementById('modalTarea');
-            modal.classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-        } catch (e) {
-            console.error('Error al abrir detalles:', e);
+    // Auto-ocultar notificaciones después de 5 segundos
+    document.addEventListener('DOMContentLoaded', function() {
+        const alert = document.getElementById('notification-alert');
+        if (alert) {
+            setTimeout(() => {
+                closeNotification();
+            }, 5000);
         }
+    });
+
+    function closeNotification() {
+        const alert = document.getElementById('notification-alert');
+        if (alert) {
+            alert.classList.add('translate-x-[150%]');
+            setTimeout(() => alert.remove(), 600);
+        }
+    }
+
+    function showTaskDetails(btn) {
+        const ds = btn.dataset;
+        document.getElementById('modalFaseId').innerText = (ds.tipoLabel || 'Fase') + ' #' + (ds.faseId || '---');
+        document.getElementById('modalTipoTarea').innerText = ds.tipoLabel || 'Detalle de Trabajo';
+        document.getElementById('modalDescripcion').innerText = ds.descripcion || 'Sin descripción';
+        document.getElementById('modalFecha').innerText = ds.fecha || 'No definida';
+        document.getElementById('modalParcela').innerText = ds.parcela || 'N/A';
+        document.getElementById('modalUbicacion').innerText = ds.ubicacion || 'N/A';
+        
+        const modalForm = document.getElementById('modalFormEstado');
+        const modalSelect = document.getElementById('modalSelectEstado');
+        if (modalForm && ds.updateUrl) {
+            modalForm.action = ds.updateUrl;
+            modalSelect.value = ds.idEstado || '1';
+        }
+
+        const modal = document.getElementById('modalTarea');
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
     }
 
     function closeTaskModal() {
         document.getElementById('modalTarea').classList.add('hidden');
         document.body.style.overflow = 'auto';
-    }
-
-    function closeTaskModalWithUpdate() {
-        const modalSelect = document.getElementById('modalSelectEstado');
-        const modalForm = document.getElementById('modalFormEstado');
-        
-        if (modalSelect && modalSelect.value == '1') {
-            // Si está pendiente, pasar automáticamente a "En Proceso" (8)
-            modalSelect.value = '8';
-            modalForm.submit();
-        } else {
-            closeTaskModal();
-        }
     }
 </script>
 @endsection

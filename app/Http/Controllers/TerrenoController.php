@@ -32,7 +32,9 @@ class TerrenoController extends Controller
 
         $request->validate([
             'nombre' => 'required|string|max:100',
-            'ubicacion' => 'required|string|max:150',
+            'ubicacion' => 'nullable|string|max:150',
+            'latitud' => 'nullable|numeric|between:-90,90',
+            'longitud' => 'nullable|numeric|between:-180,180',
             'Ancho' => 'required|numeric|min:1',
             'Alto' => 'required|numeric|min:1',
             'id_tipo_suelo' => 'required|exists:tipo_suelo,id_tipo_suelo'
@@ -51,6 +53,8 @@ class TerrenoController extends Controller
             'id_empresa' => $id_empresa,
             'nombre' => $request->nombre,
             'ubicacion' => $request->ubicacion,
+            'latitud' => $request->latitud,
+            'longitud' => $request->longitud,
             'Ancho' => $request->Ancho,
             'Alto' => $request->Alto,
             'id_estado' => 7, // 7 = Disponible
@@ -67,7 +71,9 @@ class TerrenoController extends Controller
 
         $request->validate([
             'nombre' => 'required|string|max:100',
-            'ubicacion' => 'required|string|max:150',
+            'ubicacion' => 'nullable|string|max:150',
+            'latitud' => 'nullable|numeric|between:-90,90',
+            'longitud' => 'nullable|numeric|between:-180,180',
             'Ancho' => 'required|numeric|min:1',
             'Alto' => 'required|numeric|min:1',
             'id_tipo_suelo' => 'required|exists:tipo_suelo,id_tipo_suelo',
@@ -81,6 +87,8 @@ class TerrenoController extends Controller
         $terreno->update([
             'nombre' => $request->nombre,
             'ubicacion' => $request->ubicacion,
+            'latitud' => $request->latitud,
+            'longitud' => $request->longitud,
             'Ancho' => $request->Ancho,
             'Alto' => $request->Alto,
             'id_tipo_suelo' => $request->id_tipo_suelo,
