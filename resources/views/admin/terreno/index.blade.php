@@ -64,10 +64,24 @@
                             class="w-full px-4 py-3 rounded-2xl border-emerald-100 focus:border-emerald-500 focus:ring-emerald-500 bg-emerald-50/30 text-sm transition-all" value="{{ old('nombre') }}">
                     </div>
 
-                    <div>
-                        <label class="block text-xs font-bold text-emerald-700 uppercase tracking-wider mb-2">Ubicación</label>
-                        <input type="text" name="ubicacion" id="ubicacion" required placeholder="Ej. Coordenadas o Referencia"
-                            class="w-full px-4 py-3 rounded-2xl border-emerald-100 focus:border-emerald-500 focus:ring-emerald-500 bg-emerald-50/30 text-sm transition-all" value="{{ old('ubicacion') }}">
+
+                    <!-- Google Maps Integration -->
+                    <div class="space-y-4">
+                        <label class="block text-xs font-bold text-emerald-700 uppercase tracking-wider mb-2">Seleccionar en el Mapa</label>
+                        <div id="map" class="w-full h-64 rounded-2xl border-2 border-emerald-100 shadow-inner overflow-hidden"></div>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-1 ml-2">Latitud</label>
+                                <input type="text" name="latitud" id="latitud" readonly 
+                                    class="w-full px-4 py-2 rounded-xl bg-gray-50 border-gray-100 text-xs font-mono text-gray-500 cursor-not-allowed" placeholder="0.000000">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-1 ml-2">Longitud</label>
+                                <input type="text" name="longitud" id="longitud" readonly 
+                                    class="w-full px-4 py-2 rounded-xl bg-gray-50 border-gray-100 text-xs font-mono text-gray-500 cursor-not-allowed" placeholder="0.000000">
+                            </div>
+                        </div>
                     </div>
 
                     <div class="grid grid-cols-2 gap-4">
@@ -162,7 +176,13 @@
                                             <span class="font-black text-emerald-950 block text-base">{{ $terreno->nombre }}</span>
                                             <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1 mt-1">
                                                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                                                {{ Str::limit($terreno->ubicacion, 25) }}
+                                                @if(isset($terreno->ubicacion) && $terreno->ubicacion !== '')
+                                                    {{ Str::limit($terreno->ubicacion, 25) }}
+                                                @elseif(isset($terreno->latitud) && isset($terreno->longitud))
+                                                    {{ number_format($terreno->latitud, 6) }}, {{ number_format($terreno->longitud, 6) }}
+                                                @else
+                                                    Ubicación no especificada
+                                                @endif
                                             </span>
                                             <span class="text-[10px] font-bold text-emerald-600 uppercase tracking-wider opacity-70 mt-1 block">Suelo: {{ optional($terreno->tipoSuelo)->nombre ?? 'No asignado' }}</span>
                                         </div>
@@ -195,9 +215,8 @@
                                     @endif
                                 </td>
                                 <td class="px-8 py-6 text-right">
-                                    <div class="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
                                         <button 
-                                            data-terreno='@json($terreno)'
+                                            data-terreno="{{ json_encode($terreno) }}"
                                             onclick="openEdit(this)" 
                                             class="p-3 bg-amber-50 text-amber-600 rounded-2xl hover:bg-amber-100 transition-colors shadow-sm">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -239,25 +258,145 @@
 </div>
 
 @push('scripts')
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script>
+    // Inyectar CSS de Leaflet dinámicamente si no existe
+    if (!document.getElementById('leaflet-css')) {
+        const link = document.createElement('link');
+        link.id = 'leaflet-css';
+        link.rel = 'stylesheet';
+        link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+        link.integrity = 'sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=';
+        link.crossOrigin = '';
+        document.head.appendChild(link);
+    }
+
     const terrenoForm = document.getElementById('terrenoForm');
     const formTitle = document.getElementById('formTitle');
     const methodField = document.getElementById('methodField');
     const btnCancel = document.getElementById('btnCancel');
     const btnSubmit = document.getElementById('btnSubmit');
 
+    let map;
+    let marker;
+    const defaultLocation = [4.570868, -74.297333]; // Colombia default [lat, lng]
+
+    // Fix Leaflet Default Icon issue
+    function fixLeafletIcons() {
+        try {
+            if (typeof L !== 'undefined' && L.Icon && L.Icon.Default) {
+                delete L.Icon.Default.prototype._getIconUrl;
+                L.Icon.Default.mergeOptions({
+                    iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
+                    iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png',
+                    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
+                });
+            }
+        } catch (e) {
+            console.error("Error fixing icons:", e);
+        }
+    }
+
+    function initMap() {
+        try {
+            // Verificar si Leaflet está cargado
+            if (typeof L === 'undefined') {
+                setTimeout(initMap, 500);
+                return;
+            }
+
+            fixLeafletIcons();
+
+            const mapContainer = document.getElementById("map");
+            if (!mapContainer) return;
+
+            // Inicializar Mapa
+            map = L.map('map').setView(defaultLocation, 13);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(map);
+
+            // Inicializar Marcador Arrastrable
+            marker = L.marker(defaultLocation, {
+                draggable: true
+            }).addTo(map);
+
+            // Evento clic en el mapa
+            map.on('click', function(e) {
+                updateMarker(e.latlng);
+            });
+
+            // Evento fin de arrastre del marcador
+            marker.on('dragend', function(e) {
+                updateMarker(marker.getLatLng());
+            });
+
+        } catch (error) {
+            console.error("Error al inicializar el mapa:", error);
+            const container = document.getElementById('map');
+            if (container) {
+                container.innerHTML = `<div class="flex items-center justify-center h-full bg-gray-50 text-gray-400 text-xs text-center p-4 italic">Error al cargar el mapa interactivo.</div>`;
+            }
+        }
+    }
+
+    function updateMarker(latlng) {
+        if (!marker) return;
+        marker.setLatLng(latlng);
+        document.getElementById('latitud').value = latlng.lat.toFixed(8);
+        document.getElementById('longitud').value = latlng.lng.toFixed(8);
+    }
+
     function openEdit(btn) {
-        const terreno = JSON.parse(btn.getAttribute('data-terreno'));
-        editTerreno(terreno);
+        try {
+            const terreno = JSON.parse(btn.getAttribute('data-terreno'));
+            editTerreno(terreno);
+        } catch (e) {
+            console.error("Error parsing terreno:", e);
+        }
     }
 
     function editTerreno(terreno) {
-        // Populate form fields
-        document.getElementById('nombre').value = terreno.nombre;
-        document.getElementById('ubicacion').value = terreno.ubicacion;
-        document.getElementById('Ancho').value = terreno.Ancho;
-        document.getElementById('Alto').value = terreno.Alto;
+        if (!terreno) return;
+
+        document.getElementById('nombre').value = terreno.nombre || '';
+        if(document.getElementById('ubicacion')) document.getElementById('ubicacion').value = terreno.ubicacion || '';
+        document.getElementById('Ancho').value = terreno.Ancho || '';
+        document.getElementById('Alto').value = terreno.Alto || '';
         
+        // Manejar latidud y longitud con checks de nulidad explícitos
+        // Buscamos latitud/longitud en varios formatos posibles de propiedad (case insensitive / snake_case)
+        const lat = (terreno.latitud !== null && terreno.latitud !== undefined) ? terreno.latitud : 
+                    (terreno.Latitud !== null && terreno.Latitud !== undefined) ? terreno.Latitud : '';
+        const lng = (terreno.longitud !== null && terreno.longitud !== undefined) ? terreno.longitud : 
+                    (terreno.Longitud !== null && terreno.Longitud !== undefined) ? terreno.Longitud : '';
+        
+        document.getElementById('latitud').value = lat !== '' ? parseFloat(lat).toFixed(8) : '';
+        document.getElementById('longitud').value = lng !== '' ? parseFloat(lng).toFixed(8) : '';
+        
+        if (map && marker) {
+            const parsedLat = parseFloat(lat);
+            const parsedLng = parseFloat(lng);
+
+            if (!isNaN(parsedLat) && !isNaN(parsedLng)) {
+                const pos = [parsedLat, parsedLng];
+                marker.setLatLng(pos);
+                map.setView(pos, 16);
+            } else {
+                console.warn("Terreno sin coordenadas válidas, usando ubicación por defecto", {lat, lng});
+                marker.setLatLng(defaultLocation);
+                map.setView(defaultLocation, 13);
+            }
+            
+            // Forzar redibujado progresivo para asegurar que el mapa se vea bien
+            [100, 300, 800].forEach(time => {
+                setTimeout(() => {
+                    if (map) map.invalidateSize();
+                }, time);
+            });
+        }
+
         if (document.getElementById('id_tipo_suelo')) {
             document.getElementById('id_tipo_suelo').value = terreno.id_tipo_suelo || '';
         }
@@ -266,50 +405,51 @@
             document.getElementById('id_estado').value = terreno.id_estado || '';
         }
 
-        // Show Estado field only on edit
         const estadoContainer = document.getElementById('estadoContainer');
         if (estadoContainer) estadoContainer.classList.remove('hidden');
 
-        // Change Form Action & Method to Update
-        // Use the store route as base and replace the end
         const baseUrl = "{{ route('admin.terrenos.store') }}";
         terrenoForm.action = `${baseUrl}/${terreno.id_terreno}`;
         methodField.innerHTML = '<input type="hidden" name="_method" value="PUT">';
         
-        // Update UI
         formTitle.innerText = 'Editar Terreno';
         btnSubmit.innerText = 'Actualizar Datos';
-        
         btnSubmit.classList.remove('bg-emerald-600');
         btnSubmit.classList.add('bg-amber-600');
-        
         btnCancel.classList.remove('hidden');
 
-        // Scroll to form (for mobile/small screens)
         terrenoForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
     function resetForm() {
-        // Reset inputs
         terrenoForm.reset();
         
-        // Hide Estado field
+        if (map && marker) {
+            marker.setLatLng(defaultLocation);
+            map.setView(defaultLocation, 13);
+            
+            // Forzar redibujado progresivo
+            [100, 300, 800].forEach(time => {
+                setTimeout(() => {
+                    if (map) map.invalidateSize();
+                }, time);
+            });
+        }
+        
         const estadoContainer = document.getElementById('estadoContainer');
         if (estadoContainer) estadoContainer.classList.add('hidden');
 
-        // Reset action and method to Store
         terrenoForm.action = '{{ route("admin.terrenos.store") }}';
         methodField.innerHTML = '';
-        
-        // Update UI
         formTitle.innerText = 'Registrar Terreno';
         btnSubmit.innerText = 'Guardar Terreno';
-        
         btnSubmit.classList.remove('bg-amber-600');
         btnSubmit.classList.add('bg-emerald-600');
-        
         btnCancel.classList.add('hidden');
     }
+
+    // Inicializar cuando el DOM esté listo
+    document.addEventListener('DOMContentLoaded', initMap);
 </script>
 @endpush
 @endsection

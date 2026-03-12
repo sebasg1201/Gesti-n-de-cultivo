@@ -99,7 +99,6 @@
                         request()->routeIs('tipo_suelos.*') ||
                         request()->routeIs('insumos.*') ||
                         request()->routeIs('estados.*') ||
-                        request()->routeIs('admin.usuarios.*') ||
                         request()->routeIs('admin.terrenos.*');
 
                     $seguimientoActive = request()->routeIs('admin.cosechas.*');
@@ -111,6 +110,8 @@
                     </div>
                     <span class="font-medium whitespace-nowrap">Inicio</span>
                 </a>
+
+
 
                 @if(auth()->guard('usuario')->user()->id_tipo_usuario != 3)
                     <!-- ACORDEÓN GESTIÓN Y CONTROL -->
@@ -159,11 +160,7 @@
                                 <span class="whitespace-nowrap">Inventario de Suministros</span>
                             </a>
 
-                            <a href="{{ route('admin.proveedores.index') }}"
-                                class="group flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-200 {{ active('admin.proveedores.*') }}">
-                                <div class="w-1 h-1 bg-emerald-400 rounded-full shrink-0"></div>
-                                <span class="whitespace-nowrap">Proveedores</span>
-                            </a>
+
 
                             <a href="{{ route('estados.index') }}"
                                 class="group flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-200 {{ active('estados.*') }}">
@@ -171,11 +168,7 @@
                                 <span class="whitespace-nowrap">Estados</span>
                             </a>
 
-                            <a href="{{ route('admin.usuarios.index') }}"
-                                class="group flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-200 {{ active('admin.usuarios.*') }}">
-                                <div class="w-1 h-1 bg-emerald-400 rounded-full shrink-0"></div>
-                                <span class="whitespace-nowrap">Gestión de Personal</span>
-                            </a>
+
 
                             <a href="{{ route('admin.terrenos.index') }}"
                                 class="group flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-200 {{ active('admin.terrenos.*') }}">
@@ -217,11 +210,34 @@
                         </div>
                     </div>
 
+                    <a href="{{ route('admin.usuarios.index') }}"
+                        class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {{ active('admin.usuarios.*') }}">
+                        <div class="w-1.5 h-6 bg-emerald-300 rounded-full opacity-0 group-hover:opacity-100 transition-all">
+                        </div>
+                        <span class="font-medium whitespace-nowrap">Personal</span>
+                    </a>
+
+                    <a href="{{ route('admin.proveedores.index') }}"
+                        class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {{ active('admin.proveedores.*') }}">
+                        <div class="w-1.5 h-6 bg-emerald-300 rounded-full opacity-0 group-hover:opacity-100 transition-all">
+                        </div>
+                        <span class="font-medium whitespace-nowrap">Proveedores</span>
+                    </a>
+
                     <a href="{{ route('admin.licencias.index') }}"
                         class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {{ active('admin.licencias.*') }}">
                         <div class="w-1.5 h-6 bg-emerald-300 rounded-full opacity-0 group-hover:opacity-100 transition-all">
                         </div>
                         <span class="font-medium whitespace-nowrap">Mi Plan de Licencia</span>
+                    </a>
+                @endif
+
+                @if(auth()->guard('usuario')->user()->id_tipo_usuario == 3)
+                    <a href="{{ route('trabajador.calendario') }}"
+                        class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {{ active('trabajador.calendario') }}">
+                        <div class="w-1.5 h-6 bg-emerald-300 rounded-full opacity-0 group-hover:opacity-100 transition-all">
+                        </div>
+                        <span class="font-medium whitespace-nowrap">Mi Calendario</span>
                     </a>
                 @endif
 

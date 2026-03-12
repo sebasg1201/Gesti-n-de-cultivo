@@ -17,6 +17,8 @@ class Terreno extends Model
         'id_empresa',
         'nombre',
         'ubicacion',
+        'latitud',
+        'longitud',
         'Ancho',
         'Alto',
         'id_estado',
