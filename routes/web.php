@@ -103,6 +103,9 @@ Route::middleware(['auth:usuario', 'check.license'])->group(function () {
     Route::get('/trabajador/calendario/eventos', [AdminController::class, 'getEventosCalendario'])->name('trabajador.calendario.eventos');
     Route::post('/trabajador/calendario/registro', [AdminController::class, 'storeRegistroTrabajo'])->name('trabajador.calendario.store');
 
+    // Nueva ruta para Mis Pagos (Trabajador)
+    Route::get('/trabajador/mis-pagos', [AdminController::class, 'trabajadorPagos'])->name('trabajador.pagos');
+
     // Nueva ruta para tareas categorizadas de administrador
     Route::get('/admin/tareas', [AdminController::class, 'tareasCategorizadas'])->name('admin.tareas.index');
     Route::post('/admin/tareas/store-riego', [AdminController::class, 'storeRiego'])->name('admin.tareas.store.riego');
@@ -119,6 +122,7 @@ Route::middleware(['auth:usuario', 'check.license'])->group(function () {
     // Ruta para asignar trabajo (Fases Programadas)
     Route::get('/admin/usuarios/{usuario}/asignar-trabajo', [\App\Http\Controllers\Admin\UsuarioEmpresaController::class, 'asignarTrabajo'])->name('admin.usuarios.asignar_trabajo');
     Route::post('/admin/usuarios/{usuario}/asignar-trabajo', [\App\Http\Controllers\Admin\UsuarioEmpresaController::class, 'storeTrabajo'])->name('admin.usuarios.store_trabajo');
+    Route::get('/admin/usuarios/{usuario}/exportar-pagos', [\App\Http\Controllers\Admin\UsuarioEmpresaController::class, 'exportPagos'])->name('admin.usuarios.exportar_pagos');
 
     // Gestión de Cosechas
     Route::resource('/admin/cosechas', \App\Http\Controllers\Admin\CosechaController::class, ['as' => 'admin']);

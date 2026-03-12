@@ -84,7 +84,13 @@ class AdminController extends Controller
             ->sortBy('fecha_programada')
             ->groupBy('id_cosecha');
 
-        return view('trabajadores.trabajador_dashboard', compact('tareas'));
+        // 4. Pagos / Salarios
+        $pagos = \App\Models\Salario::with('tipoSalario')
+            ->where('documento_trabajador', $usuario->documento)
+            ->orderBy('fecha_pago', 'desc')
+            ->get();
+
+        return view('trabajadores.trabajador_dashboard', compact('tareas', 'pagos'));
     }
 
     public function finalizarTarea($id, $tipo)
@@ -407,5 +413,17 @@ class AdminController extends Controller
         ]);
 
         return response()->json(['success' => 'Día de trabajo registrado correctamente.']);
+    }
+
+    public function trabajadorPagos()
+    {
+        $usuario = auth()->guard('usuario')->user();
+
+        $pagos = \App\Models\Salario::with('tipoSalario')
+            ->where('documento_trabajador', $usuario->documento)
+            ->orderBy('fecha_pago', 'desc')
+            ->get();
+
+        return view('trabajadores.mis_pagos', compact('pagos'));
     }
 }

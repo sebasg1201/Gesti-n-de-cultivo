@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 12-03-2026 a las 02:05:39
+-- Tiempo de generación: 12-03-2026 a las 21:01:00
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -473,7 +473,8 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (19, '2026_03_07_000003_add_impact_to_irrigation', 10),
 (20, '2026_03_07_000004_add_description_to_soil_catalog', 11),
 (21, '2026_03_07_000005_add_formal_foreign_keys_to_catalogs', 12),
-(22, '2026_03_10_145541_add_id_empresa_to_insumo_table', 13);
+(22, '2026_03_10_145541_add_id_empresa_to_insumo_table', 13),
+(23, '2026_03_09_000001_add_descripcion_to_tipo_suelo', 14);
 
 -- --------------------------------------------------------
 
@@ -530,7 +531,7 @@ INSERT INTO `proveedor` (`id_proveedor`, `nombre`, `producto`, `contacto`, `ID_i
 
 CREATE TABLE `registro_trabajo` (
   `id_registro_trabajo` int(11) NOT NULL,
-  `id_insumo_cosecha` int(11) NOT NULL,
+  `id_insumo_cosecha` int(11) DEFAULT NULL,
   `documento_trabajador` int(11) NOT NULL,
   `fecha_trabajada` date NOT NULL,
   `foto_evidencia` varchar(255) DEFAULT NULL,
@@ -538,6 +539,14 @@ CREATE TABLE `registro_trabajo` (
   `observacion` text DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `registro_trabajo`
+--
+
+INSERT INTO `registro_trabajo` (`id_registro_trabajo`, `id_insumo_cosecha`, `documento_trabajador`, `fecha_trabajada`, `foto_evidencia`, `estado_aprobacion`, `observacion`, `created_at`) VALUES
+(16, NULL, 1105461467, '2026-03-19', 'evidencias/Quk6Vto5Dh48UZUvqvnHq7P9XlO1XbTyPora7Juu.png', 'pendiente', 'trabajo', '2026-03-12 01:34:36'),
+(17, NULL, 1105461467, '2026-03-13', 'evidencias/UoEiLyHQl9hj3oFtzxLr1nJdyA83AugvK2Oryja7.png', 'pendiente', '9poikjuhygtrf', '2026-03-12 19:08:34');
 
 -- --------------------------------------------------------
 
@@ -591,7 +600,9 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('8CyddD5Et60o43wnMpLwDAn5e6kNxAgAwhQRUTzK', 1105461467, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiVnMzUUVMNG9mZXB5eFRLOHQydlhyS0wyNW80b0paMnZMRnVySnVoTyI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6NDI6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC90cmFiYWphZG9yL2Rhc2hib2FyZCI7czo1OiJyb3V0ZSI7czoyMDoidHJhYmFqYWRvci5kYXNoYm9hcmQiO31zOjU0OiJsb2dpbl91c3VhcmlvXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MTEwNTQ2MTQ2Nzt9', 1773277487);
+('bqN45Sl8k5SZcyACbKXQTcAqQPE4lfEYjYNqEHjn', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoid05LM1BxTEtMVWpORlh3eVhaeGJZR1hwV2tmVlU3ZHhISkxvWDdWNSI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzY6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZG1pbi90ZXJyZW5vcyI7czo1OiJyb3V0ZSI7czoyMDoiYWRtaW4udGVycmVub3MuaW5kZXgiO31zOjU0OiJsb2dpbl91c3VhcmlvXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MTEwNDkyMTIyMzt9', 1773345604),
+('eBIEdYYQext1iOsJYzTdCknUheXf1Gec2wd1C0h9', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiNUo3bmdYV0ZDR3JIUDJMSkQ3TVpWT1RTYmR4RTN1WURrTG1MQlh0NyI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzY6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZG1pbi90ZXJyZW5vcyI7czo1OiJyb3V0ZSI7czoyMDoiYWRtaW4udGVycmVub3MuaW5kZXgiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjU0OiJsb2dpbl91c3VhcmlvXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MTEwNDkyMTIyMzt9', 1773345299),
+('pr4WpCs852irfUbzAXnMsbkNr6vLZhIRaqcTSWuC', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiVDV5RXRQS2xveTVhbFFqSkRkM05KeXl1blJWVmI5SlhvMEs0VnVYciI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7czo1OiJyb3V0ZSI7czoxMzoiaW5kZXhfd2VsY29tZSI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fX0=', 1773342438);
 
 -- --------------------------------------------------------
 
@@ -662,6 +673,8 @@ CREATE TABLE `terreno` (
   `id_empresa` varchar(14) DEFAULT NULL,
   `nombre` varchar(100) DEFAULT NULL,
   `ubicacion` varchar(150) DEFAULT NULL,
+  `latitud` decimal(10,8) DEFAULT NULL,
+  `longitud` decimal(11,8) DEFAULT NULL,
   `Ancho` decimal(10,0) NOT NULL,
   `Alto` decimal(10,0) NOT NULL,
   `id_estado` int(11) DEFAULT NULL,
@@ -672,10 +685,11 @@ CREATE TABLE `terreno` (
 -- Volcado de datos para la tabla `terreno`
 --
 
-INSERT INTO `terreno` (`id_terreno`, `id_empresa`, `nombre`, `ubicacion`, `Ancho`, `Alto`, `id_estado`, `id_tipo_suelo`) VALUES
-(3, '834324234', 'Cascada', 'Cascada del potrero las tribunas', 123, 76, 7, 2),
-(4, '988091212', 'Parcela Norte', 'Verdecito', 123, 76, 7, 1),
-(5, '988091212', 'Parcela Sur', 'Verdecito', 123, 76, 7, 1);
+INSERT INTO `terreno` (`id_terreno`, `id_empresa`, `nombre`, `ubicacion`, `latitud`, `longitud`, `Ancho`, `Alto`, `id_estado`, `id_tipo_suelo`) VALUES
+(3, '834324234', 'Cascada', 'Cascada del potrero las tribunas', NULL, NULL, 123, 76, 7, 2),
+(4, '988091212', 'Parcela Norte', 'Verdecito', NULL, NULL, 123, 76, 7, 1),
+(5, '988091212', 'Parcela Sur', 'Verdecito', NULL, NULL, 123, 76, 7, 1),
+(6, '834324234', 'sebas', NULL, 7.56072491, -73.06678310, 400, 500, 7, 2);
 
 -- --------------------------------------------------------
 
@@ -798,6 +812,7 @@ CREATE TABLE `tipo_suelo` (
   `id_empresa` varchar(14) DEFAULT NULL,
   `id_catalogo` bigint(20) UNSIGNED DEFAULT NULL,
   `nombre` varchar(100) DEFAULT NULL,
+  `descripcion` text DEFAULT NULL,
   `impacto_dias` int(11) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -805,9 +820,9 @@ CREATE TABLE `tipo_suelo` (
 -- Volcado de datos para la tabla `tipo_suelo`
 --
 
-INSERT INTO `tipo_suelo` (`id_tipo_suelo`, `id_empresa`, `id_catalogo`, `nombre`, `impacto_dias`) VALUES
-(1, '988091212', 1, 'Arcilloso', 5),
-(2, '834324234', 2, 'Arenoso', -3);
+INSERT INTO `tipo_suelo` (`id_tipo_suelo`, `id_empresa`, `id_catalogo`, `nombre`, `descripcion`, `impacto_dias`) VALUES
+(1, '988091212', 1, 'Arcilloso', NULL, 5),
+(2, '834324234', 2, 'Arenoso', NULL, -3);
 
 -- --------------------------------------------------------
 
@@ -1283,7 +1298,7 @@ ALTER TABLE `jobs`
 -- AUTO_INCREMENT de la tabla `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT de la tabla `producto`
@@ -1301,7 +1316,7 @@ ALTER TABLE `proveedor`
 -- AUTO_INCREMENT de la tabla `registro_trabajo`
 --
 ALTER TABLE `registro_trabajo`
-  MODIFY `id_registro_trabajo` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_registro_trabajo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT de la tabla `riego`
@@ -1331,7 +1346,7 @@ ALTER TABLE `super_admin`
 -- AUTO_INCREMENT de la tabla `terreno`
 --
 ALTER TABLE `terreno`
-  MODIFY `id_terreno` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_terreno` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `tipo_riego`

@@ -107,9 +107,20 @@ class TerrenoController extends Controller
             ->where('id_empresa', $id_empresa)
             ->firstOrFail();
 
-        $terreno->delete();
+        // Verificar si tiene cosechas asociadas
+        if ($terreno->cosechas()->count() > 0) {
+            return redirect()->route('admin.terrenos.index')
+                ->with('error', 'No se puede eliminar el terreno porque tiene cosechas asociadas. Por favor, elimine las cosechas primero.');
+        }
 
-        return redirect()->route('admin.terrenos.index')
-            ->with('success', 'Terreno eliminado correctamente');
+        try {
+            $terreno->delete();
+            return redirect()->route('admin.terrenos.index')
+                ->with('success', 'Terreno eliminado correctamente');
+        } catch (\Exception $e) {
+            \Log::error("Error eliminando terreno: " . $e->getMessage());
+            return redirect()->route('admin.terrenos.index')
+                ->with('error', 'Ocurrió un error al intentar eliminar el terreno.');
+        }
     }
 }
