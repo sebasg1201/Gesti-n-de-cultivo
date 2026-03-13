@@ -73,10 +73,10 @@
                                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
                             </svg>
                         </div>
-                        <span class="text-[10px] font-black text-blue-400 uppercase tracking-widest block mb-1">Impacto en Cosecha (Fijo)</span>
-                        <div class="flex items-center gap-3">
-                            <span id="display_impacto" class="text-3xl font-black tracking-tighter">--</span>
-                            <span class="text-xs text-blue-600 font-medium leading-tight">Días de diferencia<br>técnica</span>
+                        <span class="text-[10px] font-black text-blue-400 uppercase tracking-widest block mb-1">Impacto en Cosecha (Días)</span>
+                        <div class="flex items-center gap-3 relative z-10">
+                            <input type="number" name="impacto_dias" id="riego_impacto" class="text-3xl font-black bg-transparent w-24 border-b-2 border-blue-200 focus:ring-0 focus:border-blue-500 text-blue-600 placeholder:text-gray-300" placeholder="0" value="0">
+                            <span class="text-xs text-blue-600 font-medium leading-tight">Días sumados<br>técnica</span>
                         </div>
                     </div>
 
@@ -217,14 +217,50 @@
                             div.onclick = () => selectItem(item);
                             searchResults.appendChild(div);
                         });
+                        // Add "Custom" option
+                        const customDiv = document.createElement('div');
+                        customDiv.className = 'px-6 py-4 hover:bg-blue-50 cursor-pointer border-t border-blue-100 bg-blue-50/50 transition-colors';
+                        customDiv.innerHTML = `
+                            <div class="flex space-x-3 items-center text-blue-700">
+                                <div class="bg-blue-200 text-blue-800 p-1.5 rounded-lg">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                                </div>
+                                <span class="font-bold text-sm">Crear "${q}" como nuevo sistema</span>
+                            </div>
+                        `;
+                        customDiv.onclick = () => selectCustomRiego(q);
+                        searchResults.appendChild(customDiv);
+                        
                         searchResults.classList.remove('hidden');
                     } else {
-                        searchResults.innerHTML = '<p class="px-6 py-4 text-xs text-gray-400 italic">No encontrado...</p>';
+                        searchResults.innerHTML = `
+                            <div class="px-6 py-4 hover:bg-blue-50 cursor-pointer transition-colors" onclick="selectCustomRiego('${q}')">
+                                <p class="text-xs text-gray-500 mb-2 italic">No se encontró en el catálogo global...</p>
+                                <div class="flex space-x-3 items-center text-blue-700">
+                                    <div class="bg-blue-200 text-blue-800 p-1.5 rounded-lg">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                                    </div>
+                                    <span class="font-bold text-sm">Registrar "${q}" manualmente</span>
+                                </div>
+                            </div>
+                        `;
                         searchResults.classList.remove('hidden');
                     }
                 });
         }, 300);
     });
+
+    function selectCustomRiego(nombre) {
+        searchResults.classList.add('hidden');
+        searchInput.value = nombre;
+
+        document.getElementById('input_id_catalogo').value = '';
+        document.getElementById('tipo_riego_name').value = nombre;
+        document.getElementById('riego_impacto').value = '0';
+
+        placeholder.classList.add('hidden');
+        form.classList.remove('hidden');
+    }
 
     function selectItem(item) {
         searchResults.classList.add('hidden');
@@ -234,9 +270,7 @@
         document.getElementById('tipo_riego_name').value = item.nombre;
 
         const impacto = parseInt(item.impacto_dias);
-        const displayImpacto = document.getElementById('display_impacto');
-        displayImpacto.innerText = (impacto > 0 ? '+' : '') + impacto;
-        displayImpacto.className = 'text-3xl font-black tracking-tighter ' + (impacto >= 0 ? 'text-red-600' : 'text-green-600');
+        document.getElementById('riego_impacto').value = impacto;
 
         placeholder.classList.add('hidden');
         form.classList.remove('hidden');
@@ -267,9 +301,7 @@
         document.getElementById('tipo_riego_name').value = riego.tipo_riego;
 
         const impacto = parseInt(riego.impacto_dias);
-        const displayImpacto = document.getElementById('display_impacto');
-        displayImpacto.innerText = (impacto > 0 ? '+' : '') + impacto;
-        displayImpacto.className = 'text-3xl font-black tracking-tighter ' + (impacto >= 0 ? 'text-red-600' : 'text-green-600');
+        document.getElementById('riego_impacto').value = impacto;
         
         searchInput.value = riego.tipo_riego;
         searchInput.disabled = true;

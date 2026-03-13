@@ -36,27 +36,26 @@ class TipoRiegoController extends Controller
         $idEmpresa = $this->getEmpresaId();
 
         $request->validate([
-            'id_catalogo' => 'required|exists:catalogo_riegos,id',
+            'id_catalogo' => 'nullable|exists:catalogo_riegos,id',
             'tipo_riego' => 'required|string|max:100',
+            'impacto_dias' => 'required|integer',
         ]);
 
-        // Fetch catalog item for data integrity
-        $catalogItem = CatalogoRiego::findOrFail($request->id_catalogo);
+        if ($request->filled('id_catalogo')) {
+            $exists = TipoRiego::where('id_empresa', $idEmpresa)
+                ->where('id_catalogo', $request->id_catalogo)
+                ->exists();
 
-        // Check already registered
-        $exists = TipoRiego::where('id_empresa', $idEmpresa)
-            ->where('id_catalogo', $request->id_catalogo)
-            ->exists();
-
-        if ($exists) {
-            return redirect()->back()->with('error', 'Este sistema de riego ya está configurado en su catálogo de empresa.');
+            if ($exists) {
+                return redirect()->back()->with('error', 'Este sistema de riego ya está configurado en su catálogo de empresa.');
+            }
         }
 
         TipoRiego::create([
             'id_empresa' => $idEmpresa,
-            'id_catalogo' => $request->id_catalogo,
+            'id_catalogo' => $request->id_catalogo ?: null,
             'tipo_riego' => $request->tipo_riego,
-            'impacto_dias' => $catalogItem->impacto_dias, // FROM CATALOG
+            'impacto_dias' => $request->impacto_dias,
         ]);
 
         return redirect()->route('tipo_riegos.index')
@@ -67,6 +66,7 @@ class TipoRiegoController extends Controller
     {
         $request->validate([
             'tipo_riego' => 'required|string|max:100',
+            'impacto_dias' => 'required|integer',
         ]);
 
         $tipoRiego = TipoRiego::where('id_tipo_riego', $id)
@@ -75,6 +75,7 @@ class TipoRiegoController extends Controller
 
         $tipoRiego->update([
             'tipo_riego' => $request->tipo_riego,
+            'impacto_dias' => $request->impacto_dias,
         ]);
 
         return redirect()->route('tipo_riegos.index')

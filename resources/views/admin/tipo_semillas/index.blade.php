@@ -69,62 +69,40 @@
                         @csrf
                         <input type="hidden" name="id_catalogo" id="input_id_catalogo">
 
-                        <div>
-                            <label class="block text-xs font-bold text-emerald-700 uppercase tracking-wider mb-2">Nombre en
-                                su Finca</label>
-                            <input type="text" name="nombre_semilla" id="nombre_semilla" required
-                                class="w-full px-4 py-3 rounded-2xl border-emerald-100 focus:border-emerald-500 focus:ring-emerald-500 bg-white text-sm">
+                        <!-- Basic Information -->
+                        <div class="space-y-4 mb-6">
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Nombre de la Variedad *</label>
+                                <input type="text" name="nombre_semilla" id="sw_nombre" required
+                                    class="w-full px-4 py-3 rounded-2xl border-emerald-100 focus:border-emerald-500 focus:ring-emerald-500 bg-white shadow-sm"
+                                    placeholder="Ej: Maíz Amarillo">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Descripción / Notas</label>
+                                <textarea name="descripcion" id="sw_descripcion" rows="2"
+                                    class="w-full px-4 py-3 rounded-2xl border-emerald-100 focus:border-emerald-500 focus:ring-emerald-500 bg-white shadow-sm"
+                                    placeholder="Detalles adicionales..."></textarea>
+                            </div>
                         </div>
-
-                        <div>
-                            <label class="block text-xs font-bold text-emerald-700 uppercase tracking-wider mb-2">Stock
-                                Inicial</label>
-                            <input type="number" name="stock_actual" id="stock_actual" step="0.01" min="0" required
-                                class="w-full px-4 py-3 rounded-2xl border-emerald-100 focus:border-emerald-500 focus:ring-emerald-500 bg-white text-sm"
-                                placeholder="Ej: 500.00">
-                        </div>
-
                         <div class="grid grid-cols-2 gap-4">
-                            <div class="bg-gray-50 p-4 rounded-2xl border border-gray-100 relative overflow-hidden group">
-                                <div
-                                    class="absolute -right-2 -bottom-2 text-gray-100 group-hover:text-emerald-50 transition-colors duration-500">
-                                    <svg class="w-16 h-16" fill="currentColor" viewBox="0 0 24 24">
-                                        <path
-                                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
-                                    </svg>
+                            <!-- Rendimiento -->
+                            <div class="bg-emerald-50 p-4 rounded-xl border border-emerald-100/50">
+                                <label class="block text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-1">Rendimiento Estimado</label>
+                                <div class="flex items-end gap-2">
+                                    <input type="number" step="0.01" name="rendimiento_promedio" id="sw_rendimiento" class="text-2xl font-black text-emerald-950 bg-transparent border-0 p-0 w-24 focus:ring-0" value="0.0">
+                                    <span class="text-xs font-bold text-emerald-700 mb-1">kg/m²</span>
                                 </div>
-                                <span class="text-[10px] font-bold text-gray-400 uppercase block mb-1">Días Base</span>
-                                <span id="display_dias" class="text-xl font-black text-gray-800 tracking-tight">--</span>
-                                <span
-                                    class="bg-emerald-600 text-[8px] text-white px-1.5 py-0.5 rounded absolute top-2 right-2 font-black uppercase">Fijo</span>
                             </div>
-                            <div
-                                class="bg-emerald-50/50 p-4 rounded-2xl border border-emerald-100 relative overflow-hidden group">
-                                <div
-                                    class="absolute -right-2 -bottom-2 text-emerald-100 group-hover:text-emerald-200 transition-colors duration-500">
-                                    <svg class="w-16 h-16" fill="currentColor" viewBox="0 0 24 24">
-                                        <path
-                                            d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14h-2v-4h2v4zm0-6h-2V7h2v4z" />
-                                    </svg>
-                                </div>
-                                <span class="text-[10px] font-bold text-emerald-400 uppercase block mb-1">Rendimiento
-                                    Técnico</span>
-                                <div class="flex items-baseline gap-1">
-                                    <span id="display_rendimiento"
-                                        class="text-xl font-black text-emerald-700 tracking-tight">--</span>
-                                    <span class="text-[8px] font-bold text-emerald-500 uppercase">kg/m²</span>
-                                </div>
-                                <span
-                                    class="bg-blue-600 text-[8px] text-white px-1.5 py-0.5 rounded absolute top-2 right-2 font-black uppercase">Doc</span>
-                            </div>
-                        </div>
 
-                        <div>
-                            <label
-                                class="block text-xs font-bold text-emerald-700 uppercase tracking-wider mb-2">Descripción
-                                Personalizada</label>
-                            <textarea name="descripcion" id="descripcion" rows="3"
-                                class="w-full px-4 py-3 rounded-2xl border-emerald-100 focus:border-emerald-500 focus:ring-emerald-500 bg-white text-sm"></textarea>
+                            <!-- Tiempo Base -->
+                            <div class="bg-amber-50 p-4 rounded-xl border border-amber-100/50">
+                                <label class="block text-[10px] font-black text-amber-600 uppercase tracking-widest mb-1">Tiempo Base</label>
+                                <div class="flex items-end gap-2">
+                                    <input type="number" name="tiempo_base_dias" id="sw_tiempo_base" class="text-2xl font-black text-amber-950 bg-transparent border-0 p-0 w-20 focus:ring-0" value="0">
+                                    <span class="text-xs font-bold text-amber-700 mb-1">días</span>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="flex gap-3">
@@ -180,7 +158,6 @@
                                     class="bg-white text-[10px] font-black text-emerald-400 uppercase tracking-[0.2em] border-b border-emerald-50">
                                     <th class="px-6 py-4">Especie y Variedad</th>
                                     <th class="px-6 py-4">Parámetros Técnicos</th>
-                                    <th class="px-6 py-4">Cantidad en Stock</th>
                                     <th class="px-6 py-4">Productividad</th>
                                     <th class="px-6 py-4 text-right">Acciones</th>
                                 </tr>
@@ -216,27 +193,7 @@
                                                     {{ $semilla->descripcion }}</p>
                                             </div>
                                         </td>
-                                        <td class="px-6 py-4">
-                                            <div class="flex items-center gap-3">
-                                                <span
-                                                    class="text-xl font-black text-emerald-900">{{ number_format($semilla->stock_actual, 2) }}</span>
-                                                @if($semilla->stock_actual <= 0)
-                                                    <span
-                                                        class="bg-red-50 text-red-600 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase flex items-center gap-1 border border-red-100">
-                                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                                                        </svg>
-                                                        Sin Stock
-                                                    </span>
-                                                @else
-                                                    <span
-                                                        class="bg-emerald-50 text-emerald-600 text-[9px] font-bold px-1.5 py-0.5 rounded-md uppercase border border-emerald-100">
-                                                        En Stock
-                                                    </span>
-                                                @endif
-                                            </div>
-                                        </td>
+
                                         <td class="px-6 py-4">
                                             <div
                                                 class="bg-emerald-50 rounded-xl px-3 py-1 border border-emerald-100 inline-block">
@@ -332,14 +289,53 @@
                                     div.onclick = () => selectFromCatalog(item);
                                     searchResults.appendChild(div);
                                 });
+                                
+                                // Add "Custom" option at the end
+                                const customDiv = document.createElement('div');
+                                customDiv.className = 'px-6 py-4 hover:bg-emerald-50 cursor-pointer border-t border-emerald-100 bg-emerald-50/50 transition-colors';
+                                customDiv.innerHTML = `
+                                    <div class="flex space-x-3 items-center text-emerald-700">
+                                        <div class="bg-emerald-200 text-emerald-800 p-1.5 rounded-lg">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                                        </div>
+                                        <span class="font-bold text-sm">Crear "${query}" como nueva variedad</span>
+                                    </div>
+                                `;
+                                customDiv.onclick = () => selectCustom(query);
+                                searchResults.appendChild(customDiv);
+                                
                                 searchResults.classList.remove('hidden');
                             } else {
-                                searchResults.innerHTML = '<p class="px-6 py-4 text-xs text-gray-400 italic">No se encontraron resultados...</p>';
+                                searchResults.innerHTML = `
+                                    <div class="px-6 py-4 hover:bg-emerald-50 cursor-pointer transition-colors" onclick="selectCustom('${query}')">
+                                        <p class="text-xs text-gray-500 mb-2 italic">No se encontró en el catálogo global...</p>
+                                        <div class="flex space-x-3 items-center text-emerald-700">
+                                            <div class="bg-emerald-200 text-emerald-800 p-1.5 rounded-lg">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                                            </div>
+                                            <span class="font-bold text-sm">Registrar "${query}" manualmente</span>
+                                        </div>
+                                    </div>
+                                `;
                                 searchResults.classList.remove('hidden');
                             }
                         });
                 }, 300);
             });
+
+            function selectCustom(nombre) {
+                searchResults.classList.add('hidden');
+                searchInput.value = nombre;
+                
+                document.getElementById('input_id_catalogo').value = '';
+                document.getElementById('sw_nombre').value = nombre;
+                document.getElementById('sw_tiempo_base').value = '0';
+                document.getElementById('sw_rendimiento').value = '0.00';
+                document.getElementById('sw_descripcion').value = '';
+                
+                formPlaceholder.classList.add('hidden');
+                seedForm.classList.remove('hidden');
+            }
 
             function selectFromCatalog(item) {
                 searchResults.classList.add('hidden');
@@ -347,11 +343,10 @@
 
                 // Populate Form
                 document.getElementById('input_id_catalogo').value = item.id;
-                document.getElementById('nombre_semilla').value = item.nombre;
-                document.getElementById('display_dias').innerText = item.tiempo_base_dias;
-                document.getElementById('display_rendimiento').innerText = item.rendimiento_promedio || '0.00';
-                document.getElementById('descripcion').value = item.descripcion || '';
-                document.getElementById('stock_actual').value = item.stock_actual || 0;
+                document.getElementById('sw_nombre').value = item.nombre;
+                document.getElementById('sw_tiempo_base').value = item.tiempo_base_dias;
+                document.getElementById('sw_rendimiento').value = item.rendimiento_promedio || '0.00';
+                document.getElementById('sw_descripcion').value = item.descripcion || '';
 
                 // Toggle visibility
                 formPlaceholder.classList.add('hidden');
@@ -364,7 +359,11 @@
                 searchInput.value = '';
                 searchInput.disabled = false;
                 seedForm.reset();
-                document.getElementById('stock_actual').value = '';
+                document.getElementById('sw_nombre').value = '';
+                document.getElementById('sw_descripcion').value = '';
+                document.getElementById('sw_tiempo_base').value = '0';
+                document.getElementById('sw_rendimiento').value = '0.00';
+
 
                 // Reset form for create mode
                 seedForm.action = "{{ route('tipo_semillas.store') }}";
@@ -382,11 +381,10 @@
 
                 // Populate Form directly from record data
                 document.getElementById('input_id_catalogo').value = semilla.id_catalogo;
-                document.getElementById('nombre_semilla').value = semilla.nombre_semilla;
-                document.getElementById('display_dias').innerText = semilla.tiempo_base_dias;
-                document.getElementById('display_rendimiento').innerText = semilla.rendimiento_promedio || '0.00';
-                document.getElementById('descripcion').value = semilla.descripcion || '';
-                document.getElementById('stock_actual').value = semilla.stock_actual;
+                document.getElementById('sw_nombre').value = semilla.nombre_semilla;
+                document.getElementById('sw_tiempo_base').value = semilla.tiempo_base_dias;
+                document.getElementById('sw_rendimiento').value = parseFloat(semilla.rendimiento_promedio || 0).toFixed(2);
+                document.getElementById('sw_descripcion').value = semilla.descripcion || '';
 
                 searchInput.value = semilla.nombre_semilla;
 

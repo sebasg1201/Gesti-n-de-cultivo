@@ -80,34 +80,35 @@
                         <div class="grid grid-cols-2 gap-4">
                             <div class="bg-gray-50 p-4 rounded-2xl border border-gray-100 relative overflow-hidden group">
                                 <div
-                                    class="absolute -right-2 -bottom-2 text-gray-100 group-hover:text-emerald-50 transition-colors duration-500">
+                                    class="absolute -right-2 -bottom-2 text-gray-100 group-hover:text-emerald-50 transition-colors duration-500 pointer-events-none">
                                     <svg class="w-16 h-16" fill="currentColor" viewBox="0 0 24 24">
                                         <path d="M4 6h16v12H4z" />
                                     </svg>
                                 </div>
-                                <span class="text-[10px] font-bold text-gray-400 uppercase block mb-1">Categoría</span>
-                                <span id="display_categoria"
-                                    class="text-sm font-black text-gray-800 tracking-tight">--</span>
-                                <span
-                                    class="bg-emerald-600 text-[8px] text-white px-1.5 py-0.5 rounded absolute top-2 right-2 font-black uppercase">Tipo</span>
+                                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Categoría</label>
+                                <select name="categoria_manual" id="categoria_manual" class="w-full text-sm font-black text-gray-800 tracking-tight bg-transparent border-b-2 border-gray-200 focus:ring-0 focus:border-emerald-500 relative z-10 cursor-pointer appearance-none">
+                                    <option value="" disabled selected>Seleccione...</option>
+                                    @foreach($tiposInsumo as $tipo)
+                                        <option value="{{ $tipo->id_tipo_insumo }}">{{ $tipo->nombre }}</option>
+                                    @endforeach
+                                </select>
                             </div>
+
                             <div
                                 class="bg-emerald-50/50 p-4 rounded-2xl border border-emerald-100 relative overflow-hidden group">
                                 <div
-                                    class="absolute -right-2 -bottom-2 text-emerald-100 group-hover:text-emerald-200 transition-colors duration-500">
+                                    class="absolute -right-2 -bottom-2 text-emerald-100 group-hover:text-emerald-200 transition-colors duration-500 pointer-events-none">
                                     <svg class="w-16 h-16" fill="currentColor" viewBox="0 0 24 24">
                                         <path
                                             d="M3 3v18h18V3H3zm16 16H5V5h14v14zM11 7h2v2h-2zM7 7h2v2H7zm8 0h2v2h-2zM7 11h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2zM7 15h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2z" />
                                     </svg>
                                 </div>
-                                <span class="text-[10px] font-bold text-emerald-400 uppercase block mb-1">Stock
-                                    Inicial</span>
-                                <div class="flex items-baseline gap-1">
+                                <label class="block text-[10px] font-bold text-emerald-400 uppercase mb-1">Stock Actual</label>
+                                <div class="flex items-center gap-1 relative z-10">
                                     <span class="text-xl font-black text-emerald-700 tracking-tight">0</span>
                                     <span class="text-[8px] font-bold text-emerald-500 uppercase">Unidades</span>
+                                    <input type="hidden" name="cantidad_ingreso" id="stock_manual" value="0">
                                 </div>
-                                <span
-                                    class="bg-blue-600 text-[8px] text-white px-1.5 py-0.5 rounded absolute top-2 right-2 font-black uppercase">Config</span>
                             </div>
                         </div>
 
@@ -172,7 +173,6 @@
                                     class="bg-white text-[10px] font-black text-emerald-400 uppercase tracking-[0.2em] border-b border-emerald-50">
                                     <th class="px-8 py-6">Producto</th>
                                     <th class="px-8 py-6">Categoría</th>
-                                    <th class="px-8 py-6">Cantidad en Stock</th>
                                     <th class="px-8 py-6 text-right">Acciones</th>
                                 </tr>
                             </thead>
@@ -200,27 +200,7 @@
                                                 {{ $insumo->catalogo->tipoInsumo->nombre ?? 'Insumo' }}
                                             </span>
                                         </td>
-                                        <td class="px-8 py-6">
-                                            <div class="flex items-center gap-3">
-                                                <span
-                                                    class="text-xl font-black text-emerald-900">{{ number_format($insumo->stock_actual, 2) }}</span>
-                                                @if($insumo->stock_actual <= 0)
-                                                    <span
-                                                        class="bg-red-50 text-red-600 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase flex items-center gap-1 border border-red-100">
-                                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                                                        </svg>
-                                                        Sin Stock
-                                                    </span>
-                                                @else
-                                                    <span
-                                                        class="bg-emerald-50 text-emerald-600 text-[10px] font-bold px-2 py-1 rounded-md uppercase border border-emerald-100">
-                                                        En Stock
-                                                    </span>
-                                                @endif
-                                            </div>
-                                        </td>
+
                                         <td class="px-8 py-6 text-right">
                                             <div
                                                 class="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
@@ -308,24 +288,62 @@
                                     div.onclick = () => selectFromCatalog(item);
                                     searchResults.appendChild(div);
                                 });
+                                // Add "Custom" option at the end
+                                const customDiv = document.createElement('div');
+                                customDiv.className = 'px-6 py-4 hover:bg-emerald-50 cursor-pointer border-t border-emerald-100 bg-emerald-50/50 transition-colors';
+                                customDiv.innerHTML = `
+                                    <div class="flex space-x-3 items-center text-emerald-700">
+                                        <div class="bg-emerald-200 text-emerald-800 p-1.5 rounded-lg">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                                        </div>
+                                        <span class="font-bold text-sm">Crear "${query}" como nuevo insumo libre</span>
+                                    </div>
+                                `;
+                                customDiv.onclick = () => selectCustomInsumo(query);
+                                searchResults.appendChild(customDiv);
+
                                 searchResults.classList.remove('hidden');
                             } else {
-                                searchResults.innerHTML = '<p class="px-6 py-4 text-xs text-gray-400 italic">No se encontraron productos en el catálogo...</p>';
+                                searchResults.innerHTML = `
+                                    <div class="px-6 py-4 hover:bg-emerald-50 cursor-pointer transition-colors" onclick="selectCustomInsumo('${query}')">
+                                        <p class="text-xs text-gray-500 mb-2 italic">No se encontró en el catálogo global...</p>
+                                        <div class="flex space-x-3 items-center text-emerald-700">
+                                            <div class="bg-emerald-200 text-emerald-800 p-1.5 rounded-lg">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                                            </div>
+                                            <span class="font-bold text-sm">Registrar "${query}" manualmente</span>
+                                        </div>
+                                    </div>
+                                `;
                                 searchResults.classList.remove('hidden');
                             }
                         });
                 }, 300);
             });
 
+            function selectCustomInsumo(nombre) {
+                searchResults.classList.add('hidden');
+                searchInput.value = nombre;
+
+                document.getElementById('input_id_catalogo_insumo').value = '';
+                document.getElementById('nombre').value = nombre;
+                document.getElementById('categoria_manual').value = '';
+                document.getElementById('descripcion').value = '';
+                document.getElementById('stock_manual').value = 0;
+
+                formPlaceholder.classList.add('hidden');
+                seedForm.classList.remove('hidden');
+            }
+
             function selectFromCatalog(item) {
                 searchResults.classList.add('hidden');
                 searchInput.value = item.nombre_comercial;
-
                 // Populate Form
                 document.getElementById('input_id_catalogo_insumo').value = item.id_catalogo_insumo;
                 document.getElementById('nombre').value = item.nombre_comercial;
-                document.getElementById('display_categoria').innerText = item.tipo_insumo ? item.tipo_insumo.nombre : 'Insumo';
+                document.getElementById('categoria_manual').value = item.id_tipo_insumo || '';
                 document.getElementById('descripcion').value = item.descripcion || '';
+                document.getElementById('stock_manual').value = 0;
 
                 // Toggle visibility
                 formPlaceholder.classList.add('hidden');
@@ -358,11 +376,12 @@
 
                 // Populate standard info
                 document.getElementById('input_id_catalogo_insumo').value = catalogData.id_catalogo_insumo || '';
-                document.getElementById('display_categoria').innerText = catalogData.tipo_insumo ? catalogData.tipo_insumo.nombre : 'Insumo';
+                document.getElementById('categoria_manual').value = catalogData.id_tipo_insumo || '';
 
                 // Override custom edits
                 document.getElementById('nombre').value = insumo.Nombre;
                 document.getElementById('descripcion').value = insumo.descripcion || '';
+                document.getElementById('stock_manual').value = 0; // Se reinicia para agregar o quitar en edición
 
                 // Adjust form for update mode
                 seedForm.action = `/insumos/${insumo.ID_insumo}`;

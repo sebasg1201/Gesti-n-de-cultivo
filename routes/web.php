@@ -98,6 +98,11 @@ Route::middleware(['auth:usuario', 'check.license'])->group(function () {
     Route::post('/trabajador/tareas/{id}/finalizar/{tipo}', [AdminController::class, 'finalizarTarea'])->name('trabajador.tareas.finalizar');
     Route::post('/trabajador/tareas/{id}/estado/{tipo}', [AdminController::class, 'actualizarEstadoTarea'])->name('trabajador.tareas.estado');
 
+    // Rutas para Calendario de Trabajador
+    Route::get('/trabajador/calendario', [AdminController::class, 'trabajadorCalendario'])->name('trabajador.calendario');
+    Route::get('/trabajador/calendario/eventos', [AdminController::class, 'getEventosCalendario'])->name('trabajador.calendario.eventos');
+    Route::post('/trabajador/calendario/registro', [AdminController::class, 'storeRegistroTrabajo'])->name('trabajador.calendario.store');
+
     // Nueva ruta para tareas categorizadas de administrador
     Route::get('/admin/tareas', [AdminController::class, 'tareasCategorizadas'])->name('admin.tareas.index');
     Route::post('/admin/tareas/store-riego', [AdminController::class, 'storeRiego'])->name('admin.tareas.store.riego');

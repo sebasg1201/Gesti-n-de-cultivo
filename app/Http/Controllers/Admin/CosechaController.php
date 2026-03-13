@@ -44,6 +44,7 @@ class CosechaController extends Controller
             'id_tipo_riego' => 'required|exists:tipo_riego,id_tipo_riego',
             'cantidad_sembrada' => 'required|numeric|min:1',
             'fecha_siembra' => 'required|date',
+            'frecuencia_riego_dias' => 'required|integer|min:1',
             'imagen' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
@@ -64,21 +65,48 @@ class CosechaController extends Controller
 
         $fechaEstimada = \Carbon\Carbon::parse($request->fecha_siembra)->addDays($totalDays);
 
-        // Cambiar estado del terreno a "Ocupado" (id_estado = 8? por confirmar, pero el usuario no pidió esto aún)
+        // Calculate Ideal Water amount per cycle
+        // formula: area_m2 * consumo_agua_ideal
+        $area = $terreno->area_m2 ?? 0; // if area is not configured, water amount defaults to 0
+        $consumoIdeal = $terreno->tipoSuelo ? ($terreno->tipoSuelo->consumo_agua_ideal ?? 0) : 0;
+        $aguaPorRiego = $area * $consumoIdeal;
 
-        Cosecha::create([
+        $cosecha = Cosecha::create([
             'id_empresa' => $id_empresa,
             'id_terreno' => $request->id_terreno,
             'id_semilla' => $request->id_semilla,
             'id_estado' => 1, // Default state
             'Cantidad' => $request->cantidad_sembrada,
             'fecha_siembra' => $request->fecha_siembra,
+            'frecuencia_riego_dias' => $request->frecuencia_riego_dias,
             'fecha_estimada' => $fechaEstimada->format('Y-m-d'),
             'produccion_estimada' => $request->cantidad_sembrada * $semilla->rendimiento_promedio,
             'imagenes' => $imagePath,
         ]);
 
-        return redirect()->route('admin.cosechas.index')->with('success', 'Siembra iniciada correctamente.');
+        // Automated Task Generation logic
+        if ($totalDays > 0) {
+            $frecuencia = $request->frecuencia_riego_dias;
+            $fecha_actual_bucle = \Carbon\Carbon::parse($request->fecha_siembra);
+            
+            // Loop until we reach fechaEstimada
+            while ($fecha_actual_bucle->lessThanOrEqualTo($fechaEstimada)) {
+                // Determine appropriate state (e.g. 1 = Pending)
+                // Need to use default state for Riego. According to schema, if state table handles it, typically '1' represents pending.
+                // Looking at standard system logic, typically pending jobs are id_estado = 1
+                \App\Models\Riego::create([
+                    'cant_agua_apl' => $aguaPorRiego,
+                    'id_tipo_riego' => $request->id_tipo_riego,
+                    'id_cosecha' => $cosecha->id_cosecha,
+                    'id_estado' => 1, // 1 = Pendiente
+                    'fecha_programada' => $fecha_actual_bucle->format('Y-m-d')
+                ]);
+
+                $fecha_actual_bucle->addDays($frecuencia);
+            }
+        }
+
+        return redirect()->route('admin.cosechas.index')->with('success', 'Siembra iniciada y tareas de riego automáticas generadas.');
     }
 
     public function show($id)
@@ -127,6 +155,17 @@ class CosechaController extends Controller
         elseif ($porcentaje >= 90)
             $faseActual = 'Cosecha';
 
-        return view('admin.cosechas.show', compact('cosecha', 'diasTotales', 'diasTranscurridos', 'porcentaje', 'diasRestantes', 'faseActual'));
+        // Calcular cumplimiento de hidratación (Barra Azul - Progreso Ciclo)
+        $riegos = \App\Models\Riego::where('id_cosecha', $id)->get();
+        $totalRiegosCiclo = $riegos->count();
+        $riegosCompletados = $riegos->filter(function ($riego) {
+            return $riego->id_estado != 1; // 1 = Pendiente
+        })->count();
+
+        $porcentajeHidratacion = $totalRiegosCiclo > 0 
+            ? ($riegosCompletados / $totalRiegosCiclo) * 100 
+            : 0;
+            
+        return view('admin.cosechas.show', compact('cosecha', 'diasTotales', 'diasTranscurridos', 'porcentaje', 'diasRestantes', 'faseActual', 'porcentajeHidratacion', 'riegosCompletados', 'totalRiegosCiclo'));
     }
 }

@@ -20,6 +20,7 @@ class Cosecha extends Model
         'id_semilla',
         'id_estado',
         'fecha_siembra',
+        'frecuencia_riego_dias',
         'fecha_estimada',
         'produccion_estimada',
         'imagenes'

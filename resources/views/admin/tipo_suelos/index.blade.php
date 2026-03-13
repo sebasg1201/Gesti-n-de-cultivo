@@ -74,12 +74,20 @@
                             placeholder="Especifique ubicación o calidad..."></textarea>
                     </div>
 
+                    <div>
+                        <label class="block text-xs font-bold text-amber-700 uppercase tracking-wider mb-2">Consumo de Agua Ideal (L/m²)</label>
+                        <input type="number" name="consumo_agua_ideal" id="sw_consumo_agua_ideal" step="0.01" min="0" required
+                            class="w-full px-4 py-3 rounded-2xl border-amber-100 focus:border-amber-500 focus:ring-amber-500 bg-white text-sm"
+                            placeholder="Ej. 5.50">
+                        <p class="text-[10px] text-amber-600 mt-1 italic">Este valor se usa para automatizar las tareas de riego de la cosecha.</p>
+                    </div>
+
                     <!-- Impact Card -->
                     <div class="bg-amber-50 p-6 rounded-2xl border border-amber-100 relative overflow-hidden">
-                        <span class="text-[10px] font-bold text-amber-400 uppercase block mb-2">Impacto Técnico (Fijo)</span>
+                        <span class="text-[10px] font-bold text-amber-400 uppercase block mb-2">Impacto Técnico (Días)</span>
                         <div class="flex items-center gap-3">
-                            <span id="sw_display_impacto" class="text-3xl font-black tracking-tighter">--</span>
-                            <span class="text-xs text-amber-600 font-medium leading-tight">Días de diferencia<br>en la cosecha</span>
+                            <input type="number" name="impacto_dias" id="sw_impacto" class="text-3xl font-black bg-transparent w-24 border-b-2 border-amber-200 focus:ring-0 focus:border-amber-500 text-amber-700 placeholder:text-gray-300" placeholder="0" value="0">
+                            <span class="text-xs text-amber-600 font-medium leading-tight">Días sumados<br>al ciclo</span>
                         </div>
                         <div class="mt-4 p-2 bg-white/50 rounded-lg text-[10px] text-amber-700 italic border border-amber-100/50">
                             * Este valor se aplica automáticamente al cálculo de fecha estimada según la semilla.
@@ -222,14 +230,54 @@
                             div.onclick = () => selectSuelo(item);
                             sueloResults.appendChild(div);
                         });
+                        
+                        // Add "Custom" option at the end
+                        const customDiv = document.createElement('div');
+                        customDiv.className = 'px-6 py-4 hover:bg-amber-50 cursor-pointer border-t border-amber-100 bg-amber-50/50 transition-colors';
+                        customDiv.innerHTML = `
+                            <div class="flex space-x-3 items-center text-amber-700">
+                                <div class="bg-amber-200 text-amber-800 p-1.5 rounded-lg">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                                </div>
+                                <span class="font-bold text-sm">Crear "${q}" como nuevo suelo</span>
+                            </div>
+                        `;
+                        customDiv.onclick = () => selectCustomSuelo(q);
+                        sueloResults.appendChild(customDiv);
+                        
                         sueloResults.classList.remove('hidden');
                     } else {
-                        sueloResults.innerHTML = '<p class="px-6 py-4 text-xs text-gray-400 italic">No encontrado...</p>';
+                        sueloResults.innerHTML = `
+                            <div class="px-6 py-4 hover:bg-amber-50 cursor-pointer transition-colors" onclick="selectCustomSuelo('${q}')">
+                                <p class="text-xs text-gray-500 mb-2 italic">No se encontró en el catálogo global...</p>
+                                <div class="flex space-x-3 items-center text-amber-700">
+                                    <div class="bg-amber-200 text-amber-800 p-1.5 rounded-lg">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                                    </div>
+                                    <span class="font-bold text-sm">Registrar "${q}" manualmente</span>
+                                </div>
+                            </div>
+                        `;
                         sueloResults.classList.remove('hidden');
                     }
                 });
         }, 300);
     });
+
+    function selectCustomSuelo(nombre) {
+        sueloResults.classList.add('hidden');
+        sueloSearch.value = nombre;
+        
+        document.getElementById('sw_id_catalogo').value = '';
+        document.getElementById('sw_nombre').value = nombre;
+        document.getElementById('sw_descripcion').value = '';
+        document.getElementById('sw_consumo_agua_ideal').value = '';
+        
+        document.getElementById('sw_impacto').value = '0';
+        
+        sueloPlaceholder.classList.add('hidden');
+        sueloForm.classList.remove('hidden');
+    }
 
     function selectSuelo(item) {
         sueloResults.classList.add('hidden');
@@ -238,11 +286,10 @@
         document.getElementById('sw_id_catalogo').value = item.id;
         document.getElementById('sw_nombre').value = item.nombre;
         document.getElementById('sw_descripcion').value = item.descripcion || '';
+        document.getElementById('sw_consumo_agua_ideal').value = item.consumo_agua_ideal || '';
 
         const impacto = parseInt(item.impacto_dias);
-        const displayImpacto = document.getElementById('sw_display_impacto');
-        displayImpacto.innerText = (impacto > 0 ? '+' : '') + impacto;
-        displayImpacto.className = 'text-3xl font-black tracking-tighter ' + (impacto >= 0 ? 'text-red-600' : 'text-green-600');
+        document.getElementById('sw_impacto').value = impacto;
 
         sueloPlaceholder.classList.add('hidden');
         sueloForm.classList.remove('hidden');
@@ -259,6 +306,7 @@
         sueloForm.action = "{{ route('tipo_suelos.store') }}";
         const methodInput = sueloForm.querySelector('input[name="_method"]');
         if (methodInput) methodInput.remove();
+        document.getElementById('sw_consumo_agua_ideal').value = '';
         sueloForm.querySelector('button[type="submit"]').innerText = 'Habilitar Suelo';
     }
 
@@ -271,11 +319,10 @@
         document.getElementById('sw_id_catalogo').value = suelo.id_catalogo;
         document.getElementById('sw_nombre').value = suelo.nombre;
         document.getElementById('sw_descripcion').value = suelo.descripcion || '';
+        document.getElementById('sw_consumo_agua_ideal').value = suelo.consumo_agua_ideal || '';
 
         const impacto = parseInt(suelo.impacto_dias);
-        const displayImpacto = document.getElementById('sw_display_impacto');
-        displayImpacto.innerText = (impacto > 0 ? '+' : '') + impacto;
-        displayImpacto.className = 'text-3xl font-black tracking-tighter ' + (impacto >= 0 ? 'text-red-600' : 'text-green-600');
+        document.getElementById('sw_impacto').value = impacto;
         
         sueloSearch.value = suelo.nombre;
         sueloSearch.disabled = true;

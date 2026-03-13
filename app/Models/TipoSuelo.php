@@ -18,7 +18,8 @@ class TipoSuelo extends Model
         'id_catalogo',
         'nombre',
         'descripcion',
-        'impacto_dias'
+        'impacto_dias',
+        'consumo_agua_ideal'
     ];
 
     public function catalogo()

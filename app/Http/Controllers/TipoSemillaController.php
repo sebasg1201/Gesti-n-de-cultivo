@@ -36,30 +36,32 @@ class TipoSemillaController extends Controller
         $idEmpresa = $this->getEmpresaId();
 
         $request->validate([
-            'id_catalogo' => 'required|exists:catalogo_semillas,id',
+            'id_catalogo' => 'nullable|exists:catalogo_semillas,id',
             'nombre_semilla' => 'required|string|max:100',
             'descripcion' => 'nullable|string|max:250',
             'stock_actual' => 'nullable|numeric|min:0',
+            'tiempo_base_dias' => 'required|integer|min:0',
+            'rendimiento_promedio' => 'required|numeric|min:0',
         ]);
 
-        $catalogItem = CatalogoSemilla::findOrFail($request->id_catalogo);
+        if ($request->filled('id_catalogo')) {
+            $exists = TipoSemilla::where('id_empresa', $idEmpresa)
+                ->where('id_catalogo', $request->id_catalogo)
+                ->exists();
 
-        $exists = TipoSemilla::where('id_empresa', $idEmpresa)
-            ->where('id_catalogo', $catalogItem->id)
-            ->exists();
-
-        if ($exists) {
-            return redirect()->back()->with('error', 'Esta variedad de semilla ya está registrada en su inventario.');
+            if ($exists) {
+                return redirect()->back()->with('error', 'Esta variedad de semilla ya está registrada en su inventario.');
+            }
         }
 
         TipoSemilla::create([
             'id_empresa' => $idEmpresa,
-            'id_catalogo' => $catalogItem->id,
+            'id_catalogo' => $request->id_catalogo ?: null,
             'nombre_semilla' => $request->nombre_semilla,
-            'tiempo_base_dias' => $catalogItem->tiempo_base_dias, // PREDETERMINADO
-            'descripcion' => $request->descripcion ?? $catalogItem->descripcion,
-            'rendimiento_promedio' => $catalogItem->rendimiento_promedio, // PREDETERMINADO
-            'stock_actual' => $request->stock_actual ?? 0,
+            'tiempo_base_dias' => $request->tiempo_base_dias,
+            'descripcion' => $request->descripcion,
+            'rendimiento_promedio' => $request->rendimiento_promedio,
+            'stock_actual' => 0,
         ]);
 
         return redirect()->route('tipo_semillas.index')
@@ -70,19 +72,21 @@ class TipoSemillaController extends Controller
     {
         $request->validate([
             'nombre_semilla' => 'required|string|max:100',
-            'descripcion' => 'required|string|max:250',
-            'stock_actual' => 'required|numeric|min:0',
+            'descripcion' => 'nullable|string|max:250',
+            'tiempo_base_dias' => 'required|integer|min:0',
+            'rendimiento_promedio' => 'required|numeric|min:0',
         ]);
 
         $tipoSemilla = TipoSemilla::where('id_semilla', $id)
             ->where('id_empresa', $this->getEmpresaId())
             ->firstOrFail();
 
-        // Only allow updating custom name and description
         $tipoSemilla->update([
             'nombre_semilla' => $request->nombre_semilla,
             'descripcion' => $request->descripcion,
-            'stock_actual' => $request->stock_actual,
+            'tiempo_base_dias' => $request->tiempo_base_dias,
+            'rendimiento_promedio' => $request->rendimiento_promedio,
+            'stock_actual' => 0,
         ]);
 
         return redirect()->route('tipo_semillas.index')
