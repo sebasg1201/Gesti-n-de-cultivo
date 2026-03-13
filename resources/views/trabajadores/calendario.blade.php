@@ -119,6 +119,22 @@
             }
         });
         calendar.render();
+
+        // Manejar parámetro 'date' de la URL para redirección
+        const urlParams = new URLSearchParams(window.location.search);
+        const focusDate = urlParams.get('date');
+        if (focusDate) {
+            setTimeout(() => {
+                calendar.gotoDate(focusDate);
+                const dateObj = new Date(focusDate + 'T12:00:00');
+                updateDayDetails(focusDate, dateObj);
+                
+                // Aplicar efecto de resaltado al panel de detalles
+                const detailsCard = document.getElementById('dayDetailsCard');
+                detailsCard.classList.add('ring-4', 'ring-emerald-500/20', 'scale-[1.01]');
+                setTimeout(() => detailsCard.classList.remove('ring-4', 'ring-emerald-500/20', 'scale-[1.01]'), 1000);
+            }, 300);
+        }
     });
 
     function updateDayDetails(dateStr, dateObj) {
@@ -243,7 +259,18 @@
         }
 
         if (!yaRegistroGeneral) {
-            actionArea.classList.remove('hidden');
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            // dateObj viene de FullCalendar y ya es objeto Date
+            const selectedDateObj = new Date(dateStr + 'T12:00:00'); // Usar T12:00:00 para evitar problemas de zona horaria
+            selectedDateObj.setHours(0, 0, 0, 0);
+
+            if (selectedDateObj < today) {
+                actionArea.classList.add('hidden');
+            } else {
+                actionArea.classList.remove('hidden');
+            }
         } else {
             actionArea.classList.add('hidden');
         }

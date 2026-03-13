@@ -163,9 +163,71 @@ class UsuarioEmpresaController extends Controller
         // Pagos/Salarios registrados para este usuario
         $salarios = \App\Models\Salario::where('documento_trabajador', $documento)
             ->with('tipoSalario')
+            ->orderBy('fecha_pago', 'desc')
             ->get();
 
-        return view('admin.usuarios.asignar_trabajo', compact('usuario', 'tiposSalario', 'salarios'));
+        // Obtener tareas asignadas (Fases, Riegos, Insumos)
+        $fases = \App\Models\FaseProgramada::where('documento_trabajador', $documento)
+            ->with(['cosecha.terreno', 'estado'])
+            ->get()
+            ->map(function($item) {
+                $item->tipo_actividad = 'Fase';
+                $item->titulo = $item->descripcion;
+                $item->fecha_prog = $item->fecha_programada;
+                return $item;
+            });
+
+        $riegos = \App\Models\Riego::where('documento_trabajador', $documento)
+            ->with(['cosecha.terreno', 'estado'])
+            ->get()
+            ->map(function($item) {
+                $item->tipo_actividad = 'Riego';
+                $item->titulo = 'Riego - ' . ($item->cosecha->terreno->nombre_terreno ?? 'N/A');
+                $item->fecha_prog = $item->fecha_programada;
+                return $item;
+            });
+
+        $insumosArr = \App\Models\InsumoCosecha::where('documento_trabajador', $documento)
+            ->with(['cosecha.terreno', 'estado'])
+            ->get()
+            ->map(function($item) {
+                $item->tipo_actividad = 'Insumo';
+                $item->titulo = 'Aplicación de Insumo';
+                $item->fecha_prog = $item->fecha_programada;
+                return $item;
+            });
+
+        // Obtener registros de asistencia/evidencia
+        $registros = \App\Models\RegistroTrabajo::where('documento_trabajador', $documento)
+            ->orderBy('fecha_trabajada', 'desc')
+            ->get();
+
+        // Unificar actividades para la vista
+        $actividades = collect()
+            ->concat($fases)
+            ->concat($riegos)
+            ->concat($insumosArr)
+            ->sortByDesc('fecha_prog');
+
+        // Asociar evidencias por fecha y determinar cumplimiento
+        foreach ($actividades as $act) {
+            $matchingReg = $registros->first(function($reg) use ($act) {
+                return $reg->fecha_trabajada == $act->fecha_prog;
+            });
+
+            if ($matchingReg) {
+                $act->evidencia = $matchingReg;
+                // Calculamos si fue a tiempo
+                // Si es Insumo, tiene fecha_realizacion propia o usamos la del registro
+                $fechaReal = $act->fecha_realizacion ?? $matchingReg->fecha_trabajada;
+                $act->a_tiempo = strtotime($fechaReal) <= strtotime($act->fecha_prog);
+            } else {
+                $act->evidencia = null;
+                $act->a_tiempo = null;
+            }
+        }
+
+        return view('admin.usuarios.asignar_trabajo', compact('usuario', 'tiposSalario', 'salarios', 'actividades', 'registros'));
     }
 
     public function storeTrabajo(Request $request, $documento)
@@ -178,24 +240,40 @@ class UsuarioEmpresaController extends Controller
             ->firstOrFail();
 
         $request->validate([
+            'id_salario' => 'nullable|exists:salario,id_salario',
             'descripcion_pago' => 'nullable|string|max:255',
             'cantidad_pago' => 'required|numeric|min:0',
             'unidad_pago' => 'nullable|string|max:50',
             'id_tipo_salario' => 'nullable|exists:tipo_salario,id_tipo_salario',
         ]);
 
-        \App\Models\Salario::create([
-            'documento_trabajador' => $usuario->documento,
-            'descripcion_pago' => $request->descripcion_pago,
-            'cantidad_pago' => $request->cantidad_pago,
-            'unidad_pago' => $request->unidad_pago,
-            'fecha_pago' => now(),
-            'estado' => 'activo',
-            'id_tipo_salario' => $request->id_tipo_salario
-        ]);
+        if ($request->id_salario) {
+            $salario = \App\Models\Salario::where('id_salario', $request->id_salario)
+                ->where('documento_trabajador', $usuario->documento)
+                ->firstOrFail();
+            
+            $salario->update([
+                'descripcion_pago' => $request->descripcion_pago,
+                'cantidad_pago' => $request->cantidad_pago,
+                'unidad_pago' => $request->unidad_pago,
+                'id_tipo_salario' => $request->id_tipo_salario
+            ]);
+            $mensaje = 'Pago actualizado exitosamente.';
+        } else {
+            \App\Models\Salario::create([
+                'documento_trabajador' => $usuario->documento,
+                'descripcion_pago' => $request->descripcion_pago,
+                'cantidad_pago' => $request->cantidad_pago,
+                'unidad_pago' => $request->unidad_pago,
+                'fecha_pago' => now(),
+                'estado' => 'activo',
+                'id_tipo_salario' => $request->id_tipo_salario
+            ]);
+            $mensaje = 'Pago asignado exitosamente al trabajador.';
+        }
 
         return redirect()->route('admin.usuarios.asignar_trabajo', $usuario->documento)
-            ->with('success', 'Pago asignado exitosamente al trabajador.');
+            ->with('success', $mensaje);
     }
 
     public function exportPagos($documento)

@@ -124,7 +124,18 @@ class AdminController extends Controller
             ->where('documento_trabajador', $usuario->documento)
             ->firstOrFail();
 
-        $tarea->update(['id_estado' => $request->id_estado]);
+        // Evitar que el trabajador vuelva a un estado anterior
+        // Orden lógico: 1 (Pendiente) < 8 (En Proceso) < 9 (Realizado)
+        $ordenEstados = [1 => 1, 8 => 2, 9 => 3];
+        $nuevoEstado = (int)$request->id_estado;
+        $estadoActual = (int)$tarea->id_estado;
+
+        if ($ordenEstados[$nuevoEstado] < $ordenEstados[$estadoActual]) {
+            return redirect()->back()->with('error', 'No puedes volver a un estado anterior de la tarea.');
+        }
+
+        $tarea->id_estado = $nuevoEstado;
+        $tarea->save();
 
         return redirect()->route('trabajador.dashboard')->with('success', 'Estado de la tarea actualizado correctamente.');
     }
@@ -384,9 +395,11 @@ class AdminController extends Controller
         $usuario = auth()->guard('usuario')->user();
 
         $request->validate([
-            'fecha_trabajada' => 'required|date',
+            'fecha_trabajada' => 'required|date|after_or_equal:today',
             'observacion' => 'nullable|string|max:500',
             'foto_evidencia' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048'
+        ], [
+            'fecha_trabajada.after_or_equal' => 'No puedes registrar trabajo para días anteriores.'
         ]);
 
         // Verificar si ya registró ese día
@@ -425,5 +438,69 @@ class AdminController extends Controller
             ->get();
 
         return view('trabajadores.mis_pagos', compact('pagos'));
+    }
+
+    // --- MÉTODOS DE SOPORTE ---
+
+    public function soporteTrabajador()
+    {
+        $usuario = auth()->guard('usuario')->user();
+        $mensajes = \App\Models\Soporte::where('documento_trabajador', $usuario->documento)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('trabajadores.soporte', compact('mensajes', 'usuario'));
+    }
+
+    public function storeSoporte(Request $request)
+    {
+        $usuario = auth()->guard('usuario')->user();
+        
+        $request->validate([
+            'asunto' => 'required|string|max:255',
+            'mensaje' => 'required|string'
+        ]);
+
+        \App\Models\Soporte::create([
+            'documento_trabajador' => $usuario->documento,
+            'id_empresa' => $usuario->id_empresa,
+            'asunto' => $request->asunto,
+            'mensaje' => $request->mensaje,
+            'estado' => 'Pendiente'
+        ]);
+
+        return redirect()->back()->with('success', 'Tu mensaje ha sido enviado al administrador.');
+    }
+
+    public function adminSoporte()
+    {
+        $admin = auth()->guard('usuario')->user();
+        
+        $mensajes = \App\Models\Soporte::with('trabajador')
+            ->where('id_empresa', $admin->id_empresa)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('admin.soporte.index', compact('mensajes'));
+    }
+
+    public function responderSoporte(Request $request, $id)
+    {
+        $admin = auth()->guard('usuario')->user();
+        
+        $mensaje = \App\Models\Soporte::where('id_soporte', $id)
+            ->where('id_empresa', $admin->id_empresa)
+            ->firstOrFail();
+
+        $request->validate([
+            'respuesta' => 'required|string'
+        ]);
+
+        $mensaje->update([
+            'respuesta' => $request->respuesta,
+            'estado' => 'Respondido'
+        ]);
+
+        return redirect()->back()->with('success', 'Respuesta enviada correctamente.');
     }
 }

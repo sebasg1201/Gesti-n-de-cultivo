@@ -77,9 +77,17 @@
         @php
             $isWorker = in_array(auth()->guard('usuario')->user()->id_tipo_usuario, [2, 3]);
             $inicioRoute = $isWorker ? 'trabajador.dashboard' : 'admin.dashboard';
+            
+            // Clases dinámicas para sincronizar colores
+            $sidebarClass = $isWorker 
+                ? 'bg-gradient-to-b from-gray-900 via-emerald-950 to-gray-900 text-emerald-100 shadow-[20px_0_50px_rgba(0,0,0,0.3)]' 
+                : 'bg-gradient-to-b from-emerald-700 via-emerald-600 to-emerald-800 text-white shadow-xl';
+                
+            $navbarClass = $isWorker
+                ? 'bg-gradient-to-r from-gray-900 via-emerald-950 to-gray-900'
+                : 'bg-gradient-to-r from-emerald-600 via-green-500 to-emerald-600 opacity-90';
         @endphp
-        <aside id="sidebar"
-            class="z-50 bg-gradient-to-b from-gray-900 via-emerald-950 to-gray-900 text-emerald-100 shadow-[20px_0_50px_rgba(0,0,0,0.3)] flex flex-col overflow-hidden shrink-0 relative">
+        <aside id="sidebar" class="z-50 {{ $sidebarClass }} flex flex-col overflow-hidden shrink-0 relative">
             
             {{-- Elementos Decorativos de Fondo --}}
             <div class="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-emerald-500/5 to-transparent pointer-events-none"></div>
@@ -242,6 +250,14 @@
                         </div>
                         <span class="font-bold whitespace-nowrap tracking-tight">Mi Plan de Licencia</span>
                     </a>
+
+                    {{-- Soporte para Admin --}}
+                    <a href="{{ route('admin.soporte.index') }}"
+                        class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 relative {{ active('admin.soporte.*') }}">
+                        <div class="w-1 h-5 bg-emerald-400 rounded-full {{ request()->routeIs('admin.soporte.*') ? 'opacity-100' : 'opacity-0' }} group-hover:opacity-100 transition-all shadow-[0_0_10px_rgba(52,211,153,0.8)]">
+                        </div>
+                        <span class="font-bold whitespace-nowrap tracking-tight">Bandeja de Soporte</span>
+                    </a>
                 @endif
 
                 @if(auth()->guard('usuario')->user()->id_tipo_usuario == 3)
@@ -257,6 +273,13 @@
                         <div class="w-1 h-5 bg-emerald-400 rounded-full {{ request()->routeIs('trabajador.pagos') ? 'opacity-100' : 'opacity-0' }} group-hover:opacity-100 transition-all shadow-[0_0_10px_rgba(52,211,153,0.8)]">
                         </div>
                         <span class="font-bold whitespace-nowrap tracking-tight">Mis Pagos</span>
+                    </a>
+
+                    <a href="{{ route('trabajador.soporte') }}"
+                        class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 relative {{ active('trabajador.soporte') }}">
+                        <div class="w-1 h-5 bg-emerald-400 rounded-full {{ request()->routeIs('trabajador.soporte') ? 'opacity-100' : 'opacity-0' }} group-hover:opacity-100 transition-all shadow-[0_0_10px_rgba(52,211,153,0.8)]">
+                        </div>
+                        <span class="font-bold whitespace-nowrap tracking-tight">Soporte y Dudas</span>
                     </a>
                 @endif
 
@@ -278,9 +301,7 @@
             <header class="relative z-50">
 
                 <!-- Fondo -->
-                <div
-                    class="absolute inset-0 bg-gradient-to-r from-emerald-600 via-green-500 to-emerald-600 opacity-90 shadow-lg">
-                </div>
+                <div class="absolute inset-0 {{ $navbarClass }} shadow-lg"></div>
                 <div
                     class="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.25),transparent_60%)]">
                 </div>

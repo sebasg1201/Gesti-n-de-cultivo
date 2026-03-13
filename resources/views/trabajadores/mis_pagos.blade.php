@@ -69,14 +69,21 @@
                     <div class="space-y-3">
                         <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Frecuencia / Tipo</p>
                         <div class="bg-gray-50 border border-gray-100 p-6 rounded-[2rem]">
-                            <p class="text-2xl font-black text-gray-900 leading-none">{{ $tipoSalario }}</p>
+                            <p id="detalle_tipo" class="text-2xl font-black text-gray-900 leading-none">{{ $tipoSalario }}</p>
                         </div>
                     </div>
 
                     <div class="space-y-3">
-                        <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Último Reporte</p>
+                        <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Fecha de Reporte</p>
                         <div class="bg-emerald-50 border border-emerald-100 p-6 rounded-[2rem]">
-                            <p class="text-2xl font-black text-emerald-900 leading-none">{{ $fechaUltimo }}</p>
+                            <p id="detalle_fecha" class="text-2xl font-black text-emerald-900 leading-none">{{ $fechaUltimo }}</p>
+                        </div>
+                    </div>
+
+                    <div id="container_monto" class="space-y-3 hidden">
+                        <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Monto Seleccionado</p>
+                        <div class="bg-blue-50 border border-blue-100 p-6 rounded-[2rem]">
+                            <p id="detalle_monto" class="text-2xl font-black text-blue-900 leading-none"></p>
                         </div>
                     </div>
 
@@ -92,16 +99,18 @@
                 </div>
             </div>
             
-            <div class="bg-emerald-600 rounded-[2.5rem] p-10 text-white shadow-2xl shadow-emerald-200 relative overflow-hidden group">
-                <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-white/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700"></div>
-                <h4 class="text-xl font-black mb-4 relative">Soporte y Dudas</h4>
-                <p class="text-emerald-50 opacity-80 text-sm leading-relaxed mb-6 relative">Si tienes alguna duda sobre tus pagos, contacta directamente con el administrador de la empresa.</p>
-                <div class="w-12 h-12 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center relative">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                    </svg>
+            <a href="{{ route('trabajador.soporte') }}" class="block group">
+                <div class="bg-emerald-600 rounded-[2.5rem] p-10 text-white shadow-2xl shadow-emerald-200 relative overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:shadow-emerald-300/50">
+                    <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-white/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700"></div>
+                    <h4 class="text-xl font-black mb-4 relative">Soporte y Dudas</h4>
+                    <p class="text-emerald-50 opacity-80 text-sm leading-relaxed mb-6 relative">Si tienes alguna duda sobre tus pagos, contacta directamente con el administrador de la empresa.</p>
+                    <div class="w-12 h-12 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center relative">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                        </svg>
+                    </div>
                 </div>
-            </div>
+            </a>
         </div>
 
         {{-- Listado Detallado --}}
@@ -123,7 +132,10 @@
 
                 <div class="space-y-6">
                     @forelse($pagos as $pago)
-                        <div class="group/item relative bg-white p-7 rounded-[2.2rem] border border-gray-100 hover:border-emerald-300 transition-all duration-300 flex flex-col sm:flex-row sm:items-center justify-between gap-6 hover:shadow-2xl hover:shadow-emerald-100/30">
+                        <div class="group/item relative bg-white p-7 rounded-[2.2rem] border border-gray-100 hover:border-emerald-300 transition-all duration-300 flex flex-col sm:flex-row sm:items-center justify-between gap-6 hover:shadow-2xl hover:shadow-emerald-100/30 cursor-pointer payment-history-card"
+                             data-tipo="{{ $pago->tipoSalario ? $pago->tipoSalario->tipo_salario : 'Standard' }}"
+                             data-fecha="{{ \Carbon\Carbon::parse($pago->fecha_pago)->translatedFormat('d \d\e F, Y') }}"
+                             data-monto="${{ number_format($pago->cantidad_pago, 0, ',', '.') }} {{ $pago->unidad_pago }}">
                             {{-- Línea Lateral Decorativa --}}
                             <div class="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-12 bg-emerald-500 rounded-r-full opacity-0 group-hover/item:opacity-100 transition-opacity"></div>
                             
@@ -195,4 +207,35 @@
         background: #cbd5e1;
     }
 </style>
+<script>
+    document.querySelectorAll('.payment-history-card').forEach(card => {
+        card.addEventListener('click', function() {
+            const tipo = this.dataset.tipo;
+            const fecha = this.dataset.fecha;
+            const monto = this.dataset.monto;
+
+            // Actualizar Sidebar
+            const elementTipo = document.getElementById('detalle_tipo');
+            const elementFecha = document.getElementById('detalle_fecha');
+            const elementMonto = document.getElementById('detalle_monto');
+            const containerMonto = document.getElementById('container_monto');
+
+            // Feedback Visual
+            [elementTipo, elementFecha, elementMonto].forEach(el => {
+                el.parentElement.classList.add('ring-4', 'ring-emerald-500/20');
+                setTimeout(() => el.parentElement.classList.remove('ring-4', 'ring-emerald-500/20'), 500);
+            });
+
+            elementTipo.innerText = tipo;
+            elementFecha.innerText = fecha;
+            elementMonto.innerText = monto;
+            containerMonto.classList.remove('hidden');
+
+            // Scroll al sidebar en movil si es necesario
+            if (window.innerWidth < 1024) {
+                document.querySelector('.lg\\:col-span-4').scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+    });
+</script>
 @endsection

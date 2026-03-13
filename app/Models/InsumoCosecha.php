@@ -38,4 +38,9 @@ class InsumoCosecha extends Model
     {
         return $this->belongsTo(Usuario::class, 'documento_trabajador', 'documento');
     }
+
+    public function estado()
+    {
+        return $this->belongsTo(Estado::class, 'id_estado', 'id_estado');
+    }
 }
