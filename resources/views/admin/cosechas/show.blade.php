@@ -152,7 +152,7 @@
                     <div>
                         <h3 class="text-xl font-black text-slate-800">Cumplimiento de Riego</h3>
                         <p class="text-sm font-bold mt-1 text-cyan-500">
-                            Estado hídrico: 
+                            Estado hídrico:
                             <span class="uppercase tracking-wide">
                                 @if($porcentajeHidratacion >= 80) Óptimo
                                 @elseif($porcentajeHidratacion >= 50) Regular
@@ -166,7 +166,7 @@
                             {{ number_format($porcentajeHidratacion, 0) }}%
                         </div>
                         <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">
-                            {{ $riegosCompletados }} de {{ $totalRiegosCiclo }} riegos programados
+                            {{ $riegosCompletados }} de {{ $totalRiegosCiclo }} riego Realizado
                         </p>
                     </div>
                 </div>
@@ -182,7 +182,8 @@
                     </div>
 
                     <!-- Indicadores (Visuales) -->
-                    <div class="relative top-4 flex justify-between text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-widest px-2">
+                    <div
+                        class="relative top-4 flex justify-between text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-widest px-2">
                         <div class="text-left text-cyan-600 font-black">0%</div>
                         <div class="text-center">Progreso Total de Hidratación (Ciclo Completo)</div>
                         <div class="text-right text-cyan-600 font-black">100%</div>
