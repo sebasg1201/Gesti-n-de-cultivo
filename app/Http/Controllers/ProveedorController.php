@@ -81,7 +81,7 @@ class ProveedorController extends Controller
             if ($request->tipo_item === 'insumo') {
                 $id_insumo = $request->id_item;
                 $item = Insumo::where('ID_insumo', $id_insumo)->where('id_empresa', $id_empresa)->firstOrFail();
-                $item->stock_actual += $request->cantidad_recibida;
+                // El stock_actual se actualiza ahora mediante el trigger trg_entrada_insumo de la BD
                 if ($request->filled('fecha_vencimiento')) {
                     $item->Fecha_vencimiento = $request->fecha_vencimiento;
                 }
@@ -89,7 +89,7 @@ class ProveedorController extends Controller
             } else {
                 $id_semilla = $request->id_item;
                 $item = TipoSemilla::where('id_semilla', $id_semilla)->where('id_empresa', $id_empresa)->firstOrFail();
-                $item->stock_actual += $request->cantidad_recibida;
+                // El stock_actual se actualiza ahora mediante el trigger trg_entrada_insumo de la BD
                 $item->save();
             }
 

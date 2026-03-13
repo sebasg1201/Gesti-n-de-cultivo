@@ -317,7 +317,7 @@
                     <div>
                         <label class="block text-xs font-bold text-emerald-700 uppercase tracking-wider mb-2">Producto de
                             Inventario</label>
-                        <div id="containerInsumo">
+                        <div id="containerInsumo" class="flex gap-2">
                             <select name="id_item_insumo" id="selectInsumo"
                                 class="w-full px-4 py-3 rounded-2xl border-emerald-100 focus:border-emerald-500 focus:ring-emerald-500 bg-emerald-50/30 text-sm">
                                 <option value="">-- Seleccionar --</option>
@@ -325,8 +325,13 @@
                                     <option value="{{ $ins->ID_insumo }}">{{ $ins->Nombre }}</option>
                                 @endforeach
                             </select>
+                            <a href="{{ route('insumos.index') }}" title="Ir a crear nuevo Insumo" class="bg-emerald-100 hover:bg-emerald-200 text-emerald-700 flex items-center justify-center p-3 rounded-2xl transition-colors shrink-0">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                                </svg>
+                            </a>
                         </div>
-                        <div id="containerSemilla" class="hidden">
+                        <div id="containerSemilla" class="hidden flex gap-2">
                             <select name="id_item_semilla" id="selectSemilla"
                                 class="w-full px-4 py-3 rounded-2xl border-emerald-100 focus:border-emerald-500 focus:ring-emerald-500 bg-emerald-50/30 text-sm">
                                 <option value="">-- Seleccionar --</option>
@@ -334,6 +339,11 @@
                                     <option value="{{ $sem->id_semilla }}">{{ $sem->nombre_semilla }}</option>
                                 @endforeach
                             </select>
+                            <a href="{{ route('tipo_semillas.index') }}" title="Ir a crear nueva Semilla" class="bg-emerald-100 hover:bg-emerald-200 text-emerald-700 flex items-center justify-center p-3 rounded-2xl transition-colors shrink-0">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                                </svg>
+                            </a>
                         </div>
                         <!-- Hidden input to unify both selects in controller -->
                         <input type="hidden" name="id_item" id="hiddenIdItem">

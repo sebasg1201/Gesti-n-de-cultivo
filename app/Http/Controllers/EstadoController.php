@@ -9,7 +9,8 @@ class EstadoController extends Controller
 {
     public function index()
     {
-        $estados = Estado::paginate(10);
+        // Ocultar los estados 1, 2, 3 y 4 (licenciamiento)
+        $estados = Estado::whereNotIn('id_estado', [1, 2, 3, 4, 5])->paginate(10);
         return view('admin.estados.index', compact('estados'));
     }
 
@@ -71,7 +72,7 @@ class EstadoController extends Controller
     public function destroy($id)
     {
         $estado = Estado::findOrFail($id);
-        
+
         // Optional: Check if the estado is being used by any company before deleting
         if ($estado->empresas()->count() > 0) {
             return redirect()->route('estados.index')
