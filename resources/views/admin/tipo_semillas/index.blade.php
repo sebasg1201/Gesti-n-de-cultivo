@@ -85,7 +85,7 @@
                                     placeholder="Detalles adicionales..."></textarea>
                             </div>
                         </div>
-                        <div class="grid grid-cols-2 gap-4">
+                        <div class="grid grid-cols-3 gap-4">
                             <!-- Rendimiento -->
                             <div class="bg-emerald-50 p-4 rounded-xl border border-emerald-100/50">
                                 <label class="block text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-1">Rendimiento Estimado</label>
@@ -101,6 +101,15 @@
                                 <div class="flex items-end gap-2">
                                     <input type="number" name="tiempo_base_dias" id="sw_tiempo_base" class="text-2xl font-black text-amber-950 bg-transparent border-0 p-0 w-20 focus:ring-0" value="0">
                                     <span class="text-xs font-bold text-amber-700 mb-1">días</span>
+                                </div>
+                            </div>
+
+                            <!-- Espacio por planta -->
+                            <div class="bg-blue-50 p-4 rounded-xl border border-blue-100/50">
+                                <label class="block text-[10px] font-black text-blue-600 uppercase tracking-widest mb-1">Densidad Plantación</label>
+                                <div class="flex items-end gap-2">
+                                    <input type="number" step="0.0001" name="espacio_por_planta_m2" id="sw_espacio" class="text-2xl font-black text-blue-950 bg-transparent border-0 p-0 w-24 focus:ring-0" value="0.2500">
+                                    <span class="text-xs font-bold text-blue-700 mb-1">m²/planta</span>
                                 </div>
                             </div>
                         </div>
@@ -191,6 +200,7 @@
                                                 </div>
                                                 <p class="text-xs text-emerald-400 italic max-w-[180px] truncate">
                                                     {{ $semilla->descripcion }}</p>
+                                                <p class="text-[10px] font-bold text-blue-500 mt-1">Densidad: {{ number_format($semilla->espacio_por_planta_m2, 4) }} m²</p>
                                             </div>
                                         </td>
 
@@ -281,7 +291,7 @@
                                         <div class="flex justify-between items-center">
                                             <div>
                                                 <p class="font-black text-emerald-950 text-sm">${item.nombre}</p>
-                                                <p class="text-[10px] text-emerald-500 font-bold uppercase tracking-widest">${item.tiempo_base_dias} días base</p>
+                                                <p class="text-[10px] text-emerald-500 font-bold uppercase tracking-widest">${item.tiempo_base_dias} días base - ${parseFloat(item.espacio_por_planta_m2 || 0.25).toFixed(4)} m²</p>
                                             </div>
                                             <svg class="w-4 h-4 text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
                                         </div>
@@ -331,6 +341,7 @@
                 document.getElementById('sw_nombre').value = nombre;
                 document.getElementById('sw_tiempo_base').value = '0';
                 document.getElementById('sw_rendimiento').value = '0.00';
+                document.getElementById('sw_espacio').value = '0.2500';
                 document.getElementById('sw_descripcion').value = '';
                 
                 formPlaceholder.classList.add('hidden');
@@ -346,6 +357,7 @@
                 document.getElementById('sw_nombre').value = item.nombre;
                 document.getElementById('sw_tiempo_base').value = item.tiempo_base_dias;
                 document.getElementById('sw_rendimiento').value = item.rendimiento_promedio || '0.00';
+                document.getElementById('sw_espacio').value = parseFloat(item.espacio_por_planta_m2 || 0.2500).toFixed(4);
                 document.getElementById('sw_descripcion').value = item.descripcion || '';
 
                 // Toggle visibility
@@ -362,6 +374,7 @@
                 document.getElementById('sw_nombre').value = '';
                 document.getElementById('sw_descripcion').value = '';
                 document.getElementById('sw_tiempo_base').value = '0';
+                document.getElementById('sw_espacio').value = '0.2500';
                 document.getElementById('sw_rendimiento').value = '0.00';
 
 
@@ -384,6 +397,7 @@
                 document.getElementById('sw_nombre').value = semilla.nombre_semilla;
                 document.getElementById('sw_tiempo_base').value = semilla.tiempo_base_dias;
                 document.getElementById('sw_rendimiento').value = parseFloat(semilla.rendimiento_promedio || 0).toFixed(2);
+                document.getElementById('sw_espacio').value = parseFloat(semilla.espacio_por_planta_m2 || 0.2500).toFixed(4);
                 document.getElementById('sw_descripcion').value = semilla.descripcion || '';
 
                 searchInput.value = semilla.nombre_semilla;

@@ -23,6 +23,7 @@ class Cosecha extends Model
         'frecuencia_riego_dias',
         'fecha_estimada',
         'produccion_estimada',
+        'litros_por_riego',
         'imagenes'
     ];
 
@@ -39,5 +40,41 @@ class Cosecha extends Model
     public function semilla()
     {
         return $this->belongsTo(TipoSemilla::class, 'id_semilla', 'id_semilla');
+    }
+
+    public function getPorcentajeCrecimientoAttribute() {
+        if (!$this->fecha_estimada) return 0;
+        
+        $inicio = \Carbon\Carbon::parse($this->fecha_siembra);
+        $fin = \Carbon\Carbon::parse($this->fecha_estimada);
+        $hoy = \Carbon\Carbon::now();
+        
+        if($fin->lessThanOrEqualTo($inicio)) return 100;
+        
+        $totalDias = $inicio->diffInDays($fin);
+        $diasTranscurridos = $inicio->diffInDays($hoy, false);
+        
+        if($diasTranscurridos <= 0) return 0;
+        if($diasTranscurridos >= $totalDias) return 100;
+        
+        return ($diasTranscurridos / $totalDias) * 100;
+    }
+    
+    public function getProgresoHidratacionAttribute() {
+        $hoy = \Carbon\Carbon::now()->format('Y-m-d');
+        
+        $ultimoRiego = \App\Models\Riego::where('id_cosecha', $this->id_cosecha)
+            ->whereDate('fecha_programada', '<=', $hoy)
+            ->orderBy('fecha_programada', 'desc')
+            ->first();
+            
+        if(!$ultimoRiego) return 100; 
+        
+        // Si el estado es distinto de "Pendiente" (1), significa que ya se completó.
+        if($ultimoRiego->id_estado != 1) {
+            return 100;
+        }
+        
+        return 0; // Si está pendiente, la barra está vacía esperando al trabajador
     }
 }

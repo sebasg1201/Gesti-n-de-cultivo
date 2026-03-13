@@ -27,7 +27,8 @@ class Usuario extends Authenticatable implements CanResetPasswordContract
         'contrasena',
         'id_tipo_usuario',
         'id_estado',
-        'id_empresa'
+        'id_empresa',
+        'id_estado_trabajador'
     ];
 
     public function getAuthPassword()
@@ -48,5 +49,10 @@ class Usuario extends Authenticatable implements CanResetPasswordContract
     public function tipoUsuario()
     {
         return $this->belongsTo(TipoUsuario::class, 'id_tipo_usuario', 'id_tipo_usuario');
+    }
+
+    public function estadoTrabajador()
+    {
+        return $this->belongsTo(EstadoTrabajador::class, 'id_estado_trabajador', 'id_estado_trabajador');
     }
 }
