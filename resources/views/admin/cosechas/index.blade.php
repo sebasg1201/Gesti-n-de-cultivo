@@ -172,6 +172,37 @@
                                     </div>
                                 </div>
 
+                                <!-- Progress Bars -->
+                                <div class="space-y-3 mt-4 border-t border-emerald-50 pt-4">
+                                    <!-- Growth Bar -->
+                                    <div>
+                                        <div class="flex justify-between items-center mb-1">
+                                            <span class="text-[9px] font-bold text-emerald-600 uppercase tracking-widest">Crecimiento (Tiempo)</span>
+                                            <span class="text-[9px] font-black text-emerald-900">{{ number_format($cosecha->porcentaje_crecimiento, 0) }}%</span>
+                                        </div>
+                                        <div class="w-full bg-emerald-50 rounded-full h-1.5 border border-emerald-100/50 overflow-hidden">
+                                            <div class="bg-gradient-to-r from-emerald-400 to-emerald-600 h-1.5 rounded-full transition-all duration-1000" style="width: {{ $cosecha->porcentaje_crecimiento }}%"></div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Hydration Bar -->
+                                    <div>
+                                        <div class="flex justify-between items-center mb-1">
+                                            <span class="text-[9px] font-bold text-blue-600 uppercase tracking-widest flex items-center gap-1">
+                                                Hidratación 
+                                                @if($cosecha->progreso_hidratacion < $cosecha->porcentaje_crecimiento - 10)
+                                                    <svg class="w-3 h-3 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                                                @endif
+                                            </span>
+                                            <span class="text-[9px] font-black text-blue-900">{{ number_format($cosecha->progreso_hidratacion, 0) }}%</span>
+                                        </div>
+                                        <div class="w-full bg-blue-50 rounded-full h-1.5 border border-blue-100/50 overflow-hidden relative">
+                                            <!-- The blue bar -->
+                                            <div class="bg-gradient-to-r from-blue-400 to-blue-600 h-1.5 rounded-full transition-all duration-1000" style="width: {{ $cosecha->progreso_hidratacion }}%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <a href="{{ route('admin.cosechas.show', $cosecha->id_cosecha) }}"
                                     class="w-full mt-4 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-sm py-2.5 rounded-xl transition-colors flex items-center justify-center gap-2">
                                     Ver Detalles
@@ -288,6 +319,14 @@
                         <label class="block text-xs font-black text-emerald-950 uppercase tracking-widest ml-4">Frecuencia de Riego (Días)</label>
                         <input type="number" name="frecuencia_riego_dias" id="input-frecuencia" required min="1" max="30"
                             placeholder="Ej: 3" value="3"
+                            class="w-full bg-emerald-50 border-2 border-emerald-50 rounded-2xl p-4 text-emerald-900 font-bold placeholder:text-emerald-200 focus:border-emerald-500 transition-all">
+                    </div>
+
+                    <!-- Litros por Riego -->
+                    <div class="space-y-3">
+                        <label class="block text-xs font-black text-emerald-950 uppercase tracking-widest ml-4">Litros por Riego</label>
+                        <input type="number" step="0.5" name="litros_por_riego" id="input-litros" required min="1"
+                            placeholder="Ej: 500" value="500"
                             class="w-full bg-emerald-50 border-2 border-emerald-50 rounded-2xl p-4 text-emerald-900 font-bold placeholder:text-emerald-200 focus:border-emerald-500 transition-all">
                     </div>
                 </div>

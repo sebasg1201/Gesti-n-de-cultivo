@@ -77,7 +77,7 @@
                                 class="w-full px-4 py-3 rounded-2xl border-emerald-100 focus:border-emerald-500 focus:ring-emerald-500 bg-white text-sm">
                         </div>
 
-                        <div class="grid grid-cols-2 gap-4">
+                        <div class="grid grid-cols-3 gap-4">
                             <div class="bg-gray-50 p-4 rounded-2xl border border-gray-100 relative overflow-hidden group">
                                 <div
                                     class="absolute -right-2 -bottom-2 text-gray-100 group-hover:text-emerald-50 transition-colors duration-500 pointer-events-none">
@@ -92,6 +92,19 @@
                                         <option value="{{ $tipo->id_tipo_insumo }}">{{ $tipo->nombre }}</option>
                                     @endforeach
                                 </select>
+                            </div>
+
+                            <div class="bg-blue-50/50 p-4 rounded-2xl border border-blue-100 relative overflow-hidden group">
+                                <div class="absolute -right-2 -bottom-2 text-blue-100 group-hover:text-blue-200 transition-colors duration-500 pointer-events-none">
+                                    <svg class="w-16 h-16" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/><path d="M12.5 7H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
+                                    </svg>
+                                </div>
+                                <label class="block text-[10px] font-bold text-blue-400 uppercase mb-1">Impacto (Días)</label>
+                                <div class="flex items-center justify-center gap-1 relative z-10 mt-2 bg-white/50 px-2 py-1 rounded-xl transition-colors">
+                                    <input type="number" name="impacto_dias" id="impacto_dias" value="0"
+                                        class="w-full text-xl font-black text-blue-700 tracking-tight bg-transparent border-0 focus:ring-0 px-0 py-0 transition-colors outline-none selection:bg-blue-200 text-center">
+                                </div>
                             </div>
 
                             <div
@@ -204,7 +217,7 @@
                                         <td class="px-8 py-6 text-right">
                                             <div
                                                 class="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
-                                                <button data-insumo="{{ htmlspecialchars(json_encode($insumo), ENT_QUOTES, 'UTF-8') }}" onclick="editInsumo(JSON.parse(this.dataset.insumo))"
+                                                <button data-insumo="{{ json_encode($insumo) }}" onclick="editInsumo(JSON.parse(this.dataset.insumo))"
                                                     class="p-3 bg-amber-50 text-amber-600 rounded-2xl hover:bg-amber-100 transition-colors shadow-sm">
                                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -329,6 +342,7 @@
                 document.getElementById('nombre').value = nombre;
                 document.getElementById('categoria_manual').value = '';
                 document.getElementById('descripcion').value = '';
+                document.getElementById('impacto_dias').value = 0;
                 document.getElementById('stock_manual').value = 0;
 
                 formPlaceholder.classList.add('hidden');
@@ -343,6 +357,7 @@
                 document.getElementById('nombre').value = item.nombre_comercial;
                 document.getElementById('categoria_manual').value = item.id_tipo_insumo || '';
                 document.getElementById('descripcion').value = item.descripcion || '';
+                document.getElementById('impacto_dias').value = item.impacto_dias || 0;
                 document.getElementById('stock_manual').value = 0;
 
                 // Toggle visibility
@@ -381,6 +396,7 @@
                 // Override custom edits
                 document.getElementById('nombre').value = insumo.Nombre;
                 document.getElementById('descripcion').value = insumo.descripcion || '';
+                document.getElementById('impacto_dias').value = insumo.impacto_dias || 0;
                 document.getElementById('stock_manual').value = 0; // Se reinicia para agregar o quitar en edición
 
                 // Adjust form for update mode

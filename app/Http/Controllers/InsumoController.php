@@ -49,6 +49,7 @@ class InsumoController extends Controller
             'nombre' => 'required|string|max:100',
             'descripcion' => 'nullable|string|max:250',
             'categoria_manual' => 'nullable|exists:tipo_insumo,id_tipo_insumo',
+            'impacto_dias' => 'nullable|integer',
         ]);
 
         if ($request->filled('id_catalogo_insumo')) {
@@ -66,6 +67,7 @@ class InsumoController extends Controller
             'id_catalogo_insumo' => $request->id_catalogo_insumo ?: null,
             'Nombre' => $request->nombre,
             'descripcion' => $request->descripcion,
+            'impacto_dias' => $request->impacto_dias ?? 0,
             'stock_actual' => 0,
             'cantidad_stock' => 0,
         ]);
@@ -79,6 +81,7 @@ class InsumoController extends Controller
         $request->validate([
             'nombre' => 'required|string|max:100',
             'descripcion' => 'nullable|string|max:250',
+            'impacto_dias' => 'nullable|integer',
         ]);
 
         $insumo = Insumo::where('ID_insumo', $id)
@@ -88,6 +91,7 @@ class InsumoController extends Controller
         $insumo->update([
             'Nombre' => $request->nombre,
             'descripcion' => $request->descripcion,
+            'impacto_dias' => $request->impacto_dias ?? 0,
         ]);
 
         return redirect()->route('insumos.index')

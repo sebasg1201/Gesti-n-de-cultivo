@@ -45,6 +45,7 @@ class CosechaController extends Controller
             'cantidad_sembrada' => 'required|numeric|min:1',
             'fecha_siembra' => 'required|date',
             'frecuencia_riego_dias' => 'required|integer|min:1',
+            'litros_por_riego' => 'required|numeric|min:1',
             'imagen' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
@@ -61,15 +62,29 @@ class CosechaController extends Controller
         $soilImpact = $terreno->tipoSuelo ? $terreno->tipoSuelo->impacto_dias : 0;
         $irrigationImpact = $riego->impacto_dias ?? 0;
 
-        $totalDays = $baseDays + $soilImpact + $irrigationImpact;
+        $totalDays = (int) ($baseDays + $soilImpact + $irrigationImpact);
 
         $fechaEstimada = \Carbon\Carbon::parse($request->fecha_siembra)->addDays($totalDays);
 
-        // Calculate Ideal Water amount per cycle
-        // formula: area_m2 * consumo_agua_ideal
-        $area = $terreno->area_m2 ?? 0; // if area is not configured, water amount defaults to 0
-        $consumoIdeal = $terreno->tipoSuelo ? ($terreno->tipoSuelo->consumo_agua_ideal ?? 0) : 0;
-        $aguaPorRiego = $area * $consumoIdeal;
+        // 1. Validation: Terrain Capacity Density
+        $area = $terreno->area_m2 ?? ($terreno->Ancho * $terreno->Alto);
+        $espacio = $semilla->espacio_por_planta_m2 > 0 ? $semilla->espacio_por_planta_m2 : 0.25;
+        $capacidadMaxima = $area / $espacio;
+
+        if ($request->cantidad_sembrada > $capacidadMaxima) {
+            return redirect()->back()->with('error', 'El lote no tiene espacio suficiente para esta densidad de siembra (Máx: ' . floor($capacidadMaxima) . ' plantas).')->withInput();
+        }
+
+        // 2. Validation: Inventory Stock
+        if ($request->cantidad_sembrada > $semilla->stock_actual) {
+            return redirect()->back()->with('error', 'Stock insuficiente en almacén (Disponible: ' . $semilla->stock_actual . ').')->withInput();
+        }
+
+        // Deduct inventory
+        $semilla->stock_actual -= $request->cantidad_sembrada;
+        $semilla->save();
+
+        $aguaPorRiego = $request->litros_por_riego;
 
         $cosecha = Cosecha::create([
             'id_empresa' => $id_empresa,
@@ -81,23 +96,57 @@ class CosechaController extends Controller
             'frecuencia_riego_dias' => $request->frecuencia_riego_dias,
             'fecha_estimada' => $fechaEstimada->format('Y-m-d'),
             'produccion_estimada' => $request->cantidad_sembrada * $semilla->rendimiento_promedio,
+            'litros_por_riego' => $request->litros_por_riego,
             'imagenes' => $imagePath,
         ]);
 
         // Automated Task Generation logic
         if ($totalDays > 0) {
-            $frecuencia = $request->frecuencia_riego_dias;
+            $frecuencia = (int) $request->frecuencia_riego_dias;
             $fecha_actual_bucle = \Carbon\Carbon::parse($request->fecha_siembra);
+            
+            // 2. Selección del "Pool" de Trabajadores (La Consulta)
+            $trabajadores = \App\Models\Usuario::where('id_empresa', $id_empresa)
+                ->where('id_tipo_usuario', 3) // 3 = trabajador
+                ->where('id_estado', 1)       // Activo
+                ->where('id_estado_trabajador', 1)  // Disponible
+                ->get();
+                
+            $trabajadoresCount = $trabajadores->count();
+            $cargasTrabajo = [];
+            
+            if ($trabajadoresCount > 0) {
+                foreach ($trabajadores as $t) {
+                    // Contamos las tareas de riego pendientes de este trabajador
+                    $cargasTrabajo[$t->documento] = \App\Models\Riego::where('documento_trabajador', $t->documento)
+                        ->where('id_estado', 1) // 1 = Pendiente
+                        ->count();
+                }
+            } else {
+                session()->flash('warning', 'Aviso: No hay trabajadores disponibles, las tareas se han asignado a su perfil provisionalmente.');
+            }
             
             // Loop until we reach fechaEstimada
             while ($fecha_actual_bucle->lessThanOrEqualTo($fechaEstimada)) {
-                // Determine appropriate state (e.g. 1 = Pending)
-                // Need to use default state for Riego. According to schema, if state table handles it, typically '1' represents pending.
-                // Looking at standard system logic, typically pending jobs are id_estado = 1
+                
+                $id_asignado = Auth::guard('usuario')->user()->documento; // Fallback al admin actual
+                
+                if ($trabajadoresCount > 0) {
+                    // Ordenamos de menor a mayor cantidad de tareas
+                    asort($cargasTrabajo);
+                    // Seleccionar el primero (menor carga)
+                    reset($cargasTrabajo);
+                    $id_asignado = key($cargasTrabajo);
+                    
+                    // Incrementamos la carga para el siguiente ciclo
+                    $cargasTrabajo[$id_asignado]++;
+                }
+
                 \App\Models\Riego::create([
                     'cant_agua_apl' => $aguaPorRiego,
                     'id_tipo_riego' => $request->id_tipo_riego,
                     'id_cosecha' => $cosecha->id_cosecha,
+                    'documento_trabajador' => $id_asignado,
                     'id_estado' => 1, // 1 = Pendiente
                     'fecha_programada' => $fecha_actual_bucle->format('Y-m-d')
                 ]);

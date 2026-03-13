@@ -23,7 +23,8 @@ class Insumo extends Model
         'Fecha_ingreso',
         'Fecha_vencimiento',
         'descripcion',
-        'id_proveedor'
+        'id_proveedor',
+        'impacto_dias'
     ];
 
     public function catalogo()
