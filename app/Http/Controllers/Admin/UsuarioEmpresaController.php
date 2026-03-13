@@ -129,8 +129,12 @@ class UsuarioEmpresaController extends Controller
             ->firstOrFail();
 
         \Illuminate\Support\Facades\DB::transaction(function () use ($usuario) {
-            // Eliminar tareas asignadas primero para evitar error de clave foránea
-            FaseProgramada::where('documento', $usuario->documento)->delete();
+            // Eliminar registros relacionados para evitar errores de clave foránea
+            \App\Models\FaseProgramada::where('documento_trabajador', $usuario->documento)->delete();
+            \App\Models\Salario::where('documento_trabajador', $usuario->documento)->delete();
+            \App\Models\Riego::where('documento_trabajador', $usuario->documento)->delete();
+            \App\Models\InsumoCosecha::where('documento_trabajador', $usuario->documento)->delete();
+            \App\Models\RegistroTrabajo::where('documento_trabajador', $usuario->documento)->delete();
 
             // Eliminar imagen si existe
             if ($usuario->imagen) {
@@ -153,15 +157,77 @@ class UsuarioEmpresaController extends Controller
             ->whereIn('id_tipo_usuario', [2, 3])
             ->firstOrFail();
 
-        // Obtener solo las cosechas de la empresa del admin
-        $cosechas = \App\Models\Cosecha::with(['tipoCosecha.semilla', 'tipoCosecha.riego'])
-            ->where('id_empresa', $admin->id_empresa)
+        // Tipos de salario disponibles
+        $tiposSalario = \App\Models\TipoSalario::all();
+
+        // Pagos/Salarios registrados para este usuario
+        $salarios = \App\Models\Salario::where('documento_trabajador', $documento)
+            ->with('tipoSalario')
+            ->orderBy('fecha_pago', 'desc')
             ->get();
 
-        // Fases actualmente asignadas al usuario
-        $fases = FaseProgramada::where('documento_trabajador', $documento)->with('cosecha')->get();
+        // Obtener tareas asignadas (Fases, Riegos, Insumos)
+        $fases = \App\Models\FaseProgramada::where('documento_trabajador', $documento)
+            ->with(['cosecha.terreno', 'estado'])
+            ->get()
+            ->map(function($item) {
+                $item->tipo_actividad = 'Fase';
+                $item->titulo = $item->descripcion;
+                $item->fecha_prog = $item->fecha_programada;
+                return $item;
+            });
 
-        return view('admin.usuarios.asignar_trabajo', compact('usuario', 'cosechas', 'fases'));
+        $riegos = \App\Models\Riego::where('documento_trabajador', $documento)
+            ->with(['cosecha.terreno', 'estado'])
+            ->get()
+            ->map(function($item) {
+                $item->tipo_actividad = 'Riego';
+                $item->titulo = 'Riego - ' . ($item->cosecha->terreno->nombre_terreno ?? 'N/A');
+                $item->fecha_prog = $item->fecha_programada;
+                return $item;
+            });
+
+        $insumosArr = \App\Models\InsumoCosecha::where('documento_trabajador', $documento)
+            ->with(['cosecha.terreno', 'estado'])
+            ->get()
+            ->map(function($item) {
+                $item->tipo_actividad = 'Insumo';
+                $item->titulo = 'Aplicación de Insumo';
+                $item->fecha_prog = $item->fecha_programada;
+                return $item;
+            });
+
+        // Obtener registros de asistencia/evidencia
+        $registros = \App\Models\RegistroTrabajo::where('documento_trabajador', $documento)
+            ->orderBy('fecha_trabajada', 'desc')
+            ->get();
+
+        // Unificar actividades para la vista
+        $actividades = collect()
+            ->concat($fases)
+            ->concat($riegos)
+            ->concat($insumosArr)
+            ->sortByDesc('fecha_prog');
+
+        // Asociar evidencias por fecha y determinar cumplimiento
+        foreach ($actividades as $act) {
+            $matchingReg = $registros->first(function($reg) use ($act) {
+                return $reg->fecha_trabajada == $act->fecha_prog;
+            });
+
+            if ($matchingReg) {
+                $act->evidencia = $matchingReg;
+                // Calculamos si fue a tiempo
+                // Si es Insumo, tiene fecha_realizacion propia o usamos la del registro
+                $fechaReal = $act->fecha_realizacion ?? $matchingReg->fecha_trabajada;
+                $act->a_tiempo = strtotime($fechaReal) <= strtotime($act->fecha_prog);
+            } else {
+                $act->evidencia = null;
+                $act->a_tiempo = null;
+            }
+        }
+
+        return view('admin.usuarios.asignar_trabajo', compact('usuario', 'tiposSalario', 'salarios', 'actividades', 'registros'));
     }
 
     public function storeTrabajo(Request $request, $documento)
@@ -174,20 +240,88 @@ class UsuarioEmpresaController extends Controller
             ->firstOrFail();
 
         $request->validate([
-            'id_cosecha' => 'required|exists:cosecha,id_cosecha',
-            'descripcion' => 'required|string',
-            'fecha_programada' => 'required|date'
+            'id_salario' => 'nullable|exists:salario,id_salario',
+            'descripcion_pago' => 'nullable|string|max:255',
+            'cantidad_pago' => 'required|numeric|min:0',
+            'unidad_pago' => 'nullable|string|max:50',
+            'id_tipo_salario' => 'nullable|exists:tipo_salario,id_tipo_salario',
         ]);
 
-        FaseProgramada::create([
-            'id_cosecha' => $request->id_cosecha,
-            'descripcion' => $request->descripcion,
-            'id_estado' => 1, // 1 = Pendiente
-            'fecha_programada' => $request->fecha_programada,
-            'documento_trabajador' => $usuario->documento
-        ]);
+        if ($request->id_salario) {
+            $salario = \App\Models\Salario::where('id_salario', $request->id_salario)
+                ->where('documento_trabajador', $usuario->documento)
+                ->firstOrFail();
+            
+            $salario->update([
+                'descripcion_pago' => $request->descripcion_pago,
+                'cantidad_pago' => $request->cantidad_pago,
+                'unidad_pago' => $request->unidad_pago,
+                'id_tipo_salario' => $request->id_tipo_salario
+            ]);
+            $mensaje = 'Pago actualizado exitosamente.';
+        } else {
+            \App\Models\Salario::create([
+                'documento_trabajador' => $usuario->documento,
+                'descripcion_pago' => $request->descripcion_pago,
+                'cantidad_pago' => $request->cantidad_pago,
+                'unidad_pago' => $request->unidad_pago,
+                'fecha_pago' => now(),
+                'estado' => 'activo',
+                'id_tipo_salario' => $request->id_tipo_salario
+            ]);
+            $mensaje = 'Pago asignado exitosamente al trabajador.';
+        }
 
         return redirect()->route('admin.usuarios.asignar_trabajo', $usuario->documento)
-            ->with('success', 'Trabajo asignado exitosamente al usuario.');
+            ->with('success', $mensaje);
+    }
+
+    public function exportPagos($documento)
+    {
+        $admin = Auth::guard('usuario')->user();
+        $usuario = Usuario::where('documento', $documento)
+            ->where('id_empresa', $admin->id_empresa)
+            ->firstOrFail();
+
+        $salarios = \App\Models\Salario::where('documento_trabajador', $documento)
+            ->with('tipoSalario')
+            ->orderBy('fecha_pago', 'desc')
+            ->get();
+
+        $fileName = 'Reporte_Pagos_' . str_replace(' ', '_', $usuario->nombre) . '_' . date('Y-m-d') . '.csv';
+
+        $headers = [
+            "Content-type"        => "text/csv; charset=UTF-8",
+            "Content-Disposition" => "attachment; filename=$fileName",
+            "Pragma"              => "no-cache",
+            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"             => "0"
+        ];
+
+        $columns = ['ID Pago', 'Descripcion', 'Monto', 'Unidad', 'Tipo/Frecuencia', 'Estado', 'Fecha de Pago'];
+
+        $callback = function() use($salarios, $columns) {
+            $file = fopen('php://output', 'w');
+            // Añadir BOM para que Excel detecte UTF-8
+            fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
+            
+            fputcsv($file, $columns, ';');
+
+            foreach ($salarios as $salario) {
+                fputcsv($file, [
+                    $salario->id_salario,
+                    $salario->descripcion_pago,
+                    $salario->cantidad_pago,
+                    $salario->unidad_pago,
+                    $salario->tipoSalario ? $salario->tipoSalario->tipo_salario : 'General',
+                    $salario->estado,
+                    $salario->fecha_pago
+                ], ';');
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 }

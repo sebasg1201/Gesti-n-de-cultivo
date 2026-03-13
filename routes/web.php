@@ -103,8 +103,19 @@ Route::middleware(['auth:usuario', 'check.license'])->group(function () {
     Route::get('/trabajador/calendario/eventos', [AdminController::class, 'getEventosCalendario'])->name('trabajador.calendario.eventos');
     Route::post('/trabajador/calendario/registro', [AdminController::class, 'storeRegistroTrabajo'])->name('trabajador.calendario.store');
 
+    // Nueva ruta para Mis Pagos (Trabajador)
+    Route::get('/trabajador/mis-pagos', [AdminController::class, 'trabajadorPagos'])->name('trabajador.pagos');
+
+    // Rutas de Soporte (Trabajador)
+    Route::get('/trabajador/soporte', [AdminController::class, 'soporteTrabajador'])->name('trabajador.soporte');
+    Route::post('/trabajador/soporte', [AdminController::class, 'storeSoporte'])->name('trabajador.soporte.store');
+
     // Nueva ruta para tareas categorizadas de administrador
     Route::get('/admin/tareas', [AdminController::class, 'tareasCategorizadas'])->name('admin.tareas.index');
+    
+    // Rutas de Soporte (Admin)
+    Route::get('/admin/soporte', [AdminController::class, 'adminSoporte'])->name('admin.soporte.index');
+    Route::post('/admin/soporte/{id}/responder', [AdminController::class, 'responderSoporte'])->name('admin.soporte.responder');
     Route::post('/admin/tareas/store-riego', [AdminController::class, 'storeRiego'])->name('admin.tareas.store.riego');
     Route::post('/admin/tareas/store-insumo', [AdminController::class, 'storeInsumo'])->name('admin.tareas.store.insumo');
     Route::post('/admin/tareas/store-general', [AdminController::class, 'storeGeneral'])->name('admin.tareas.store.general');
@@ -119,6 +130,7 @@ Route::middleware(['auth:usuario', 'check.license'])->group(function () {
     // Ruta para asignar trabajo (Fases Programadas)
     Route::get('/admin/usuarios/{usuario}/asignar-trabajo', [\App\Http\Controllers\Admin\UsuarioEmpresaController::class, 'asignarTrabajo'])->name('admin.usuarios.asignar_trabajo');
     Route::post('/admin/usuarios/{usuario}/asignar-trabajo', [\App\Http\Controllers\Admin\UsuarioEmpresaController::class, 'storeTrabajo'])->name('admin.usuarios.store_trabajo');
+    Route::get('/admin/usuarios/{usuario}/exportar-pagos', [\App\Http\Controllers\Admin\UsuarioEmpresaController::class, 'exportPagos'])->name('admin.usuarios.exportar_pagos');
 
     // Gestión de Cosechas
     Route::resource('/admin/cosechas', \App\Http\Controllers\Admin\CosechaController::class, ['as' => 'admin']);

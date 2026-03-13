@@ -35,4 +35,9 @@ class Terreno extends Model
     {
         return $this->belongsTo(Estado::class, 'id_estado', 'id_estado');
     }
+
+    public function cosechas()
+    {
+        return $this->hasMany(Cosecha::class, 'id_terreno', 'id_terreno');
+    }
 }

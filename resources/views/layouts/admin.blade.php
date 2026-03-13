@@ -58,6 +58,14 @@
             background: rgba(255, 255, 255, 0.2);
             border-radius: 10px;
         }
+        /* Animación para desaparecer alertas */
+        @keyframes fadeOut {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(-10px); }
+        }
+        .animate-fadeOut {
+            animation: fadeOut 0.5s ease-out forwards;
+        }
     </style>
 </head>
 
@@ -69,17 +77,29 @@
         @php
             $isWorker = in_array(auth()->guard('usuario')->user()->id_tipo_usuario, [2, 3]);
             $inicioRoute = $isWorker ? 'trabajador.dashboard' : 'admin.dashboard';
+            
+            // Clases dinámicas para sincronizar colores
+            $sidebarClass = $isWorker 
+                ? 'bg-gradient-to-b from-gray-900 via-emerald-950 to-gray-900 text-emerald-100 shadow-[20px_0_50px_rgba(0,0,0,0.3)]' 
+                : 'bg-gradient-to-b from-emerald-700 via-emerald-600 to-emerald-800 text-white shadow-xl';
+                
+            $navbarClass = $isWorker
+                ? 'bg-gradient-to-r from-gray-900 via-emerald-950 to-gray-900'
+                : 'bg-gradient-to-r from-emerald-600 via-green-500 to-emerald-600 opacity-90';
         @endphp
-        <aside id="sidebar"
-            class="z-50 bg-gradient-to-b from-emerald-900 via-emerald-800 to-emerald-900 text-emerald-100 shadow-2xl flex flex-col overflow-hidden shrink-0">
+        <aside id="sidebar" class="z-50 {{ $sidebarClass }} flex flex-col overflow-hidden shrink-0 relative">
+            
+            {{-- Elementos Decorativos de Fondo --}}
+            <div class="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-emerald-500/5 to-transparent pointer-events-none"></div>
+            <div class="absolute -left-20 top-40 w-40 h-40 bg-emerald-400/10 rounded-full blur-[80px] pointer-events-none"></div>
+            <div class="absolute -right-20 bottom-40 w-40 h-40 bg-teal-400/5 rounded-full blur-[80px] pointer-events-none"></div>
 
             <!-- LOGO -->
-            <div class="p-6 border-b border-emerald-700/40 shrink-0">
-                <h1 class="text-2xl font-extrabold tracking-wide">
-                    <span class="text-white">Agri</span>
-                    <span class="text-emerald-300">Manager</span>
+            <div class="p-8 border-b border-white/5 shrink-0 relative">
+                <h1 class="text-2xl font-black tracking-tighter">
+                    <span class="text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">Agri</span><span class="text-emerald-400">Manager</span>
                 </h1>
-                <p class="text-xs text-emerald-300 mt-1 opacity-80">{{ $isWorker ? 'Panel del Trabajador' : 'Panel Administrativo' }}</p>
+                <p class="text-[9px] font-black text-emerald-400/60 mt-1 uppercase tracking-[0.2em]">{{ $isWorker ? 'Panel del Trabajador' : 'Panel Administrativo' }}</p>
             </div>
 
             <!-- NAV -->
@@ -89,8 +109,8 @@
                     function active($pattern)
                     {
                         return request()->routeIs($pattern)
-                            ? 'bg-white/10 text-white shadow-lg border border-white/10'
-                            : 'hover:bg-white/10 hover:text-white';
+                            ? 'backdrop-blur-md bg-white/10 text-white shadow-[0_0_20px_rgba(52,211,153,0.1)] border border-white/10'
+                            : 'text-emerald-100/70 hover:bg-white/5 hover:text-white transition-all duration-300';
                     }
 
                     $gestionActive = request()->routeIs('tipo_cosechas.*') ||
@@ -104,11 +124,11 @@
                     $seguimientoActive = request()->routeIs('admin.cosechas.*');
                 @endphp
 
-                <a href="{{ route('admin.dashboard') }}"
-                    class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {{ active('admin.dashboard') }}">
-                    <div class="w-1.5 h-6 bg-emerald-300 rounded-full opacity-0 group-hover:opacity-100 transition-all">
+                <a href="{{ route($inicioRoute) }}"
+                    class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 relative {{ active($inicioRoute) }}">
+                    <div class="w-1 h-5 bg-emerald-400 rounded-full {{ request()->routeIs($inicioRoute) ? 'opacity-100' : 'opacity-0' }} group-hover:opacity-100 transition-all shadow-[0_0_10px_rgba(52,211,153,0.8)]">
                     </div>
-                    <span class="font-medium whitespace-nowrap">Inicio</span>
+                    <span class="font-bold whitespace-nowrap tracking-tight">Inicio</span>
                 </a>
 
 
@@ -137,27 +157,27 @@
 
 
                             <a href="{{ route('tipo_riegos.index') }}"
-                                class="group flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-200 {{ active('tipo_riegos.*') }}">
-                                <div class="w-1 h-1 bg-emerald-400 rounded-full shrink-0"></div>
-                                <span class="whitespace-nowrap">Tipos de Riego</span>
+                                class="group flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-300 {{ active('tipo_riegos.*') }}">
+                                <div class="w-1 h-1 bg-emerald-400 rounded-full shrink-0 shadow-[0_0_5px_rgba(52,211,153,0.5)]"></div>
+                                <span class="whitespace-nowrap font-medium">Tipos de Riego</span>
                             </a>
 
                             <a href="{{ route('tipo_semillas.index') }}"
-                                class="group flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-200 {{ active('tipo_semillas.*') }}">
-                                <div class="w-1 h-1 bg-emerald-400 rounded-full shrink-0"></div>
-                                <span class="whitespace-nowrap">Tipos de Semilla</span>
+                                class="group flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-300 {{ active('tipo_semillas.*') }}">
+                                <div class="w-1 h-1 bg-emerald-400 rounded-full shrink-0 shadow-[0_0_5px_rgba(52,211,153,0.5)]"></div>
+                                <span class="whitespace-nowrap font-medium">Tipos de Semilla</span>
                             </a>
 
                             <a href="{{ route('tipo_suelos.index') }}"
-                                class="group flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-200 {{ active('tipo_suelos.*') }}">
-                                <div class="w-1 h-1 bg-emerald-400 rounded-full shrink-0"></div>
-                                <span class="whitespace-nowrap">Tipos de Suelo</span>
+                                class="group flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-300 {{ active('tipo_suelos.*') }}">
+                                <div class="w-1 h-1 bg-emerald-400 rounded-full shrink-0 shadow-[0_0_5px_rgba(52,211,153,0.5)]"></div>
+                                <span class="whitespace-nowrap font-medium">Tipos de Suelo</span>
                             </a>
 
                             <a href="{{ route('insumos.index') }}"
-                                class="group flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-200 {{ active('insumos.*') }}">
-                                <div class="w-1 h-1 bg-emerald-400 rounded-full shrink-0"></div>
-                                <span class="whitespace-nowrap">Inventario de Suministros</span>
+                                class="group flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-300 {{ active('insumos.*') }}">
+                                <div class="w-1 h-1 bg-emerald-400 rounded-full shrink-0 shadow-[0_0_5px_rgba(52,211,153,0.5)]"></div>
+                                <span class="whitespace-nowrap font-medium">Inventario de Suministros</span>
                             </a>
 
 
@@ -211,33 +231,55 @@
                     </div>
 
                     <a href="{{ route('admin.usuarios.index') }}"
-                        class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {{ active('admin.usuarios.*') }}">
-                        <div class="w-1.5 h-6 bg-emerald-300 rounded-full opacity-0 group-hover:opacity-100 transition-all">
+                        class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 relative {{ active('admin.usuarios.*') }}">
+                        <div class="w-1 h-5 bg-emerald-400 rounded-full {{ request()->routeIs('admin.usuarios.*') ? 'opacity-100' : 'opacity-0' }} group-hover:opacity-100 transition-all shadow-[0_0_10px_rgba(52,211,153,0.8)]">
                         </div>
-                        <span class="font-medium whitespace-nowrap">Personal</span>
+                        <span class="font-bold whitespace-nowrap tracking-tight">Personal</span>
                     </a>
 
                     <a href="{{ route('admin.proveedores.index') }}"
-                        class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {{ active('admin.proveedores.*') }}">
-                        <div class="w-1.5 h-6 bg-emerald-300 rounded-full opacity-0 group-hover:opacity-100 transition-all">
+                        class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 relative {{ active('admin.proveedores.*') }}">
+                        <div class="w-1 h-5 bg-emerald-400 rounded-full {{ request()->routeIs('admin.proveedores.*') ? 'opacity-100' : 'opacity-0' }} group-hover:opacity-100 transition-all shadow-[0_0_10px_rgba(52,211,153,0.8)]">
                         </div>
-                        <span class="font-medium whitespace-nowrap">Proveedores</span>
+                        <span class="font-bold whitespace-nowrap tracking-tight">Proveedores</span>
                     </a>
 
                     <a href="{{ route('admin.licencias.index') }}"
-                        class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {{ active('admin.licencias.*') }}">
-                        <div class="w-1.5 h-6 bg-emerald-300 rounded-full opacity-0 group-hover:opacity-100 transition-all">
+                        class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 relative {{ active('admin.licencias.*') }}">
+                        <div class="w-1 h-5 bg-emerald-400 rounded-full {{ request()->routeIs('admin.licencias.*') ? 'opacity-100' : 'opacity-0' }} group-hover:opacity-100 transition-all shadow-[0_0_10px_rgba(52,211,153,0.8)]">
                         </div>
-                        <span class="font-medium whitespace-nowrap">Mi Plan de Licencia</span>
+                        <span class="font-bold whitespace-nowrap tracking-tight">Mi Plan de Licencia</span>
+                    </a>
+
+                    {{-- Soporte para Admin --}}
+                    <a href="{{ route('admin.soporte.index') }}"
+                        class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 relative {{ active('admin.soporte.*') }}">
+                        <div class="w-1 h-5 bg-emerald-400 rounded-full {{ request()->routeIs('admin.soporte.*') ? 'opacity-100' : 'opacity-0' }} group-hover:opacity-100 transition-all shadow-[0_0_10px_rgba(52,211,153,0.8)]">
+                        </div>
+                        <span class="font-bold whitespace-nowrap tracking-tight">Bandeja de Soporte</span>
                     </a>
                 @endif
 
                 @if(auth()->guard('usuario')->user()->id_tipo_usuario == 3)
                     <a href="{{ route('trabajador.calendario') }}"
-                        class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {{ active('trabajador.calendario') }}">
-                        <div class="w-1.5 h-6 bg-emerald-300 rounded-full opacity-0 group-hover:opacity-100 transition-all">
+                        class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 relative {{ active('trabajador.calendario') }}">
+                        <div class="w-1 h-5 bg-emerald-400 rounded-full {{ request()->routeIs('trabajador.calendario') ? 'opacity-100' : 'opacity-0' }} group-hover:opacity-100 transition-all shadow-[0_0_10px_rgba(52,211,153,0.8)]">
                         </div>
-                        <span class="font-medium whitespace-nowrap">Mi Calendario</span>
+                        <span class="font-bold whitespace-nowrap tracking-tight">Mi Calendario</span>
+                    </a>
+
+                    <a href="{{ route('trabajador.pagos') }}"
+                        class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 relative {{ active('trabajador.pagos') }}">
+                        <div class="w-1 h-5 bg-emerald-400 rounded-full {{ request()->routeIs('trabajador.pagos') ? 'opacity-100' : 'opacity-0' }} group-hover:opacity-100 transition-all shadow-[0_0_10px_rgba(52,211,153,0.8)]">
+                        </div>
+                        <span class="font-bold whitespace-nowrap tracking-tight">Mis Pagos</span>
+                    </a>
+
+                    <a href="{{ route('trabajador.soporte') }}"
+                        class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 relative {{ active('trabajador.soporte') }}">
+                        <div class="w-1 h-5 bg-emerald-400 rounded-full {{ request()->routeIs('trabajador.soporte') ? 'opacity-100' : 'opacity-0' }} group-hover:opacity-100 transition-all shadow-[0_0_10px_rgba(52,211,153,0.8)]">
+                        </div>
+                        <span class="font-bold whitespace-nowrap tracking-tight">Soporte y Dudas</span>
                     </a>
                 @endif
 
@@ -259,9 +301,7 @@
             <header class="relative z-50">
 
                 <!-- Fondo -->
-                <div
-                    class="absolute inset-0 bg-gradient-to-r from-emerald-600 via-green-500 to-emerald-600 opacity-90 shadow-lg">
-                </div>
+                <div class="absolute inset-0 {{ $navbarClass }} shadow-lg"></div>
                 <div
                     class="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.25),transparent_60%)]">
                 </div>
@@ -372,14 +412,14 @@
                     </div>
 
                     @if(session('success'))
-                        <div class="mb-6 p-4 bg-emerald-100 border border-emerald-200 text-emerald-800 rounded-2xl flex items-center gap-3 shadow-sm animate-fade-in-down">
+                        <div class="auto-dismiss mb-6 p-4 bg-emerald-100 border border-emerald-200 text-emerald-800 rounded-2xl flex items-center gap-3 shadow-sm animate-fade-in-down">
                             <svg class="h-5 w-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                             <span class="font-bold text-sm">{{ session('success') }}</span>
                         </div>
                     @endif
 
                     @if(session('error'))
-                        <div class="mb-6 p-4 bg-red-100 border border-red-200 text-red-800 rounded-2xl flex items-center gap-3 shadow-sm animate-shake">
+                        <div class="auto-dismiss mb-6 p-4 bg-red-100 border border-red-200 text-red-800 rounded-2xl flex items-center gap-3 shadow-sm animate-shake">
                             <svg class="h-5 w-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                             <span class="font-bold text-sm">{{ session('error') }}</span>
                         </div>
@@ -449,6 +489,20 @@
         }
     </script>
 
+    <script>
+        // Auto-dismiss de alertas después de 5 segundos
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                const alerts = document.querySelectorAll('.auto-dismiss');
+                alerts.forEach(function(alert) {
+                    alert.classList.add('animate-fadeOut');
+                    setTimeout(function() {
+                        alert.remove();
+                    }, 500); // Dar tiempo a la animación
+                });
+            }, 5000);
+        });
+    </script>
     @stack('scripts')
     <script src="{{ asset('js/validation.js') }}"></script>
 </body>

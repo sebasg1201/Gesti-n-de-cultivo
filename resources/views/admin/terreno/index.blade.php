@@ -4,26 +4,10 @@
 
 @section('content')
 <div class="space-y-8">
-    @if(session('success'))
-    <div class="bg-emerald-100 border-l-4 border-emerald-500 text-emerald-700 p-4 rounded-xl flex items-center shadow-sm">
-        <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-        </svg>
-        <span class="font-medium">{{ session('success') }}</span>
-    </div>
-    @endif
-
-    @if(session('error'))
-    <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-xl flex items-center shadow-sm">
-        <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-        <span class="font-medium">{{ session('error') }}</span>
-    </div>
-    @endif
-
+    {{-- Las alertas de success/error ahora se manejan en el layout principal --}}
+    
     @if ($errors->any())
-    <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-xl shadow-sm">
+    <div class="auto-dismiss bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-xl shadow-sm mb-6">
         <div class="flex items-center mb-2">
             <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -73,15 +57,22 @@
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-1 ml-2">Latitud</label>
-                                <input type="text" name="latitud" id="latitud" readonly 
-                                    class="w-full px-4 py-2 rounded-xl bg-gray-50 border-gray-100 text-xs font-mono text-gray-500 cursor-not-allowed" placeholder="0.000000">
+                                <input type="number" step="any" name="latitud" id="latitud" 
+                                    class="w-full px-4 py-2 rounded-xl bg-emerald-50/30 border-emerald-100 focus:border-emerald-500 focus:ring-emerald-500 text-xs font-mono text-emerald-900 transition-all" placeholder="0.000000">
                             </div>
                             <div>
                                 <label class="block text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-1 ml-2">Longitud</label>
-                                <input type="text" name="longitud" id="longitud" readonly 
-                                    class="w-full px-4 py-2 rounded-xl bg-gray-50 border-gray-100 text-xs font-mono text-gray-500 cursor-not-allowed" placeholder="0.000000">
+                                <input type="number" step="any" name="longitud" id="longitud" 
+                                    class="w-full px-4 py-2 rounded-xl bg-emerald-50/30 border-emerald-100 focus:border-emerald-500 focus:ring-emerald-500 text-xs font-mono text-emerald-900 transition-all" placeholder="0.000000">
                             </div>
                         </div>
+                    </div>
+
+                    {{-- Campo de descripción de ubicación (Preservar datos existentes) --}}
+                    <input type="hidden" name="ubicacion" id="ubicacion" value="{{ old('ubicacion') }}">
+                    <div id="ubicacionPreview" class="hidden mb-4 p-3 bg-emerald-50 rounded-xl border border-emerald-100 italic">
+                        <span class="block text-[8px] font-black text-emerald-400 uppercase tracking-widest mb-1">Ubicación Guardada</span>
+                        <p id="ubicacionText" class="text-xs text-emerald-800 font-medium"></p>
                     </div>
 
                     <div class="grid grid-cols-2 gap-4">
@@ -157,6 +148,7 @@
                         <thead>
                             <tr class="bg-white text-[10px] font-black text-emerald-400 uppercase tracking-[0.2em] border-b border-emerald-50">
                                 <th class="px-8 py-6">Terreno</th>
+                                <th class="px-8 py-6">Coordenadas</th>
                                 <th class="px-8 py-6">Dimensiones</th>
                                 <th class="px-8 py-6">Estado</th>
                                 <th class="px-8 py-6 text-right">Acciones</th>
@@ -176,16 +168,20 @@
                                             <span class="font-black text-emerald-950 block text-base">{{ $terreno->nombre }}</span>
                                             <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1 mt-1">
                                                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                                                @if(isset($terreno->ubicacion) && $terreno->ubicacion !== '')
-                                                    {{ Str::limit($terreno->ubicacion, 25) }}
-                                                @elseif(isset($terreno->latitud) && isset($terreno->longitud))
-                                                    {{ number_format($terreno->latitud, 6) }}, {{ number_format($terreno->longitud, 6) }}
-                                                @else
-                                                    Ubicación no especificada
-                                                @endif
+                                                {{ $terreno->ubicacion ?? 'Ubicación no especificada' }}
                                             </span>
                                             <span class="text-[10px] font-bold text-emerald-600 uppercase tracking-wider opacity-70 mt-1 block">Suelo: {{ optional($terreno->tipoSuelo)->nombre ?? 'No asignado' }}</span>
                                         </div>
+                                    </div>
+                                </td>
+                                <td class="px-8 py-6">
+                                    <div class="flex flex-col gap-1">
+                                        <span class="text-xs font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-1 rounded-md border border-emerald-100 flex items-center gap-2">
+                                            <span class="text-[8px] text-emerald-400 w-6">LAT:</span> {{ number_format($terreno->latitud, 6) }}
+                                        </span>
+                                        <span class="text-xs font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-1 rounded-md border border-emerald-100 flex items-center gap-2">
+                                            <span class="text-[8px] text-emerald-400 w-6">LNG:</span> {{ number_format($terreno->longitud, 6) }}
+                                        </span>
                                     </div>
                                 </td>
                                 <td class="px-8 py-6">
@@ -236,7 +232,7 @@
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="4" class="px-8 py-32 text-center">
+                                <td colspan="5" class="px-8 py-32 text-center">
                                     <div class="flex flex-col items-center justify-center opacity-50">
                                         <svg class="w-16 h-16 text-emerald-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
                                         <p class="text-emerald-600 font-bold text-lg">Su mapa está vacío.</p>
@@ -278,8 +274,12 @@
     const btnSubmit = document.getElementById('btnSubmit');
 
     let map;
-    let marker;
+    let marker; // Marcador principal para el formulario
+    let otherMarkers = []; // Almacén para los marcadores de otros terrenos
     const defaultLocation = [4.570868, -74.297333]; // Colombia default [lat, lng]
+    
+    // Datos de terrenos inyectados desde Blade
+    const listaTerrenos = @json($terrenos->items());
 
     // Fix Leaflet Default Icon issue
     function fixLeafletIcons() {
@@ -332,6 +332,9 @@
                 updateMarker(marker.getLatLng());
             });
 
+            // Cargar todos los terrenos existentes
+            renderAllTerrenos();
+
         } catch (error) {
             console.error("Error al inicializar el mapa:", error);
             const container = document.getElementById('map');
@@ -346,6 +349,79 @@
         marker.setLatLng(latlng);
         document.getElementById('latitud').value = latlng.lat.toFixed(8);
         document.getElementById('longitud').value = latlng.lng.toFixed(8);
+        
+        // Al actualizar el marcador principal, nos aseguramos de que sea visible
+        // pero no eliminamos los otros marcadores
+    }
+
+    function renderAllTerrenos() {
+        // Limpiar marcadores previos si existen (excepto el del formulario)
+        otherMarkers.forEach(m => map.removeLayer(m));
+        otherMarkers = [];
+
+        if (!listaTerrenos || listaTerrenos.length === 0) return;
+
+        const bounds = L.latLngBounds([]);
+        let hasValidCoords = false;
+
+        listaTerrenos.forEach(t => {
+            const lat = t.latitud || t.Latitud;
+            const lng = t.longitud || t.Longitud;
+
+            if (lat && lng && !isNaN(parseFloat(lat)) && !isNaN(parseFloat(lng))) {
+                const pos = [parseFloat(lat), parseFloat(lng)];
+                
+                // Marcador visual (no arrastrable) para referencia
+                const m = L.marker(pos, {
+                    opacity: 0.7,
+                    zIndexOffset: -100 // Por debajo del marcador principal
+                }).addTo(map);
+
+                // Popup con información y acción
+                const popupContent = `
+                    <div class="p-2">
+                        <h4 class="font-bold text-emerald-800 text-sm mb-1">${t.nombre}</h4>
+                        <p class="text-[10px] text-gray-500 mb-2">${t.Ancho}m x ${t.Alto}m</p>
+                        <button onclick='window.editFromMap(${JSON.stringify(t)})' 
+                           class="w-full bg-emerald-600 text-white text-[10px] py-1 px-2 rounded-lg hover:bg-emerald-700 transition-colors">
+                           Editar Terreno
+                        </button>
+                    </div>
+                `;
+                m.bindPopup(popupContent);
+                
+                otherMarkers.push(m);
+                bounds.extend(pos);
+                hasValidCoords = true;
+            }
+        });
+
+        // Ajustar vista si hay marcadores
+        if (hasValidCoords && map) {
+            map.fitBounds(bounds, { padding: [50, 50], maxZoom: 15 });
+        }
+    }
+
+    // Exponer función de edición para los popups del mapa
+    window.editFromMap = function(terreno) {
+        editTerreno(terreno);
+    };
+
+    // Sincronizar inputs manuales con el mapa
+    document.getElementById('latitud').addEventListener('input', syncMapFromInputs);
+    document.getElementById('longitud').addEventListener('input', syncMapFromInputs);
+
+    function syncMapFromInputs() {
+        const latVal = document.getElementById('latitud').value;
+        const lngVal = document.getElementById('longitud').value;
+        const lat = parseFloat(latVal);
+        const lng = parseFloat(lngVal);
+
+        if (!isNaN(lat) && !isNaN(lng) && lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180) {
+            const pos = [lat, lng];
+            if (marker) marker.setLatLng(pos);
+            if (map) map.setView(pos, map.getZoom());
+        }
     }
 
     function openEdit(btn) {
@@ -374,6 +450,28 @@
         
         document.getElementById('latitud').value = lat !== '' ? parseFloat(lat).toFixed(8) : '';
         document.getElementById('longitud').value = lng !== '' ? parseFloat(lng).toFixed(8) : '';
+        
+        // Disparar evento input para sincronizar el mapa si es necesario (vía syncMapFromInputs)
+        document.getElementById('latitud').dispatchEvent(new Event('input'));
+        document.getElementById('longitud').dispatchEvent(new Event('input'));
+
+        // Preservar y mostrar descripción de ubicación si existe
+        const ubicacionInput = document.getElementById('ubicacion');
+        const ubicacionPreview = document.getElementById('ubicacionPreview');
+        const ubicacionText = document.getElementById('ubicacionText');
+        
+        if (ubicacionInput) {
+            const val = terreno.ubicacion || '';
+            ubicacionInput.value = val;
+            if (ubicacionPreview && ubicacionText) {
+                if (val) {
+                    ubicacionText.innerText = val;
+                    ubicacionPreview.classList.remove('hidden');
+                } else {
+                    ubicacionPreview.classList.add('hidden');
+                }
+            }
+        }
         
         if (map && marker) {
             const parsedLat = parseFloat(lat);
@@ -424,6 +522,11 @@
     function resetForm() {
         terrenoForm.reset();
         
+        // Limpiar previsualización de ubicación
+        const ubicacionPreview = document.getElementById('ubicacionPreview');
+        if (ubicacionPreview) ubicacionPreview.classList.add('hidden');
+        if (document.getElementById('ubicacion')) document.getElementById('ubicacion').value = '';
+
         if (map && marker) {
             marker.setLatLng(defaultLocation);
             map.setView(defaultLocation, 13);

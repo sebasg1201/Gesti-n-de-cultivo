@@ -25,7 +25,7 @@
     </div>
 
     @if(session('success'))
-        <div class="bg-emerald-100 border-l-4 border-emerald-500 text-emerald-800 p-4 rounded-r-lg shadow-sm">
+        <div class="auto-dismiss bg-emerald-100 border-l-4 border-emerald-500 text-emerald-800 p-4 rounded-r-lg shadow-sm">
             <p class="font-medium flex items-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
@@ -80,8 +80,8 @@
                             <td class="py-4 px-6">
                                 <div class="flex items-center justify-center gap-2">
                                     
-                                    {{-- Asignar Trabajo --}}
-                                    <a href="{{ route('admin.usuarios.asignar_trabajo', $user->documento) }}" title="Asignar Trabajo"
+                                    {{-- Asignar Pago --}}
+                                    <a href="{{ route('admin.usuarios.asignar_trabajo', $user->documento) }}" title="Asignar Pago"
                                        class="p-2 bg-emerald-100 text-emerald-700 hover:bg-emerald-200 rounded-lg transition-colors group">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />

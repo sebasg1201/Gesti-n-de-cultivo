@@ -140,15 +140,13 @@
                                         Detalles de Tarea
                                     </button>
 
-                                    <div class="w-12 h-12 rounded-2xl bg-white border border-gray-100 flex items-center justify-center text-emerald-600 shadow-sm">
-                                         @if($fase->tipo_tarea == 'riego')
-                                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.059 2.14c.313-.314.82-.314 1.133 0l6.303 6.303a7.5 7.5 0 11-10.887 0l3.451-3.451z" /></svg>
-                                         @elseif($fase->tipo_tarea == 'insumo')
-                                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.638.319a2 2 0 01-1.833.027l-.634-.317a6 6 0 00-5.717-.254l-1.012.506a2 2 0 00-1.022.547l-.317 1.27c-.244.975.362 1.94 1.353 2.14L10 21.01l4.288-.853c.991-.198 1.597-1.164 1.353-2.14l-.317-1.27zM12 11V3L4 7v4" /></svg>
-                                         @else
-                                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
-                                         @endif
-                                    </div>
+                                    <a href="{{ route('trabajador.calendario', ['date' => $fase->fecha_programada]) }}" 
+                                       title="Ver en Mi Calendario"
+                                       class="w-12 h-12 rounded-2xl bg-white border border-gray-100 flex items-center justify-center text-emerald-600 shadow-sm hover:scale-110 hover:shadow-emerald-100 hover:border-emerald-200 transition-all">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002-2z" />
+                                        </svg>
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -273,7 +271,20 @@
         const modalSelect = document.getElementById('modalSelectEstado');
         if (modalForm && ds.updateUrl) {
             modalForm.action = ds.updateUrl;
-            modalSelect.value = ds.idEstado || '1';
+            const currentStatus = parseInt(ds.idEstado || '1');
+            modalSelect.value = currentStatus;
+
+            // Bloquear estados anteriores
+            // Orden: 1 (Pendiente) -> 8 (En Proceso) -> 9 (Realizado)
+            const order = { '1': 1, '8': 2, '9': 3 };
+            Array.from(modalSelect.options).forEach(option => {
+                const optionValue = option.value;
+                if (order[optionValue] < order[currentStatus]) {
+                    option.disabled = true;
+                } else {
+                    option.disabled = false;
+                }
+            });
         }
 
         const modal = document.getElementById('modalTarea');
