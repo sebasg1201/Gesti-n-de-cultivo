@@ -74,10 +74,15 @@
 
                 {{-- Core Task Info --}}
                 <div class="flex-grow space-y-3">
-                    <div class="flex flex-col gap-1">
+                    <div class="flex flex-col gap-0.5">
                         <h5 class="text-lg font-black {{ $task->id_estado == 9 ? 'text-gray-400 line-through decoration-2' : 'text-gray-900 group-hover:text-' . $borderColor }} transition-colors">
                             {{ $task->descripcion }}
                         </h5>
+                        @if(!empty($task->sub_descripcion))
+                            <p class="text-xs text-gray-400 font-medium leading-snug">
+                                {{ $task->sub_descripcion }}
+                            </p>
+                        @endif
                     </div>
                     
                     <div class="flex flex-wrap items-center gap-2">

@@ -175,7 +175,8 @@ class AdminController extends Controller
         // Standardize descripcion and type for the view
         foreach($riego as $t) {
             $t->tipo_referencia = 'riego';
-            $t->descripcion = ($t->tipoRiego?->tipo_riego ?? 'Riego') . ": " . ($t->observaciones ?? 'Sin observaciones');
+            $t->descripcion = $t->tipoRiego?->tipo_riego ?? 'Riego';
+            $t->sub_descripcion = $t->observaciones ?? null;
         }
 
         foreach($insumoCosecha as $t) {

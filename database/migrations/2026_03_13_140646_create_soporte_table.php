@@ -11,16 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('soporte', function (Blueprint $table) {
-            $table->id('id_soporte');
-            $table->bigInteger('documento_trabajador')->index();
-            $table->string('id_empresa')->index();
-            $table->string('asunto');
-            $table->text('mensaje');
-            $table->text('respuesta')->nullable();
-            $table->string('estado')->default('Pendiente'); // Pendiente, Respondido, Cerrado
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('soporte')) {
+            Schema::create('soporte', function (Blueprint $table) {
+                $table->id('id_soporte');
+                $table->bigInteger('documento_trabajador')->index();
+                $table->string('id_empresa')->index();
+                $table->string('asunto');
+                $table->text('mensaje');
+                $table->text('respuesta')->nullable();
+                $table->string('estado')->default('Pendiente'); // Pendiente, Respondido, Cerrado
+                $table->timestamps();
+            });
+        }
     }
 
     /**

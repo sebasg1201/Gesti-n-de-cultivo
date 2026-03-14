@@ -104,17 +104,17 @@ class CosechaController extends Controller
         if ($totalDays > 0) {
             $frecuencia = (int) $request->frecuencia_riego_dias;
             $fecha_actual_bucle = \Carbon\Carbon::parse($request->fecha_siembra);
-            
+
             // 2. Selección del "Pool" de Trabajadores (La Consulta)
             $trabajadores = \App\Models\Usuario::where('id_empresa', $id_empresa)
                 ->where('id_tipo_usuario', 3) // 3 = trabajador
                 ->where('id_estado', 1)       // Activo
                 ->where('id_estado_trabajador', 1)  // Disponible
                 ->get();
-                
+
             $trabajadoresCount = $trabajadores->count();
             $cargasTrabajo = [];
-            
+
             if ($trabajadoresCount > 0) {
                 foreach ($trabajadores as $t) {
                     // Contamos las tareas de riego pendientes de este trabajador
@@ -125,34 +125,36 @@ class CosechaController extends Controller
             } else {
                 session()->flash('warning', 'Aviso: No hay trabajadores disponibles, las tareas se han asignado a su perfil provisionalmente.');
             }
-            
-            // Loop until we reach fechaEstimada
-            while ($fecha_actual_bucle->lessThanOrEqualTo($fechaEstimada)) {
-                
-                $id_asignado = Auth::guard('usuario')->user()->documento; // Fallback al admin actual
-                
-                if ($trabajadoresCount > 0) {
-                    // Ordenamos de menor a mayor cantidad de tareas
-                    asort($cargasTrabajo);
-                    // Seleccionar el primero (menor carga)
-                    reset($cargasTrabajo);
-                    $id_asignado = key($cargasTrabajo);
-                    
-                    // Incrementamos la carga para el siguiente ciclo
-                    $cargasTrabajo[$id_asignado]++;
-                }
 
-                \App\Models\Riego::create([
-                    'cant_agua_apl' => $aguaPorRiego,
-                    'id_tipo_riego' => $request->id_tipo_riego,
-                    'id_cosecha' => $cosecha->id_cosecha,
-                    'documento_trabajador' => $id_asignado,
-                    'id_estado' => 1, // 1 = Pendiente
-                    'fecha_programada' => $fecha_actual_bucle->format('Y-m-d')
-                ]);
+            // Crear el primer riego inmediatamente (para la fecha de siembra o inicio)
+            $id_asignado = Auth::guard('usuario')->user()->documento; // Fallback al admin actual
 
-                $fecha_actual_bucle->addDays($frecuencia);
+            if ($trabajadoresCount > 0) {
+                // Ordenamos de menor a mayor cantidad de tareas
+                asort($cargasTrabajo);
+                // Seleccionar el primero (menor carga)
+                reset($cargasTrabajo);
+                $id_asignado = key($cargasTrabajo);
             }
+
+            // Al ser el riego inicial (día 0), si la fecha es hoy, ponerle la hora actual para que no salga 00:00
+            $fechaProgramada = $fecha_actual_bucle->copy();
+            if ($fechaProgramada->isToday()) {
+                $fechaProgramada->setTimeFrom(\Carbon\Carbon::now());
+            }
+
+            $obs = 'Aplicar ' . $aguaPorRiego . 'L en ' . $terreno->nombre . ' al cultivo de ' . $semilla->nombre_semilla . '.';
+
+            \App\Models\Riego::create([
+                'cant_agua_apl' => $aguaPorRiego,
+                'id_tipo_riego' => $request->id_tipo_riego,
+                'id_cosecha' => $cosecha->id_cosecha,
+                'documento_trabajador' => $id_asignado,
+                'id_estado' => 1, // 1 = Pendiente
+                'fecha_programada' => $fechaProgramada->format('Y-m-d H:i:s'),
+                'observaciones' => $obs,
+            ]);
+            // Los siguientes riegos se crearán automáticamente cada X días mediante un comando programado
         }
 
         return redirect()->route('admin.cosechas.index')->with('success', 'Siembra iniciada y tareas de riego automáticas generadas.');
@@ -211,10 +213,10 @@ class CosechaController extends Controller
             return $riego->id_estado != 1; // 1 = Pendiente
         })->count();
 
-        $porcentajeHidratacion = $totalRiegosCiclo > 0 
-            ? ($riegosCompletados / $totalRiegosCiclo) * 100 
+        $porcentajeHidratacion = $totalRiegosCiclo > 0
+            ? ($riegosCompletados / $totalRiegosCiclo) * 100
             : 0;
-            
+
         return view('admin.cosechas.show', compact('cosecha', 'diasTotales', 'diasTranscurridos', 'porcentaje', 'diasRestantes', 'faseActual', 'porcentajeHidratacion', 'riegosCompletados', 'totalRiegosCiclo'));
     }
 }
