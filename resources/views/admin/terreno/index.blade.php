@@ -68,11 +68,10 @@
                         </div>
                     </div>
 
-                    {{-- Campo de descripción de ubicación (Preservar datos existentes) --}}
-                    <input type="hidden" name="ubicacion" id="ubicacion" value="{{ old('ubicacion') }}">
-                    <div id="ubicacionPreview" class="hidden mb-4 p-3 bg-emerald-50 rounded-xl border border-emerald-100 italic">
-                        <span class="block text-[8px] font-black text-emerald-400 uppercase tracking-widest mb-1">Ubicación Guardada</span>
-                        <p id="ubicacionText" class="text-xs text-emerald-800 font-medium"></p>
+                    <div>
+                        <label class="block text-xs font-bold text-emerald-700 uppercase tracking-wider mb-2">Ubicación Específica</label>
+                        <input type="text" name="ubicacion" id="ubicacion" placeholder="Ej. Vereda La Cima, Finca San José..."
+                            class="w-full px-4 py-3 rounded-2xl border-emerald-100 focus:border-emerald-500 focus:ring-emerald-500 bg-emerald-50/30 text-sm transition-all" value="{{ old('ubicacion') }}">
                     </div>
 
                     <div class="grid grid-cols-2 gap-4">
@@ -307,11 +306,18 @@
 
             fixLeafletIcons();
 
-            const mapContainer = document.getElementById("map");
-            if (!mapContainer) return;
+            // Configurar límites para el departamento del Tolima, Colombia
+            const tolimaBounds = L.latLngBounds(
+                [2.8, -76.3], // Suroeste
+                [5.3, -74.4]  // Noreste
+            );
 
             // Inicializar Mapa
-            map = L.map('map').setView(defaultLocation, 13);
+            map = L.map('map', {
+                maxBounds: tolimaBounds,
+                maxBoundsViscosity: 1.0,
+                minZoom: 8
+            }).setView(defaultLocation, 13);
 
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; OpenStreetMap contributors'

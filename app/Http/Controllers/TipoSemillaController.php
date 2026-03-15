@@ -90,7 +90,6 @@ class TipoSemillaController extends Controller
             'tiempo_base_dias' => $request->tiempo_base_dias,
             'rendimiento_promedio' => $request->rendimiento_promedio,
             'espacio_por_planta_m2' => $request->espacio_por_planta_m2,
-            'stock_actual' => 0,
         ]);
 
         return redirect()->route('tipo_semillas.index')

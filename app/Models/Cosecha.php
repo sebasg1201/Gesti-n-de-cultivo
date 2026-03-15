@@ -77,4 +77,13 @@ class Cosecha extends Model
         
         return 0; // Si está pendiente, la barra está vacía esperando al trabajador
     }
+
+    public function getFaseActualAttribute() {
+        $porcentaje = $this->porcentaje_crecimiento;
+        if ($porcentaje < 20) return 'Siembra';
+        if ($porcentaje < 50) return 'Vegetativo';
+        if ($porcentaje < 75) return 'Floración';
+        if ($porcentaje < 90) return 'Llenado';
+        return 'Cosecha';
+    }
 }

@@ -68,37 +68,36 @@
                     </div>
                 </div>
 
-                <!-- Card 4: Salud Cultivo (Mock) -->
+                <!-- Card 4: Estimación de Riegos -->
                 <div
                     class="bg-white rounded-[2rem] p-6 shadow-sm border border-emerald-50 relative overflow-hidden group hover:shadow-md transition-shadow">
                     <div
-                        class="absolute -right-4 -top-4 w-24 h-24 bg-emerald-50 rounded-full group-hover:scale-110 transition-transform duration-300">
+                        class="absolute -right-4 -top-4 w-24 h-24 bg-cyan-50 rounded-full group-hover:scale-110 transition-transform duration-300">
                     </div>
 
                     <div class="relative z-10">
                         <div class="flex flex-col gap-1 mb-4">
                             <div
-                                class="flex items-center gap-2 text-emerald-600 font-black uppercase tracking-widest text-[10px]">
-                                <svg class="w-4 h-4 text-emerald-400" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd"
-                                        d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                                        clip-rule="evenodd" />
+                                class="flex items-center gap-2 text-cyan-600 font-black uppercase tracking-widest text-[10px]">
+                                <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
                                 </svg>
-                                Salud Cultivo
+                                Estimación de Riegos
                             </div>
                         </div>
 
                         <h3 class="text-3xl font-black text-slate-800 leading-none mb-3">
-                            94/100
+                            {{ $cosecha->frecuencia_riego_dias > 0 && $diasTotales > 0 ? ceil($diasTotales / $cosecha->frecuencia_riego_dias) : 'N/A' }} 
+                            <span class="text-sm text-slate-500 font-bold uppercase tracking-widest">Total</span>
                         </h3>
 
                         <div
-                            class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-600 text-xs font-bold">
+                            class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-cyan-50 text-cyan-600 text-xs font-bold">
                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                                    d="M5 13l4 4L19 7" />
                             </svg>
-                            Excelente estado
+                            {{ $riegosCompletados }} completados
                         </div>
                     </div>
                 </div>
@@ -234,6 +233,74 @@
                         <p class="text-sm font-bold text-slate-400">Sin fotografía registrada para este lote.</p>
                     @endif
                 </div>
+            </div>
+
+            <!-- Línea de Tiempo del Cultivo (Historial) -->
+            <div class="bg-white rounded-[2rem] p-8 shadow-sm border border-emerald-50 relative overflow-hidden">
+                <div class="flex items-center justify-between mb-8">
+                    <div>
+                        <h3 class="text-xl font-black text-slate-800">Historial de Tratamiento</h3>
+                        <p class="text-sm font-bold mt-1 text-slate-500">Registro de riegos, insumos y mantenimiento</p>
+                    </div>
+                    <div class="w-12 h-12 rounded-full bg-slate-50 flex items-center justify-center text-slate-400">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                </div>
+
+                @if($historial->isEmpty())
+                    <div class="text-center py-8">
+                        <p class="text-slate-500 font-medium">No hay registros de actividades para este cultivo.</p>
+                    </div>
+                @else
+                    <div class="space-y-6 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-slate-200 before:to-transparent">
+                        @foreach($historial as $item)
+                        <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                            
+                            <!-- Icon -->
+                            <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10
+                                {{ $item->tipo_historial == 'riego' ? 'bg-cyan-500' : ($item->tipo_historial == 'insumo' ? 'bg-purple-500' : 'bg-emerald-500') }} shadow-sm">
+                                @if($item->tipo_historial == 'riego')
+                                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" /></svg>
+                                @elseif($item->tipo_historial == 'insumo')
+                                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>
+                                @else
+                                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.121 15.536c-1.171 1.952-3.07 1.952-4.242 0-1.172-1.953-1.172-5.119 0-7.072 1.171-1.952 3.07-1.952 4.242 0M8 10.5h4m-4 3h4m9-1.5a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                @endif
+                            </div>
+                            
+                            <!-- Card -->
+                            <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-[1.5rem] border border-slate-100 bg-white shadow-sm hover:shadow-md transition-all">
+                                <div class="flex items-center justify-between mb-1">
+                                    <span class="text-[10px] uppercase tracking-widest font-black 
+                                        {{ $item->tipo_historial == 'riego' ? 'text-cyan-600' : ($item->tipo_historial == 'insumo' ? 'text-purple-600' : 'text-emerald-600') }}">
+                                        {{ $item->titulo_historial }}
+                                    </span>
+                                    <span class="text-xs font-bold text-slate-400">{{ \Carbon\Carbon::parse($item->fecha_historial)->format('d/m/Y') }}</span>
+                                </div>
+                                <p class="text-slate-700 font-medium text-sm">{{ $item->descripcion_historial ?: 'Sin detalles adicionales' }}</p>
+                                
+                                <div class="mt-2 text-right">
+                                    @if($item->estado_historial == 'Completado')
+                                        <span class="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-md">
+                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg> Realizado
+                                        </span>
+                                    @elseif($item->estado_historial == 'En Proceso')
+                                        <span class="inline-flex items-center gap-1 text-[10px] font-bold text-amber-600 bg-amber-50 px-2 py-1 rounded-md">
+                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> En Proceso
+                                        </span>
+                                    @else
+                                        <span class="inline-flex items-center gap-1 text-[10px] font-bold text-slate-500 bg-slate-50 px-2 py-1 rounded-md">
+                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> Programado
+                                        </span>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
+                @endif
             </div>
 
         </div>

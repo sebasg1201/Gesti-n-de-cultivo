@@ -108,7 +108,7 @@
                                 <div
                                     class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full flex items-center gap-1.5 shadow-sm">
                                     <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                                    <span class="text-[10px] font-black text-emerald-900 uppercase tracking-wider">Activo</span>
+                                    <span class="text-[10px] font-black text-emerald-900 uppercase tracking-wider">{{ $cosecha->fase_actual }}</span>
                                 </div>
 
                                 <!-- Info Overlay -->

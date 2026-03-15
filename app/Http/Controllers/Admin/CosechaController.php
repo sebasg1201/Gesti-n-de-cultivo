@@ -51,6 +51,11 @@ class CosechaController extends Controller
 
         $semilla = TipoSemilla::findOrFail($request->id_semilla);
         $terreno = Terreno::with('tipoSuelo')->findOrFail($request->id_terreno);
+        
+        if ($terreno->id_estado != 7) {
+            return redirect()->back()->with('error', 'El terreno seleccionado está ocupado y no se puede usar para una nueva siembra.')->withInput();
+        }
+        
         $riego = TipoRiego::findOrFail($request->id_tipo_riego);
 
         $imagePath = null;
@@ -99,6 +104,9 @@ class CosechaController extends Controller
             'litros_por_riego' => $request->litros_por_riego,
             'imagenes' => $imagePath,
         ]);
+
+        $terreno->id_estado = 6; // Ocupado (ID 6)
+        $terreno->save();
 
         // Automated Task Generation logic
         if ($totalDays > 0) {
@@ -217,6 +225,40 @@ class CosechaController extends Controller
             ? ($riegosCompletados / $totalRiegosCiclo) * 100
             : 0;
 
-        return view('admin.cosechas.show', compact('cosecha', 'diasTotales', 'diasTranscurridos', 'porcentaje', 'diasRestantes', 'faseActual', 'porcentajeHidratacion', 'riegosCompletados', 'totalRiegosCiclo'));
+        $insumos = \App\Models\InsumoCosecha::with('insumo')->where('id_cosecha', $id)->get();
+        $fases = \App\Models\FaseProgramada::where('id_cosecha', $id)->get();
+
+        $historial = collect();
+        
+        foreach($riegos as $r) {
+            $r->tipo_historial = 'riego';
+            $r->fecha_historial = $r->fecha_programada;
+            $r->titulo_historial = 'Riego';
+            $r->descripcion_historial = $r->observaciones;
+            $r->estado_historial = $r->id_estado == 9 ? 'Completado' : ($r->id_estado == 8 ? 'En Proceso' : 'Pendiente');
+            $historial->push($r);
+        }
+
+        foreach($insumos as $i) {
+            $i->tipo_historial = 'insumo';
+            $i->fecha_historial = $i->fecha_programada;
+            $i->titulo_historial = 'Aplicación de Insumo';
+            $i->descripcion_historial = ($i->insumo->Nombre ?? 'Insumo') . ' (Cant: ' . $i->cantidad_usada . ')';
+            $i->estado_historial = $i->id_estado == 9 ? 'Completado' : ($i->id_estado == 8 ? 'En Proceso' : 'Pendiente');
+            $historial->push($i);
+        }
+
+        foreach($fases as $f) {
+            $f->tipo_historial = 'fase';
+            $f->fecha_historial = $f->fecha_programada;
+            $f->titulo_historial = 'Fase de Mantenimiento';
+            $f->descripcion_historial = $f->descripcion;
+            $f->estado_historial = $f->id_estado == 9 ? 'Completado' : ($f->id_estado == 8 ? 'En Proceso' : 'Pendiente');
+            $historial->push($f);
+        }
+
+        $historial = $historial->sortByDesc('fecha_historial');
+
+        return view('admin.cosechas.show', compact('cosecha', 'diasTotales', 'diasTranscurridos', 'porcentaje', 'diasRestantes', 'faseActual', 'porcentajeHidratacion', 'riegosCompletados', 'totalRiegosCiclo', 'historial'));
     }
 }

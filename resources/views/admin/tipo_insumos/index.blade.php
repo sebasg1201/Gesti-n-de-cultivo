@@ -232,27 +232,36 @@
                         .then(res => res.json())
                         .then(data => {
                             searchResults.innerHTML = '';
+                            let content = '';
                             if (data.length > 0) {
                                 data.forEach(item => {
-                                    const div = document.createElement('div');
-                                    div.className = 'px-6 py-4 hover:bg-blue-50 cursor-pointer border-b border-blue-50 last:border-0 transition-colors';
-                                    div.innerHTML = `
-                                                        <div class="flex justify-between items-center">
-                                                            <div>
-                                                                <p class="font-black text-blue-950 text-sm">${item.nombre}</p>
-                                                                <p class="text-[10px] text-blue-500 font-bold uppercase tracking-widest">${item.descripcion || 'Sin descripción'}</p>
-                                                            </div>
-                                                            <svg class="w-4 h-4 text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
-                                                        </div>
-                                                    `;
-                                    div.onclick = () => selectFromCatalog(item);
-                                    searchResults.appendChild(div);
+                                    content += `
+                                        <div class="px-6 py-4 hover:bg-blue-50 cursor-pointer border-b border-blue-50 transition-colors" onclick='selectFromCatalog(${JSON.stringify(item).replace(/'/g, "&apos;")})'>
+                                            <div class="flex justify-between items-center">
+                                                <div>
+                                                    <p class="font-black text-blue-950 text-sm">${item.nombre}</p>
+                                                    <p class="text-[10px] text-blue-500 font-bold uppercase tracking-widest">${item.descripcion || 'Sin descripción'}</p>
+                                                </div>
+                                                <svg class="w-4 h-4 text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                                            </div>
+                                        </div>
+                                    `;
                                 });
-                                searchResults.classList.remove('hidden');
                             } else {
-                                searchResults.innerHTML = '<p class="px-6 py-4 text-xs text-gray-400 italic">No se encontraron resultados en el catálogo...</p>';
-                                searchResults.classList.remove('hidden');
+                                content += '<p class="px-6 py-4 text-xs text-gray-400 italic text-center">No se encontraron resultados en el catálogo estándar...</p>';
                             }
+                            // Call to action button to create a custom supply type
+                            const safeQuery = query.replace(/'/g, "\\'");
+                            content += `
+                                <div class="px-6 py-4 bg-gray-50 text-center border-t border-blue-100">
+                                    <p class="text-[10px] text-gray-500 mb-2 italic">¿No encuentra lo que busca?</p>
+                                    <button type="button" onclick="crearInsumoPersonalizado('${safeQuery}')" class="px-4 py-2 bg-blue-600 text-white rounded-xl text-xs font-bold hover:bg-blue-700 shadow-md shadow-blue-200 transition-all w-full">
+                                        Crear "${query}" como Personalizado
+                                    </button>
+                                </div>
+                            `;
+                            searchResults.innerHTML = content;
+                            searchResults.classList.remove('hidden');
                         });
                 }, 300);
             });
@@ -275,6 +284,26 @@
                     insumoForm.querySelector('input[name="_method"]').remove();
                 }
                 insumoForm.querySelector('button[type="submit"]').innerText = 'Habilitar Insumo';
+            }
+
+            function crearInsumoPersonalizado(nombre) {
+                searchResults.classList.add('hidden');
+                searchInput.value = nombre;
+
+                // Populate Form
+                document.getElementById('input_id_catalogo').value = '';
+                document.getElementById('nombre_insumo').value = nombre;
+                document.getElementById('descripcion').value = '';
+                
+                // Toggle visibility
+                formPlaceholder.classList.add('hidden');
+                insumoForm.classList.remove('hidden');
+
+                insumoForm.action = `/admin/tipo_insumos`;
+                if (insumoForm.querySelector('input[name="_method"]')) {
+                    insumoForm.querySelector('input[name="_method"]').remove();
+                }
+                insumoForm.querySelector('button[type="submit"]').innerText = 'Habilitar Insumo Personalizado';
             }
 
             function resetForm() {

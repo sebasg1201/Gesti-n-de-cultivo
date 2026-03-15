@@ -36,26 +36,34 @@ class TipoInsumoController extends Controller
         $idEmpresa = $this->getEmpresaId();
 
         $request->validate([
-            'id_catalogo' => 'required|exists:catalogo_insumos,id',
+            'id_catalogo' => 'nullable|exists:catalogo_insumos,id',
             'nombre_insumo' => 'required|string|max:100',
             'descripcion' => 'nullable|string|max:250',
         ]);
 
-        $catalogItem = CatalogoInsumo::findOrFail($request->id_catalogo);
+        if ($request->filled('id_catalogo')) {
+            $exists = TipoInsumo::where('id_empresa', $idEmpresa)
+                ->where('id_catalogo', $request->id_catalogo)
+                ->exists();
 
-        $exists = TipoInsumo::where('id_empresa', $idEmpresa)
-            ->where('id_catalogo', $catalogItem->id)
-            ->exists();
+            if ($exists) {
+                return redirect()->back()->with('error', 'Este tipo de insumo ya está registrado en su catálogo.');
+            }
+        } else {
+            $exists = TipoInsumo::where('id_empresa', $idEmpresa)
+                ->where('nombre_insumo', $request->nombre_insumo)
+                ->exists();
 
-        if ($exists) {
-            return redirect()->back()->with('error', 'Este tipo de insumo ya está registrado en su catálogo.');
+            if ($exists) {
+                return redirect()->back()->with('error', 'Ya exite un insumo personalizado registrado con este nombre.');
+            }
         }
 
         TipoInsumo::create([
             'id_empresa' => $idEmpresa,
-            'id_catalogo' => $catalogItem->id,
+            'id_catalogo' => $request->id_catalogo ?: null,
             'nombre_insumo' => $request->nombre_insumo,
-            'descripcion' => $request->descripcion ?? $catalogItem->descripcion,
+            'descripcion' => $request->descripcion,
         ]);
 
         return redirect()->route('admin.tipo_insumos.index')
