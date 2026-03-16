@@ -70,12 +70,15 @@ class Cosecha extends Model
             
         if(!$ultimoRiego) return 100; 
         
-        // Si el estado es distinto de "Pendiente" (1), significa que ya se completó.
-        if($ultimoRiego->id_estado != 1) {
+        if($ultimoRiego->id_estado == 15) { // Realizado
             return 100;
         }
         
-        return 0; // Si está pendiente, la barra está vacía esperando al trabajador
+        if($ultimoRiego->id_estado == 8) { // En Proceso
+            return 50;
+        }
+        
+        return 0; // Pendiente (1), Perdida (16) o cualquier otro
     }
 
     public function getFaseActualAttribute() {

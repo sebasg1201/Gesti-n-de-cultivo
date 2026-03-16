@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 13-03-2026 a las 23:30:38
+-- Tiempo de generación: 16-03-2026 a las 20:50:40
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de datos: `cultivos`
+-- Base de datos: `prueba_cultivos`
 --
 
 -- --------------------------------------------------------
@@ -191,7 +191,9 @@ CREATE TABLE `cosecha` (
 --
 
 INSERT INTO `cosecha` (`id_cosecha`, `id_empresa`, `Cantidad`, `id_terreno`, `id_semilla`, `id_estado`, `fecha_siembra`, `frecuencia_riego_dias`, `fecha_estimada`, `imagenes`, `produccion_estimada`, `litros_por_riego`) VALUES
-(17, '988091212', 45, 4, 3, 1, '2026-03-13', 3, '2026-06-13', 'cosechas/tefAy01QmEeJXFEv5pUkG4du46Kibq63vwpiX2W3.jpg', 540.00, 10.00);
+(18, '834324234', 15, 3, 5, 1, '2026-03-15', 3, '2026-10-08', 'cosechas/GDWhFOELqADf7LebmpYzEpxNqZpu3ja47UuOHgXW.jpg', 22.50, 50.00),
+(19, '988091212', 50, 5, 4, 1, '2026-03-16', 1, '2026-07-16', 'cosechas/ohN4FVrHQNVb7SLoojH2UQ3xOyc4hmE4zbr9Xls7.jpg', 175.00, 10.00),
+(20, '988091212', 40, 4, 3, 1, '2026-03-16', 1, '2026-06-16', 'cosechas/ylCMjhtKUqUllCQcatTs4CJfij2NroKoXkqbWLwu.jpg', 480.00, 9.00);
 
 -- --------------------------------------------------------
 
@@ -294,7 +296,11 @@ CREATE TABLE `entrada_insumo` (
 
 INSERT INTO `entrada_insumo` (`id_entrada`, `id_proveedor`, `id_insumo`, `id_semilla`, `id_empresa`, `stock_antes`, `stock_despues`, `tipo_movimiento`, `cantidad_recibida`, `fecha_entrada`, `precio_unitario`) VALUES
 (1, 1, 2, NULL, '834324234', NULL, NULL, NULL, 10.00, '2026-03-10 22:13:45', 400000.00),
-(2, 1, NULL, 5, '834324234', NULL, NULL, NULL, 14.00, '2026-03-10 22:15:41', 14000.00);
+(2, 1, NULL, 5, '834324234', NULL, NULL, NULL, 14.00, '2026-03-10 22:15:41', 14000.00),
+(3, 1, NULL, 5, '834324234', 0.00, 20.00, 'ENTRADA', 20.00, '2026-03-15 16:58:46', 10000.00),
+(4, 3, NULL, 4, '988091212', 0.00, 150.00, 'ENTRADA', 150.00, '2026-03-16 18:43:06', 2000.00),
+(5, 3, NULL, 3, '988091212', 5.00, 155.00, 'ENTRADA', 150.00, '2026-03-16 18:52:48', 2000.00),
+(6, 3, NULL, 3, '988091212', 155.00, 305.00, 'ENTRADA', 150.00, '2026-03-16 18:52:50', 2000.00);
 
 --
 -- Disparadores `entrada_insumo`
@@ -361,7 +367,14 @@ INSERT INTO `estado` (`id_estado`, `nombre_estado`) VALUES
 (5, 'aprobada'),
 (6, 'ocupado'),
 (7, 'disponible'),
-(8, 'suspendido');
+(8, 'suspendido'),
+(10, 'Siembra'),
+(11, 'Vegetativo'),
+(12, 'Floración'),
+(13, 'Llenado'),
+(14, 'Cosecha'),
+(15, 'Realizado'),
+(16, 'Perdida');
 
 -- --------------------------------------------------------
 
@@ -440,7 +453,8 @@ CREATE TABLE `insumo` (
 INSERT INTO `insumo` (`ID_insumo`, `id_empresa`, `id_catalogo_insumo`, `stock_actual`, `Nombre`, `Fecha_vencimiento`, `descripcion`, `impacto_dias`, `id_proveedor`) VALUES
 (2, '834324234', 3, 0.00, 'Urea Agrícola 46%', NULL, 'Fuente concentrada de nitrógeno', 0, NULL),
 (5, '834324234', NULL, 0.00, 'dfdfg', NULL, 'ghffjhjh', 0, NULL),
-(6, '988091212', NULL, 0.00, 'Fertilizante por 4k', NULL, 'Super mega fertilizante', 2, NULL);
+(6, '988091212', NULL, 0.00, 'Fertilizante por 4k', NULL, 'Super mega fertilizante', 2, NULL),
+(7, '834324234', NULL, 0.00, 'sad', NULL, 'dsa', 2, NULL);
 
 -- --------------------------------------------------------
 
@@ -535,7 +549,8 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (21, '2026_03_07_000005_add_formal_foreign_keys_to_catalogs', 12),
 (22, '2026_03_10_145541_add_id_empresa_to_insumo_table', 13),
 (23, '2026_03_09_000001_add_descripcion_to_tipo_suelo', 14),
-(24, '2026_03_12_162911_add_hydration_fields_to_tables', 15);
+(24, '2026_03_12_162911_add_hydration_fields_to_tables', 15),
+(25, '2026_03_15_120413_insert_estados_fases_cosecha', 16);
 
 -- --------------------------------------------------------
 
@@ -625,7 +640,7 @@ CREATE TABLE `riego` (
   `id_cosecha` int(11) DEFAULT NULL,
   `documento_trabajador` int(11) NOT NULL,
   `id_estado` int(11) NOT NULL DEFAULT 1,
-  `fecha_programada` date DEFAULT NULL
+  `fecha_programada` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -633,7 +648,9 @@ CREATE TABLE `riego` (
 --
 
 INSERT INTO `riego` (`id_riego`, `cant_agua_apl`, `observaciones`, `id_tipo_riego`, `id_cosecha`, `documento_trabajador`, `id_estado`, `fecha_programada`) VALUES
-(3, '10', NULL, 4, 17, 1039253243, 1, '2026-03-13');
+(4, '50', 'Aplicar 50L en Cascada al cultivo de Café Arábigo.', 6, 18, 1104921223, 1, '2026-03-15 00:00:00'),
+(5, '10', 'Aplicar 10L en Parcela Sur al cultivo de Maíz Amarillo.', 4, 19, 1014213123, 1, '2026-03-16 00:00:00'),
+(6, '9', 'Aplicar 9L en Parcela Norte al cultivo de Tomate Chonto.', 4, 20, 1039253243, 1, '2026-03-16 13:53:18');
 
 -- --------------------------------------------------------
 
@@ -672,9 +689,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('7e8xIbZ5A39CBiHpApxqL3TN5pGO4DehfKbZT3JI', 1110722345, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiMEdNWGRpM2FUYzE3WU40S2dwWW9nUmFlSlYwRG13eU5hVkF0TmtWRSI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzY6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZG1pbi9jb3NlY2hhcyI7czo1OiJyb3V0ZSI7czoyMDoiYWRtaW4uY29zZWNoYXMuaW5kZXgiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjU0OiJsb2dpbl91c3VhcmlvXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MTExMDcyMjM0NTt9', 1773438541),
-('GkdkpbpV4627uQOo18l8RtIrvjLxoIqbdddOYjLO', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiZDNoSWJBSm1qd0V1NFpiUlZaNVpZbUNLUHB6UXRmWVQyMm1YdGZ2eCI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6Mjc6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9sb2dpbiI7czo1OiJyb3V0ZSI7czoxMzoidXN1YXJpby5sb2dpbiI7fXM6NTQ6ImxvZ2luX3VzdWFyaW9fNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToxMTEwNzIyMzMxO30=', 1773354883),
-('Q5JaKIfz9NOJeJv9dnQHbluFLa2NqvhTj8UivGUD', 1104921223, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiSXVmcE93Qk1JWkx6cVFQT2swYlBXRmxDaEtFZTZkZXdtQWR0Q21iRCI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzY6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZG1pbi9jb3NlY2hhcyI7czo1OiJyb3V0ZSI7czoyMDoiYWRtaW4uY29zZWNoYXMuaW5kZXgiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjU0OiJsb2dpbl91c3VhcmlvXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MTEwNDkyMTIyMzt9', 1773440847);
+('er4YlSs9ZEvo4mhTZBgCjzOxRyhuEJShz1Sl5q58', 1110722345, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoibTZGNEhHekU3UkVFZGVONFp5ZVZlaFBtMTVmWE5TVzluVGpzd1NxeCI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzY6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZG1pbi9jb3NlY2hhcyI7czo1OiJyb3V0ZSI7czoyMDoiYWRtaW4uY29zZWNoYXMuaW5kZXgiO31zOjU0OiJsb2dpbl91c3VhcmlvXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MTExMDcyMjM0NTt9', 1773689929);
 
 -- --------------------------------------------------------
 
@@ -784,9 +799,9 @@ CREATE TABLE `terreno` (
 --
 
 INSERT INTO `terreno` (`id_terreno`, `id_empresa`, `nombre`, `ubicacion`, `latitud`, `longitud`, `Ancho`, `Alto`, `area_m2`, `id_estado`, `id_tipo_suelo`) VALUES
-(3, '834324234', 'Cascada', 'Cascada del potrero las tribunas', NULL, NULL, 123, 76, NULL, 7, 2),
-(4, '988091212', 'Parcela Norte', 'Verdecito', NULL, NULL, 123, 76, NULL, 7, 1),
-(5, '988091212', 'Parcela Sur', 'Verdecito', NULL, NULL, 123, 76, NULL, 7, 1),
+(3, '834324234', 'Cascada', 'Cascada del potrero las tribunas', NULL, NULL, 123, 76, NULL, 6, 2),
+(4, '988091212', 'Parcela Norte', 'Verdecito', NULL, NULL, 123, 76, NULL, 6, 1),
+(5, '988091212', 'Parcela Sur', 'Verdecito', NULL, NULL, 123, 76, NULL, 6, 1),
 (6, '834324234', 'sebas', NULL, 7.56072491, -73.06678310, 400, 500, NULL, 7, 2);
 
 -- --------------------------------------------------------
@@ -907,9 +922,9 @@ CREATE TABLE `tipo_semilla` (
 --
 
 INSERT INTO `tipo_semilla` (`id_semilla`, `id_empresa`, `id_catalogo`, `nombre_semilla`, `tiempo_base_dias`, `descripcion`, `rendimiento_promedio`, `stock_actual`, `espacio_por_planta_m2`) VALUES
-(3, '988091212', 1, 'Tomate Chonto', 90, 'Variedad de tomate muy resistente, ideal para salsas.', 12.00, 5.00, 0.2500),
-(4, '988091212', 3, 'Maíz Amarillo', 120, 'Cereal básico para la alimentación, ciclo corto.', 3.50, 0.00, 0.2500),
-(5, '834324234', 2, 'Café Arábigo', 210, 'Variedad premium de café con aroma intenso y acidez equilibrada.', 1.50, 0.00, 0.2500),
+(3, '988091212', 1, 'Tomate Chonto', 90, 'Variedad de tomate muy resistente, ideal para salsas.', 12.00, 265.00, 0.2500),
+(4, '988091212', 3, 'Maíz Amarillo', 120, 'Cereal básico para la alimentación, ciclo corto.', 3.50, 100.00, 0.2500),
+(5, '834324234', 2, 'Café Arábigo', 210, 'Variedad premium de café con aroma intenso y acidez equilibrada.', 1.50, 5.00, 0.2500),
 (6, '834324234', NULL, 'fiojsdjkofa', 210, 'dkoaskdas', 1.20, 0.00, 0.2500);
 
 -- --------------------------------------------------------
@@ -983,12 +998,13 @@ CREATE TABLE `usuario` (
 
 INSERT INTO `usuario` (`documento`, `imagen`, `nombre`, `telefono`, `correo`, `contrasena`, `remember_token`, `id_tipo_usuario`, `id_estado`, `id_empresa`, `id_estado_trabajador`) VALUES
 (1006511653, 'usuarios/TPn5OuzBFcUMBMTb27MDcG8KrMQg0nUiQau4ExxO.png', 'Sebas Alvarez', '3103524334', 'sombrahdepaz76@gmail.com', '$2y$12$ShO2KxmULq2i87gGWluCyeAy/C5fhUJt26ceeK7Nt/BKxRxQl/DRa', '', 1, 3, '103455657789', 1),
+(1014213123, 'usuarios/sICnmlA80dmDyzCCTlWdiTuu0L3E8ZWJprj6JT3E.jpg', 'Cesar Esquivel', '32012423423', 'bambino1124@gmail.com', '$2y$12$VL4BnCKS9uYlRLv.HlLX3OO05lmL9zD06zRr9YMZsNhex0.D8i696', NULL, 3, 3, '988091212', 1),
 (1034345454, 'usuarios/ohtjEMXYnEtIKQV6uXFyhSx4giqPArWo1ABQmYEk.jpg', 'Javier Gonza', '3223243434', 'bastobrayan246@gmail.com', '$2y$12$IXfjWMnY6Ul6L6B0trEKK.6obRkullnh7zI5H/sAO3/nHgpsQWjqq', '', 1, 3, '876767657', 1),
-(1039253243, 'usuarios/6DbIrTZ3euiLErVZDzRTjao6nJEXJkhLXQTrjUvt.jpg', 'JORGE EL CURIOSO', '3201434344', 'dos1234@gmail.com', '$2y$12$b4ZvycvWA7M4KLYwj7uEKuIZnXA4z1OFt9QbRINpu52bwF/Xd1SAi', NULL, 3, 1, '988091212', 1),
+(1039253243, 'usuarios/6DbIrTZ3euiLErVZDzRTjao6nJEXJkhLXQTrjUvt.jpg', 'JORGE EL CURIOSO', '3201434344', 'dos1234@gmail.com', '$2y$12$b4ZvycvWA7M4KLYwj7uEKuIZnXA4z1OFt9QbRINpu52bwF/Xd1SAi', NULL, 3, 3, '988091212', 1),
 (1104921223, 'usuarios/fxyI259nxaEdNx9meFLTLFkpNIRGXnj7nyy2Z8PX.png', 'julio profe', '3291231212', 'reyesz2803@gmail.com', '$2y$12$NcwOItyOjXK4jwD7js4ri.mghmiFTcxGEzjyPNbzJGOZ6lWJQ7Eou', 'ugZieEAYrJPCWdRGu1SNvK3oxuBnFMDTgYLvlzfxWrUEKLPNSGX7dt0pTz7w', 1, 3, '834324234', 1),
 (1105461467, 'usuarios/DKOC3w5ZmiayRnVTgSMffJcI6AQhq9EdKtgtelwj.png', 'sebas', '3176060850', 'gasrciasebastian019@gmail.com', '$2y$12$vrnlIhSsriy/9tEB6L95eOc3SbwfjQhH6/DSuEM6tEPLe.glEsM1.', NULL, 3, 3, '834324234', 1),
 (1110722331, 'usuarios/useOl4EMIIlIsP0f8X6vMaoWPIjhX5Ml9tCDJ2bC.jpg', 'Didier', '3103527239', 'johsn@gmail.com', '$2y$12$4lNRhcjuBmkF25LyFWMLL.k5LlWvmOTnosiRabQoEgyG4ojfgk9am', '', 3, 3, '834324234', 1),
-(1110722345, 'usuarios/IEJRgrLlnPGGxJcaD5NFbzOnxj7DAVNxZXnoZjTr.jpg', 'Brayan Gutierez', '3029219231', 'sombrahdepaz@gmail.com', '$2y$12$ElMqaOG0Q30Gbt8q2RwPDudpzZPaIlhmEoA4Ldj0WQ6cW6zhcGAiK', 'ZvNG62UWZAdnu1aCOus0E5kcsylRs6ExJmHDCOQNuZ6MqstDveVTUCa1XJJg', 1, 3, '988091212', 1);
+(1110722345, 'usuarios/IEJRgrLlnPGGxJcaD5NFbzOnxj7DAVNxZXnoZjTr.jpg', 'Brayan Gutierez', '3029219231', 'sombrahdepaz@gmail.com', '$2y$12$ElMqaOG0Q30Gbt8q2RwPDudpzZPaIlhmEoA4Ldj0WQ6cW6zhcGAiK', '383Z2Sh9ZWVwT6iodTbf3OJutsuQEiRV4ibS7EA6i6tNynYM96Yjunnc8o0E', 1, 3, '988091212', 1);
 
 -- --------------------------------------------------------
 
@@ -1365,7 +1381,7 @@ ALTER TABLE `catalogo_suelos`
 -- AUTO_INCREMENT de la tabla `cosecha`
 --
 ALTER TABLE `cosecha`
-  MODIFY `id_cosecha` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id_cosecha` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT de la tabla `cultivo`
@@ -1389,13 +1405,13 @@ ALTER TABLE `detalle_producto_cultivo`
 -- AUTO_INCREMENT de la tabla `entrada_insumo`
 --
 ALTER TABLE `entrada_insumo`
-  MODIFY `id_entrada` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_entrada` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `estado`
 --
 ALTER TABLE `estado`
-  MODIFY `id_estado` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id_estado` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT de la tabla `estado_trabajador`
@@ -1419,7 +1435,7 @@ ALTER TABLE `fases_programadas`
 -- AUTO_INCREMENT de la tabla `insumo`
 --
 ALTER TABLE `insumo`
-  MODIFY `ID_insumo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `ID_insumo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de la tabla `insumo_cosecha`
@@ -1437,7 +1453,7 @@ ALTER TABLE `jobs`
 -- AUTO_INCREMENT de la tabla `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT de la tabla `producto`
@@ -1461,7 +1477,7 @@ ALTER TABLE `registro_trabajo`
 -- AUTO_INCREMENT de la tabla `riego`
 --
 ALTER TABLE `riego`
-  MODIFY `id_riego` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_riego` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `salario`

@@ -3,6 +3,86 @@
 @section('title', 'Control de Cosechas')
 
 @section('content')
+    <style>
+        /* Animaciones Globales de Barras - Versión Ultra-Visible */
+        @keyframes liquid-flow {
+            0% { background-position: 0% 50%; }
+            100% { background-position: -200% 50%; }
+        }
+
+        @keyframes water-surge {
+            0% { transform: translateX(-100%) skewX(-15deg); opacity: 0; }
+            50% { opacity: 0.8; } /* Opacidad aumentada */
+            100% { transform: translateX(250%) skewX(-15deg); opacity: 0; }
+        }
+
+        .animate-water-flow {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(
+                90deg, 
+                #0ea5e9, 
+                #3b82f6, 
+                #0ea5e9, 
+                #1d4ed8, 
+                #0ea5e9
+            );
+            background-size: 300% 100%;
+            animation: liquid-flow 3s linear infinite; /* Más rápida */
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2), 0 0 15px rgba(59, 130, 246, 0.6);
+        }
+
+        .animate-water-flow::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 60px; /* Más ancha */
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
+            animation: water-surge 2s ease-in-out infinite; /* Más rápida */
+            z-index: 2;
+        }
+
+        .animate-water-flow::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 600'%3E%3Cpath fill='%23ffffff' fill-opacity='0.2' d='M0 500c150-50 350-50 500 0s350 50 500 0V0H0z'/%3E%3C/svg%3E");
+            background-size: 400px 100%;
+            animation: liquid-flow 8s linear infinite reverse;
+            opacity: 0.4;
+        }
+
+        @keyframes growth-pulse {
+            0% { filter: brightness(1) drop-shadow(0 0 0px rgba(34,197,94,0)); }
+            50% { filter: brightness(1.3) drop-shadow(0 0 8px rgba(34,197,94,0.5)); }
+            100% { filter: brightness(1) drop-shadow(0 0 0px rgba(34,197,94,0)); }
+        }
+
+        .animate-growth-shimmer {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(90deg, #10b981, #22c55e, #10b981);
+            background-size: 200% 100%;
+            animation: liquid-flow 5s linear infinite, growth-pulse 3s ease-in-out infinite;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1), 0 0 10px rgba(16, 185, 129, 0.4);
+        }
+
+        .animate-growth-shimmer::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: water-surge 4s ease-in-out infinite;
+        }
+    </style>
     <div class="space-y-8 animate-in fade-in duration-700">
         <!-- Header con Stats -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -47,26 +127,24 @@
                         producción.</p>
                 </div>
 
-                <!-- Filtros (Visuales por ahora, adaptados de la solicitud del usuario) -->
+                <!-- Filtros dinámicos por fase -->
                 <div class="flex flex-wrap gap-2">
-                    <button
-                        class="px-4 py-2 bg-emerald-600 text-white rounded-full text-xs font-bold shadow-sm shadow-emerald-200">Todos</button>
-                    <button
-                        class="px-4 py-2 bg-white text-emerald-600 border border-emerald-100 rounded-full text-xs font-medium hover:bg-emerald-50 transition-colors flex items-center gap-2">
-                        <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span> En Crecimiento
-                    </button>
-                    <button
-                        class="px-4 py-2 bg-white text-emerald-600 border border-emerald-100 rounded-full text-xs font-medium hover:bg-emerald-50 transition-colors flex items-center gap-2">
-                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Listas para Cosechar
-                    </button>
-                    <button
-                        class="px-4 py-2 bg-white text-emerald-600 border border-emerald-100 rounded-full text-xs font-medium hover:bg-emerald-50 transition-colors flex items-center gap-2">
-                        <span class="w-1.5 h-1.5 rounded-full bg-gray-400"></span> Cosechadas
-                    </button>
-                    <button
-                        class="px-4 py-2 bg-white text-emerald-600 border border-emerald-100 rounded-full text-xs font-medium hover:bg-emerald-50 transition-colors flex items-center gap-2">
-                        <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Mantenimiento
-                    </button>
+                    <a href="{{ route('admin.cosechas.index') }}"
+                        class="px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all {{ !request('fase') ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-200 scale-105' : 'bg-white text-emerald-600 border border-emerald-100 hover:bg-emerald-50' }}">
+                        Todos
+                    </a>
+                    @foreach(['Siembra', 'Vegetativo', 'Floración', 'Llenado', 'Cosecha'] as $fase)
+                        <a href="{{ route('admin.cosechas.index', ['fase' => $fase]) }}"
+                            class="px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 {{ request('fase') == $fase ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-200 scale-105' : 'bg-white text-emerald-600 border border-emerald-100 hover:bg-emerald-50' }}">
+                            <span class="w-2 h-2 rounded-full {{ 
+                                $fase == 'Siembra' ? 'bg-blue-400' : (
+                                $fase == 'Vegetativo' ? 'bg-emerald-400' : (
+                                $fase == 'Floración' ? 'bg-rose-400' : (
+                                $fase == 'Llenado' ? 'bg-amber-400' : 'bg-orange-400'))) 
+                            }}"></span>
+                            {{ $fase }}
+                        </a>
+                    @endforeach
                 </div>
             </div>
 
@@ -181,7 +259,7 @@
                                             <span class="text-[9px] font-black text-emerald-900">{{ number_format($cosecha->porcentaje_crecimiento, 0) }}%</span>
                                         </div>
                                         <div class="w-full bg-emerald-50 rounded-full h-1.5 border border-emerald-100/50 overflow-hidden">
-                                            <div class="bg-gradient-to-r from-emerald-400 to-emerald-600 h-1.5 rounded-full transition-all duration-1000" style="width: {{ $cosecha->porcentaje_crecimiento }}%"></div>
+                                            <div class="animate-growth-shimmer h-1.5 rounded-full transition-all duration-1000" style="width: {{ $cosecha->porcentaje_crecimiento }}%"></div>
                                         </div>
                                     </div>
 
@@ -198,7 +276,7 @@
                                         </div>
                                         <div class="w-full bg-blue-50 rounded-full h-1.5 border border-blue-100/50 overflow-hidden relative">
                                             <!-- The blue bar -->
-                                            <div class="bg-gradient-to-r from-blue-400 to-blue-600 h-1.5 rounded-full transition-all duration-1000" style="width: {{ $cosecha->progreso_hidratacion }}%"></div>
+                                            <div class="animate-water-flow h-1.5 rounded-full transition-all duration-1000" style="width: {{ $cosecha->progreso_hidratacion }}%"></div>
                                         </div>
                                     </div>
                                 </div>

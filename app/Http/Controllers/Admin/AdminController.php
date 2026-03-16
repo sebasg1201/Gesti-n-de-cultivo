@@ -42,7 +42,7 @@ class AdminController extends Controller
 
         $stats['trabajos_realizados'] = \App\Models\FaseProgramada::whereHas('usuario', function ($q) use ($id_empresa) {
             $q->where('id_empresa', $id_empresa);
-        })->where('id_estado', 9)->count(); // 9 = Realizado
+        })->where('id_estado', 15)->count(); // 15 = Realizado
 
         return view('admin.inicio', compact('stats'));
     }
@@ -104,7 +104,12 @@ class AdminController extends Controller
             ->where('documento_trabajador', $usuario->documento)
             ->firstOrFail();
 
-        $tarea->update(['id_estado' => 9]); // 9 = Realizado
+        $tarea->update(['id_estado' => 15]); // 15 = Realizado
+
+        // Si es un riego, generar el siguiente automáticamente
+        if ($tipo === 'riego') {
+            $this->generarSiguienteRiego($tarea);
+        }
 
         return redirect()->route('trabajador.dashboard')->with('success', 'Tarea marcada como finalizada correctamente.');
     }
@@ -114,7 +119,7 @@ class AdminController extends Controller
         $usuario = auth()->guard('usuario')->user();
 
         $request->validate([
-            'id_estado' => 'required|integer|in:1,8,9'
+            'id_estado' => 'required|integer|in:1,8,15,16'
         ]);
 
         $model = $this->getTaskModel($tipo);
@@ -125,17 +130,29 @@ class AdminController extends Controller
             ->firstOrFail();
 
         // Evitar que el trabajador vuelva a un estado anterior
-        // Orden lógico: 1 (Pendiente) < 8 (En Proceso) < 9 (Realizado)
-        $ordenEstados = [1 => 1, 8 => 2, 9 => 3];
+        // Orden lógico: 1 (Pendiente) < 8 (En Proceso) < 15 (Realizado) / 16 (Perdida)
+        $ordenEstados = [1 => 1, 8 => 2, 15 => 3, 16 => 3];
         $nuevoEstado = (int)$request->id_estado;
         $estadoActual = (int)$tarea->id_estado;
 
-        if ($ordenEstados[$nuevoEstado] < $ordenEstados[$estadoActual]) {
+        if (isset($ordenEstados[$estadoActual]) && $ordenEstados[$nuevoEstado] < $ordenEstados[$estadoActual]) {
             return redirect()->back()->with('error', 'No puedes volver a un estado anterior de la tarea.');
         }
 
         $tarea->id_estado = $nuevoEstado;
         $tarea->save();
+
+        // Lógica adicional para riego (Siguiente asignación y aumento de días si es perdida)
+        if ($tipo === 'riego' && in_array($nuevoEstado, [15, 16])) {
+            $cosecha = $tarea->cosecha;
+            if ($cosecha) {
+                if ($nuevoEstado == 16) { // Perdida
+                    $fechaEstimada = \Carbon\Carbon::parse($cosecha->fecha_estimada)->addDays(2);
+                    $cosecha->update(['fecha_estimada' => $fechaEstimada->format('Y-m-d')]);
+                }
+                $this->generarSiguienteRiego($tarea);
+            }
+        }
 
         return redirect()->route('trabajador.dashboard')->with('success', 'Estado de la tarea actualizado correctamente.');
     }
@@ -156,6 +173,58 @@ class AdminController extends Controller
             case 'insumo': return 'id_insumo_cosecha';
             default: return 'id_fase';
         }
+    }
+
+    private function generarSiguienteRiego($riegoActual)
+    {
+        $cosecha = $riegoActual->cosecha;
+        if (!$cosecha || !$cosecha->frecuencia_riego_dias) return;
+
+        $hoy = \Carbon\Carbon::now();
+        $fechaProgramada = \Carbon\Carbon::parse($riegoActual->fecha_programada)->addDays($cosecha->frecuencia_riego_dias);
+
+        // Si la fecha programada ya pasó, ponerle para hoy o mañana
+        if ($fechaProgramada->isPast()) {
+            $fechaProgramada = $hoy->copy()->addDays($cosecha->frecuencia_riego_dias);
+        }
+
+        // Ya existe un riego programado para esa cosecha cerca de esa fecha?
+        $existe = \App\Models\Riego::where('id_cosecha', $cosecha->id_cosecha)
+            ->where('id_estado', 1)
+            ->whereDate('fecha_programada', $fechaProgramada->format('Y-m-d'))
+            ->exists();
+
+        if ($existe) return;
+
+        // Selección de trabajador (menor carga)
+        $trabajadores = \App\Models\Usuario::where('id_empresa', $cosecha->id_empresa)
+            ->where('id_tipo_usuario', 3)
+            ->where('id_estado', 1)
+            ->where('id_estado_trabajador', 1)
+            ->get();
+
+        $id_asignado = $riegoActual->documento_trabajador; // Default al mismo
+        if ($trabajadores->count() > 0) {
+            $cargas = [];
+            foreach ($trabajadores as $t) {
+                $cargas[$t->documento] = \App\Models\Riego::where('documento_trabajador', $t->documento)
+                    ->where('id_estado', 1)
+                    ->count();
+            }
+            asort($cargas);
+            reset($cargas);
+            $id_asignado = key($cargas);
+        }
+
+        \App\Models\Riego::create([
+            'cant_agua_apl' => $cosecha->litros_por_riego,
+            'id_tipo_riego' => $riegoActual->id_tipo_riego,
+            'id_cosecha' => $cosecha->id_cosecha,
+            'documento_trabajador' => $id_asignado,
+            'id_estado' => 1,
+            'fecha_programada' => $fechaProgramada->format('Y-m-d H:i:s'),
+            'observaciones' => $riegoActual->observaciones
+        ]);
     }
 
     public function tareasCategorizadas()

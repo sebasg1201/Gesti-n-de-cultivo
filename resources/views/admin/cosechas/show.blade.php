@@ -1,6 +1,86 @@
 @extends('layouts.admin')
 
 @section('content')
+    <style>
+        /* Animaciones Globales de Barras - Versión Ultra-Visible */
+        @keyframes liquid-flow {
+            0% { background-position: 0% 50%; }
+            100% { background-position: -200% 50%; }
+        }
+
+        @keyframes water-surge {
+            0% { transform: translateX(-100%) skewX(-15deg); opacity: 0; }
+            50% { opacity: 0.8; }
+            100% { transform: translateX(250%) skewX(-15deg); opacity: 0; }
+        }
+
+        .animate-water-flow {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(
+                90deg, 
+                #0ea5e9, 
+                #3b82f6, 
+                #0ea5e9, 
+                #1d4ed8, 
+                #0ea5e9
+            );
+            background-size: 300% 100%;
+            animation: liquid-flow 3s linear infinite;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2), 0 0 20px rgba(59, 130, 246, 0.6);
+        }
+
+        .animate-water-flow::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 60px;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
+            animation: water-surge 2s ease-in-out infinite;
+            z-index: 2;
+        }
+
+        .animate-water-flow::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 600'%3E%3Cpath fill='%23ffffff' fill-opacity='0.2' d='M0 500c150-50 350-50 500 0s350 50 500 0V0H0z'/%3E%3C/svg%3E");
+            background-size: 400px 100%;
+            animation: liquid-flow 10s linear infinite reverse;
+            opacity: 0.4;
+        }
+
+        @keyframes growth-pulse {
+            0% { filter: brightness(1) drop-shadow(0 0 0px rgba(34,197,94,0)); }
+            50% { filter: brightness(1.3) drop-shadow(0 0 8px rgba(34,197,94,0.5)); }
+            100% { filter: brightness(1) drop-shadow(0 0 0px rgba(34,197,94,0)); }
+        }
+
+        .animate-growth-shimmer {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(90deg, #10b981, #22c55e, #10b981);
+            background-size: 200% 100%;
+            animation: liquid-flow 5s linear infinite, growth-pulse 3s ease-in-out infinite;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1), 0 0 15px rgba(16, 185, 129, 0.4);
+        }
+
+        .animate-growth-shimmer::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: water-surge 4s ease-in-out infinite;
+        }
+    </style>
     <div class="min-h-[calc(100vh-4rem)] bg-emerald-50/30 p-4 md:p-8">
         <div class="max-w-7xl mx-auto space-y-8">
 
@@ -54,7 +134,7 @@
                         </div>
 
                         <h3 class="text-3xl font-black text-slate-800 leading-none mb-3">
-                            {{ $diasRestantes > 0 ? $diasRestantes . ' Días' : 'Lista' }}
+                            {{ $diasRestantes > 0 ? intval($diasRestantes) . ' Días' : 'Lista' }}
                         </h3>
 
                         <div
@@ -63,7 +143,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                             </svg>
-                            Faltan {{ $diasRestantes }} días
+                            Aproximadamente {{ floor($diasRestantes) }} días
                         </div>
                     </div>
                 </div>
@@ -121,7 +201,7 @@
                     <!-- Barra de progreso Track -->
                     <div class="h-4 w-full bg-slate-100 rounded-full overflow-hidden flex">
                         <!-- Segmentos de la barra (Visuales) -->
-                        <div class="h-full border-r-2 border-white bg-[#00FF00] transition-all duration-1000 ease-out"
+                        <div class="h-full border-r-2 border-white animate-growth-shimmer transition-all duration-1000 ease-out"
                             style="width: {{ $porcentaje }}%"></div>
                     </div>
 
@@ -176,7 +256,7 @@
                         <!-- Sombra o barra guía indicando la meta de crecimiento -->
                         <div class="absolute left-0 top-0 bottom-0 bg-slate-200/50" style="width: {{ $porcentaje }}%"></div>
                         <!-- Segmentos de la barra Azul -->
-                        <div class="h-full border-r-2 border-white bg-gradient-to-r from-cyan-400 to-blue-500 transition-all duration-1000 ease-out relative z-10 shadow-[0_0_10px_rgba(6,182,212,0.5)]"
+                        <div class="h-full border-r-2 border-white animate-water-flow transition-all duration-1000 ease-out relative z-10"
                             style="width: {{ $porcentajeHidratacion }}%"></div>
                     </div>
 
@@ -289,6 +369,10 @@
                                     @elseif($item->estado_historial == 'En Proceso')
                                         <span class="inline-flex items-center gap-1 text-[10px] font-bold text-amber-600 bg-amber-50 px-2 py-1 rounded-md">
                                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> En Proceso
+                                        </span>
+                                    @elseif($item->estado_historial == 'Perdida')
+                                        <span class="inline-flex items-center gap-1 text-[10px] font-bold text-rose-600 bg-rose-50 px-2 py-1 rounded-md">
+                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg> Perdida
                                         </span>
                                     @else
                                         <span class="inline-flex items-center gap-1 text-[10px] font-bold text-slate-500 bg-slate-50 px-2 py-1 rounded-md">
