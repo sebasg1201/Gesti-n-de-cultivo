@@ -19,19 +19,47 @@ class CultivoController extends Controller
         return Auth::guard('usuario')->user()->id_empresa;
     }
 
-    public function index()
+    public function index(Request $request)
     {
         $id_empresa = $this->getEmpresaId();
+        $id_semilla = $request->query('id_semilla');
 
-        // Obtener cosechas que no han sido terminadas (o todas si se prefiere, 
-        // pero centrado en lo que "se puede recolectar")
-        $cosechas = Cosecha::where('id_empresa', $id_empresa)
-            ->where('id_estado', '!=', 14) // No terminadas
-            ->with(['semilla', 'terreno'])
-            ->orderBy('fecha_siembra', 'desc')
-            ->get();
+        $semillaSeleccionada = null;
+        if ($id_semilla) {
+            $semillaSeleccionada = \App\Models\TipoSemilla::where('id_empresa', $id_empresa)->findOrFail($id_semilla);
+            
+            $cosechas = Cosecha::where('id_empresa', $id_empresa)
+                ->where('id_semilla', $id_semilla)
+                ->where('id_estado', '!=', 14) // No terminadas
+                ->with(['semilla', 'terreno'])
+                ->orderBy('fecha_siembra', 'desc')
+                ->get();
+                
+            return view('admin.cultivos.index', compact('cosechas', 'semillaSeleccionada'));
+        }
 
-        return view('admin.cultivos.index', compact('cosechas'));
+        // Si no hay semilla seleccionada, mostrar categorías (Variedades)
+        // Obtenemos solo las variedades que tienen cosechas activas
+        $categorias = \App\Models\TipoSemilla::where('id_empresa', $id_empresa)
+            ->whereHas('cosechas', function($q) {
+                $q->where('id_estado', '!=', 14);
+            })
+            ->withCount(['cosechas' => function($q) {
+                $q->where('id_estado', '!=', 14);
+            }])
+            ->get()
+            ->map(function($cat) {
+                // Buscar la primera cosecha con imagen para usarla como portada de la categoría
+                $cosechaConImagen = \App\Models\Cosecha::where('id_semilla', $cat->id_semilla)
+                    ->whereNotNull('imagenes')
+                    ->where('id_estado', '!=', 14)
+                    ->first();
+                
+                $cat->imagen_portada = $cosechaConImagen ? $cosechaConImagen->imagenes : null;
+                return $cat;
+            });
+
+        return view('admin.cultivos.index', compact('categorias'));
     }
 
     public function create(Request $request)

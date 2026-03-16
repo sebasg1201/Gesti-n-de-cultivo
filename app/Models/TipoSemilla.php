@@ -28,4 +28,9 @@ class TipoSemilla extends Model
     {
         return $this->belongsTo(CatalogoSemilla::class, 'id_catalogo');
     }
+
+    public function cosechas()
+    {
+        return $this->hasMany(Cosecha::class, 'id_semilla', 'id_semilla');
+    }
 }

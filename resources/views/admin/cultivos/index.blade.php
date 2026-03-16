@@ -8,10 +8,25 @@
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
                     <h1 class="text-3xl font-black text-emerald-950 flex items-center gap-3">
-                        Módulo de Recolección (Cultivo)
-                        <span class="px-3 py-1 bg-emerald-100 text-emerald-700 text-xs rounded-full uppercase tracking-widest font-bold">Producción</span>
+                        @if(isset($semillaSeleccionada))
+                            <a href="{{ route('admin.cultivos.index') }}" class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-emerald-600 shadow-sm border border-emerald-100 hover:bg-emerald-50 transition-colors">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                                </svg>
+                            </a>
+                            Producción: {{ $semillaSeleccionada->nombre_semilla }}
+                        @else
+                            Control de Producción
+                        @endif
+                        <span class="px-3 py-1 bg-emerald-100 text-emerald-700 text-xs rounded-full uppercase tracking-widest font-bold">Cultivo</span>
                     </h1>
-                    <p class="text-emerald-600 font-medium mt-1">Selecciona una siembra activa para ver su historial y registrar producción.</p>
+                    <p class="text-emerald-600 font-medium mt-1">
+                        @if(isset($semillaSeleccionada))
+                            Listado de lotes activos para esta variedad.
+                        @else
+                            Selecciona una variedad para gestionar sus recolecciones.
+                        @endif
+                    </p>
                 </div>
             </div>
 
@@ -22,88 +37,145 @@
                 </div>
             @endif
 
-            <!-- Grid de Cosechas Disponibles para Recolectar -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                @forelse($cosechas as $cosecha)
-                    <div class="group bg-white rounded-[2.5rem] overflow-hidden shadow-sm border border-emerald-50 hover:shadow-xl hover:shadow-emerald-100/50 transition-all duration-500 hover:-translate-y-1 flex flex-col">
-                        <!-- Imagen/Header -->
-                        <div class="relative h-48 overflow-hidden cursor-pointer" onclick="window.location.href='{{ route('admin.cultivos.cosechaDetail', $cosecha->id_cosecha) }}'">
-                            @if($cosecha->imagenes)
-                                <img src="{{ asset('uploads/' . $cosecha->imagenes) }}" alt="Cultivo" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                            @else
-                                <div class="w-full h-full bg-emerald-50 flex items-center justify-center text-emerald-200">
-                                    <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                    </svg>
+            @if(!isset($semillaSeleccionada))
+                <!-- VISTA A: CATEGORÍAS (VARIEDADES) - TARJETAS CON IMAGEN -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    @forelse($categorias as $cat)
+                        <div class="group bg-white rounded-[2.5rem] overflow-hidden shadow-sm border border-emerald-50 hover:shadow-xl hover:shadow-emerald-100/50 transition-all duration-500 hover:-translate-y-1 cursor-pointer flex flex-col" 
+                             onclick="window.location.href='{{ route('admin.cultivos.index', ['id_semilla' => $cat->id_semilla]) }}'">
+                            
+                            <!-- Imagen de la Categoría -->
+                            <div class="relative h-56 overflow-hidden">
+                                @if($cat->imagen_portada)
+                                    <img src="{{ asset('uploads/' . $cat->imagen_portada) }}" alt="{{ $cat->nombre_semilla }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                                @else
+                                    <div class="w-full h-full bg-emerald-50 flex items-center justify-center text-emerald-200">
+                                        <svg class="w-20 h-20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                    </div>
+                                @endif
+                                <div class="absolute inset-0 bg-gradient-to-t from-emerald-950/90 via-emerald-950/20 to-transparent"></div>
+                                <div class="absolute bottom-6 left-6 right-6">
+                                    <span class="px-3 py-1 bg-emerald-500 text-white text-[10px] font-black rounded-full uppercase tracking-widest mb-3 inline-block">
+                                        {{ $cat->cosechas_count }} Lotes Activos
+                                    </span>
+                                    <h3 class="text-3xl font-black text-white truncate">{{ $cat->nombre_semilla }}</h3>
                                 </div>
-                            @endif
-                            <div class="absolute inset-0 bg-gradient-to-t from-emerald-950/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-6">
-                                <span class="text-white font-black uppercase tracking-widest text-xs flex items-center gap-2">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                    </svg>
-                                    Ver Producción Detallada
-                                </span>
                             </div>
-                            <div class="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full shadow-sm border border-emerald-100">
-                                <span class="text-[10px] font-black text-emerald-700 uppercase">#{{ $cosecha->id_cosecha }}</span>
+
+                            <div class="p-8 flex-grow">
+                                <p class="text-sm font-bold text-slate-400 mb-6 line-clamp-2">{{ $cat->descripcion ?: 'Gestión integral de producción para esta variedad de cultivo.' }}</p>
+                                
+                                <div class="flex items-center justify-between mt-auto">
+                                    <div class="flex items-center text-emerald-600 font-black text-xs uppercase tracking-widest gap-2 group-hover:gap-4 transition-all">
+                                        Ver Producción
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                                        </svg>
+                                    </div>
+                                    <div class="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white transition-colors">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                        </svg>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-
-                        <!-- Contenido -->
-                        <div class="p-6 flex-grow flex flex-col">
-                            <div class="mb-4">
-                                <h3 class="text-xl font-black text-emerald-950 capitalize truncate">{{ $cosecha->semilla->nombre_semilla }}</h3>
-                                <p class="text-xs font-bold text-slate-400 flex items-center gap-1">
-                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                                    </svg>
-                                    {{ $cosecha->terreno->nombre }}
-                                </p>
-                            </div>
-
-                            <div class="grid grid-cols-2 gap-4 mb-6">
-                                <div class="bg-emerald-50/50 p-3 rounded-2xl">
-                                    <p class="text-[9px] font-black text-emerald-800 uppercase tracking-tighter">Siembra</p>
-                                    <p class="text-xs font-black text-emerald-600">{{ \Carbon\Carbon::parse($cosecha->fecha_siembra)->format('d M, y') }}</p>
-                                </div>
-                                <div class="bg-blue-50/50 p-3 rounded-2xl">
-                                    <p class="text-[9px] font-black text-blue-800 uppercase tracking-tighter">Cantidad</p>
-                                    <p class="text-xs font-black text-blue-600">{{ number_format($cosecha->Cantidad, 0) }} und</p>
-                                </div>
-                            </div>
-
-                            <div class="mt-auto pt-4 border-t border-emerald-50">
-                                <a href="{{ route('admin.cultivos.cosechaDetail', $cosecha->id_cosecha) }}" 
-                                   class="w-full flex items-center justify-center py-3 bg-emerald-50 text-emerald-700 font-black text-xs uppercase tracking-widest rounded-xl hover:bg-emerald-600 hover:text-white transition-all transform active:scale-95 group/btn">
-                                    Ver Detalle Producción
-                                    <svg class="w-4 h-4 ml-2 group-hover/btn:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                                    </svg>
-                                </a>
-                            </div>
+                    @empty
+                        <div class="col-span-full py-20 text-center bg-white rounded-[3rem] border-2 border-dashed border-emerald-100">
+                            <h3 class="text-xl font-black text-emerald-950">No hay variedades con producción activa</h3>
+                        </div>
+                    @endforelse
+                </div>
+            @else
+                <!-- VISTA B: LISTADO EN TABLA "HERMOSA" -->
+                <div class="bg-white rounded-[3rem] shadow-sm border border-emerald-50 overflow-hidden">
+                    <div class="p-8 border-b border-emerald-50 flex flex-col md:flex-row md:items-center justify-between gap-4 bg-emerald-50/10">
+                        <div>
+                            <h2 class="text-xl font-black text-emerald-950 capitalize">Listado de Lotes: {{ $semillaSeleccionada->nombre_semilla }}</h2>
+                            <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Gestión técnica y recolección por unidad</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                             <span class="px-4 py-2 bg-emerald-600 text-white text-xs font-black rounded-full shadow-lg shadow-emerald-100">
+                                {{ count($cosechas) }} LOTES ACTIVOS
+                             </span>
                         </div>
                     </div>
-                @empty
-                    <div class="col-span-full py-20 text-center bg-white rounded-[3rem] border-2 border-dashed border-emerald-100">
-                        <div class="w-24 h-24 bg-emerald-50 rounded-full flex items-center justify-center text-emerald-200 mx-auto mb-6">
-                            <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                            </svg>
-                        </div>
-                        <h3 class="text-xl font-black text-emerald-950">No hay cosechas activas</h3>
-                        <p class="text-slate-400 font-bold mt-2">Inicia una nueva siembra desde el módulo de Cosechas.</p>
-                        <a href="{{ route('admin.cosechas.index') }}" class="mt-6 inline-flex items-center gap-2 text-emerald-600 font-black uppercase text-xs tracking-widest hover:gap-4 transition-all">
-                            Ir a Siembras
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                            </svg>
-                        </a>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50/50">
+                                    <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Identificación</th>
+                                    <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Ubicación / Terreno</th>
+                                    <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Estado de Ciclo</th>
+                                    <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-emerald-50">
+                                @forelse($cosechas as $cosecha)
+                                    <tr class="hover:bg-emerald-50/30 transition-all duration-300 group">
+                                        <td class="px-8 py-6">
+                                            <div class="flex items-center gap-4">
+                                                <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center font-black text-sm shadow-sm border border-emerald-200">
+                                                    #{{ $cosecha->id_cosecha }}
+                                                </div>
+                                                <div>
+                                                    <p class="text-sm font-black text-emerald-950">Siembra {{ \Carbon\Carbon::parse($cosecha->fecha_siembra)->format('d/m/Y') }}</p>
+                                                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">{{ number_format($cosecha->Cantidad, 0) }} Plantas registradas</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-8 py-6">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                                    </svg>
+                                                </div>
+                                                <div>
+                                                    <p class="text-sm font-bold text-slate-700 capitalize group-hover:text-emerald-700 transition-colors">{{ $cosecha->terreno->nombre }}</p>
+                                                    <p class="text-[10px] text-slate-400 font-medium">Lote Principal</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-8 py-6">
+                                            @php 
+                                                $progreso = $cosecha->porcentaje_crecimiento;
+                                                $fase = $cosecha->fase_actual;
+                                            @endphp
+                                            <div class="w-48 space-y-2">
+                                                <div class="flex justify-between items-center text-[10px] font-black uppercase tracking-tighter">
+                                                    <span class="text-emerald-700">{{ $fase }}</span>
+                                                    <span class="text-slate-400">{{ number_format($progreso, 0) }}%</span>
+                                                </div>
+                                                <div class="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                                                    <div class="h-full bg-emerald-500 rounded-full transition-all duration-1000" style="width: {{ $progreso }}%"></div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-8 py-6">
+                                            <div class="flex items-center justify-center gap-2">
+                                                <a href="{{ route('admin.cultivos.cosechaDetail', $cosecha->id_cosecha) }}" 
+                                                   class="px-4 py-2 bg-emerald-50 text-emerald-700 text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-emerald-600 hover:text-white transition-all shadow-sm border border-emerald-100">
+                                                    Gestionar Producción
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="4" class="px-8 py-20 text-center">
+                                            <p class="text-slate-400 font-bold">No hay lotes activos para esta variedad.</p>
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
                     </div>
-                @endforelse
-            </div>
+                </div>
+            @endif
         </div>
     </div>
 @endsection
