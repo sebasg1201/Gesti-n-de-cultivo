@@ -4,23 +4,7 @@
 
 @section('content')
 <div class="space-y-8">
-    @if(session('success'))
-    <div class="bg-emerald-100 border-l-4 border-emerald-500 text-emerald-700 p-4 rounded-xl flex items-center shadow-sm animate-in fade-in slide-in-from-top-4 duration-300">
-        <svg class="w-6 h-6 mr-3 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-        </svg>
-        <span class="font-bold">{{ session('success') }}</span>
-    </div>
-    @endif
 
-    @if(session('error'))
-    <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-xl flex items-center shadow-sm">
-        <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-        <span class="font-medium">{{ session('error') }}</span>
-    </div>
-    @endif
 
     <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
         <!-- Search & Config Column -->

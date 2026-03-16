@@ -4,25 +4,7 @@
 
 @section('content')
     <div class="space-y-6">
-        @if(session('success'))
-            <div
-                class="bg-emerald-100 border-l-4 border-emerald-500 text-emerald-700 p-4 rounded-xl flex items-center shadow-sm">
-                <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                </svg>
-                <span class="font-medium">{{ session('success') }}</span>
-            </div>
-        @endif
 
-        @if(session('error'))
-            <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-xl flex items-center shadow-sm">
-                <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <span class="font-medium">{{ session('error') }}</span>
-            </div>
-        @endif
 
         <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
             <!-- Advanced Search & Config Column -->
@@ -168,6 +150,7 @@
                                     <th class="px-6 py-4">Especie y Variedad</th>
                                     <th class="px-6 py-4">Parámetros Técnicos</th>
                                     <th class="px-6 py-4">Productividad</th>
+                                    <th class="px-6 py-4">Stock</th>
                                     <th class="px-6 py-4 text-right">Acciones</th>
                                 </tr>
                             </thead>
@@ -212,6 +195,14 @@
                                                     <span class="text-[9px] font-bold">kg/m²</span></span>
                                             </div>
                                         </td>
+                                        <td class="px-6 py-4">
+                                            <div
+                                                class="bg-emerald-50 rounded-xl px-3 py-1 border border-emerald-100 inline-block">
+                                                <span
+                                                    class="text-xs font-black text-emerald-700">{{ $semilla->stock_actual ?? 0 }}
+                                                    <span class="text-[9px] font-bold">und</span></span>
+                                            </div>
+                                        </td>
                                         <td class="px-6 py-4 text-right">
                                             <div
                                                 class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
@@ -242,7 +233,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="5" class="px-6 py-20 text-center">
+                                        <td colspan="6" class="px-6 py-20 text-center">
                                             <p class="text-emerald-400 text-sm font-bold italic">Su inventario está vacío.
                                                 Comience agregando variedades desde el buscador lateral.</p>
                                         </td>

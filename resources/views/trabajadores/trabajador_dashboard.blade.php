@@ -218,19 +218,19 @@
 
                     <div class="pt-8 border-t border-gray-100">
                         <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-6 text-center">Gestionar Progreso</p>
-                        <form id="modalFormEstado" method="POST" class="max-w-md mx-auto">
+                        <form id="modalFormEstado" method="POST" class="max-w-md mx-auto text-center" enctype="multipart/form-data">
                             @csrf
-                            <div class="relative group">
-                                <select name="id_estado" id="modalSelectEstado" onchange="this.form.submit()" 
-                                        class="w-full appearance-none bg-gray-900 text-white font-black py-6 px-10 rounded-[2rem] focus:outline-none transition-all cursor-pointer text-center text-lg hover:bg-black shadow-2xl shadow-gray-300">
-                                    <option value="1">Marcar como Pendiente</option>
-                                    <option value="8">Marcar En Proceso</option>
-                                    <option value="9">Finalizar Trabajo</option>
-                                </select>
-                                <div class="absolute right-8 top-1/2 -translate-y-1/2 pointer-events-none text-emerald-400">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7" /></svg>
-                                </div>
+                            <input type="hidden" name="id_estado" value="9">
+                            
+                            <div class="mb-6 text-left">
+                                <label for="evidencia_foto" class="block text-[10px] font-black text-emerald-600 uppercase tracking-widest ml-1 mb-2">Evidencia Fotográfica Requerida</label>
+                                <input type="file" name="evidencia_foto" id="evidencia_foto" accept="image/*" required class="w-full text-sm text-gray-500 file:mr-4 file:py-3 file:px-6 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 transition-all border border-gray-200 rounded-xl p-2 bg-white">
+                                <p class="text-[9px] text-gray-400 mt-2 ml-1">Debe adjuntar una foto del trabajo realizado (< 2MB).</p>
                             </div>
+
+                            <button type="submit" id="btnFinalizarTarea" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black py-5 px-10 rounded-[2rem] focus:outline-none transition-all cursor-pointer text-center text-lg shadow-2xl shadow-emerald-200/50">
+                                Finalizar Trabajo
+                            </button>
                         </form>
                     </div>
                 </div>
@@ -268,23 +268,46 @@
         document.getElementById('modalUbicacion').innerText = ds.ubicacion || 'N/A';
         
         const modalForm = document.getElementById('modalFormEstado');
-        const modalSelect = document.getElementById('modalSelectEstado');
+        const btnFinalizar = document.getElementById('btnFinalizarTarea');
         if (modalForm && ds.updateUrl) {
             modalForm.action = ds.updateUrl;
             const currentStatus = parseInt(ds.idEstado || '1');
-            modalSelect.value = currentStatus;
 
-            // Bloquear estados anteriores
-            // Orden: 1 (Pendiente) -> 8 (En Proceso) -> 9 (Realizado)
-            const order = { '1': 1, '8': 2, '9': 3 };
-            Array.from(modalSelect.options).forEach(option => {
-                const optionValue = option.value;
-                if (order[optionValue] < order[currentStatus]) {
-                    option.disabled = true;
-                } else {
-                    option.disabled = false;
-                }
-            });
+            if (currentStatus === 9) {
+                btnFinalizar.disabled = true;
+                btnFinalizar.innerText = 'Trabujo Finalizado';
+                btnFinalizar.classList.remove('bg-emerald-600', 'hover:bg-emerald-700', 'shadow-emerald-200/50');
+                btnFinalizar.classList.add('bg-gray-300', 'text-gray-500', 'cursor-not-allowed', 'shadow-none');
+            } else {
+                btnFinalizar.disabled = false;
+                btnFinalizar.innerText = 'Finalizar Trabajo';
+                btnFinalizar.classList.remove('bg-gray-300', 'text-gray-500', 'cursor-not-allowed', 'shadow-none');
+                btnFinalizar.classList.add('bg-emerald-600', 'hover:bg-emerald-700', 'text-white', 'shadow-emerald-200/50');
+            }
+
+            if (currentStatus === 1) {
+                const csrfToken = document.querySelector('input[name="_token"]').value;
+                const formData = new FormData();
+                formData.append('_token', csrfToken);
+                formData.append('id_estado', 8);
+
+                fetch(ds.updateUrl, {
+                    method: 'POST',
+                    body: formData,
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                }).then(response => {
+                    if (response.ok) {
+                        btn.dataset.idEstado = '8';
+                        btn.dataset.estado = 'En Proceso';
+                        
+                        const cardTag = btn.closest('.group\\/card').querySelector('span.rounded-full');
+                        if (cardTag) {
+                            cardTag.innerText = 'En Proceso';
+                            cardTag.className = 'px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest shadow-sm bg-sky-100 text-sky-700 border border-sky-200';
+                        }
+                    }
+                }).catch(e => console.error(e));
+            }
         }
 
         const modal = document.getElementById('modalTarea');

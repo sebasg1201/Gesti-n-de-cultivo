@@ -1,0 +1,10 @@
+[
+    "id_registro_trabajo",
+    "id_insumo_cosecha",
+    "documento_trabajador",
+    "fecha_trabajada",
+    "foto_evidencia",
+    "estado_aprobacion",
+    "observacion",
+    "created_at"
+]

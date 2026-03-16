@@ -24,27 +24,117 @@ class AdminController extends Controller
 
         $id_empresa = $usuario->id_empresa;
 
-        $stats = [
-            'cosechas' => \App\Models\Cosecha::where('id_empresa', $id_empresa)->count(),
-            'riegos' => \App\Models\TipoRiego::count(),
-            'semillas' => \App\Models\TipoSemilla::where('id_empresa', $id_empresa)->count(),
-            'usuarios' => \App\Models\Usuario::where('id_empresa', $id_empresa)->count(),
+        // 1. Trabajadores Activos
+        $totalTrabajadores = \App\Models\Usuario::where('id_empresa', $id_empresa)->where('id_tipo_usuario', 3)->count();
+        $trabajadoresActivos = \App\Models\Usuario::where('id_empresa', $id_empresa)
+            ->where('id_tipo_usuario', 3)
+            ->where('id_estado_trabajador', 1) // Asumiendo 1 = Activo
+            ->count();
+        
+        // 2. Alertas Urgentes (Soporte pendiente)
+        $alertasUrgentes = \App\Models\Soporte::where('id_empresa', $id_empresa)
+            ->where('estado', 'Pendiente')
+            ->count();
+
+        // 3. Cosechas en Proceso
+        $cosechasEnProceso = \App\Models\Cosecha::where('id_empresa', $id_empresa)->count(); // Simplified for now
+            
+        // 4. Progreso Tareas (Tareas de hoy completadas vs totales)
+        $hoy = \Carbon\Carbon::now()->format('Y-m-d');
+        
+        $tareasHoyTotal = \App\Models\FaseProgramada::whereHas('cosecha', function ($q) use ($id_empresa) {
+            $q->where('id_empresa', $id_empresa);
+        })->whereDate('fecha_programada', $hoy)->count();
+        
+        $tareasHoyCompletadas = \App\Models\FaseProgramada::whereHas('cosecha', function ($q) use ($id_empresa) {
+            $q->where('id_empresa', $id_empresa);
+        })->whereDate('fecha_programada', $hoy)->where('id_estado', 9)->count(); // 9 = Realizado
+        
+        $progresoTareas = $tareasHoyTotal > 0 ? round(($tareasHoyCompletadas / $tareasHoyTotal) * 100) : 0;
+
+        // 5. Estado de Cultivos (primeros 4 para la tarjeta)
+        $cultivos = \App\Models\Cosecha::with(['terreno', 'semilla'])
+            ->where('id_empresa', $id_empresa)
+            ->take(2)
+            ->get();
+
+        // 6. Seguimiento de Equipo (Actividad reciente)
+        $equipo = \App\Models\Usuario::where('id_empresa', $id_empresa)
+            ->where('id_tipo_usuario', 3)
+            ->with(['estadoTrabajador'])
+            ->take(5)
+            ->get();
+            
+        foreach ($equipo as $miembro) {
+            $ultimaFase = \App\Models\FaseProgramada::where('documento_trabajador', $miembro->documento)
+                ->orderBy('fecha_programada', 'desc')
+                ->first();
+                
+            $miembro->actividad_reciente = $ultimaFase ? $ultimaFase->descripcion : 'Sin actividad reciente';
+            $miembro->tiempo_actividad = $ultimaFase ? \Carbon\Carbon::parse($ultimaFase->fecha_programada)->diffForHumans() : '';
+            // Determine active status mock if not set
+            $miembro->is_active = $miembro->id_estado_trabajador == 1; 
+        }
+
+        // 7. Alertas (Lista)
+        $listaAlertas = \App\Models\Soporte::where('id_empresa', $id_empresa)
+            ->where('estado', 'Pendiente')
+            ->orderBy('created_at', 'desc')
+            ->take(3)
+            ->get();
+
+        // 8. Tareas de Hoy (Lista para el sidebar) - EXACTAMENTE HOY
+        $listaTareasHoy = \App\Models\FaseProgramada::with(['usuario'])
+            ->whereHas('cosecha', function ($q) use ($id_empresa) {
+                $q->where('id_empresa', $id_empresa);
+            })->whereDate('fecha_programada', $hoy)
+            ->orderBy('fecha_programada', 'asc')
+            ->take(4)
+            ->get();
+
+        // 9. Estado del Terreno (Mock data with real context combined)
+        // Intentar obtener el terreno de la primera cosecha activa
+        $cosechaActiva = \App\Models\Cosecha::with('terreno.tipoSuelo')->where('id_empresa', $id_empresa)->first();
+        $humedad = 70; // Default
+        $ph = 6.5;    // Default
+        if ($cosechaActiva && isset($cosechaActiva->terreno) && isset($cosechaActiva->terreno->tipoSuelo)) {
+            // Ajustar valores basados en el tipo de suelo
+            $tipoSuelo = strtolower($cosechaActiva->terreno->tipoSuelo->nombre ?? '');
+            if (str_contains($tipoSuelo, 'arenoso')) { $humedad = 40; $ph = 7.0; }
+            elseif (str_contains($tipoSuelo, 'arcilloso')) { $humedad = 85; $ph = 5.5; }
+            elseif (str_contains($tipoSuelo, 'franco')) { $humedad = 65; $ph = 6.8; }
+            
+            // Simular impacto del ultimo riego
+            $ultimoRiego = \App\Models\Riego::where('id_cosecha', $cosechaActiva->id_cosecha)
+                ->where('id_estado', 9)
+                ->orderBy('fecha_programada', 'desc')->first();
+            if ($ultimoRiego && isset($ultimoRiego->fecha_programada) && \Carbon\Carbon::parse($ultimoRiego->fecha_programada)->diffInDays(now()) < 2) {
+                $humedad = min(100, $humedad + 20); // Aumentar humedad temporalmente
+            }
+        }
+        
+        $estadoTerreno = [
+            'humedad' => $humedad,
+            'ph' => $ph,
+            'nitrogeno' => rand(30, 60), // Mock NPK
+            'fosforo' => rand(15, 30),
+            'potasio' => rand(80, 150)
         ];
 
-        // Trabajos agrupados por estado
-        $stats['trabajos_pendientes'] = \App\Models\FaseProgramada::whereHas('usuario', function ($q) use ($id_empresa) {
-            $q->where('id_empresa', $id_empresa);
-        })->where('id_estado', 1)->count(); // 1 = Pendiente
+        $stats = [
+            'trabajadores_activos' => $trabajadoresActivos,
+            'total_trabajadores' => $totalTrabajadores,
+            'alertas_urgentes' => $alertasUrgentes,
+            'cosechas_en_proceso' => $cosechasEnProceso,
+            'progreso_tareas' => $progresoTareas,
+            'cultivos' => $cultivos,
+            'equipo' => $equipo,
+            'lista_alertas' => $listaAlertas,
+            'lista_tareas_hoy' => $listaTareasHoy,
+            'estado_terreno' => $estadoTerreno,
+        ];
 
-        $stats['trabajos_en_proceso'] = \App\Models\FaseProgramada::whereHas('usuario', function ($q) use ($id_empresa) {
-            $q->where('id_empresa', $id_empresa);
-        })->where('id_estado', 8)->count(); // 8 = En Proceso
-
-        $stats['trabajos_realizados'] = \App\Models\FaseProgramada::whereHas('usuario', function ($q) use ($id_empresa) {
-            $q->where('id_empresa', $id_empresa);
-        })->where('id_estado', 9)->count(); // 9 = Realizado
-
-        return view('admin.inicio', compact('stats'));
+        return view('admin.inicio', compact('stats', 'usuario'));
     }
 
     public function configuracion()
@@ -134,8 +224,22 @@ class AdminController extends Controller
             return redirect()->back()->with('error', 'No puedes volver a un estado anterior de la tarea.');
         }
 
-        $tarea->id_estado = $nuevoEstado;
-        $tarea->save();
+        $updateData = ['id_estado' => $nuevoEstado];
+
+        // Manejo de la foto de evidencia si el estado es Finalizado (9)
+        if ($nuevoEstado == 9 && $request->hasFile('evidencia_foto')) {
+            $file = $request->file('evidencia_foto');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('uploads'), $filename);
+            $updateData['evidencia_foto'] = $filename;
+        }
+
+        // Dado que algunos de los modelos no tienen el $primaryKey configurado correctamente,
+        // al fallar $tarea->save(), utilizamos directametne la tabla mediante DB::table()
+        \Illuminate\Support\Facades\DB::table($tarea->getTable())
+            ->where($idField, $id)
+            ->where('documento_trabajador', $usuario->documento)
+            ->update($updateData);
 
         return redirect()->route('trabajador.dashboard')->with('success', 'Estado de la tarea actualizado correctamente.');
     }
@@ -333,7 +437,8 @@ class AdminController extends Controller
                     'descripcion' => $fase->descripcion,
                     'cultivo' => $nombreCultivo,
                     'resumen' => $resumenFase,
-                    'estado' => $fase->id_estado
+                    'estado' => $fase->id_estado,
+                    'foto_url' => $fase->evidencia_foto ? asset('uploads/' . $fase->evidencia_foto) : null
                 ]
             ];
         }
@@ -349,7 +454,8 @@ class AdminController extends Controller
                 'extendedProps' => [
                     'tipo' => 'riego',
                     'descripcion' => $riego->observaciones,
-                    'estado' => $riego->id_estado
+                    'estado' => $riego->id_estado,
+                    'foto_url' => $riego->evidencia_foto ? asset('uploads/' . $riego->evidencia_foto) : null
                 ]
             ];
         }
@@ -365,7 +471,8 @@ class AdminController extends Controller
                 'extendedProps' => [
                     'tipo' => 'insumo',
                     'descripcion' => 'Aplicación de ' . ($insumo->insumo->Nombre ?? 'insumo'),
-                    'estado' => $insumo->id_estado
+                    'estado' => $insumo->id_estado,
+                    'foto_url' => $insumo->evidencia_foto ? asset('uploads/' . $insumo->evidencia_foto) : null
                 ]
             ];
         }

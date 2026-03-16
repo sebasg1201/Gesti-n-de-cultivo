@@ -223,6 +223,17 @@
                                         ${props.resumen || 'Sigue las instrucciones estándar para esta fase.'}
                                     </p>
                                 </div>
+                                ${props.foto_url ? `
+                                    <div class="pt-3 mt-3 border-t border-blue-100/30">
+                                        <p class="text-[9px] font-black text-blue-400 uppercase tracking-widest mb-2">Evidencia Fotográfica</p>
+                                        <div class="relative group cursor-pointer overflow-hidden rounded-xl border border-blue-200 shadow-sm" onclick="viewPhoto('${props.foto_url}')">
+                                            <img src="${props.foto_url}" class="w-full h-24 object-cover group-hover:scale-105 transition-transform duration-500">
+                                            <div class="absolute inset-0 bg-blue-900/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <span class="bg-white text-blue-700 px-3 py-1 rounded-full text-[10px] font-black shadow-lg">Ver Foto</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ` : ''}
                             </div>
                             <div class="flex items-center gap-2 px-2">
                                 <div class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></div>
@@ -248,8 +259,13 @@
                             </div>
                             ${canRegister ? `
                                 <button onclick="openRegistroModal(null, '${props.id_original}', '${ev.title}')" 
-                                        class="bg-white text-${colorClass}-600 p-3 rounded-xl border border-${colorClass}-100 hover:bg-${colorClass}-600 hover:text-white transition-all shadow-sm" title="Registrar Trabajo">
+                                        class="bg-white text-${colorClass}-600 p-3 rounded-xl border border-${colorClass}-100 hover:bg-${colorClass}-600 hover:text-white transition-all shadow-sm flex-shrink-0" title="Registrar Trabajo">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                </button>
+                            ` : ''}
+                            ${props.foto_url ? `
+                                <button onclick="viewPhoto('${props.foto_url}')" class="bg-white text-${colorClass}-600 p-3 rounded-xl border border-${colorClass}-100 hover:bg-${colorClass}-600 hover:text-white transition-all shadow-sm flex-shrink-0" title="Ver Evidencia">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                                 </button>
                             ` : ''}
                         </div>

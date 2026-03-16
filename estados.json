@@ -1,0 +1,50 @@
+[
+    {
+        "id_estado": 1,
+        "nombre_estado": "pendiente"
+    },
+    {
+        "id_estado": 2,
+        "nombre_estado": "bloqueada"
+    },
+    {
+        "id_estado": 3,
+        "nombre_estado": "activa"
+    },
+    {
+        "id_estado": 5,
+        "nombre_estado": "aprobada"
+    },
+    {
+        "id_estado": 6,
+        "nombre_estado": "ocupado"
+    },
+    {
+        "id_estado": 7,
+        "nombre_estado": "disponible"
+    },
+    {
+        "id_estado": 8,
+        "nombre_estado": "suspendido"
+    },
+    {
+        "id_estado": 10,
+        "nombre_estado": "Siembra"
+    },
+    {
+        "id_estado": 11,
+        "nombre_estado": "Vegetativo"
+    },
+    {
+        "id_estado": 12,
+        "nombre_estado": "Floraci\u00f3n"
+    },
+    {
+        "id_estado": 13,
+        "nombre_estado": "Llenado"
+    },
+    {
+        "id_estado": 14,
+        "nombre_estado": "Cosecha"
+    }
+]
