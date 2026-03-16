@@ -173,7 +173,7 @@ class CosechaController extends Controller
         $id_empresa = $this->getEmpresaId();
 
         $cosecha = Cosecha::where('id_empresa', $id_empresa)
-            ->with(['terreno', 'terreno.tipoSuelo', 'semilla'])
+            ->with(['terreno', 'terreno.tipoSuelo', 'semilla', 'cultivos.detalles.producto', 'cultivos.trabajador'])
             ->findOrFail($id);
 
         $fechaSiembra = \Carbon\Carbon::parse($cosecha->fecha_siembra);

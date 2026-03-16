@@ -86,4 +86,9 @@ class Cosecha extends Model
         if ($porcentaje < 90) return 'Llenado';
         return 'Cosecha';
     }
+
+    public function cultivos()
+    {
+        return $this->hasMany(Cultivo::class, 'id_cosecha', 'id_cosecha');
+    }
 }
