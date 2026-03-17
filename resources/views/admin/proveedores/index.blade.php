@@ -28,6 +28,28 @@
                         </button>
                     </div>
 
+                    <!-- Dashboard Button -->
+                    <div class="px-8 py-4 bg-emerald-50/30 border-b border-emerald-50 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="p-2 bg-emerald-600 rounded-lg text-white">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="text-xs font-black text-emerald-950 uppercase tracking-wider">Monitor de Entradas</h4>
+                                <p class="text-[9px] font-bold text-emerald-500 uppercase tracking-tighter">Resumen financiero y logístico</p>
+                            </div>
+                        </div>
+                        <a href="{{ route('admin.proveedores.entradas_dashboard') }}" 
+                            class="px-4 py-2 bg-white text-emerald-600 text-[10px] font-black uppercase tracking-widest rounded-xl border-2 border-emerald-100 hover:border-emerald-600 transition-all flex items-center gap-2">
+                            Ver Dashboard
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                            </svg>
+                        </a>
+                    </div>
+
                     <!-- Search Bar -->
                     <div class="px-8 py-4 bg-white border-b border-emerald-50">
                         <form action="{{ route('admin.proveedores.index') }}" method="GET" class="relative group">
@@ -472,7 +494,10 @@
                             listContainer.innerHTML = '<div class="text-center py-10 opacity-30 italic text-sm">Sin historial de entradas.</div>';
                             return;
                         }
-                        data.forEach(item => {
+
+                        // Limit to top 3 and show "Ver más"
+                        const top3 = data.slice(0, 3);
+                        top3.forEach(item => {
                             const date = new Date(item.fecha_entrada).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' });
                             const isSemilla = !!item.semilla;
                             const nombre = isSemilla ? item.semilla.nombre_semilla : (item.insumo ? item.insumo.Nombre : 'Desconocido');
@@ -491,6 +516,14 @@
                                             `;
                             listContainer.appendChild(div);
                         });
+
+                        if (data.length > 3) {
+                            const moreBtn = document.createElement('a');
+                            moreBtn.href = `/admin/proveedores/entradas-dashboard?proveedor=${id}`;
+                            moreBtn.className = "block w-full text-center py-4 text-xs font-black text-emerald-600 uppercase tracking-widest border-2 border-emerald-100 rounded-2xl hover:bg-emerald-50 transition-all mt-4 mb-8";
+                            moreBtn.innerHTML = `Ver historial completo`;
+                            listContainer.appendChild(moreBtn);
+                        }
                     });
             }
 

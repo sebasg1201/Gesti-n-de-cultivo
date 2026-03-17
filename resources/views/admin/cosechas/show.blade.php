@@ -192,8 +192,32 @@
                             Fase actual: <span class="uppercase tracking-wide">{{ $faseActual }}</span>
                         </p>
                     </div>
-                    <div class="text-3xl font-black text-slate-800">
-                        {{ number_format($porcentaje, 0) }}%
+                    <div class="flex items-center gap-4">
+                            <div class="flex flex-col md:flex-row gap-3">
+                                <a href="{{ route('admin.cultivos.create', ['id_cosecha' => $cosecha->id_cosecha]) }}" 
+                                   class="inline-flex items-center gap-2 px-6 py-2 bg-emerald-600 text-white font-black rounded-xl shadow-lg shadow-emerald-200 hover:bg-emerald-700 hover:-translate-y-0.5 transition-all text-sm uppercase tracking-wider animate-bounce">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                    </svg>
+                                    Cosechar Ahora
+                                </a>
+
+                                @if ($cosecha->id_estado != 14)
+                                    <form action="{{ route('admin.cultivos.finalize', $cosecha->id_cosecha) }}" method="POST" onsubmit="return confirm('¿Estás seguro de finalizar esta cosecha? Esto liberará el terreno para una nueva siembra.')">
+                                        @csrf
+                                        <button type="submit" 
+                                                class="inline-flex items-center gap-2 px-6 py-2 bg-slate-800 text-white font-black rounded-xl shadow-lg shadow-slate-200 hover:bg-slate-900 hover:-translate-y-0.5 transition-all text-sm uppercase tracking-wider">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                            </svg>
+                                            Finalizar Cosecha
+                                        </button>
+                                    </form>
+                                @endif
+                            </div>
+                        <div class="text-3xl font-black text-slate-800">
+                            {{ number_format($porcentaje, 0) }}%
+                        </div>
                     </div>
                 </div>
 
@@ -270,7 +294,7 @@
                 </div>
             </div>
 
-            <!-- Información Adicional (Opcional, estructurado abajo si se requiere) -->
+            <!-- Detalles Técnicos y Multimedia -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <div class="bg-white rounded-[2rem] p-8 shadow-sm border border-emerald-50">
                     <h4 class="font-black text-emerald-950 uppercase tracking-widest text-sm mb-6">Detalles Técnicos</h4>
@@ -285,26 +309,21 @@
                         </li>
                         <li class="flex justify-between items-center border-b border-emerald-50 pb-3">
                             <span class="text-sm font-medium text-slate-500">Cantidad Plantada</span>
-                            <span class="text-sm font-bold text-slate-800">{{ number_format($cosecha->Cantidad, 0) }}
-                                und</span>
+                            <span class="text-sm font-bold text-slate-800">{{ number_format($cosecha->Cantidad, 0) }} und</span>
                         </li>
                         <li class="flex justify-between items-center border-b border-emerald-50 pb-3">
                             <span class="text-sm font-medium text-slate-500">Rendimiento Esperado</span>
-                            <span
-                                class="text-sm font-bold text-emerald-600">{{ number_format($cosecha->produccion_estimada, 1) }}
-                                kg</span>
+                            <span class="text-sm font-bold text-emerald-600">{{ number_format($cosecha->produccion_estimada, 1) }} kg</span>
                         </li>
                     </ul>
                 </div>
 
-                <div
-                    class="bg-white rounded-[2rem] p-8 shadow-sm border border-emerald-50 flex flex-col items-center justify-center text-center">
+                <div class="bg-white rounded-[2rem] p-8 shadow-sm border border-emerald-50 flex flex-col items-center justify-center text-center">
                     @if($cosecha->imagenes)
                         <img src="{{ asset('uploads/' . $cosecha->imagenes) }}" alt="Foto Cultivo"
                             class="w-full max-h-64 object-cover rounded-2xl shadow-sm mb-4">
                     @else
-                        <div
-                            class="w-24 h-24 bg-emerald-50 rounded-full flex items-center justify-center text-emerald-300 mb-4">
+                        <div class="w-24 h-24 bg-emerald-50 rounded-full flex items-center justify-center text-emerald-300 mb-4">
                             <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                                     d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />

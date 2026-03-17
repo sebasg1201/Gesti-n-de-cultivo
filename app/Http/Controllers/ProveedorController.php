@@ -143,6 +143,147 @@ class ProveedorController extends Controller
         return redirect()->route('admin.proveedores.index')->with('success', 'Proveedor actualizado correctamente.');
     }
 
+    public function entradasDashboard(Request $request)
+    {
+        $id_empresa = $this->getEmpresaId();
+        
+        // Month calculations
+        $currentMonth = now()->month;
+        $currentYear = now()->year;
+        $lastMonth = now()->subMonth()->month;
+        $lastMonthYear = now()->subMonth()->year;
+
+        $selectedProviderId = $request->input('proveedor');
+
+        $statsQuery = EntradaInsumo::where('id_empresa', $id_empresa);
+
+        if ($selectedProviderId) {
+            $statsQuery->where('id_proveedor', $selectedProviderId);
+
+            $totalEntradasMes = (clone $statsQuery)->count();
+            $valorTotalRecibido = (clone $statsQuery)->sum(DB::raw('cantidad_recibida * precio_unitario'));
+            $porcentajeCrecimiento = 0;
+            $promedioPorEntrada = $totalEntradasMes > 0 ? $valorTotalRecibido / $totalEntradasMes : 0;
+
+            $providerRef = Proveedor::find($selectedProviderId);
+            $proveedorMasActivo = (object)[
+                'nombre' => $providerRef->nombre ?? 'N/A',
+                'total' => $totalEntradasMes,
+                'is_selection' => true
+            ];
+        } else {
+            $totalEntradasMes = (clone $statsQuery)
+                ->whereMonth('fecha_entrada', $currentMonth)
+                ->whereYear('fecha_entrada', $currentYear)
+                ->count();
+
+            $totalEntradasMesAnterior = (clone $statsQuery)
+                ->whereMonth('fecha_entrada', $lastMonth)
+                ->whereYear('fecha_entrada', $lastMonthYear)
+                ->count();
+
+            $porcentajeCrecimiento = 0;
+            if ($totalEntradasMesAnterior > 0) {
+                $porcentajeCrecimiento = (($totalEntradasMes - $totalEntradasMesAnterior) / $totalEntradasMesAnterior) * 100;
+            } elseif ($totalEntradasMes > 0) {
+                $porcentajeCrecimiento = 100;
+            }
+
+            $proveedorMasActivo = DB::table('entrada_insumo')
+                ->join('proveedor', 'entrada_insumo.id_proveedor', '=', 'proveedor.id_proveedor')
+                ->select('proveedor.nombre', DB::raw('count(*) as total'))
+                ->where('entrada_insumo.id_empresa', $id_empresa)
+                ->whereMonth('entrada_insumo.fecha_entrada', $currentMonth)
+                ->whereYear('entrada_insumo.fecha_entrada', $currentYear)
+                ->groupBy('proveedor.id_proveedor', 'proveedor.nombre')
+                ->orderByDesc('total')
+                ->first();
+
+            $valorTotalRecibido = (clone $statsQuery)
+                ->whereMonth('fecha_entrada', $currentMonth)
+                ->whereYear('fecha_entrada', $currentYear)
+                ->sum(DB::raw('cantidad_recibida * precio_unitario'));
+
+            $promedioPorEntrada = $totalEntradasMes > 0 ? $valorTotalRecibido / $totalEntradasMes : 0;
+        }
+
+        $promedioPorEntrada = $totalEntradasMes > 0 ? $valorTotalRecibido / $totalEntradasMes : 0;
+
+        $query = EntradaInsumo::with(['proveedor', 'insumo', 'semilla'])
+            ->where('id_empresa', $id_empresa);
+
+        if ($request->filled('proveedor')) {
+            $query->where('id_proveedor', $request->proveedor);
+            $entradas = $query->orderBy('fecha_entrada', 'desc')->paginate(15);
+            $isGrouped = false;
+        } else {
+            // Group by provider to show each person only once
+            $entradas = DB::table('entrada_insumo')
+                ->join('proveedor', 'entrada_insumo.id_proveedor', '=', 'proveedor.id_proveedor')
+                ->select(
+                    'proveedor.id_proveedor',
+                    'proveedor.nombre',
+                    'proveedor.producto as especialidad',
+                    DB::raw('count(*) as total_registros'),
+                    DB::raw('sum(cantidad_recibida * precio_unitario) as valor_total'),
+                    DB::raw('max(fecha_entrada) as ultima_fecha')
+                )
+                ->where('entrada_insumo.id_empresa', $id_empresa)
+                ->groupBy('proveedor.id_proveedor', 'proveedor.nombre', 'proveedor.producto')
+                ->orderByDesc('ultima_fecha')
+                ->paginate(15);
+            $isGrouped = true;
+        }
+        
+        $proveedores = Proveedor::where('id_empresa', $id_empresa)->get();
+
+        return view('admin.proveedores.entradas_dashboard', compact(
+            'totalEntradasMes', 
+            'porcentajeCrecimiento', 
+            'proveedorMasActivo', 
+            'valorTotalRecibido', 
+            'promedioPorEntrada',
+            'entradas',
+            'proveedores',
+            'isGrouped'
+        ));
+    }
+
+    public function exportarEntradas(Request $request)
+    {
+        $id_empresa = $this->getEmpresaId();
+        
+        $selectedProviderId = $request->input('proveedor');
+
+        $query = EntradaInsumo::with(['proveedor', 'insumo', 'semilla'])
+            ->where('id_empresa', $id_empresa);
+
+        if ($selectedProviderId) {
+            $query->where('id_proveedor', $selectedProviderId);
+            $entradas = $query->orderBy('fecha_entrada', 'desc')->get();
+            $isGrouped = false;
+        } else {
+            $entradas = DB::table('entrada_insumo')
+                ->join('proveedor', 'entrada_insumo.id_proveedor', '=', 'proveedor.id_proveedor')
+                ->select(
+                    'proveedor.id_proveedor',
+                    'proveedor.nombre',
+                    'proveedor.producto as especialidad',
+                    DB::raw('count(*) as total_registros'),
+                    DB::raw('sum(cantidad_recibida * precio_unitario) as valor_total'),
+                    DB::raw('max(fecha_entrada) as ultima_fecha')
+                )
+                ->where('entrada_insumo.id_empresa', $id_empresa)
+                ->groupBy('proveedor.id_proveedor', 'proveedor.nombre', 'proveedor.producto')
+                ->orderByDesc('ultima_fecha')
+                ->get();
+            $isGrouped = true;
+        }
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.proveedores.pdf_entradas', compact('entradas', 'isGrouped'));
+        return $pdf->download('reporte_entradas_proveedores.pdf');
+    }
+
     public function destroy($id)
     {
         $id_empresa = $this->getEmpresaId();
