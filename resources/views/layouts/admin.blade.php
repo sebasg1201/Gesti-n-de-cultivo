@@ -81,7 +81,7 @@
             // Clases dinámicas para sincronizar colores
             $sidebarClass = $isWorker 
                 ? 'bg-gradient-to-b from-gray-900 via-emerald-950 to-gray-900 text-emerald-100 shadow-[20px_0_50px_rgba(0,0,0,0.3)]' 
-                : 'bg-gradient-to-b from-emerald-700 via-emerald-600 to-emerald-800 text-white shadow-xl';
+                : 'bg-gradient-to-b from-emerald-900 via-emerald-800 to-emerald-900 text-emerald-100 shadow-2xl transition-all duration-300';
                 
             $navbarClass = $isWorker
                 ? 'bg-gradient-to-r from-gray-900 via-emerald-950 to-gray-900'
@@ -95,11 +95,11 @@
             <div class="absolute -right-20 bottom-40 w-40 h-40 bg-teal-400/5 rounded-full blur-[80px] pointer-events-none"></div>
 
             <!-- LOGO -->
-            <div class="p-8 border-b border-white/5 shrink-0 relative">
-                <h1 class="text-2xl font-black tracking-tighter">
-                    <span class="text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">Agri</span><span class="text-emerald-400">Manager</span>
+            <div class="p-6 border-b border-emerald-700/40 shrink-0 relative">
+                <h1 class="text-2xl font-extrabold tracking-wide">
+                    <span class="text-white">Agri</span><span class="text-emerald-300">Manager</span>
                 </h1>
-                <p class="text-[9px] font-black text-emerald-400/60 mt-1 uppercase tracking-[0.2em]">{{ $isWorker ? 'Panel del Trabajador' : 'Panel Administrativo' }}</p>
+                <p class="text-[10px] text-emerald-300 mt-1 opacity-80 uppercase tracking-widest">{{ $isWorker ? 'Panel del Trabajador' : 'Sistema Administrativo' }}</p>
             </div>
 
             <!-- NAV -->
@@ -109,8 +109,8 @@
                     function active($pattern)
                     {
                         return request()->routeIs($pattern)
-                            ? 'backdrop-blur-md bg-white/10 text-white shadow-[0_0_20px_rgba(52,211,153,0.1)] border border-white/10'
-                            : 'text-emerald-100/70 hover:bg-white/5 hover:text-white transition-all duration-300';
+                            ? 'bg-white/10 text-white shadow-lg border border-white/10'
+                            : 'hover:bg-white/10 hover:text-white';
                     }
 
                     $gestionActive = request()->routeIs('tipo_cosechas.*') ||
@@ -125,10 +125,10 @@
                 @endphp
 
                 <a href="{{ route($inicioRoute) }}"
-                    class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 relative {{ active($inicioRoute) }}">
-                    <div class="w-1 h-5 bg-emerald-400 rounded-full {{ request()->routeIs($inicioRoute) ? 'opacity-100' : 'opacity-0' }} group-hover:opacity-100 transition-all shadow-[0_0_10px_rgba(52,211,153,0.8)]">
+                    class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 relative {{ active($inicioRoute) }}">
+                    <div class="w-1.5 h-6 bg-emerald-300 rounded-full {{ request()->routeIs($inicioRoute) ? 'opacity-100' : 'opacity-0' }} group-hover:opacity-100 transition-all">
                     </div>
-                    <span class="font-bold whitespace-nowrap tracking-tight">Inicio</span>
+                    <span class="font-medium whitespace-nowrap">Inicio</span>
                 </a>
 
 
@@ -157,14 +157,14 @@
 
 
                             <a href="{{ route('tipo_riegos.index') }}"
-                                class="group flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-300 {{ active('tipo_riegos.*') }}">
-                                <div class="w-1 h-1 bg-emerald-400 rounded-full shrink-0 shadow-[0_0_5px_rgba(52,211,153,0.5)]"></div>
+                                class="group flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-200 {{ active('tipo_riegos.*') }}">
+                                <div class="w-1 h-1 bg-emerald-400 rounded-full shrink-0"></div>
                                 <span class="whitespace-nowrap font-medium">Tipos de Riego</span>
                             </a>
 
                             <a href="{{ route('tipo_semillas.index') }}"
-                                class="group flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-300 {{ active('tipo_semillas.*') }}">
-                                <div class="w-1 h-1 bg-emerald-400 rounded-full shrink-0 shadow-[0_0_5px_rgba(52,211,153,0.5)]"></div>
+                                class="group flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-200 {{ active('tipo_semillas.*') }}">
+                                <div class="w-1 h-1 bg-emerald-400 rounded-full shrink-0"></div>
                                 <span class="whitespace-nowrap font-medium">Tipos de Semilla</span>
                             </a>
 
@@ -175,8 +175,8 @@
                             </a>
 
                             <a href="{{ route('insumos.index') }}"
-                                class="group flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-300 {{ active('insumos.*') }}">
-                                <div class="w-1 h-1 bg-emerald-400 rounded-full shrink-0 shadow-[0_0_5px_rgba(52,211,153,0.5)]"></div>
+                                class="group flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-200 {{ active('insumos.*') }}">
+                                <div class="w-1 h-1 bg-emerald-400 rounded-full shrink-0"></div>
                                 <span class="whitespace-nowrap font-medium">Inventario de Suministros</span>
                             </a>
 
@@ -231,32 +231,32 @@
                     </div>
 
                     <a href="{{ route('admin.usuarios.index') }}"
-                        class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 relative {{ active('admin.usuarios.*') }}">
-                        <div class="w-1 h-5 bg-emerald-400 rounded-full {{ request()->routeIs('admin.usuarios.*') ? 'opacity-100' : 'opacity-0' }} group-hover:opacity-100 transition-all shadow-[0_0_10px_rgba(52,211,153,0.8)]">
+                        class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 relative {{ active('admin.usuarios.*') }}">
+                        <div class="w-1.5 h-6 bg-emerald-300 rounded-full {{ request()->routeIs('admin.usuarios.*') ? 'opacity-100' : 'opacity-0' }} group-hover:opacity-100 transition-all">
                         </div>
-                        <span class="font-bold whitespace-nowrap tracking-tight">Personal</span>
+                        <span class="font-medium whitespace-nowrap">Personal</span>
                     </a>
 
                     <a href="{{ route('admin.proveedores.index') }}"
-                        class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 relative {{ active('admin.proveedores.*') }}">
-                        <div class="w-1 h-5 bg-emerald-400 rounded-full {{ request()->routeIs('admin.proveedores.*') ? 'opacity-100' : 'opacity-0' }} group-hover:opacity-100 transition-all shadow-[0_0_10px_rgba(52,211,153,0.8)]">
+                        class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 relative {{ active('admin.proveedores.*') }}">
+                        <div class="w-1.5 h-6 bg-emerald-300 rounded-full {{ request()->routeIs('admin.proveedores.*') ? 'opacity-100' : 'opacity-0' }} group-hover:opacity-100 transition-all">
                         </div>
-                        <span class="font-bold whitespace-nowrap tracking-tight">Proveedores</span>
+                        <span class="font-medium whitespace-nowrap">Proveedores</span>
                     </a>
 
                     <a href="{{ route('admin.licencias.index') }}"
-                        class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 relative {{ active('admin.licencias.*') }}">
-                        <div class="w-1 h-5 bg-emerald-400 rounded-full {{ request()->routeIs('admin.licencias.*') ? 'opacity-100' : 'opacity-0' }} group-hover:opacity-100 transition-all shadow-[0_0_10px_rgba(52,211,153,0.8)]">
+                        class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 relative {{ active('admin.licencias.*') }}">
+                        <div class="w-1.5 h-6 bg-emerald-300 rounded-full {{ request()->routeIs('admin.licencias.*') ? 'opacity-100' : 'opacity-0' }} group-hover:opacity-100 transition-all">
                         </div>
-                        <span class="font-bold whitespace-nowrap tracking-tight">Mi Plan de Licencia</span>
+                        <span class="font-medium whitespace-nowrap">Mi Plan de Licencia</span>
                     </a>
 
                     {{-- Soporte para Admin --}}
                     <a href="{{ route('admin.soporte.index') }}"
-                        class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 relative {{ active('admin.soporte.*') }}">
-                        <div class="w-1 h-5 bg-emerald-400 rounded-full {{ request()->routeIs('admin.soporte.*') ? 'opacity-100' : 'opacity-0' }} group-hover:opacity-100 transition-all shadow-[0_0_10px_rgba(52,211,153,0.8)]">
+                        class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 relative {{ active('admin.soporte.*') }}">
+                        <div class="w-1.5 h-6 bg-emerald-300 rounded-full {{ request()->routeIs('admin.soporte.*') ? 'opacity-100' : 'opacity-0' }} group-hover:opacity-100 transition-all">
                         </div>
-                        <span class="font-bold whitespace-nowrap tracking-tight">Bandeja de Soporte</span>
+                        <span class="font-medium whitespace-nowrap">Bandeja de Soporte</span>
                     </a>
                 @endif
 
