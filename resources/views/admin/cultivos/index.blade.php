@@ -20,11 +20,11 @@
                         @endif
                         <span class="px-3 py-1 bg-emerald-100 text-emerald-700 text-xs rounded-full uppercase tracking-widest font-bold">Cultivo</span>
                     </h1>
-                    <p class="text-emerald-600 font-medium mt-1">
+                        <p class="text-emerald-600 font-medium mt-1">
                         @if(isset($semillaSeleccionada))
-                            Listado de lotes activos para esta variedad.
+                            Listado de lotes para esta variedad.
                         @else
-                            Selecciona una variedad para gestionar sus recolecciones.
+                            Selecciona una variedad para gestionar sus recolecciones e histórico.
                         @endif
                     </p>
                 </div>
@@ -58,7 +58,7 @@
                                 <div class="absolute inset-0 bg-gradient-to-t from-emerald-950/90 via-emerald-950/20 to-transparent"></div>
                                 <div class="absolute bottom-6 left-6 right-6">
                                     <span class="px-3 py-1 bg-emerald-500 text-white text-[10px] font-black rounded-full uppercase tracking-widest mb-3 inline-block">
-                                        {{ $cat->cosechas_count }} Lotes Activos
+                                        {{ $cat->cosechas_count }} Lotes en Historial
                                     </span>
                                     <h3 class="text-3xl font-black text-white truncate">{{ $cat->nombre_semilla }}</h3>
                                 </div>
@@ -84,7 +84,7 @@
                         </div>
                     @empty
                         <div class="col-span-full py-20 text-center bg-white rounded-[3rem] border-2 border-dashed border-emerald-100">
-                            <h3 class="text-xl font-black text-emerald-950">No hay variedades con producción activa</h3>
+                            <h3 class="text-xl font-black text-emerald-950">No hay variedades con registros de cosecha</h3>
                         </div>
                     @endforelse
                 </div>
@@ -98,7 +98,7 @@
                         </div>
                         <div class="flex items-center gap-2">
                              <span class="px-4 py-2 bg-emerald-600 text-white text-xs font-black rounded-full shadow-lg shadow-emerald-100">
-                                {{ count($cosechas) }} LOTES ACTIVOS
+                                {{ count($cosechas) }} LOTES REGISTRADOS
                              </span>
                         </div>
                     </div>
@@ -167,7 +167,7 @@
                                 @empty
                                     <tr>
                                         <td colspan="4" class="px-8 py-20 text-center">
-                                            <p class="text-slate-400 font-bold">No hay lotes activos para esta variedad.</p>
+                                            <p class="text-slate-400 font-bold">No hay lotes registrados para esta variedad.</p>
                                         </td>
                                     </tr>
                                 @endforelse

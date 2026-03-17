@@ -23,6 +23,7 @@ class CosechaController extends Controller
         $id_empresa = $this->getEmpresaId();
 
         $cosechas = Cosecha::where('id_empresa', $id_empresa)
+            ->where('id_estado', '!=', 14)
             ->with(['terreno', 'semilla'])
             ->orderBy('id_cosecha', 'desc')
             ->paginate(10);

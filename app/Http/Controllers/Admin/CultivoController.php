@@ -30,7 +30,7 @@ class CultivoController extends Controller
             
             $cosechas = Cosecha::where('id_empresa', $id_empresa)
                 ->where('id_semilla', $id_semilla)
-                ->where('id_estado', '!=', 14) // No terminadas
+                // Se muestran todas (incluso las de id_estado 14) para tener el historial de recolección
                 ->with(['semilla', 'terreno'])
                 ->orderBy('fecha_siembra', 'desc')
                 ->get();
@@ -41,18 +41,18 @@ class CultivoController extends Controller
         // Si no hay semilla seleccionada, mostrar categorías (Variedades)
         // Obtenemos solo las variedades que tienen cosechas activas
         $categorias = \App\Models\TipoSemilla::where('id_empresa', $id_empresa)
-            ->whereHas('cosechas', function($q) {
-                $q->where('id_estado', '!=', 14);
+            ->whereHas('cosechas', function($q) use ($id_empresa) {
+                $q->where('id_empresa', $id_empresa); // Filtro por empresa para seguridad y veracidad
             })
-            ->withCount(['cosechas' => function($q) {
-                $q->where('id_estado', '!=', 14);
+            ->withCount(['cosechas' => function($q) use ($id_empresa) {
+                $q->where('id_empresa', $id_empresa);
             }])
             ->get()
             ->map(function($cat) {
                 // Buscar la primera cosecha con imagen para usarla como portada de la categoría
                 $cosechaConImagen = \App\Models\Cosecha::where('id_semilla', $cat->id_semilla)
                     ->whereNotNull('imagenes')
-                    ->where('id_estado', '!=', 14)
+                    // ->where('id_estado', '!=', 14)
                     ->first();
                 
                 $cat->imagen_portada = $cosechaConImagen ? $cosechaConImagen->imagenes : null;
@@ -156,7 +156,7 @@ class CultivoController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('admin.cosechas.show', $id)->with('success', 'Cosecha finalizada y terreno liberado correctamente.');
+            return redirect()->route('admin.cosechas.index')->with('success', 'Cosecha finalizada y terreno liberado correctamente (Estado: Disponible). El registro histórico se mantiene en Recolección.');
 
         } catch (\Exception $e) {
             DB::rollBack();
