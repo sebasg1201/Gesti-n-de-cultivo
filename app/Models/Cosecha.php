@@ -74,7 +74,7 @@ class Cosecha extends Model
             return 100;
         }
         
-        if($ultimoRiego->id_estado == 8) { // En Proceso
+        if($ultimoRiego->id_estado == 17) { // En Proceso (id=17)
             return 50;
         }
         

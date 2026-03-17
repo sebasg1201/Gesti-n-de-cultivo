@@ -24,17 +24,122 @@ class AdminController extends Controller
 
         $id_empresa = $usuario->id_empresa;
 
-        $stats = [
-            'cosechas' => \App\Models\Cosecha::where('id_empresa', $id_empresa)->count(),
-            'riegos' => \App\Models\TipoRiego::count(),
-            'semillas' => \App\Models\TipoSemilla::where('id_empresa', $id_empresa)->count(),
-            'usuarios' => \App\Models\Usuario::where('id_empresa', $id_empresa)->count(),
+        // 1. Trabajadores Activos
+        $totalTrabajadores = \App\Models\Usuario::where('id_empresa', $id_empresa)->where('id_tipo_usuario', 3)->count();
+        $trabajadoresActivos = \App\Models\Usuario::where('id_empresa', $id_empresa)
+            ->where('id_tipo_usuario', 3)
+            ->where('id_estado_trabajador', 1) // Asumiendo 1 = Activo
+            ->count();
+
+        // 2. Alertas Urgentes (Soporte pendiente)
+        $alertasUrgentes = \App\Models\Soporte::where('id_empresa', $id_empresa)
+            ->where('estado', 'Pendiente')
+            ->count();
+
+        // 3. Cosechas en Proceso
+        $cosechasEnProceso = \App\Models\Cosecha::where('id_empresa', $id_empresa)->count(); // Simplified for now
+
+        // 4. Progreso Tareas (Tareas de hoy completadas vs totales)
+        $hoy = \Carbon\Carbon::now()->format('Y-m-d');
+
+        $tareasHoyTotal = \App\Models\FaseProgramada::whereHas('cosecha', function ($q) use ($id_empresa) {
+            $q->where('id_empresa', $id_empresa);
+        })->whereDate('fecha_programada', $hoy)->count();
+
+        $tareasHoyCompletadas = \App\Models\FaseProgramada::whereHas('cosecha', function ($q) use ($id_empresa) {
+            $q->where('id_empresa', $id_empresa);
+        })->whereDate('fecha_programada', $hoy)->where('id_estado', 9)->count(); // 9 = Realizado
+
+        $progresoTareas = $tareasHoyTotal > 0 ? round(($tareasHoyCompletadas / $tareasHoyTotal) * 100) : 0;
+
+        // 5. Estado de Cultivos (primeros 4 para la tarjeta)
+        $cultivos = \App\Models\Cosecha::with(['terreno', 'semilla'])
+            ->where('id_empresa', $id_empresa)
+            ->take(2)
+            ->get();
+
+        // 6. Seguimiento de Equipo (Actividad reciente)
+        $equipo = \App\Models\Usuario::where('id_empresa', $id_empresa)
+            ->where('id_tipo_usuario', 3)
+            ->with(['estadoTrabajador'])
+            ->take(5)
+            ->get();
+
+        foreach ($equipo as $miembro) {
+            $ultimaFase = \App\Models\FaseProgramada::where('documento_trabajador', $miembro->documento)
+                ->orderBy('fecha_programada', 'desc')
+                ->first();
+
+            $miembro->actividad_reciente = $ultimaFase ? $ultimaFase->descripcion : 'Sin actividad reciente';
+            $miembro->tiempo_actividad = $ultimaFase ? \Carbon\Carbon::parse($ultimaFase->fecha_programada)->diffForHumans() : '';
+            // Determine active status mock if not set
+            $miembro->is_active = $miembro->id_estado_trabajador == 1;
+        }
+
+        // 7. Alertas (Lista)
+        $listaAlertas = \App\Models\Soporte::where('id_empresa', $id_empresa)
+            ->where('estado', 'Pendiente')
+            ->orderBy('created_at', 'desc')
+            ->take(3)
+            ->get();
+
+        // 8. Tareas de Hoy (Lista para el sidebar) - EXACTAMENTE HOY
+        $listaTareasHoy = \App\Models\FaseProgramada::with(['usuario'])
+            ->whereHas('cosecha', function ($q) use ($id_empresa) {
+                $q->where('id_empresa', $id_empresa);
+            })->whereDate('fecha_programada', $hoy)
+            ->orderBy('fecha_programada', 'asc')
+            ->take(4)
+            ->get();
+
+        // 9. Estado del Terreno (Mock data with real context combined)
+        // Intentar obtener el terreno de la primera cosecha activa
+        $cosechaActiva = \App\Models\Cosecha::with('terreno.tipoSuelo')->where('id_empresa', $id_empresa)->first();
+        $humedad = 70; // Default
+        $ph = 6.5;    // Default
+        if ($cosechaActiva && isset($cosechaActiva->terreno) && isset($cosechaActiva->terreno->tipoSuelo)) {
+            // Ajustar valores basados en el tipo de suelo
+            $tipoSuelo = strtolower($cosechaActiva->terreno->tipoSuelo->nombre ?? '');
+            if (str_contains($tipoSuelo, 'arenoso')) {
+                $humedad = 40;
+                $ph = 7.0;
+            } elseif (str_contains($tipoSuelo, 'arcilloso')) {
+                $humedad = 85;
+                $ph = 5.5;
+            } elseif (str_contains($tipoSuelo, 'franco')) {
+                $humedad = 65;
+                $ph = 6.8;
+            }
+
+            // Simular impacto del ultimo riego
+            $ultimoRiego = \App\Models\Riego::where('id_cosecha', $cosechaActiva->id_cosecha)
+                ->where('id_estado', 9)
+                ->orderBy('fecha_programada', 'desc')->first();
+            if ($ultimoRiego && isset($ultimoRiego->fecha_programada) && \Carbon\Carbon::parse($ultimoRiego->fecha_programada)->diffInDays(now()) < 2) {
+                $humedad = min(100, $humedad + 20); // Aumentar humedad temporalmente
+            }
+        }
+
+        $estadoTerreno = [
+            'humedad' => $humedad,
+            'ph' => $ph,
+            'nitrogeno' => rand(30, 60), // Mock NPK
+            'fosforo' => rand(15, 30),
+            'potasio' => rand(80, 150)
         ];
 
-        // Trabajos agrupados por estado
-        $stats['trabajos_pendientes'] = \App\Models\FaseProgramada::whereHas('usuario', function ($q) use ($id_empresa) {
-            $q->where('id_empresa', $id_empresa);
-        })->where('id_estado', 1)->count(); // 1 = Pendiente
+        $stats = [
+            'trabajadores_activos' => $trabajadoresActivos,
+            'total_trabajadores' => $totalTrabajadores,
+            'alertas_urgentes' => $alertasUrgentes,
+            'cosechas_en_proceso' => $cosechasEnProceso,
+            'progreso_tareas' => $progresoTareas,
+            'cultivos' => $cultivos,
+            'equipo' => $equipo,
+            'lista_alertas' => $listaAlertas,
+            'lista_tareas_hoy' => $listaTareasHoy,
+            'estado_terreno' => $estadoTerreno,
+        ];
 
         $stats['trabajos_en_proceso'] = \App\Models\FaseProgramada::whereHas('usuario', function ($q) use ($id_empresa) {
             $q->where('id_empresa', $id_empresa);
@@ -59,24 +164,30 @@ class AdminController extends Controller
         // 1. Fase Programada
         $fases = \App\Models\FaseProgramada::with(['cosecha.semilla', 'cosecha.terreno.tipoSuelo'])
             ->where('documento_trabajador', $usuario->documento)
-            ->get()->map(function($t) { $t->tipo_tarea = 'fase'; return $t; });
+            ->whereIn('id_estado', [1, 17]) // Solo Pendiente y En Proceso
+            ->get()->map(function ($t) {
+                $t->tipo_tarea = 'fase';
+                return $t;
+            });
 
         // 2. Riego
         $riegos = \App\Models\Riego::with(['cosecha.semilla', 'cosecha.terreno.tipoSuelo', 'tipoRiego'])
             ->where('documento_trabajador', $usuario->documento)
-            ->get()->map(function($t) { 
-                $t->tipo_tarea = 'riego'; 
+            ->whereIn('id_estado', [1, 17]) // Solo Pendiente y En Proceso
+            ->get()->map(function ($t) {
+                $t->tipo_tarea = 'riego';
                 $t->descripcion = $t->observaciones ?: ('Riego: ' . ($t->tipoRiego?->tipo_riego ?? 'General'));
-                return $t; 
+                return $t;
             });
 
         // 3. Insumos
         $insumos = \App\Models\InsumoCosecha::with(['cosecha.semilla', 'cosecha.terreno.tipoSuelo', 'insumo'])
             ->where('documento_trabajador', $usuario->documento)
-            ->get()->map(function($t) { 
-                $t->tipo_tarea = 'insumo'; 
+            ->whereIn('id_estado', [1, 17]) // Solo Pendiente y En Proceso
+            ->get()->map(function ($t) {
+                $t->tipo_tarea = 'insumo';
                 $t->descripcion = 'Aplicación de Insumo: ' . ($t->insumo?->Nombre ?? 'Desconocido');
-                return $t; 
+                return $t;
             });
 
         // Unificar y Agrupar
@@ -96,7 +207,7 @@ class AdminController extends Controller
     public function finalizarTarea($id, $tipo)
     {
         $usuario = auth()->guard('usuario')->user();
-        
+
         $model = $this->getTaskModel($tipo);
         $idField = $this->getTaskIdField($tipo);
 
@@ -106,10 +217,7 @@ class AdminController extends Controller
 
         $tarea->update(['id_estado' => 15]); // 15 = Realizado
 
-        // Si es un riego, generar el siguiente automáticamente
-        if ($tipo === 'riego') {
-            $this->generarSiguienteRiego($tarea);
-        }
+
 
         return redirect()->route('trabajador.dashboard')->with('success', 'Tarea marcada como finalizada correctamente.');
     }
@@ -119,7 +227,10 @@ class AdminController extends Controller
         $usuario = auth()->guard('usuario')->user();
 
         $request->validate([
-            'id_estado' => 'required|integer|in:1,8,15,16'
+            // 1=Pendiente, 17=En Proceso, 15=Realizado, 16=Perdida
+            'id_estado' => 'required|integer|in:1,17,15,16',
+            // La foto es obligatoria solo al finalizar (id_estado=15)
+            'evidencia_foto' => ($request->id_estado == 15) ? 'required|image|max:2048' : 'nullable|image|max:2048',
         ]);
 
         $model = $this->getTaskModel($tipo);
@@ -130,17 +241,53 @@ class AdminController extends Controller
             ->firstOrFail();
 
         // Evitar que el trabajador vuelva a un estado anterior
-        // Orden lógico: 1 (Pendiente) < 8 (En Proceso) < 15 (Realizado) / 16 (Perdida)
-        $ordenEstados = [1 => 1, 8 => 2, 15 => 3, 16 => 3];
+        // Orden lógico: 1 (Pendiente) < 17 (En Proceso) < 15 (Realizado) / 16 (Perdida)
+        $ordenEstados = [1 => 1, 17 => 2, 15 => 3, 16 => 3];
         $nuevoEstado = (int)$request->id_estado;
         $estadoActual = (int)$tarea->id_estado;
 
-        if (isset($ordenEstados[$estadoActual]) && $ordenEstados[$nuevoEstado] < $ordenEstados[$estadoActual]) {
+        if (isset($ordenEstados[$estadoActual]) && isset($ordenEstados[$nuevoEstado]) && $ordenEstados[$nuevoEstado] < $ordenEstados[$estadoActual]) {
             return redirect()->back()->with('error', 'No puedes volver a un estado anterior de la tarea.');
         }
 
-        $tarea->id_estado = $nuevoEstado;
-        $tarea->save();
+        // Solo actualizamos id_estado en la tabla de la tarea
+        $updateData = ['id_estado' => $nuevoEstado];
+
+        // Si el trabajador finaliza la tarea (15=Realizado), guardamos la evidencia en registro_trabajo
+        if ($nuevoEstado === 15) {
+            $registroData = [
+                'documento_trabajador' => $usuario->documento,
+                'fecha_trabajada'      => now()->toDateString(),
+                'estado_aprobacion'    => 'pendiente',
+                'created_at'           => now(),
+            ];
+
+            // Foto de evidencia
+            if ($request->hasFile('evidencia_foto')) {
+                $path = $request->file('evidencia_foto')->store('evidencias', 'public');
+                $registroData['foto_evidencia'] = $path;
+            }
+
+            // Observación del trabajador
+            if ($request->filled('observacion_trabajador')) {
+                $registroData['observacion'] = $request->observacion_trabajador;
+            }
+
+            // Enlazar con el tipo de tarea correspondiente
+            if ($tipo === 'insumo') {
+                $registroData['id_insumo_cosecha'] = $id;
+            }
+            // Para riego y fases_programadas no hay FK en registro_trabajo,
+            // se identifica por documento + fecha_trabajada
+
+            \Illuminate\Support\Facades\DB::table('registro_trabajo')->insert($registroData);
+        }
+
+        // Actualizar el estado en la tabla de la tarea
+        \Illuminate\Support\Facades\DB::table($tarea->getTable())
+            ->where($idField, $id)
+            ->where('documento_trabajador', $usuario->documento)
+            ->update($updateData);
 
         // Lógica adicional para riego (Siguiente asignación y aumento de días si es perdida)
         if ($tipo === 'riego' && in_array($nuevoEstado, [15, 16])) {
@@ -150,82 +297,37 @@ class AdminController extends Controller
                     $fechaEstimada = \Carbon\Carbon::parse($cosecha->fecha_estimada)->addDays(2);
                     $cosecha->update(['fecha_estimada' => $fechaEstimada->format('Y-m-d')]);
                 }
-                $this->generarSiguienteRiego($tarea);
             }
         }
 
-        return redirect()->route('trabajador.dashboard')->with('success', 'Estado de la tarea actualizado correctamente.');
+        return redirect()->route('trabajador.dashboard')->with('success', '¡Tarea finalizada correctamente! La evidencia fue registrada.');
     }
 
     private function getTaskModel($tipo)
     {
         switch ($tipo) {
-            case 'riego': return \App\Models\Riego::class;
-            case 'insumo': return \App\Models\InsumoCosecha::class;
-            default: return \App\Models\FaseProgramada::class;
+            case 'riego':
+                return \App\Models\Riego::class;
+            case 'insumo':
+                return \App\Models\InsumoCosecha::class;
+            default:
+                return \App\Models\FaseProgramada::class;
         }
     }
 
     private function getTaskIdField($tipo)
     {
         switch ($tipo) {
-            case 'riego': return 'id_riego';
-            case 'insumo': return 'id_insumo_cosecha';
-            default: return 'id_fase';
+            case 'riego':
+                return 'id_riego';
+            case 'insumo':
+                return 'id_insumo_cosecha';
+            default:
+                return 'id_fase';
         }
     }
 
-    private function generarSiguienteRiego($riegoActual)
-    {
-        $cosecha = $riegoActual->cosecha;
-        if (!$cosecha || !$cosecha->frecuencia_riego_dias) return;
 
-        $hoy = \Carbon\Carbon::now();
-        $fechaProgramada = \Carbon\Carbon::parse($riegoActual->fecha_programada)->addDays($cosecha->frecuencia_riego_dias);
-
-        // Si la fecha programada ya pasó, ponerle para hoy o mañana
-        if ($fechaProgramada->isPast()) {
-            $fechaProgramada = $hoy->copy()->addDays($cosecha->frecuencia_riego_dias);
-        }
-
-        // Ya existe un riego programado para esa cosecha cerca de esa fecha?
-        $existe = \App\Models\Riego::where('id_cosecha', $cosecha->id_cosecha)
-            ->where('id_estado', 1)
-            ->whereDate('fecha_programada', $fechaProgramada->format('Y-m-d'))
-            ->exists();
-
-        if ($existe) return;
-
-        // Selección de trabajador (menor carga)
-        $trabajadores = \App\Models\Usuario::where('id_empresa', $cosecha->id_empresa)
-            ->where('id_tipo_usuario', 3)
-            ->where('id_estado', 1)
-            ->where('id_estado_trabajador', 1)
-            ->get();
-
-        $id_asignado = $riegoActual->documento_trabajador; // Default al mismo
-        if ($trabajadores->count() > 0) {
-            $cargas = [];
-            foreach ($trabajadores as $t) {
-                $cargas[$t->documento] = \App\Models\Riego::where('documento_trabajador', $t->documento)
-                    ->where('id_estado', 1)
-                    ->count();
-            }
-            asort($cargas);
-            reset($cargas);
-            $id_asignado = key($cargas);
-        }
-
-        \App\Models\Riego::create([
-            'cant_agua_apl' => $cosecha->litros_por_riego,
-            'id_tipo_riego' => $riegoActual->id_tipo_riego,
-            'id_cosecha' => $cosecha->id_cosecha,
-            'documento_trabajador' => $id_asignado,
-            'id_estado' => 1,
-            'fecha_programada' => $fechaProgramada->format('Y-m-d H:i:s'),
-            'observaciones' => $riegoActual->observaciones
-        ]);
-    }
 
     public function tareasCategorizadas()
     {
@@ -242,13 +344,13 @@ class AdminController extends Controller
         })->with(['usuario', 'cosecha.semilla', 'insumo'])->get();
 
         // Standardize descripcion and type for the view
-        foreach($riego as $t) {
+        foreach ($riego as $t) {
             $t->tipo_referencia = 'riego';
             $t->descripcion = $t->tipoRiego?->tipo_riego ?? 'Riego';
             $t->sub_descripcion = $t->observaciones ?? null;
         }
 
-        foreach($insumoCosecha as $t) {
+        foreach ($insumoCosecha as $t) {
             $t->tipo_referencia = 'insumo';
             $insumoNombre = $t->insumo?->Nombre ?? 'Insumo';
             $t->descripcion = "Aplicación: " . $insumoNombre . " (" . ($t->cantidad_usada ?? 0) . ")";
@@ -259,21 +361,21 @@ class AdminController extends Controller
         $general = \App\Models\FaseProgramada::whereHas('cosecha', function ($q) use ($id_empresa) {
             $q->where('id_empresa', $id_empresa);
         })->with(['usuario', 'cosecha.semilla'])
-        ->get()
-        ->map(function($t) {
-            $t->tipo_referencia = 'general';
-            return $t;
-        })
-        ->reject(function($t) {
-            $desc = strtolower($t->descripcion);
-            return str_contains($desc, 'riego') || str_contains($desc, 'insumo') || str_contains($desc, 'fertilizante') || str_contains($desc, 'fumigación') || str_contains($desc, 'abono');
-        });
+            ->get()
+            ->map(function ($t) {
+                $t->tipo_referencia = 'general';
+                return $t;
+            })
+            ->reject(function ($t) {
+                $desc = strtolower($t->descripcion);
+                return str_contains($desc, 'riego') || str_contains($desc, 'insumo') || str_contains($desc, 'fertilizante') || str_contains($desc, 'fumigación') || str_contains($desc, 'abono');
+            });
 
         // Dropdown data
         $trabajadores = \App\Models\Usuario::where('id_empresa', $id_empresa)
             ->where('id_tipo_usuario', 3)
             ->get();
-        
+
         $cosechas = \App\Models\Cosecha::where('id_empresa', $id_empresa)
             ->with(['semilla', 'terreno'])
             ->get();
@@ -384,12 +486,12 @@ class AdminController extends Controller
             ->where('documento_trabajador', $usuario->documento)
             ->get();
         foreach ($fases as $fase) {
-            $nombreCultivo = $fase->cosecha && $fase->cosecha->semilla 
-                ? $fase->cosecha->semilla->nombre_semilla 
+            $nombreCultivo = $fase->cosecha && $fase->cosecha->semilla
+                ? $fase->cosecha->semilla->nombre_semilla
                 : 'Cultivo';
-            
-            $resumenFase = $fase->cosecha && $fase->cosecha->semilla 
-                ? $fase->cosecha->semilla->descripcion 
+
+            $resumenFase = $fase->cosecha && $fase->cosecha->semilla
+                ? $fase->cosecha->semilla->descripcion
                 : 'Realizar labores de mantenimiento para la fase de ' . $fase->descripcion;
 
             $eventos[] = [
@@ -402,7 +504,8 @@ class AdminController extends Controller
                     'descripcion' => $fase->descripcion,
                     'cultivo' => $nombreCultivo,
                     'resumen' => $resumenFase,
-                    'estado' => $fase->id_estado
+                    'estado' => $fase->id_estado,
+                    'foto_url' => $fase->evidencia_foto ? asset('uploads/' . $fase->evidencia_foto) : null
                 ]
             ];
         }
@@ -418,7 +521,8 @@ class AdminController extends Controller
                 'extendedProps' => [
                     'tipo' => 'riego',
                     'descripcion' => $riego->observaciones,
-                    'estado' => $riego->id_estado
+                    'estado' => $riego->id_estado,
+                    'foto_url' => $riego->evidencia_foto ? asset('uploads/' . $riego->evidencia_foto) : null
                 ]
             ];
         }
@@ -434,7 +538,8 @@ class AdminController extends Controller
                 'extendedProps' => [
                     'tipo' => 'insumo',
                     'descripcion' => 'Aplicación de ' . ($insumo->insumo->Nombre ?? 'insumo'),
-                    'estado' => $insumo->id_estado
+                    'estado' => $insumo->id_estado,
+                    'foto_url' => $insumo->evidencia_foto ? asset('uploads/' . $insumo->evidencia_foto) : null
                 ]
             ];
         }
@@ -525,7 +630,7 @@ class AdminController extends Controller
     public function storeSoporte(Request $request)
     {
         $usuario = auth()->guard('usuario')->user();
-        
+
         $request->validate([
             'asunto' => 'required|string|max:255',
             'mensaje' => 'required|string'
@@ -545,7 +650,7 @@ class AdminController extends Controller
     public function adminSoporte()
     {
         $admin = auth()->guard('usuario')->user();
-        
+
         $mensajes = \App\Models\Soporte::with('trabajador')
             ->where('id_empresa', $admin->id_empresa)
             ->orderBy('created_at', 'desc')
@@ -557,7 +662,7 @@ class AdminController extends Controller
     public function responderSoporte(Request $request, $id)
     {
         $admin = auth()->guard('usuario')->user();
-        
+
         $mensaje = \App\Models\Soporte::where('id_soporte', $id)
             ->where('id_empresa', $admin->id_empresa)
             ->firstOrFail();

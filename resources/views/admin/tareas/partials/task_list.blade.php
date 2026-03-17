@@ -59,11 +59,15 @@
 
                 {{-- Status Indicator / Checkbox Simulation --}}
                 <div class="flex-shrink-0 flex items-center">
-                    @if($task->id_estado == 9)
-                        <div class="w-10 h-10 bg-emerald-500 rounded-2xl text-white flex items-center justify-center shadow-lg shadow-emerald-200 animate-pulse-slow">
+                    @if($task->id_estado == 15) {{-- Realizado --}}
+                        <div class="w-10 h-10 bg-emerald-500 rounded-2xl text-white flex items-center justify-center shadow-lg shadow-emerald-200">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
                             </svg>
+                        </div>
+                    @elseif($task->id_estado == 17) {{-- En Proceso --}}
+                        <div class="w-10 h-10 bg-amber-500 rounded-2xl text-white flex items-center justify-center shadow-lg shadow-amber-200 animate-pulse-slow">
+                            <span class="w-3 h-3 bg-white rounded-full"></span>
                         </div>
                     @else
                         <div class="w-10 h-10 rounded-2xl border-2 border-gray-200 bg-white group-hover:border-{{ $borderColor }} transition-all duration-300 flex items-center justify-center">
@@ -75,7 +79,7 @@
                 {{-- Core Task Info --}}
                 <div class="flex-grow space-y-3">
                     <div class="flex flex-col gap-0.5">
-                        <h5 class="text-lg font-black {{ $task->id_estado == 9 ? 'text-gray-400 line-through decoration-2' : 'text-gray-900 group-hover:text-' . $borderColor }} transition-colors">
+                        <h5 class="text-lg font-black {{ $task->id_estado == 15 ? 'text-gray-400 line-through decoration-2' : 'text-gray-900 group-hover:text-' . $borderColor }} transition-colors">
                             {{ $task->descripcion }}
                         </h5>
                         @if(!empty($task->sub_descripcion))
@@ -118,17 +122,22 @@
                         $date = \Carbon\Carbon::parse($task->fecha_programada);
                         $statusText = $date->isToday() ? 'Hoy, ' . $date->format('H:i') : ($date->isTomorrow() ? 'Mañana' : $date->format('d M'));
                         
-                        $statusClass = 'bg-yellow-50 text-yellow-700 border-yellow-100';
-                        if($task->id_estado == 9) {
+                        $statusClass = 'bg-yellow-50 text-yellow-700 border-yellow-100'; // Default Pendiente
+                        
+                        if($task->id_estado == 15) { // Realizado
                             $statusText = 'Completado';
                             $statusClass = 'bg-emerald-50 text-emerald-700 border-emerald-100';
-                        } elseif($date->isPast()) {
+                        } elseif($task->id_estado == 17) { // En Proceso
+                            $statusText = 'En Proceso';
+                            $statusClass = 'bg-blue-50 text-blue-700 border-blue-100';
+                        } elseif($task->id_estado == 16 || $date->isPast()) { // Perdida o Atrasada
+                            $statusText = $task->id_estado == 16 ? 'Perdida' : $statusText;
                             $statusClass = 'bg-red-50 text-red-700 border-red-100';
                         }
                     @endphp
 
                     <div class="px-4 py-2 rounded-2xl text-[11px] font-black uppercase tracking-widest border {{ $statusClass }} shadow-sm flex items-center gap-2">
-                        @if($task->id_estado != 9 && $date->isToday())
+                        @if(!in_array($task->id_estado, [15, 16]) && $date->isToday())
                             <span class="relative flex h-2 w-2">
                                 <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
                                 <span class="relative inline-flex rounded-full h-2 w-2 bg-red-600"></span>

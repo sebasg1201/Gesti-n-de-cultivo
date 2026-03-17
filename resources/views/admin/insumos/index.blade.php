@@ -4,25 +4,7 @@
 
 @section('content')
     <div class="space-y-8">
-        @if(session('success'))
-            <div
-                class="bg-emerald-100 border-l-4 border-emerald-500 text-emerald-700 p-4 rounded-xl flex items-center shadow-sm">
-                <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                </svg>
-                <span class="font-medium">{{ session('success') }}</span>
-            </div>
-        @endif
 
-        @if(session('error'))
-            <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-xl flex items-center shadow-sm">
-                <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <span class="font-medium">{{ session('error') }}</span>
-            </div>
-        @endif
 
         <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
             <!-- Advanced Search & Config Column -->
@@ -186,6 +168,7 @@
                                     class="bg-white text-[10px] font-black text-emerald-400 uppercase tracking-[0.2em] border-b border-emerald-50">
                                     <th class="px-8 py-6">Producto</th>
                                     <th class="px-8 py-6">Categoría</th>
+                                    <th class="px-8 py-6">Stock</th>
                                     <th class="px-8 py-6 text-right">Acciones</th>
                                 </tr>
                             </thead>
@@ -212,6 +195,13 @@
                                                 class="bg-amber-50 text-amber-600 text-xs font-bold px-3 py-1 rounded-full border border-amber-100">
                                                 {{ $insumo->catalogo->tipoInsumo->nombre ?? 'Insumo' }}
                                             </span>
+                                        </td>
+                                        <td class="px-8 py-6">
+                                            <div class="bg-emerald-50 rounded-xl px-3 py-1 border border-emerald-100 inline-block">
+                                                <span class="text-xs font-black text-emerald-700">{{ $insumo->stock_actual ?? 0 }}
+                                                    <span class="text-[9px] font-bold">und</span>
+                                                </span>
+                                            </div>
                                         </td>
 
                                         <td class="px-8 py-6 text-right">
@@ -243,7 +233,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="4" class="px-8 py-32 text-center">
+                                        <td colspan="5" class="px-8 py-32 text-center">
                                             <p class="text-emerald-400 font-bold italic">Su inventario está vacío. Agregue
                                                 insumos desde el buscador lateral.</p>
                                         </td>
