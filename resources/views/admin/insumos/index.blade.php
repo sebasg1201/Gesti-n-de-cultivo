@@ -3,35 +3,35 @@
 @section('title', 'Inventario de Suministros')
 
 @section('content')
-    <div class="space-y-8">
+    <div class="space-y-4">
 
 
-        <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+        <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
             <!-- Advanced Search & Config Column -->
             <div class="xl:col-span-1">
-                <div class="bg-white rounded-3xl shadow-xl border border-emerald-50 p-8 sticky top-8">
-                    <div class="flex items-center gap-3 mb-8">
-                        <div class="bg-emerald-600 p-3 rounded-2xl text-white shadow-lg shadow-emerald-100">
+                <div class="bg-white rounded-3xl shadow-xl border border-emerald-50 p-5 sticky top-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="bg-emerald-600 p-2.5 rounded-2xl text-white shadow-lg shadow-emerald-100">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                             </svg>
                         </div>
                         <div>
-                            <h3 class="text-xl font-bold text-emerald-900">Agregar Insumo</h3>
+                            <h3 class="text-lg font-bold text-emerald-900">Agregar Insumo</h3>
                             <p class="text-[10px] font-medium text-emerald-500 uppercase tracking-widest mt-1">Búsqueda en
                                 Catálogo</p>
                         </div>
                     </div>
 
                     <!-- Professional AJAX Search Input -->
-                    <div class="relative group mb-8">
-                        <label class="block text-xs font-bold text-emerald-700 uppercase tracking-wider mb-3">Buscar
+                    <div class="relative group mb-4">
+                        <label class="block text-xs font-bold text-emerald-700 uppercase tracking-wider mb-2">Buscar
                             producto</label>
                         <div class="relative">
                             <input type="text" id="catalogSearch" autocomplete="off"
                                 placeholder="Ej. Fertilizante, Pala, Semilla..."
-                                class="w-full pl-12 pr-4 py-4 rounded-2xl border-2 border-emerald-50 focus:border-emerald-500 focus:ring-0 bg-emerald-50/30 text-sm transition-all">
+                                class="w-full pl-11 pr-4 py-3 rounded-2xl border-2 border-emerald-50 focus:border-emerald-500 focus:ring-0 bg-emerald-50/30 text-sm transition-all">
                             <div
                                 class="absolute left-4 top-1/2 -translate-y-1/2 text-emerald-400 group-focus-within:text-emerald-600 transition-colors">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -48,82 +48,82 @@
                     </div>
 
                     <form id="seedForm" action="{{ route('insumos.store') }}" method="POST"
-                        class="space-y-6 hidden animate-in zoom-in-95 duration-200">
+                        class="space-y-3 hidden animate-in zoom-in-95 duration-200">
                         @csrf
                         <input type="hidden" name="id_catalogo_insumo" id="input_id_catalogo_insumo">
 
                         <div>
-                            <label class="block text-xs font-bold text-emerald-700 uppercase tracking-wider mb-2">Nombre
+                            <label class="block text-xs font-bold text-emerald-700 uppercase tracking-wider mb-1.5">Nombre
                                 Comercial / Local</label>
                             <input type="text" name="nombre" id="nombre" required
-                                class="w-full px-4 py-3 rounded-2xl border-emerald-100 focus:border-emerald-500 focus:ring-emerald-500 bg-white text-sm">
+                                class="w-full px-4 py-2.5 rounded-2xl border-emerald-100 focus:border-emerald-500 focus:ring-emerald-500 bg-white text-sm">
                         </div>
 
-                        <div class="grid grid-cols-3 gap-4">
-                            <div class="bg-gray-50 p-4 rounded-2xl border border-gray-100 relative overflow-hidden group">
+                        <div class="grid grid-cols-3 gap-3">
+                            <div class="bg-gray-50 p-3 rounded-2xl border border-gray-100 relative overflow-hidden group">
                                 <div
                                     class="absolute -right-2 -bottom-2 text-gray-100 group-hover:text-emerald-50 transition-colors duration-500 pointer-events-none">
-                                    <svg class="w-16 h-16" fill="currentColor" viewBox="0 0 24 24">
+                                    <svg class="w-12 h-12" fill="currentColor" viewBox="0 0 24 24">
                                         <path d="M4 6h16v12H4z" />
                                     </svg>
                                 </div>
-                                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Categoría</label>
-                                <select name="categoria_manual" id="categoria_manual" class="w-full text-sm font-black text-gray-800 tracking-tight bg-transparent border-b-2 border-gray-200 focus:ring-0 focus:border-emerald-500 relative z-10 cursor-pointer appearance-none">
-                                    <option value="" disabled selected>Seleccione...</option>
+                                <label class="block text-[9px] font-bold text-gray-400 uppercase mb-0.5">Categoría</label>
+                                <select name="categoria_manual" id="categoria_manual" class="w-full text-xs font-black text-gray-800 tracking-tight bg-transparent border-b-2 border-gray-200 focus:ring-0 focus:border-emerald-500 relative z-10 cursor-pointer appearance-none">
+                                    <option value="" disabled selected>Tipo...</option>
                                     @foreach($tiposInsumo as $tipo)
                                         <option value="{{ $tipo->id_tipo_insumo }}">{{ $tipo->nombre }}</option>
                                     @endforeach
                                 </select>
                             </div>
 
-                            <div class="bg-blue-50/50 p-4 rounded-2xl border border-blue-100 relative overflow-hidden group">
+                            <div class="bg-blue-50/50 p-3 rounded-2xl border border-blue-100 relative overflow-hidden group">
                                 <div class="absolute -right-2 -bottom-2 text-blue-100 group-hover:text-blue-200 transition-colors duration-500 pointer-events-none">
-                                    <svg class="w-16 h-16" fill="currentColor" viewBox="0 0 24 24">
+                                    <svg class="w-12 h-12" fill="currentColor" viewBox="0 0 24 24">
                                         <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/><path d="M12.5 7H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
                                     </svg>
                                 </div>
-                                <label class="block text-[10px] font-bold text-blue-400 uppercase mb-1">Impacto (Días)</label>
-                                <div class="flex items-center justify-center gap-1 relative z-10 mt-2 bg-white/50 px-2 py-1 rounded-xl transition-colors">
+                                <label class="block text-[9px] font-bold text-blue-400 uppercase mb-0.5">Impacto (Días)</label>
+                                <div class="flex items-center justify-center gap-1 relative z-10 mt-1.5 bg-white/50 px-2 py-0.5 rounded-lg transition-colors">
                                     <input type="number" name="impacto_dias" id="impacto_dias" value="0"
-                                        class="w-full text-xl font-black text-blue-700 tracking-tight bg-transparent border-0 focus:ring-0 px-0 py-0 transition-colors outline-none selection:bg-blue-200 text-center">
+                                        class="w-full text-lg font-black text-blue-700 tracking-tight bg-transparent border-0 focus:ring-0 px-0 py-0 transition-colors outline-none selection:bg-blue-200 text-center">
                                 </div>
                             </div>
 
                             <div
-                                class="bg-emerald-50/50 p-4 rounded-2xl border border-emerald-100 relative overflow-hidden group">
+                                class="bg-emerald-50/50 p-3 rounded-2xl border border-emerald-100 relative overflow-hidden group">
                                 <div
                                     class="absolute -right-2 -bottom-2 text-emerald-100 group-hover:text-emerald-200 transition-colors duration-500 pointer-events-none">
-                                    <svg class="w-16 h-16" fill="currentColor" viewBox="0 0 24 24">
+                                    <svg class="w-12 h-12" fill="currentColor" viewBox="0 0 24 24">
                                         <path
                                             d="M3 3v18h18V3H3zm16 16H5V5h14v14zM11 7h2v2h-2zM7 7h2v2H7zm8 0h2v2h-2zM7 11h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2zM7 15h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2z" />
                                     </svg>
                                 </div>
-                                <label class="block text-[10px] font-bold text-emerald-400 uppercase mb-1">Stock Actual</label>
+                                <label class="block text-[9px] font-bold text-emerald-400 uppercase mb-0.5">Stock Actual</label>
                                 <div class="flex items-center gap-1 relative z-10">
-                                    <span class="text-xl font-black text-emerald-700 tracking-tight">0</span>
-                                    <span class="text-[8px] font-bold text-emerald-500 uppercase">Unidades</span>
+                                    <span class="text-lg font-black text-emerald-700 tracking-tight">0</span>
+                                    <span class="text-[7px] font-bold text-emerald-500 uppercase">Unid</span>
                                     <input type="hidden" name="cantidad_ingreso" id="stock_manual" value="0">
                                 </div>
                             </div>
                         </div>
 
                         <div>
-                            <label class="block text-xs font-bold text-emerald-700 uppercase tracking-wider mb-2">Detalles /
+                            <label class="block text-xs font-bold text-emerald-700 uppercase tracking-wider mb-1.5">Detalles /
                                 Notas</label>
-                            <textarea name="descripcion" id="descripcion" rows="3"
-                                class="w-full px-4 py-3 rounded-2xl border-emerald-100 focus:border-emerald-500 focus:ring-emerald-500 bg-white text-sm"></textarea>
+                            <textarea name="descripcion" id="descripcion" rows="2"
+                                class="w-full px-4 py-2.5 rounded-2xl border-emerald-100 focus:border-emerald-500 focus:ring-emerald-500 bg-white text-sm"></textarea>
                         </div>
 
-                        <div class="flex gap-3">
+                        <div class="flex gap-2.5">
                             <button type="button" onclick="resetForm()"
-                                class="px-6 py-4 bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold rounded-2xl transition-all">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                class="px-5 py-3 bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold rounded-2xl transition-all">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M6 18L18 6M6 6l12 12" />
                                 </svg>
                             </button>
                             <button type="submit"
-                                class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 rounded-2xl shadow-lg shadow-emerald-200 transition-all transform hover:-translate-y-1">
+                                class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-2xl shadow-lg shadow-emerald-200 transition-all transform hover:-translate-y-1">
                                 Guardar en Suministros
                             </button>
                         </div>
@@ -147,17 +147,17 @@
             <!-- Inventory List Column -->
             <div class="xl:col-span-2">
                 <div
-                    class="bg-white rounded-3xl shadow-xl border border-emerald-50 overflow-hidden min-h-[600px] flex flex-col">
-                    <div class="p-8 border-b border-emerald-50 bg-gray-50/50 flex justify-between items-center">
+                    class="bg-white rounded-3xl shadow-xl border border-emerald-50 overflow-hidden flex flex-col">
+                    <div class="p-4 border-b border-emerald-50 bg-gray-50/50 flex justify-between items-center">
                         <div>
-                            <h3 class="text-2xl font-black text-emerald-950">Inventario de Suministros</h3>
-                            <p class="text-xs font-medium text-emerald-600 mt-1">Gestione el stock de semillas,
+                            <h3 class="text-lg font-black text-emerald-950">Inventario de Suministros</h3>
+                            <p class="text-[10px] font-medium text-emerald-600 mt-1">Gestione el stock de semillas,
                                 fertilizantes, herramientas y más</p>
                         </div>
-                        <div class="bg-white border-2 border-emerald-100 px-6 py-2 rounded-2xl flex items-center gap-3">
-                            <span class="text-2xl font-black text-emerald-600">{{ $insumos->total() }}</span>
+                        <div class="bg-white border-2 border-emerald-100 px-4 py-1.5 rounded-2xl flex items-center gap-2.5">
+                            <span class="text-xl font-black text-emerald-600">{{ $insumos->total() }}</span>
                             <span
-                                class="text-[10px] font-bold text-emerald-400 uppercase tracking-widest leading-none">Productos<br>Registrados</span>
+                                class="text-[9px] font-bold text-emerald-400 uppercase tracking-widest leading-none">Productos<br>Registrados</span>
                         </div>
                     </div>
 
@@ -165,60 +165,60 @@
                         <table class="w-full text-left">
                             <thead>
                                 <tr
-                                    class="bg-white text-[10px] font-black text-emerald-400 uppercase tracking-[0.2em] border-b border-emerald-50">
-                                    <th class="px-8 py-6">Producto</th>
-                                    <th class="px-8 py-6">Categoría</th>
-                                    <th class="px-8 py-6">Stock</th>
-                                    <th class="px-8 py-6 text-right">Acciones</th>
+                                    class="bg-white text-[9px] font-black text-emerald-400 uppercase tracking-[0.2em] border-b border-emerald-50">
+                                    <th class="px-4 py-2">Producto</th>
+                                    <th class="px-4 py-2 text-center">Categoría</th>
+                                    <th class="px-4 py-2 text-center">Stock</th>
+                                    <th class="px-4 py-2 text-right">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-emerald-50/50">
                                 @forelse($insumos as $insumo)
                                     <tr class="hover:bg-emerald-50/30 transition-all group">
-                                        <td class="px-8 py-6">
-                                            <div class="flex items-center gap-4">
+                                        <td class="px-4 py-2">
+                                            <div class="flex items-center gap-3">
                                                 <div
-                                                    class="w-12 h-12 bg-emerald-600 rounded-2xl flex items-center justify-center text-white font-black text-lg shadow-lg shadow-emerald-100 transform group-hover:rotate-12 transition-transform">
+                                                    class="w-8 h-8 bg-emerald-600 rounded-xl flex items-center justify-center text-white font-black text-sm shadow-lg shadow-emerald-100 transform group-hover:rotate-12 transition-transform">
                                                     {{ substr($insumo->Nombre, 0, 1) }}
                                                 </div>
                                                 <div>
                                                     <span
-                                                        class="font-black text-emerald-950 block text-base">{{ $insumo->Nombre }}</span>
+                                                        class="font-black text-emerald-950 block text-xs">{{ $insumo->Nombre }}</span>
                                                     <span
-                                                        class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider italic">Cat:
+                                                        class="text-[9px] font-bold text-emerald-400 uppercase tracking-wider italic">Cat:
                                                         {{ $insumo->catalogo->nombre_comercial ?? 'Custom' }}</span>
                                                 </div>
                                             </div>
                                         </td>
-                                        <td class="px-8 py-6">
+                                        <td class="px-4 py-2 text-center">
                                             <span
-                                                class="bg-amber-50 text-amber-600 text-xs font-bold px-3 py-1 rounded-full border border-amber-100">
+                                                class="bg-amber-50 text-amber-600 text-[9px] font-bold px-1.5 py-0.5 rounded-full border border-amber-100">
                                                 {{ $insumo->catalogo->tipoInsumo->nombre ?? 'Insumo' }}
                                             </span>
                                         </td>
-                                        <td class="px-8 py-6">
-                                            <div class="flex flex-col gap-2">
-                                                <span class="text-[10px] font-black text-emerald-400 uppercase tracking-widest">Cantidad en Stock</span>
-                                                <div class="flex items-center gap-3">
-                                                    <span class="text-2xl font-black text-emerald-950">{{ number_format($insumo->stock_actual ?? 0, 0) }}</span>
+                                        <td class="px-4 py-2 text-center">
+                                            <div class="flex flex-col gap-0.5 items-center">
+                                                <span class="text-[8px] font-black text-emerald-400 uppercase tracking-widest">Stock</span>
+                                                <div class="flex items-center gap-1.5">
+                                                    <span class="text-lg font-black text-emerald-950">{{ number_format($insumo->stock_actual ?? 0, 0) }}</span>
                                                     @if(($insumo->stock_actual ?? 0) <= 0)
-                                                        <div class="flex items-center gap-1.5 px-3 py-1 bg-red-50 border border-red-100 rounded-lg animate-pulse">
-                                                            <svg class="w-3.5 h-3.5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <div class="flex items-center gap-1 px-1.5 py-0.5 bg-red-50 border border-red-100 rounded-md animate-pulse">
+                                                            <svg class="w-2.5 h-2.5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
                                                             </svg>
-                                                            <span class="text-[10px] font-black text-red-600 uppercase tracking-tighter">Sin Stock</span>
+                                                            <span class="text-[8px] font-black text-red-600 uppercase tracking-tighter">Falta</span>
                                                         </div>
                                                     @endif
                                                 </div>
                                             </div>
                                         </td>
 
-                                        <td class="px-8 py-6 text-right">
+                                        <td class="px-4 py-2 text-right">
                                             <div
-                                                class="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
+                                                class="flex items-center justify-end gap-2.5 opacity-0 group-hover:opacity-100 transition-all">
                                                 <button data-insumo="{{ json_encode($insumo) }}" onclick="editInsumo(JSON.parse(this.dataset.insumo))"
-                                                    class="p-3 bg-amber-50 text-amber-600 rounded-2xl hover:bg-amber-100 transition-colors shadow-sm">
-                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    class="p-2 bg-amber-50 text-amber-600 rounded-xl hover:bg-amber-100 transition-colors shadow-sm">
+                                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                             d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                                     </svg>
@@ -228,8 +228,8 @@
                                                     @csrf @method('DELETE')
                                                     <button type="submit"
                                                         onclick="return confirm('¿Eliminar este producto de su inventario?')"
-                                                        class="p-3 bg-red-50 text-red-600 rounded-2xl hover:bg-red-100 transition-colors shadow-sm">
-                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                                        class="p-2 bg-red-50 text-red-600 rounded-xl hover:bg-red-100 transition-colors shadow-sm">
+                                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor"
                                                             viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round"
                                                                 stroke-width="2"
@@ -242,9 +242,8 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="5" class="px-8 py-32 text-center">
-                                            <p class="text-emerald-400 font-bold italic">Su inventario está vacío. Agregue
-                                                insumos desde el buscador lateral.</p>
+                                        <td colspan="5" class="px-6 py-12 text-center text-emerald-400 font-bold italic">
+                                            Su inventario está vacío. Agregue insumos desde el buscador lateral.
                                         </td>
                                     </tr>
                                 @endforelse
@@ -252,7 +251,7 @@
                         </table>
                     </div>
 
-                    <div class="p-8 bg-gray-50/50 border-t border-emerald-50">
+                    <div class="p-4 bg-gray-50/50 border-t border-emerald-50">
                         {{ $insumos->links() }}
                     </div>
                 </div>
@@ -286,7 +285,7 @@
                             if (data.length > 0) {
                                 data.forEach(item => {
                                     const div = document.createElement('div');
-                                    div.className = 'px-6 py-4 hover:bg-emerald-50 cursor-pointer border-b border-emerald-50 last:border-0 transition-colors flex justify-between items-center';
+                                    div.className = 'px-4 py-3 hover:bg-emerald-50 cursor-pointer border-b border-emerald-50 last:border-0 transition-colors flex justify-between items-center';
 
                                     const categoria = item.tipo_insumo ? item.tipo_insumo.nombre : 'Insumo';
 
@@ -302,7 +301,7 @@
                                 });
                                 // Add "Custom" option at the end
                                 const customDiv = document.createElement('div');
-                                customDiv.className = 'px-6 py-4 hover:bg-emerald-50 cursor-pointer border-t border-emerald-100 bg-emerald-50/50 transition-colors';
+                                customDiv.className = 'px-4 py-3 hover:bg-emerald-50 cursor-pointer border-t border-emerald-100 bg-emerald-50/50 transition-colors';
                                 customDiv.innerHTML = `
                                     <div class="flex space-x-3 items-center text-emerald-700">
                                         <div class="bg-emerald-200 text-emerald-800 p-1.5 rounded-lg">
@@ -317,8 +316,8 @@
                                 searchResults.classList.remove('hidden');
                             } else {
                                 searchResults.innerHTML = `
-                                    <div class="px-6 py-4 hover:bg-emerald-50 cursor-pointer transition-colors" onclick="selectCustomInsumo('${query}')">
-                                        <p class="text-xs text-gray-500 mb-2 italic">No se encontró en el catálogo global...</p>
+                                    <div class="px-4 py-3 hover:bg-emerald-50 cursor-pointer transition-colors" onclick="selectCustomInsumo('${query}')">
+                                        <p class="text-[10px] text-gray-400 mb-1 italic">No se encontró en el catálogo global...</p>
                                         <div class="flex space-x-3 items-center text-emerald-700">
                                             <div class="bg-emerald-200 text-emerald-800 p-1.5 rounded-lg">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
