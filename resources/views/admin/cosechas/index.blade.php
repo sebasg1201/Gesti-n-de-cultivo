@@ -130,13 +130,13 @@
                 <!-- Filtros dinámicos por fase -->
                 <div class="flex flex-wrap gap-2">
                     <a href="{{ route('admin.cosechas.index') }}"
-                        class="px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all {{ !request('fase') ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-200 scale-105' : 'bg-white text-emerald-600 border border-emerald-100 hover:bg-emerald-50' }}">
+                        class="px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest transition-all {{ !request('fase') ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-200 scale-105' : 'bg-white text-emerald-600 border border-emerald-100 hover:bg-emerald-50' }}">
                         Todos
                     </a>
                     @foreach(['Siembra', 'Vegetativo', 'Floración', 'Llenado', 'Cosecha'] as $fase)
                         <a href="{{ route('admin.cosechas.index', ['fase' => $fase]) }}"
-                            class="px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 {{ request('fase') == $fase ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-200 scale-105' : 'bg-white text-emerald-600 border border-emerald-100 hover:bg-emerald-50' }}">
-                            <span class="w-2 h-2 rounded-full {{ 
+                            class="px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest transition-all flex items-center gap-2 {{ request('fase') == $fase ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-200 scale-105' : 'bg-white text-emerald-600 border border-emerald-100 hover:bg-emerald-50' }}">
+                            <span class="w-1.5 h-1.5 rounded-full {{ 
                                 $fase == 'Siembra' ? 'bg-blue-400' : (
                                 $fase == 'Vegetativo' ? 'bg-emerald-400' : (
                                 $fase == 'Floración' ? 'bg-rose-400' : (
