@@ -204,14 +204,36 @@
                             <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Ubicación</p>
                             <div class="bg-emerald-50/50 p-6 rounded-[2rem] border border-emerald-100">
                                 <p class="font-black text-emerald-900" id="modalParcela"></p>
-                                <p class="text-sm text-emerald-700" id="modalUbicacion"></p>
+                                <p class="text-sm text-emerald-700 font-bold" id="modalDimensiones"></p>
+                                <p class="text-[10px] text-emerald-600 uppercase tracking-widest mt-2">Suelo: <span id="modalSuelo"></span></p>
                             </div>
                         </div>
                         <div class="space-y-4">
                             <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Programado</p>
                             <div class="bg-blue-50/50 p-6 rounded-[2rem] border border-blue-100">
                                 <p class="font-black text-blue-900" id="modalFecha"></p>
-                                <p class="text-sm text-blue-700">Fecha de entrega</p>
+                                <p class="text-sm font-bold text-blue-700" id="modalCultivo"></p>
+                                <p class="text-[10px] text-blue-600 uppercase tracking-widest mt-2">Fin Estimado: <span id="modalEstimada"></span></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-violet-50/50 p-6 rounded-[2rem] border border-violet-100">
+                        <p class="text-[10px] font-black text-violet-400 uppercase tracking-widest mb-3 text-center">Detalles Finales de Cosecha</p>
+                        <div class="flex justify-around items-center text-center">
+                            <div>
+                                <p class="text-[9px] text-violet-500 uppercase font-black tracking-widest leading-none mb-1">Siembra</p>
+                                <p class="font-bold text-violet-900" id="modalSiembra"></p>
+                            </div>
+                            <div class="w-px h-8 bg-violet-200"></div>
+                            <div>
+                                <p class="text-[9px] text-violet-500 uppercase font-black tracking-widest leading-none mb-1">Cantidad</p>
+                                <p class="font-bold text-violet-900" id="modalCantidad"></p>
+                            </div>
+                            <div class="w-px h-8 bg-violet-200"></div>
+                            <div>
+                                <p class="text-[9px] text-violet-500 uppercase font-black tracking-widest leading-none mb-1">Producción</p>
+                                <p class="font-bold text-violet-900" id="modalProduccion"></p>
                             </div>
                         </div>
                     </div>
@@ -264,8 +286,15 @@
         document.getElementById('modalTipoTarea').innerText = ds.tipoLabel || 'Detalle de Trabajo';
         document.getElementById('modalDescripcion').innerText = ds.descripcion || 'Sin descripción';
         document.getElementById('modalFecha').innerText = ds.fecha || 'No definida';
+        document.getElementById('modalCultivo').innerText = ds.cultivo || 'Cosecha';
+        document.getElementById('modalEstimada').innerText = ds.estimada || 'Pendiente';
         document.getElementById('modalParcela').innerText = ds.parcela || 'N/A';
-        document.getElementById('modalUbicacion').innerText = ds.ubicacion || 'N/A';
+        document.getElementById('modalDimensiones').innerText = ds.dimensiones || 'N/A';
+        document.getElementById('modalSuelo').innerText = ds.suelo || 'N/A';
+        
+        document.getElementById('modalSiembra').innerText = ds.siembra || '-';
+        document.getElementById('modalCantidad').innerText = ds.cantidad || '-';
+        document.getElementById('modalProduccion').innerText = ds.produccion || '-';
         
         const modalForm = document.getElementById('modalFormEstado');
         const btnFinalizar = document.getElementById('btnFinalizarTarea');
