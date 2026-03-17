@@ -197,10 +197,19 @@
                                             </span>
                                         </td>
                                         <td class="px-8 py-6">
-                                            <div class="bg-emerald-50 rounded-xl px-3 py-1 border border-emerald-100 inline-block">
-                                                <span class="text-xs font-black text-emerald-700">{{ $insumo->stock_actual ?? 0 }}
-                                                    <span class="text-[9px] font-bold">und</span>
-                                                </span>
+                                            <div class="flex flex-col gap-2">
+                                                <span class="text-[10px] font-black text-emerald-400 uppercase tracking-widest">Cantidad en Stock</span>
+                                                <div class="flex items-center gap-3">
+                                                    <span class="text-2xl font-black text-emerald-950">{{ number_format($insumo->stock_actual ?? 0, 0) }}</span>
+                                                    @if(($insumo->stock_actual ?? 0) <= 0)
+                                                        <div class="flex items-center gap-1.5 px-3 py-1 bg-red-50 border border-red-100 rounded-lg animate-pulse">
+                                                            <svg class="w-3.5 h-3.5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                                                            </svg>
+                                                            <span class="text-[10px] font-black text-red-600 uppercase tracking-tighter">Sin Stock</span>
+                                                        </div>
+                                                    @endif
+                                                </div>
                                             </div>
                                         </td>
 
