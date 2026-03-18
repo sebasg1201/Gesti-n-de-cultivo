@@ -34,12 +34,7 @@
                         </div>
                     </div>
 
-                    <div id="actionArea" class="mt-8 pt-8 border-t border-gray-100 hidden">
-                        <button onclick="openRegistroModal()" class="w-full bg-emerald-600 text-white font-black py-5 rounded-[1.5rem] hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-100 flex items-center justify-center gap-3">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                            Registrar Mi Asistencia Hoy
-                        </button>
-                    </div>
+                    {{-- Botón de registro removido: el registro se gestiona desde la vista de Tareas --}}
                 </div>
             </div>
         </div>
@@ -141,7 +136,6 @@
         selectedDate = dateStr;
         const titleEl = document.getElementById('selectedDateTitle');
         const listEl = document.getElementById('eventsList');
-        const actionArea = document.getElementById('actionArea');
         
         titleEl.innerText = dateObj.toLocaleDateString('es-ES', { 
             weekday: 'long', day: 'numeric', month: 'long' 
@@ -285,22 +279,6 @@
             });
         }
 
-        if (!yaRegistroGeneral) {
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            
-            // dateObj viene de FullCalendar y ya es objeto Date
-            const selectedDateObj = new Date(dateStr + 'T12:00:00'); // Usar T12:00:00 para evitar problemas de zona horaria
-            selectedDateObj.setHours(0, 0, 0, 0);
-
-            if (selectedDateObj < today) {
-                actionArea.classList.add('hidden');
-            } else {
-                actionArea.classList.remove('hidden');
-            }
-        } else {
-            actionArea.classList.add('hidden');
-        }
     }
 
     // Modal para ver foto

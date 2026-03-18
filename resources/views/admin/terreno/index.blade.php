@@ -3,7 +3,7 @@
 @section('title', 'Gestión de Terrenos')
 
 @section('content')
-<div class="space-y-8">
+<div class="space-y-6">
     {{-- Las alertas de success/error ahora se manejan en el layout principal --}}
     
     @if ($errors->any())
@@ -22,23 +22,23 @@
     </div>
     @endif
 
-    <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+    <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
         <!-- Add/Edit Form Column -->
         <div class="xl:col-span-1">
-            <div class="bg-white rounded-3xl shadow-xl border border-emerald-50 p-8 sticky top-8">
-                <div class="flex items-center gap-3 mb-8">
+            <div class="bg-white rounded-3xl shadow-xl border border-emerald-50 p-6 sticky top-6">
+                <div class="flex items-center gap-3 mb-6">
                     <div class="bg-emerald-600 p-3 rounded-2xl text-white shadow-lg shadow-emerald-100">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
                         </svg>
                     </div>
                     <div>
-                        <h3 id="formTitle" class="text-xl font-bold text-emerald-900">Registrar Terreno</h3>
+                        <h3 id="formTitle" class="text-lg font-bold text-emerald-900">Registrar Terreno</h3>
                         <p class="text-[10px] font-medium text-emerald-500 uppercase tracking-widest mt-1">Gestor Espacial</p>
                     </div>
                 </div>
 
-                <form id="terrenoForm" action="{{ route('admin.terrenos.store') }}" method="POST" class="space-y-6">
+                <form id="terrenoForm" action="{{ route('admin.terrenos.store') }}" method="POST" class="space-y-4">
                     @csrf
                     <div id="methodField"></div>
 
@@ -72,6 +72,25 @@
                         <label class="block text-xs font-bold text-emerald-700 uppercase tracking-wider mb-2">Ubicación Específica</label>
                         <input type="text" name="ubicacion" id="ubicacion" placeholder="Ej. Vereda La Cima, Finca San José..."
                             class="w-full px-4 py-3 rounded-2xl border-emerald-100 focus:border-emerald-500 focus:ring-emerald-500 bg-emerald-50/30 text-sm transition-all" value="{{ old('ubicacion') }}">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-emerald-700 uppercase tracking-wider mb-2">Departamento</label>
+                            <input type="text" name="departamento" id="departamento" placeholder="Ej. Tolima"
+                                class="w-full px-4 py-3 rounded-2xl border-emerald-100 focus:border-emerald-500 focus:ring-emerald-500 bg-emerald-50/30 text-sm transition-all" value="{{ old('departamento') }}">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-emerald-700 uppercase tracking-wider mb-2">Ciudad / Municipio</label>
+                            <input type="text" name="ciudad" id="ciudad" placeholder="Ej. Ibagué"
+                                class="w-full px-4 py-3 rounded-2xl border-emerald-100 focus:border-emerald-500 focus:ring-emerald-500 bg-emerald-50/30 text-sm transition-all" value="{{ old('ciudad') }}">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-emerald-700 uppercase tracking-wider mb-2">Código Postal</label>
+                        <input type="text" name="codigo_postal" id="codigo_postal" placeholder="Ej. 730001"
+                            class="w-full px-4 py-3 rounded-2xl border-emerald-100 focus:border-emerald-500 focus:ring-emerald-500 bg-emerald-50/30 text-sm transition-all" value="{{ old('codigo_postal') }}">
                     </div>
 
                     <div class="grid grid-cols-2 gap-4">
@@ -131,9 +150,9 @@
         <!-- Inventory List Column -->
         <div class="xl:col-span-2">
             <div class="bg-white rounded-3xl shadow-xl border border-emerald-50 overflow-hidden min-h-[600px] flex flex-col">
-                <div class="p-8 border-b border-emerald-50 bg-gray-50/50 flex justify-between items-center">
+                <div class="p-6 border-b border-emerald-50 bg-gray-50/50 flex justify-between items-center">
                     <div>
-                        <h3 class="text-2xl font-black text-emerald-950">Parcelas Registradas</h3>
+                        <h3 class="text-xl font-black text-emerald-950">Parcelas Registradas</h3>
                         <p class="text-xs font-medium text-emerald-600 mt-1">Mapa general de su finca</p>
                     </div>
                     <div class="bg-white border-2 border-emerald-100 px-6 py-2 rounded-2xl flex items-center gap-3">
@@ -158,58 +177,62 @@
                             <tr class="hover:bg-emerald-50/30 transition-all group cursor-pointer" onclick="viewOnMap(this)" data-terreno="{{ json_encode($terreno) }}">
                                 <td class="px-8 py-6">
                                     <div class="flex items-center gap-4">
-                                        <div class="w-12 h-12 bg-emerald-600 rounded-2xl flex items-center justify-center text-white font-black text-lg shadow-lg shadow-emerald-100 transform group-hover:rotate-12 transition-transform">
-                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <div class="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center text-white font-black text-base shadow-lg shadow-emerald-100 transform group-hover:rotate-12 transition-transform">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064" />
                                             </svg>
                                         </div>
                                         <div>
-                                            <span class="font-black text-emerald-950 block text-base">{{ $terreno->nombre }}</span>
-                                            <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1 mt-1">
-                                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                                            <span class="font-black text-emerald-950 block text-sm">{{ $terreno->nombre }}</span>
+                                            <span class="text-[9px] font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1 mt-1 font-mono">
+                                                <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                                                 {{ $terreno->ubicacion ?? 'Ubicación no especificada' }}
+                                                @if($terreno->departamento || $terreno->ciudad || $terreno->codigo_postal)
+                                                    | {{ trim($terreno->departamento . ($terreno->ciudad ? ', ' . $terreno->ciudad : '') . ' ' . $terreno->codigo_postal) }}
+                                                @endif
                                             </span>
-                                            <span class="text-[10px] font-bold text-emerald-600 uppercase tracking-wider opacity-70 mt-1 block">Suelo: {{ optional($terreno->tipoSuelo)->nombre ?? 'No asignado' }}</span>
+                                            <span class="text-[9px] font-bold text-emerald-600 uppercase tracking-wider opacity-70 mt-0.5 block">Suelo: {{ optional($terreno->tipoSuelo)->nombre ?? 'No asignado' }}</span>
                                         </div>
                                     </div>
                                 </td>
-                                <td class="px-8 py-6">
+                                <td class="px-6 py-4">
                                     <div class="flex flex-col gap-1">
-                                        <span class="text-xs font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-1 rounded-md border border-emerald-100 flex items-center gap-2">
-                                            <span class="text-[8px] text-emerald-400 w-6">LAT:</span> {{ number_format($terreno->latitud, 6) }}
+                                        <span class="text-[10px] font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-100 flex items-center gap-1.5">
+                                            <span class="text-[8px] text-emerald-400 w-5">LAT:</span> {{ number_format($terreno->latitud, 6) }}
                                         </span>
-                                        <span class="text-xs font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-1 rounded-md border border-emerald-100 flex items-center gap-2">
-                                            <span class="text-[8px] text-emerald-400 w-6">LNG:</span> {{ number_format($terreno->longitud, 6) }}
+                                        <span class="text-[10px] font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-100 flex items-center gap-1.5">
+                                            <span class="text-[8px] text-emerald-400 w-5">LNG:</span> {{ number_format($terreno->longitud, 6) }}
                                         </span>
                                     </div>
                                 </td>
-                                <td class="px-8 py-6">
+                                <td class="px-6 py-4">
                                     <div class="space-y-1">
                                         <div class="flex flex-col gap-1">
-                                            <span class="text-sm font-bold text-emerald-900 border border-emerald-100 bg-white px-3 py-1 rounded-lg shadow-sm inline-flex items-center gap-2">
-                                                <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" /></svg>
+                                            <span class="text-[10px] font-black text-emerald-900 border border-emerald-100 bg-white px-2 py-1 rounded-lg shadow-sm inline-flex items-center gap-1.5">
+                                                <svg class="w-3 h-3 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" /></svg>
                                                 {{ $terreno->Ancho }}m &times; {{ $terreno->Alto }}m
                                             </span>
-                                            <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-lg mt-1 inline-block border border-emerald-100">
+                                            <span class="text-[9px] font-bold text-emerald-700 bg-emerald-50 px-2 py-1 rounded-lg mt-0.5 inline-block border border-emerald-100">
                                                 &approx; {{ number_format($terreno->Ancho * $terreno->Alto, 2) }} m&sup2;
                                             </span>
                                         </div>
                                     </div>
                                 </td>
-                                <td class="px-8 py-6">
+                                <td class="px-6 py-4">
                                     @if(optional($terreno->estado)->id_estado == 7)
-                                        <div class="bg-emerald-50 rounded-xl px-4 py-2 border border-emerald-200 inline-flex items-center gap-2 shadow-sm">
-                                            <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-                                            <span class="text-sm font-black text-emerald-700">{{ optional($terreno->estado)->nombre_estado ?? 'Disponible' }}</span>
+                                        <div class="bg-emerald-50 rounded-xl px-2 py-1 border border-emerald-200 inline-flex items-center gap-1.5 shadow-sm">
+                                            <div class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                                            <span class="text-xs font-black text-emerald-700">{{ optional($terreno->estado)->nombre_estado ?? 'Disponible' }}</span>
                                         </div>
                                     @else
-                                        <div class="bg-amber-50 rounded-xl px-4 py-2 border border-amber-200 inline-flex items-center gap-2 shadow-sm">
-                                            <div class="w-2 h-2 rounded-full bg-amber-500"></div>
-                                            <span class="text-sm font-black text-amber-700">{{ optional($terreno->estado)->nombre_estado ?? 'Ocupado' }}</span>
+                                        <div class="bg-amber-50 rounded-xl px-2 py-1 border border-amber-200 inline-flex items-center gap-1.5 shadow-sm">
+                                            <div class="w-1.5 h-1.5 rounded-full bg-amber-500"></div>
+                                            <span class="text-xs font-black text-amber-700">{{ optional($terreno->estado)->nombre_estado ?? 'Ocupado' }}</span>
                                         </div>
                                     @endif
                                 </td>
-                                <td class="px-8 py-6 text-right">
+                                <td class="px-6 py-4 text-right">
+                                    <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all">
                                         <button 
                                             data-terreno="{{ json_encode($terreno) }}"
                                             onclick="event.stopPropagation(); openEdit(this)" 
@@ -244,7 +267,7 @@
                     </table>
                 </div>
 
-                <div class="p-8 bg-gray-50/50 border-t border-emerald-50">
+                <div class="p-6 bg-gray-50/50 border-t border-emerald-50">
                     {{ $terrenos->links() }}
                 </div>
             </div>
@@ -331,6 +354,9 @@
                 draggable: true
             }).addTo(map);
 
+            // Fetch initial location data
+            reverseGeocode(defaultLocation[0], defaultLocation[1]);
+
             // Evento clic en el mapa
             map.on('click', onMapClick);
 
@@ -351,14 +377,31 @@
         }
     }
 
+    function reverseGeocode(lat, lng) {
+        fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data && data.address) {
+                    const depto = data.address.state || data.address.county || data.address.region || '';
+                    const city = data.address.city || data.address.town || data.address.village || data.address.municipality || '';
+                    const postal = data.address.postcode || '';
+                    
+                    if (document.getElementById('departamento')) document.getElementById('departamento').value = depto;
+                    if (document.getElementById('ciudad')) document.getElementById('ciudad').value = city;
+                    if (document.getElementById('codigo_postal')) document.getElementById('codigo_postal').value = postal;
+                }
+            })
+            .catch(err => console.error("Error geocodificando la ubicación:", err));
+    }
+
     function updateMarker(latlng) {
         if (!marker) return;
         marker.setLatLng(latlng);
         document.getElementById('latitud').value = latlng.lat.toFixed(8);
         document.getElementById('longitud').value = latlng.lng.toFixed(8);
         
-        // Al actualizar el marcador principal, nos aseguramos de que sea visible
-        // pero no eliminamos los otros marcadores
+        // Auto-fill from API
+        reverseGeocode(latlng.lat, latlng.lng);
     }
 
     function renderAllTerrenos() {
@@ -453,7 +496,7 @@
 
     function toggleReadOnly(isReadOnly) {
         const inputs = [
-            'nombre', 'ubicacion', 'Ancho', 'Alto', 'id_tipo_suelo', 'id_estado', 'latitud', 'longitud'
+            'nombre', 'ubicacion', 'Ancho', 'Alto', 'id_tipo_suelo', 'id_estado', 'latitud', 'longitud', 'departamento', 'ciudad', 'codigo_postal'
         ];
         
         inputs.forEach(id => {
@@ -496,6 +539,10 @@
         if(document.getElementById('ubicacion')) document.getElementById('ubicacion').value = terreno.ubicacion || '';
         document.getElementById('Ancho').value = terreno.Ancho || '';
         document.getElementById('Alto').value = terreno.Alto || '';
+        
+        if(document.getElementById('departamento')) document.getElementById('departamento').value = terreno.departamento || '';
+        if(document.getElementById('ciudad')) document.getElementById('ciudad').value = terreno.ciudad || '';
+        if(document.getElementById('codigo_postal')) document.getElementById('codigo_postal').value = terreno.codigo_postal || '';
         
         // Manejar latidud y longitud con checks de nulidad explícitos
         // Buscamos latitud/longitud en varios formatos posibles de propiedad (case insensitive / snake_case)
@@ -591,6 +638,9 @@
         const ubicacionPreview = document.getElementById('ubicacionPreview');
         if (ubicacionPreview) ubicacionPreview.classList.add('hidden');
         if (document.getElementById('ubicacion')) document.getElementById('ubicacion').value = '';
+        if (document.getElementById('departamento')) document.getElementById('departamento').value = '';
+        if (document.getElementById('ciudad')) document.getElementById('ciudad').value = '';
+        if (document.getElementById('codigo_postal')) document.getElementById('codigo_postal').value = '';
 
         if (map && marker) {
             marker.setLatLng(defaultLocation);

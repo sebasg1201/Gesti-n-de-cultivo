@@ -70,12 +70,15 @@ class Cosecha extends Model
             
         if(!$ultimoRiego) return 100; 
         
-        // Si el estado es distinto de "Pendiente" (1), significa que ya se completó.
-        if($ultimoRiego->id_estado != 1) {
+        if($ultimoRiego->id_estado == 15) { // Realizado
             return 100;
         }
         
-        return 0; // Si está pendiente, la barra está vacía esperando al trabajador
+        if($ultimoRiego->id_estado == 17) { // En Proceso (id=17)
+            return 50;
+        }
+        
+        return 0; // Pendiente (1), Perdida (16) o cualquier otro
     }
 
     public function getFaseActualAttribute() {
@@ -85,5 +88,10 @@ class Cosecha extends Model
         if ($porcentaje < 75) return 'Floración';
         if ($porcentaje < 90) return 'Llenado';
         return 'Cosecha';
+    }
+
+    public function cultivos()
+    {
+        return $this->hasMany(Cultivo::class, 'id_cosecha', 'id_cosecha');
     }
 }

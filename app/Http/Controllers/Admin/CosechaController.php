@@ -18,14 +18,29 @@ class CosechaController extends Controller
         return Auth::guard('usuario')->user()->id_empresa;
     }
 
-    public function index()
+    public function index(Request $request)
     {
         $id_empresa = $this->getEmpresaId();
+        $faseFilter = $request->get('fase');
 
-        $cosechas = Cosecha::where('id_empresa', $id_empresa)
+        $query = Cosecha::where('id_empresa', $id_empresa)
+            ->where('id_estado', '!=', 14)
             ->with(['terreno', 'semilla'])
-            ->orderBy('id_cosecha', 'desc')
-            ->paginate(10);
+            ->orderBy('id_cosecha', 'desc');
+
+        // Filtrado por fase (aproximación en SQL para mantener paginación)
+        if ($faseFilter) {
+            $query->whereRaw("
+                (CASE 
+                    WHEN (DATEDIFF(NOW(), fecha_siembra) / DATEDIFF(fecha_estimada, fecha_siembra) * 100) < 20 THEN 'Siembra'
+                    WHEN (DATEDIFF(NOW(), fecha_siembra) / DATEDIFF(fecha_estimada, fecha_siembra) * 100) < 50 THEN 'Vegetativo'
+                    WHEN (DATEDIFF(NOW(), fecha_siembra) / DATEDIFF(fecha_estimada, fecha_siembra) * 100) < 75 THEN 'Floración'
+                    WHEN (DATEDIFF(NOW(), fecha_siembra) / DATEDIFF(fecha_estimada, fecha_siembra) * 100) < 90 THEN 'Llenado'
+                    ELSE 'Cosecha'
+                END) = ?", [$faseFilter]);
+        }
+
+        $cosechas = $query->paginate(9);
 
         $terrenos = Terreno::with('tipoSuelo')->where('id_empresa', $id_empresa)->where('id_estado', 7)->get(); // 7 = Disponible
         $semillas = TipoSemilla::where('id_empresa', $id_empresa)->get();
@@ -51,11 +66,11 @@ class CosechaController extends Controller
 
         $semilla = TipoSemilla::findOrFail($request->id_semilla);
         $terreno = Terreno::with('tipoSuelo')->findOrFail($request->id_terreno);
-        
+
         if ($terreno->id_estado != 7) {
             return redirect()->back()->with('error', 'El terreno seleccionado está ocupado y no se puede usar para una nueva siembra.')->withInput();
         }
-        
+
         $riego = TipoRiego::findOrFail($request->id_tipo_riego);
 
         $imagePath = null;
@@ -113,39 +128,50 @@ class CosechaController extends Controller
             $frecuencia = (int) $request->frecuencia_riego_dias;
             $fecha_actual_bucle = \Carbon\Carbon::parse($request->fecha_siembra);
 
-            // 2. Selección del "Pool" de Trabajadores (La Consulta)
-            $trabajadores = \App\Models\Usuario::where('id_empresa', $id_empresa)
-                ->where('id_tipo_usuario', 3) // 3 = trabajador
-                ->where('id_estado', 1)       // Activo
-                ->where('id_estado_trabajador', 1)  // Disponible
+            // === Selección del trabajador con menos carga ===
+            // Solo se consideran TRABAJADORES (id_tipo_usuario=3) de la empresa.
+            // Primero se buscan disponibles; si no hay, se amplía a todos los trabajadores activos.
+            $queryTrabajadores = \App\Models\Usuario::where('id_empresa', $id_empresa)
+                ->where('id_tipo_usuario', 3); // 3 = trabajador
+
+            // Prioridad 1: disponibles (id_estado_trabajador=1) y activos (id_estado=1)
+            $trabajadores = (clone $queryTrabajadores)
+                ->where('id_estado', 1)
+                ->where('id_estado_trabajador', 1)
                 ->get();
+
+            // Prioridad 2: si no hay disponibles, buscar cualquier trabajador activo
+            if ($trabajadores->isEmpty()) {
+                $trabajadores = (clone $queryTrabajadores)
+                    ->where('id_estado', 1)
+                    ->get();
+            }
+
+            // Prioridad 3: cualquier trabajador de la empresa sin importar estado
+            if ($trabajadores->isEmpty()) {
+                $trabajadores = $queryTrabajadores->get();
+            }
 
             $trabajadoresCount = $trabajadores->count();
             $cargasTrabajo = [];
 
             if ($trabajadoresCount > 0) {
                 foreach ($trabajadores as $t) {
-                    // Contamos las tareas de riego pendientes de este trabajador
                     $cargasTrabajo[$t->documento] = \App\Models\Riego::where('documento_trabajador', $t->documento)
-                        ->where('id_estado', 1) // 1 = Pendiente
+                        ->whereIn('id_estado', [1, 17]) // 1=Pendiente, 17=En Proceso
                         ->count();
                 }
-            } else {
-                session()->flash('warning', 'Aviso: No hay trabajadores disponibles, las tareas se han asignado a su perfil provisionalmente.');
-            }
-
-            // Crear el primer riego inmediatamente (para la fecha de siembra o inicio)
-            $id_asignado = Auth::guard('usuario')->user()->documento; // Fallback al admin actual
-
-            if ($trabajadoresCount > 0) {
-                // Ordenamos de menor a mayor cantidad de tareas
+                // Ordenar de menor a mayor carga
                 asort($cargasTrabajo);
-                // Seleccionar el primero (menor carga)
                 reset($cargasTrabajo);
                 $id_asignado = key($cargasTrabajo);
+            } else {
+                // No hay trabajadores en la empresa — no crear la tarea
+                session()->flash('warning', 'Aviso: No hay trabajadores registrados en la empresa. La tarea de riego no fue asignada.');
+                return redirect()->route('admin.cosechas.index')->with('success', 'Siembra iniciada. Registra trabajadores para asignar tareas de riego.');
             }
 
-            // Al ser el riego inicial (día 0), si la fecha es hoy, ponerle la hora actual para que no salga 00:00
+            // Al ser el riego inicial (día 0), si la fecha es hoy, ponerle la hora actual
             $fechaProgramada = $fecha_actual_bucle->copy();
             if ($fechaProgramada->isToday()) {
                 $fechaProgramada->setTimeFrom(\Carbon\Carbon::now());
@@ -173,7 +199,7 @@ class CosechaController extends Controller
         $id_empresa = $this->getEmpresaId();
 
         $cosecha = Cosecha::where('id_empresa', $id_empresa)
-            ->with(['terreno', 'terreno.tipoSuelo', 'semilla'])
+            ->with(['terreno', 'terreno.tipoSuelo', 'semilla', 'cultivos.detalles.producto', 'cultivos.trabajador'])
             ->findOrFail($id);
 
         $fechaSiembra = \Carbon\Carbon::parse($cosecha->fecha_siembra);
@@ -210,50 +236,72 @@ class CosechaController extends Controller
         elseif ($porcentaje >= 50 && $porcentaje < 75)
             $faseActual = 'Floración';
         elseif ($porcentaje >= 75 && $porcentaje < 90)
-            $faseActual = 'Llenado de Grano';
+            $faseActual = 'Llenado';
         elseif ($porcentaje >= 90)
             $faseActual = 'Cosecha';
 
-        // Calcular cumplimiento de hidratación (Barra Azul - Progreso Ciclo)
         $riegos = \App\Models\Riego::where('id_cosecha', $id)->get();
-        $totalRiegosCiclo = $riegos->count();
-        $riegosCompletados = $riegos->filter(function ($riego) {
-            return $riego->id_estado != 1; // 1 = Pendiente
-        })->count();
 
-        $porcentajeHidratacion = $totalRiegosCiclo > 0
-            ? ($riegosCompletados / $totalRiegosCiclo) * 100
-            : 0;
+        // Calcular cumplimiento de hidratación (Barra Azul - Estado Tarea Actual)
+        $ultimoRiego = \App\Models\Riego::where('id_cosecha', $id)
+            ->whereDate('fecha_programada', '<=', \Carbon\Carbon::now()->format('Y-m-d'))
+            ->orderBy('fecha_programada', 'desc')
+            ->first();
+
+        $porcentajeHidratacion = 0;
+        if (!$ultimoRiego) {
+            $porcentajeHidratacion = 100; // Sin riego programado = ciclo limpio
+        } else {
+            if ($ultimoRiego->id_estado == 15) {        // Realizado
+                $porcentajeHidratacion = 100;
+            } elseif ($ultimoRiego->id_estado == 17) {  // En Proceso
+                $porcentajeHidratacion = 50;
+            } else {                                     // Pendiente / Perdida
+                $porcentajeHidratacion = 0;
+            }
+        }
+
+        $totalRiegosCiclo = $riegos->count();
+        $riegosCompletados = $riegos->where('id_estado', 15)->count();
 
         $insumos = \App\Models\InsumoCosecha::with('insumo')->where('id_cosecha', $id)->get();
         $fases = \App\Models\FaseProgramada::where('id_cosecha', $id)->get();
 
         $historial = collect();
-        
-        foreach($riegos as $r) {
+
+        foreach ($riegos as $r) {
             $r->tipo_historial = 'riego';
             $r->fecha_historial = $r->fecha_programada;
             $r->titulo_historial = 'Riego';
             $r->descripcion_historial = $r->observaciones;
-            $r->estado_historial = $r->id_estado == 9 ? 'Completado' : ($r->id_estado == 8 ? 'En Proceso' : 'Pendiente');
+
+            if ($r->id_estado == 15) {
+                $r->estado_historial = 'Completado';
+            } elseif ($r->id_estado == 16) {
+                $r->estado_historial = 'Perdida';
+            } elseif ($r->id_estado == 17) {   // En Proceso
+                $r->estado_historial = 'En Proceso';
+            } else {
+                $r->estado_historial = 'Pendiente';
+            }
             $historial->push($r);
         }
 
-        foreach($insumos as $i) {
+        foreach ($insumos as $i) {
             $i->tipo_historial = 'insumo';
             $i->fecha_historial = $i->fecha_programada;
             $i->titulo_historial = 'Aplicación de Insumo';
             $i->descripcion_historial = ($i->insumo->Nombre ?? 'Insumo') . ' (Cant: ' . $i->cantidad_usada . ')';
-            $i->estado_historial = $i->id_estado == 9 ? 'Completado' : ($i->id_estado == 8 ? 'En Proceso' : 'Pendiente');
+            $i->estado_historial = in_array($i->id_estado, [15]) ? 'Completado' : ($i->id_estado == 17 ? 'En Proceso' : ($i->id_estado == 16 ? 'Perdida' : 'Pendiente'));
             $historial->push($i);
         }
 
-        foreach($fases as $f) {
+        foreach ($fases as $f) {
             $f->tipo_historial = 'fase';
             $f->fecha_historial = $f->fecha_programada;
             $f->titulo_historial = 'Fase de Mantenimiento';
             $f->descripcion_historial = $f->descripcion;
-            $f->estado_historial = $f->id_estado == 9 ? 'Completado' : ($f->id_estado == 8 ? 'En Proceso' : 'Pendiente');
+            $f->estado_historial = in_array($f->id_estado, [15]) ? 'Completado' : ($f->id_estado == 17 ? 'En Proceso' : ($f->id_estado == 16 ? 'Perdida' : 'Pendiente'));
             $historial->push($f);
         }
 

@@ -138,45 +138,38 @@ Route::middleware(['auth:usuario', 'check.license'])->group(function () {
     // Insumos y Proveedores
     Route::post('/admin/proveedores/{id}/entradas', [\App\Http\Controllers\ProveedorController::class, 'storeEntrada'])->name('admin.proveedores.entradas.store');
     Route::get('/admin/proveedores/{id}/historial', [\App\Http\Controllers\ProveedorController::class, 'historial'])->name('admin.proveedores.historial');
+    Route::get('/admin/proveedores/entradas-dashboard', [\App\Http\Controllers\ProveedorController::class, 'entradasDashboard'])->name('admin.proveedores.entradas_dashboard');
+    Route::get('/admin/proveedores/entradas-dashboard/exportar', [\App\Http\Controllers\ProveedorController::class, 'exportarEntradas'])->name('admin.proveedores.exportar_entradas');
     Route::resource('/admin/proveedores', \App\Http\Controllers\ProveedorController::class, ['as' => 'admin']);
     Route::resource('/admin/insumos', \App\Http\Controllers\InsumoController::class, ['as' => 'admin']);
+    Route::get('/admin/cultivos/cosecha/{id}', [\App\Http\Controllers\Admin\CultivoController::class, 'cosechaDetail'])->name('admin.cultivos.cosechaDetail');
+    Route::post('/admin/cultivos/finalize/{id}', [\App\Http\Controllers\Admin\CultivoController::class, 'finalize'])->name('admin.cultivos.finalize');
+    Route::resource('/admin/cultivos', \App\Http\Controllers\Admin\CultivoController::class, ['as' => 'admin']);
 
     // Tipo Insumo (Configuración de Catálogo)
     Route::get('/tipo_insumos/catalog', [\App\Http\Controllers\TipoInsumoController::class, 'catalog'])->name('tipo_insumos.catalog');
     Route::resource('/admin/tipo_insumos', \App\Http\Controllers\TipoInsumoController::class, ['as' => 'admin'])->parameters([
         'tipo_insumos' => 'tipo_insumo'
     ]);
+
+    Route::resource('tipo_cosechas', TipoCosechaController::class)->except(['index', 'show', 'create', 'store', 'edit', 'update', 'destroy']);
+
+    Route::get('tipo_semillas/catalog', [\App\Http\Controllers\TipoSemillaController::class, 'catalog'])->name('tipo_semillas.catalog');
+    Route::resource('tipo_semillas', \App\Http\Controllers\TipoSemillaController::class);
+
+    Route::get('insumos/catalog', [\App\Http\Controllers\InsumoController::class, 'catalog'])->name('insumos.catalog');
+    // Se elimina la ruta resource redundante de insumos, ya que arriba existe /admin/insumos, pero si la app la usa, la mantenemos pero protegida
+    Route::resource('insumos', \App\Http\Controllers\InsumoController::class);
+
+    Route::get('tipo_riegos/catalog', [\App\Http\Controllers\TipoRiegoController::class, 'catalog'])->name('tipo_riegos.catalog');
+    Route::resource('tipo_riegos', \App\Http\Controllers\TipoRiegoController::class);
+
+    Route::get('tipo_suelos/catalog', [\App\Http\Controllers\TipoSueloController::class, 'catalog'])->name('tipo_suelos.catalog');
+    Route::resource('tipo_suelos', \App\Http\Controllers\TipoSueloController::class);
+
+    Route::resource('estados', \App\Http\Controllers\EstadoController::class);
+
+    Route::resource('admin/terrenos', \App\Http\Controllers\TerrenoController::class, ['as' => 'admin']);
 });
 
 Route::get('/', [HomeController::class, 'index'])->name('index_welcome');
-
-
-Route::resource('tipo_cosechas', TipoCosechaController::class)->except(['index', 'show', 'create', 'store', 'edit', 'update', 'destroy']);
-
-use App\Http\Controllers\TipoSemillaController;
-
-Route::get('tipo_semillas/catalog', [TipoSemillaController::class, 'catalog'])->name('tipo_semillas.catalog');
-Route::resource('tipo_semillas', TipoSemillaController::class);
-
-use App\Http\Controllers\InsumoController;
-
-Route::get('insumos/catalog', [InsumoController::class, 'catalog'])->name('insumos.catalog');
-Route::resource('insumos', InsumoController::class);
-
-use App\Http\Controllers\TipoRiegoController;
-
-Route::get('tipo_riegos/catalog', [TipoRiegoController::class, 'catalog'])->name('tipo_riegos.catalog');
-Route::resource('tipo_riegos', TipoRiegoController::class);
-
-use App\Http\Controllers\TipoSueloController;
-
-Route::get('tipo_suelos/catalog', [TipoSueloController::class, 'catalog'])->name('tipo_suelos.catalog');
-Route::resource('tipo_suelos', TipoSueloController::class);
-
-use App\Http\Controllers\EstadoController;
-
-Route::resource('estados', EstadoController::class);
-
-use App\Http\Controllers\TerrenoController;
-
-Route::resource('admin/terrenos', TerrenoController::class, ['as' => 'admin']);

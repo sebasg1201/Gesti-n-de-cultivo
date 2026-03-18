@@ -85,8 +85,8 @@
 
                                 <div class="flex justify-between items-start mb-6">
                                     <span class="px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest shadow-sm
-                                        {{ $fase->id_estado == 1 ? 'bg-amber-100 text-amber-700 border border-amber-200' : ($fase->id_estado == 8 ? 'bg-sky-100 text-sky-700 border border-sky-200' : 'bg-emerald-100 text-emerald-700 border border-emerald-200') }}">
-                                        {{ $fase->id_estado == 1 ? 'Pendiente' : ($fase->id_estado == 8 ? 'En Proceso' : 'Realizado') }}
+                                        {{ $fase->id_estado == 1 ? 'bg-amber-100 text-amber-700 border border-amber-200' : ($fase->id_estado == 17 ? 'bg-sky-100 text-sky-700 border border-sky-200' : 'bg-emerald-100 text-emerald-700 border border-emerald-200') }}">
+                                        {{ $fase->id_estado == 1 ? 'Pendiente' : ($fase->id_estado == 17 ? 'En Proceso' : 'Realizado') }}
                                     </span>
                                     
                                     <div class="text-right">
@@ -110,8 +110,9 @@
                                             'fase_id' => $fase->tipo_tarea == 'riego' ? $fase->id_riego : ($fase->tipo_tarea == 'insumo' ? $fase->id_insumo_cosecha : $fase->id_fase),
                                             'tipo_tarea' => $fase->tipo_tarea,
                                             'tipo_label' => $tipoEtiqueta,
-                                            'estado' => $fase->id_estado == 1 ? 'Pendiente' : ($fase->id_estado == 8 ? 'En Proceso' : 'Realizado'),
+                                            'estado' => $fase->id_estado == 1 ? 'Pendiente' : ($fase->id_estado == 17 ? 'En Proceso' : ($fase->id_estado == 15 ? 'Realizado' : 'Otro')),
                                             'descripcion' => $fase->descripcion ?? 'Sin descripción',
+                                            'obs_trabajador' => $fase->observacion_trabajador ?? '',
                                             'fecha' => $fase->fecha_programada ? \Carbon\Carbon::parse($fase->fecha_programada)->format('d/m/Y') : 'No definida',
                                             'parcela' => optional($terreno)->nombre ?? 'Sin Parcela',
                                             'ubicacion' => optional($terreno)->ubicacion ?? 'No especificada',
@@ -128,7 +129,8 @@
                                     <button 
                                         data-fase-id="{{ $details['fase_id'] }}" data-tipo-tarea="{{ $details['tipo_tarea'] }}"
                                         data-tipo-label="{{ $details['tipo_label'] }}" data-estado="{{ $details['estado'] }}"
-                                        data-descripcion="{{ $details['descripcion'] }}" data-fecha="{{ $details['fecha'] }}"
+                                        data-descripcion="{{ $details['descripcion'] }}" data-obs-trabajador="{{ $details['obs_trabajador'] }}"
+                                        data-fecha="{{ $details['fecha'] }}"
                                         data-parcela="{{ $details['parcela'] }}" data-ubicacion="{{ $details['ubicacion'] }}"
                                         data-dimensiones="{{ $details['dimensiones'] }}" data-suelo="{{ $details['suelo'] }}"
                                         data-cultivo="{{ $details['cultivo'] }}" data-siembra="{{ $details['siembra'] }}"
@@ -199,6 +201,7 @@
                         <p class="text-gray-700 text-xl font-bold leading-snug bg-gray-50 p-6 rounded-[2rem] border border-gray-100 shadow-inner" id="modalDescripcion"></p>
                     </div>
 
+
                     <div class="grid grid-cols-2 gap-8">
                         <div class="space-y-4">
                             <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Ubicación</p>
@@ -240,14 +243,29 @@
 
                     <div class="pt-8 border-t border-gray-100">
                         <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-6 text-center">Gestionar Progreso</p>
-                        <form id="modalFormEstado" method="POST" class="max-w-md mx-auto text-center" enctype="multipart/form-data">
+                        <form id="modalFormEstado" method="POST" class="max-w-md mx-auto" enctype="multipart/form-data">
                             @csrf
-                            <input type="hidden" name="id_estado" value="9">
+                            {{-- 15 = Realizado --}}
+                            <input type="hidden" name="id_estado" value="15">
                             
+                            {{-- Observación del trabajador - solo visible si ya la tiene (tarea completada) --}}
+                            <div id="obsGuardadaWrap" class="hidden mb-6 bg-emerald-50 border border-emerald-100 p-5 rounded-2xl">
+                                <p class="text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-2">Tu Observación Registrada</p>
+                                <p class="text-sm text-emerald-800 font-semibold leading-relaxed italic" id="obsGuardadaTexto"></p>
+                            </div>
+
+                            {{-- Textarea de observación - solo visible cuando se puede finalizar --}}
+                            <div id="obsInputWrap" class="mb-5 text-left">
+                                <label for="observacion_trabajador" class="block text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1 mb-2">¿Qué realizaste? <span class="text-gray-400 normal-case font-normal">(opcional)</span></label>
+                                <textarea name="observacion_trabajador" id="observacion_trabajador" rows="3"
+                                    class="w-full bg-gray-50 border border-gray-200 rounded-2xl p-4 text-sm text-gray-700 focus:outline-none focus:border-emerald-400 transition-all resize-none shadow-inner"
+                                    placeholder="Ej: Realicé el riego completo de la parcela, revise los goteros y todo funcionó correctamente..."></textarea>
+                            </div>
+
                             <div class="mb-6 text-left">
                                 <label for="evidencia_foto" class="block text-[10px] font-black text-emerald-600 uppercase tracking-widest ml-1 mb-2">Evidencia Fotográfica Requerida</label>
                                 <input type="file" name="evidencia_foto" id="evidencia_foto" accept="image/*" required class="w-full text-sm text-gray-500 file:mr-4 file:py-3 file:px-6 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 transition-all border border-gray-200 rounded-xl p-2 bg-white">
-                                <p class="text-[9px] text-gray-400 mt-2 ml-1">Debe adjuntar una foto del trabajo realizado (< 2MB).</p>
+                                <p class="text-[9px] text-gray-400 mt-2 ml-1">Debe adjuntar una foto del trabajo realizado (&lt; 2MB).</p>
                             </div>
 
                             <button type="submit" id="btnFinalizarTarea" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black py-5 px-10 rounded-[2rem] focus:outline-none transition-all cursor-pointer text-center text-lg shadow-2xl shadow-emerald-200/50">
@@ -289,12 +307,29 @@
         document.getElementById('modalCultivo').innerText = ds.cultivo || 'Cosecha';
         document.getElementById('modalEstimada').innerText = ds.estimada || 'Pendiente';
         document.getElementById('modalParcela').innerText = ds.parcela || 'N/A';
+<<<<<<< HEAD
         document.getElementById('modalDimensiones').innerText = ds.dimensiones || 'N/A';
         document.getElementById('modalSuelo').innerText = ds.suelo || 'N/A';
         
         document.getElementById('modalSiembra').innerText = ds.siembra || '-';
         document.getElementById('modalCantidad').innerText = ds.cantidad || '-';
         document.getElementById('modalProduccion').innerText = ds.produccion || '-';
+=======
+        document.getElementById('modalUbicacion').innerText = ds.ubicacion || 'N/A';
+
+        // Mostrar/ocultar observación del trabajador ya guardada
+        const obsGuardadaWrap = document.getElementById('obsGuardadaWrap');
+        const obsGuardadaTexto = document.getElementById('obsGuardadaTexto');
+        const obsInputWrap = document.getElementById('obsInputWrap');
+        const obsTextarea = document.getElementById('observacion_trabajador');
+        if (ds.obsTrabajador && ds.obsTrabajador.trim() !== '') {
+            obsGuardadaTexto.innerText = '"' + ds.obsTrabajador + '"';
+            obsGuardadaWrap.classList.remove('hidden');
+        } else {
+            obsGuardadaWrap.classList.add('hidden');
+        }
+        if (obsTextarea) obsTextarea.value = '';
+>>>>>>> 0baaef173059b3ffd58351d6407d8c9030e12740
         
         const modalForm = document.getElementById('modalFormEstado');
         const btnFinalizar = document.getElementById('btnFinalizarTarea');
@@ -302,23 +337,36 @@
             modalForm.action = ds.updateUrl;
             const currentStatus = parseInt(ds.idEstado || '1');
 
-            if (currentStatus === 9) {
+            if (currentStatus === 15) {
                 btnFinalizar.disabled = true;
-                btnFinalizar.innerText = 'Trabujo Finalizado';
+                btnFinalizar.innerText = 'Trabajo Finalizado ✓';
                 btnFinalizar.classList.remove('bg-emerald-600', 'hover:bg-emerald-700', 'shadow-emerald-200/50');
                 btnFinalizar.classList.add('bg-gray-300', 'text-gray-500', 'cursor-not-allowed', 'shadow-none');
+                // Ocultar inputs al estar finalizado
+                obsInputWrap.classList.add('hidden');
+                document.getElementById('evidencia_foto').closest('div').classList.add('hidden');
             } else {
                 btnFinalizar.disabled = false;
                 btnFinalizar.innerText = 'Finalizar Trabajo';
                 btnFinalizar.classList.remove('bg-gray-300', 'text-gray-500', 'cursor-not-allowed', 'shadow-none');
                 btnFinalizar.classList.add('bg-emerald-600', 'hover:bg-emerald-700', 'text-white', 'shadow-emerald-200/50');
+                // Mostrar inputs
+                obsInputWrap.classList.remove('hidden');
+                document.getElementById('evidencia_foto').closest('div').classList.remove('hidden');
             }
 
             if (currentStatus === 1) {
+                // Bloquear el botón PRIMERO para evitar que el form se envíe durante la transición
+                btnFinalizar.disabled = true;
+                btnFinalizar.innerText = 'Procesando...';
+                obsInputWrap.classList.add('hidden');
+                document.getElementById('evidencia_foto').closest('div').classList.add('hidden');
+
+                // Pasar automáticamente a "En Proceso" (id=17) al abrir los detalles
                 const csrfToken = document.querySelector('input[name="_token"]').value;
                 const formData = new FormData();
                 formData.append('_token', csrfToken);
-                formData.append('id_estado', 8);
+                formData.append('id_estado', 17);
 
                 fetch(ds.updateUrl, {
                     method: 'POST',
@@ -326,16 +374,30 @@
                     headers: { 'X-Requested-With': 'XMLHttpRequest' }
                 }).then(response => {
                     if (response.ok) {
-                        btn.dataset.idEstado = '8';
+                        btn.dataset.idEstado = '17';
                         btn.dataset.estado = 'En Proceso';
-                        
+
                         const cardTag = btn.closest('.group\\/card').querySelector('span.rounded-full');
                         if (cardTag) {
                             cardTag.innerText = 'En Proceso';
                             cardTag.className = 'px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest shadow-sm bg-sky-100 text-sky-700 border border-sky-200';
                         }
                     }
-                }).catch(e => console.error(e));
+                    // Reactivar el botón y mostrar inputs después de completar la transición
+                    btnFinalizar.disabled = false;
+                    btnFinalizar.innerText = 'Finalizar Trabajo';
+                    btnFinalizar.classList.remove('bg-gray-300', 'text-gray-500', 'cursor-not-allowed', 'shadow-none');
+                    btnFinalizar.classList.add('bg-emerald-600', 'hover:bg-emerald-700', 'text-white', 'shadow-emerald-200/50');
+                    obsInputWrap.classList.remove('hidden');
+                    document.getElementById('evidencia_foto').closest('div').classList.remove('hidden');
+                }).catch(e => {
+                    console.error(e);
+                    // En caso de error, reactivar el botón de todos modos
+                    btnFinalizar.disabled = false;
+                    btnFinalizar.innerText = 'Finalizar Trabajo';
+                    obsInputWrap.classList.remove('hidden');
+                    document.getElementById('evidencia_foto').closest('div').classList.remove('hidden');
+                });
             }
         }
 

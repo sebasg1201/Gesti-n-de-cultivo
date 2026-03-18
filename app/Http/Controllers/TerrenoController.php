@@ -5,12 +5,17 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class TerrenoController extends Controller
 {
     private function getEmpresaId()
     {
-        return Auth::guard('usuario')->user()->id_empresa;
+        $user = Auth::guard('usuario')->user();
+        if (!$user) {
+            abort(403, 'Sesión expirada o acceso no autorizado.');
+        }
+        return $user->id_empresa;
     }
     public function index()
     {
@@ -37,7 +42,10 @@ class TerrenoController extends Controller
             'longitud' => 'nullable|numeric|between:-180,180',
             'Ancho' => 'required|numeric|min:1',
             'Alto' => 'required|numeric|min:1',
-            'id_tipo_suelo' => 'required|exists:tipo_suelo,id_tipo_suelo'
+            'id_tipo_suelo' => 'required|exists:tipo_suelo,id_tipo_suelo',
+            'departamento' => 'nullable|string|max:100',
+            'codigo_postal' => 'nullable|string|max:20',
+            'ciudad' => 'nullable|string|max:100'
         ]);
 
         // Check if a Terreno with same name exists for the company
@@ -59,6 +67,9 @@ class TerrenoController extends Controller
             'Alto' => $request->Alto,
             'id_estado' => 7, // 7 = Disponible
             'id_tipo_suelo' => $request->id_tipo_suelo,
+            'departamento' => $request->departamento,
+            'codigo_postal' => $request->codigo_postal,
+            'ciudad' => $request->ciudad,
         ]);
 
         return redirect()->route('admin.terrenos.index')
@@ -77,7 +88,10 @@ class TerrenoController extends Controller
             'Ancho' => 'required|numeric|min:1',
             'Alto' => 'required|numeric|min:1',
             'id_tipo_suelo' => 'required|exists:tipo_suelo,id_tipo_suelo',
-            'id_estado' => 'required|exists:estado,id_estado'
+            'id_estado' => 'required|exists:estado,id_estado',
+            'departamento' => 'nullable|string|max:100',
+            'codigo_postal' => 'nullable|string|max:20',
+            'ciudad' => 'nullable|string|max:100'
         ]);
 
         $terreno = \App\Models\Terreno::where('id_terreno', $id)
@@ -93,6 +107,9 @@ class TerrenoController extends Controller
             'Alto' => $request->Alto,
             'id_tipo_suelo' => $request->id_tipo_suelo,
             'id_estado' => $request->id_estado,
+            'departamento' => $request->departamento,
+            'codigo_postal' => $request->codigo_postal,
+            'ciudad' => $request->ciudad,
         ]);
 
         return redirect()->route('admin.terrenos.index')
@@ -118,7 +135,7 @@ class TerrenoController extends Controller
             return redirect()->route('admin.terrenos.index')
                 ->with('success', 'Terreno eliminado correctamente');
         } catch (\Exception $e) {
-            \Log::error("Error eliminando terreno: " . $e->getMessage());
+            Log::error("Error eliminando terreno: " . $e->getMessage());
             return redirect()->route('admin.terrenos.index')
                 ->with('error', 'Ocurrió un error al intentar eliminar el terreno.');
         }

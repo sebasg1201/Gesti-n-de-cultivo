@@ -23,7 +23,10 @@ class Terreno extends Model
         'Alto',
         'area_m2',
         'id_estado',
-        'id_tipo_suelo'
+        'id_tipo_suelo',
+        'departamento',
+        'codigo_postal',
+        'ciudad'
     ];
 
     public function tipoSuelo()
