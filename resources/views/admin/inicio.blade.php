@@ -233,10 +233,10 @@
                                 <p class="text-xs text-gray-400 mt-0.5">{{ $miembro->tiempo_actividad }}</p>
                             </div>
                             <div class="col-span-1 hidden md:flex justify-end pr-2">
-                                <a href="{{ route('admin.usuarios.edit', $miembro->documento) }}" 
+                                <a href="{{ route('admin.usuarios.index') }}" 
                                    class="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-bold text-blue-600 bg-blue-50 border border-blue-200 rounded-xl hover:bg-blue-600 hover:text-white hover:shadow-md hover:shadow-blue-200/50 hover:-translate-y-0.5 transition-all duration-300">
-                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                                    Editar
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                                    Personal
                                 </a>
                             </div>
                         </div>

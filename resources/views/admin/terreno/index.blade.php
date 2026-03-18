@@ -155,7 +155,7 @@
                         </thead>
                         <tbody class="divide-y divide-emerald-50/50">
                             @forelse($terrenos as $terreno)
-                            <tr class="hover:bg-emerald-50/30 transition-all group">
+                            <tr class="hover:bg-emerald-50/30 transition-all group cursor-pointer" onclick="viewOnMap(this)" data-terreno="{{ json_encode($terreno) }}">
                                 <td class="px-6 py-4">
                                     <div class="flex items-center gap-4">
                                         <div class="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center text-white font-black text-base shadow-lg shadow-emerald-100 transform group-hover:rotate-12 transition-transform">
@@ -213,7 +213,7 @@
                                     <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all">
                                         <button 
                                             data-terreno="{{ json_encode($terreno) }}"
-                                            onclick="openEdit(this)" 
+                                            onclick="event.stopPropagation(); openEdit(this)" 
                                             class="p-2.5 bg-amber-50 text-amber-600 rounded-xl hover:bg-amber-100 transition-colors shadow-sm">
                                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -221,7 +221,7 @@
                                         </button>
                                         <form action="{{ route('admin.terrenos.destroy', $terreno->id_terreno) }}" method="POST" class="inline">
                                             @csrf @method('DELETE')
-                                            <button type="submit" onclick="return confirm('¿Eliminar este terreno de manera permanente?')" class="p-2.5 bg-red-50 text-red-600 rounded-xl hover:bg-red-100 transition-colors shadow-sm">
+                                            <button type="submit" onclick="event.stopPropagation(); return confirm('¿Eliminar este terreno de manera permanente?')" class="p-2.5 bg-red-50 text-red-600 rounded-xl hover:bg-red-100 transition-colors shadow-sm">
                                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7M10 11v6M14 11v6M4 7h16M9 7V4a1 1 0 011-1h4a1 1 0 011 1v3" />
                                                 </svg>
@@ -250,7 +250,6 @@
                 </div>
             </div>
         </div>
-    </div>
 </div>
 
 @push('scripts')
@@ -277,6 +276,10 @@
     let marker; // Marcador principal para el formulario
     let otherMarkers = []; // Almacén para los marcadores de otros terrenos
     const defaultLocation = [4.570868, -74.297333]; // Colombia default [lat, lng]
+    
+    function onMapClick(e) {
+        updateMarker(e.latlng);
+    }
     
     // Datos de terrenos inyectados desde Blade
     const listaTerrenos = @json($terrenos->items());
@@ -330,9 +333,7 @@
             }).addTo(map);
 
             // Evento clic en el mapa
-            map.on('click', function(e) {
-                updateMarker(e.latlng);
-            });
+            map.on('click', onMapClick);
 
             // Evento fin de arrastre del marcador
             marker.on('dragend', function(e) {
@@ -414,6 +415,16 @@
         editTerreno(terreno);
     };
 
+    function viewOnMap(row) {
+        try {
+            const terreno = JSON.parse(row.getAttribute('data-terreno'));
+            // Llenar el formulario en modo "Solo Lectura" (Visualización)
+            fillForm(terreno, 'view');
+        } catch (e) {
+            console.error("Error al visualizar el terreno:", e);
+        }
+    }
+
     // Sincronizar inputs manuales con el mapa
     document.getElementById('latitud').addEventListener('input', syncMapFromInputs);
     document.getElementById('longitud').addEventListener('input', syncMapFromInputs);
@@ -434,13 +445,52 @@
     function openEdit(btn) {
         try {
             const terreno = JSON.parse(btn.getAttribute('data-terreno'));
-            editTerreno(terreno);
+            // Llenar el formulario en modo "Edición" completa
+            fillForm(terreno, 'edit');
         } catch (e) {
             console.error("Error parsing terreno:", e);
         }
     }
 
-    function editTerreno(terreno) {
+    function toggleReadOnly(isReadOnly) {
+        const inputs = [
+            'nombre', 'ubicacion', 'Ancho', 'Alto', 'id_tipo_suelo', 'id_estado', 'latitud', 'longitud'
+        ];
+        
+        inputs.forEach(id => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            
+            // Handle select elements specifically
+            if (el.tagName === 'SELECT') {
+                el.disabled = isReadOnly;
+                // Add hidden input so value still submits if it were ever needed, 
+                // but since view mode hides submit button, just UI disabled is fine.
+            } else {
+                el.readOnly = isReadOnly;
+            }
+
+            if (isReadOnly) {
+                el.classList.add('bg-gray-100', 'cursor-not-allowed', 'opacity-80', 'border-gray-200');
+                el.classList.remove('bg-emerald-50/30', 'border-emerald-100');
+            } else {
+                el.classList.remove('bg-gray-100', 'cursor-not-allowed', 'opacity-80', 'border-gray-200');
+                el.classList.add('bg-emerald-50/30', 'border-emerald-100');
+            }
+        });
+
+        // Toggle map interactions
+        if (marker) {
+            if (isReadOnly) marker.dragging.disable();
+            else marker.dragging.enable();
+        }
+        if (map) {
+            if (isReadOnly) map.off('click', onMapClick);
+            else map.on('click', onMapClick);
+        }
+    }
+
+    function fillForm(terreno, mode) {
         if (!terreno) return;
 
         document.getElementById('nombre').value = terreno.nombre || '';
@@ -487,7 +537,7 @@
             if (!isNaN(parsedLat) && !isNaN(parsedLng)) {
                 const pos = [parsedLat, parsedLng];
                 marker.setLatLng(pos);
-                map.setView(pos, 16);
+                map.flyTo(pos, 16, { animate: true, duration: 1.5 });
             } else {
                 console.warn("Terreno sin coordenadas válidas, usando ubicación por defecto", {lat, lng});
                 marker.setLatLng(defaultLocation);
@@ -514,15 +564,24 @@
         if (estadoContainer) estadoContainer.classList.remove('hidden');
 
         const baseUrl = "{{ route('admin.terrenos.store') }}";
-        terrenoForm.action = `${baseUrl}/${terreno.id_terreno}`;
-        methodField.innerHTML = '<input type="hidden" name="_method" value="PUT">';
         
-        formTitle.innerText = 'Editar Terreno';
-        btnSubmit.innerText = 'Actualizar Datos';
-        btnSubmit.classList.remove('bg-emerald-600');
-        btnSubmit.classList.add('bg-amber-600');
-        btnCancel.classList.remove('hidden');
+        if (mode === 'edit') {
+            terrenoForm.action = `${baseUrl}/${terreno.id_terreno}`;
+            methodField.innerHTML = '<input type="hidden" name="_method" value="PUT">';
+            formTitle.innerText = 'Editar Terreno';
+            btnSubmit.innerText = 'Actualizar Datos';
+            btnSubmit.classList.remove('bg-emerald-600', 'hidden');
+            btnSubmit.classList.add('bg-amber-600');
+            toggleReadOnly(false); // Enable ALL fields, including location
+        } else if (mode === 'view') {
+            terrenoForm.action = '#';
+            methodField.innerHTML = '';
+            formTitle.innerText = 'Detalle del Terreno';
+            btnSubmit.classList.add('hidden'); // Hide submit button for viewing
+            toggleReadOnly(true); // Disable ALL fields
+        }
 
+        btnCancel.classList.remove('hidden');
         terrenoForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
@@ -549,11 +608,13 @@
         const estadoContainer = document.getElementById('estadoContainer');
         if (estadoContainer) estadoContainer.classList.add('hidden');
 
+        toggleReadOnly(false); // Restore all fields to writable state
+
         terrenoForm.action = '{{ route("admin.terrenos.store") }}';
         methodField.innerHTML = '';
         formTitle.innerText = 'Registrar Terreno';
         btnSubmit.innerText = 'Guardar Terreno';
-        btnSubmit.classList.remove('bg-amber-600');
+        btnSubmit.classList.remove('bg-amber-600', 'hidden');
         btnSubmit.classList.add('bg-emerald-600');
         btnCancel.classList.add('hidden');
     }
