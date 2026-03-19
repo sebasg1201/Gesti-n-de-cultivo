@@ -17,18 +17,97 @@ class TerrenoController extends Controller
         }
         return $user->id_empresa;
     }
-    public function index()
+    public function index(Request $request)
     {
         $id_empresa = $this->getEmpresaId();
+        $month = $request->get('month');
+        $year = $request->get('year');
+        $ciudad = $request->get('ciudad');
 
-        $terrenos = \App\Models\Terreno::with(['tipoSuelo', 'estado'])
-            ->where('id_empresa', $id_empresa)
-            ->paginate(10);
+        $query = \App\Models\Terreno::with(['tipoSuelo', 'estado'])
+            ->where('id_empresa', $id_empresa);
+
+        if ($month) {
+            $query->whereMonth('created_at', $month);
+        }
+        if ($year) {
+            $query->whereYear('created_at', $year);
+        }
+        if ($ciudad) {
+            $query->where('ciudad', 'like', "%$ciudad%");
+        }
+
+        $terrenos = $query->orderBy('created_at', 'desc')->paginate(10);
 
         $tipoSuelos = \App\Models\TipoSuelo::where('id_empresa', $id_empresa)->get();
         $estados = \App\Models\Estado::all();
+        
+        // Obtener lista de municipios únicos para el filtro
+        $municipios = \App\Models\Terreno::where('id_empresa', $id_empresa)
+            ->whereNotNull('ciudad')
+            ->distinct()
+            ->pluck('ciudad');
 
-        return view('admin.terreno.index', compact('terrenos', 'tipoSuelos', 'estados'));
+        return view('admin.terreno.index', compact('terrenos', 'tipoSuelos', 'estados', 'municipios'));
+    }
+
+    public function exportCSV(Request $request)
+    {
+        $id_empresa = $this->getEmpresaId();
+        $month = $request->get('month');
+        $year = $request->get('year');
+        $ciudad = $request->get('ciudad');
+
+        $query = \App\Models\Terreno::with(['tipoSuelo', 'estado'])
+            ->where('id_empresa', $id_empresa);
+
+        if ($month) {
+            $query->whereMonth('created_at', $month);
+        }
+        if ($year) {
+            $query->whereYear('created_at', $year);
+        }
+        if ($ciudad) {
+            $query->where('ciudad', 'like', "%$ciudad%");
+        }
+
+        $terrenos = $query->get();
+
+        $filename = "reporte_terrenos_" . date('Y-m-d_H-i-s') . ".csv";
+        $headers = [
+            "Content-type"        => "text/csv; charset=UTF-8",
+            "Content-Disposition" => "attachment; filename=$filename",
+            "Pragma"              => "no-cache",
+            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"             => "0"
+        ];
+
+        $columns = ['ID', 'Nombre', 'Ubicacion', 'Departamento', 'Ciudad/Municipio', 'Cod. Postal', 'Area (m2)', 'Suelo', 'Estado', 'F. Registro'];
+
+        $callback = function() use($terrenos, $columns) {
+            $file = fopen('php://output', 'w');
+            fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF)); // BOM for UTF-8
+            fputcsv($file, $columns, ';');
+
+            foreach ($terrenos as $terreno) {
+                fputcsv($file, [
+                    $terreno->id_terreno,
+                    $terreno->nombre,
+                    $terreno->ubicacion,
+                    $terreno->departamento,
+                    $terreno->ciudad,
+                    $terreno->codigo_postal,
+                    $terreno->Ancho * $terreno->Alto,
+                    $terreno->tipoSuelo->nombre ?? 'N/A',
+                    $terreno->estado->nombre_estado ?? 'N/A',
+                    $terreno->created_at ? $terreno->created_at->format('Y-m-d') : 'N/A'
+                ], ';');
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 
     public function store(Request $request)

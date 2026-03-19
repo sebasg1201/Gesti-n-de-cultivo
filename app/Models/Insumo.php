@@ -11,7 +11,7 @@ class Insumo extends Model
 
     protected $table = 'insumo';
     protected $primaryKey = 'ID_insumo';
-    public $timestamps = false;
+    public $timestamps = true;
 
     protected $fillable = [
         'id_empresa',

@@ -22,11 +22,19 @@ class CosechaController extends Controller
     {
         $id_empresa = $this->getEmpresaId();
         $faseFilter = $request->get('fase');
+        $month = $request->get('month');
+        $year = $request->get('year');
 
         $query = Cosecha::where('id_empresa', $id_empresa)
             ->where('id_estado', '!=', 14)
-            ->with(['terreno', 'semilla'])
-            ->orderBy('id_cosecha', 'desc');
+            ->with(['terreno', 'semilla']);
+
+        if ($month) {
+            $query->whereMonth('fecha_siembra', $month);
+        }
+        if ($year) {
+            $query->whereYear('fecha_siembra', $year);
+        }
 
         // Filtrado por fase (aproximación en SQL para mantener paginación)
         if ($faseFilter) {
@@ -40,13 +48,64 @@ class CosechaController extends Controller
                 END) = ?", [$faseFilter]);
         }
 
-        $cosechas = $query->paginate(9);
+        $cosechas = $query->orderBy('id_cosecha', 'desc')->paginate(9);
 
         $terrenos = Terreno::with('tipoSuelo')->where('id_empresa', $id_empresa)->where('id_estado', 7)->get(); // 7 = Disponible
         $semillas = TipoSemilla::where('id_empresa', $id_empresa)->get();
         $riegos = TipoRiego::where('id_empresa', $id_empresa)->get();
 
         return view('admin.cosechas.index', compact('cosechas', 'terrenos', 'semillas', 'riegos'));
+    }
+
+    public function exportCSV(Request $request)
+    {
+        $id_empresa = $this->getEmpresaId();
+        $month = $request->get('month');
+        $year = $request->get('year');
+
+        $query = Cosecha::with(['terreno', 'semilla'])
+            ->where('id_empresa', $id_empresa);
+
+        if ($month) {
+            $query->whereMonth('fecha_siembra', $month);
+        }
+        if ($year) {
+            $query->whereYear('fecha_siembra', $year);
+        }
+
+        $cosechas = $query->get();
+
+        $filename = "reporte_cosechas_" . date('Y-m-d_H-i-s') . ".csv";
+        $headers = [
+            "Content-type"        => "text/csv; charset=UTF-8",
+            "Content-Disposition" => "attachment; filename=$filename",
+            "Pragma"              => "no-cache",
+            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"             => "0"
+        ];
+
+        $columns = ['ID', 'Semilla', 'Terreno', 'Cantidad', 'F. Siembra', 'F. Estimada'];
+
+        $callback = function() use($cosechas, $columns) {
+            $file = fopen('php://output', 'w');
+            fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF)); // BOM for UTF-8
+            fputcsv($file, $columns, ';');
+
+            foreach ($cosechas as $cosecha) {
+                fputcsv($file, [
+                    $cosecha->id_cosecha,
+                    $cosecha->semilla->nombre ?? 'N/A',
+                    $cosecha->terreno->nombre ?? 'N/A',
+                    $cosecha->Cantidad,
+                    $cosecha->fecha_siembra,
+                    $cosecha->fecha_estimada
+                ], ';');
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 
     public function store(Request $request)

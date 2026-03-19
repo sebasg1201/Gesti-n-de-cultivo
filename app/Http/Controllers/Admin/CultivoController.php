@@ -23,36 +23,44 @@ class CultivoController extends Controller
     {
         $id_empresa = $this->getEmpresaId();
         $id_semilla = $request->query('id_semilla');
+        $month = $request->get('month');
+        $year = $request->get('year');
 
         $semillaSeleccionada = null;
         if ($id_semilla) {
             $semillaSeleccionada = \App\Models\TipoSemilla::where('id_empresa', $id_empresa)->findOrFail($id_semilla);
             
-            $cosechas = Cosecha::where('id_empresa', $id_empresa)
+            $query = Cosecha::where('id_empresa', $id_empresa)
                 ->where('id_semilla', $id_semilla)
-                // Se muestran todas (incluso las de id_estado 14) para tener el historial de recolección
-                ->with(['semilla', 'terreno'])
-                ->orderBy('fecha_siembra', 'desc')
-                ->get();
+                ->with(['semilla', 'terreno']);
+
+            if ($month) {
+                $query->whereMonth('fecha_siembra', $month); // Opcionalmente filtrar por fecha de siembra aquí también
+            }
+            if ($year) {
+                $query->whereYear('fecha_siembra', $year);
+            }
+
+            $cosechas = $query->orderBy('fecha_siembra', 'desc')->get();
                 
             return view('admin.cultivos.index', compact('cosechas', 'semillaSeleccionada'));
         }
 
-        // Si no hay semilla seleccionada, mostrar categorías (Variedades)
-        // Obtenemos solo las variedades que tienen cosechas activas
+        // Si no hay semilla seleccionada, filtrar las recolecciones globales si es necesario para el reporte
+        // Pero la vista actual solo muestra categorías. 
+        // Implementaremos el exportador para todas las recolecciones de la empresa.
+
         $categorias = \App\Models\TipoSemilla::where('id_empresa', $id_empresa)
             ->whereHas('cosechas', function($q) use ($id_empresa) {
-                $q->where('id_empresa', $id_empresa); // Filtro por empresa para seguridad y veracidad
+                $q->where('id_empresa', $id_empresa);
             })
             ->withCount(['cosechas' => function($q) use ($id_empresa) {
                 $q->where('id_empresa', $id_empresa);
             }])
             ->get()
             ->map(function($cat) {
-                // Buscar la primera cosecha con imagen para usarla como portada de la categoría
                 $cosechaConImagen = \App\Models\Cosecha::where('id_semilla', $cat->id_semilla)
                     ->whereNotNull('imagenes')
-                    // ->where('id_estado', '!=', 14)
                     ->first();
                 
                 $cat->imagen_portada = $cosechaConImagen ? $cosechaConImagen->imagenes : null;
@@ -60,6 +68,61 @@ class CultivoController extends Controller
             });
 
         return view('admin.cultivos.index', compact('categorias'));
+    }
+
+    public function exportCSV(Request $request)
+    {
+        $id_empresa = $this->getEmpresaId();
+        $month = $request->get('month');
+        $year = $request->get('year');
+
+        $query = Cultivo::whereHas('cosecha', function ($q) use ($id_empresa) {
+            $q->where('id_empresa', $id_empresa);
+        })->with(['cosecha.semilla', 'detalles.producto', 'trabajador']);
+
+        if ($month) {
+            $query->whereMonth('fecha_recoleccion', $month);
+        }
+        if ($year) {
+            $query->whereYear('fecha_recoleccion', $year);
+        }
+
+        $recolecciones = $query->orderBy('fecha_recoleccion', 'desc')->get();
+
+        $filename = "reporte_recoleccion_" . date('Y-m-d_H-i-s') . ".csv";
+        $headers = [
+            "Content-type"        => "text/csv; charset=UTF-8",
+            "Content-Disposition" => "attachment; filename=$filename",
+            "Pragma"              => "no-cache",
+            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"             => "0"
+        ];
+
+        $columns = ['ID', 'Variedad', 'Producto', 'Cantidad', 'Unidad', 'F. Recoleccion', 'Trabajador'];
+
+        $callback = function() use($recolecciones, $columns) {
+            $file = fopen('php://output', 'w');
+            fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF)); // BOM for UTF-8
+            fputcsv($file, $columns, ';');
+
+            foreach ($recolecciones as $cultivo) {
+                foreach ($cultivo->detalles as $detalle) {
+                    fputcsv($file, [
+                        $cultivo->id_cultivo,
+                        $cultivo->cosecha->semilla->nombre ?? 'N/A',
+                        $detalle->producto->nombre ?? 'N/A',
+                        $detalle->cantidad,
+                        'Unidades', // O el campo que corresponda
+                        $cultivo->fecha_recoleccion,
+                        $cultivo->trabajador->nombre ?? 'N/A'
+                    ], ';');
+                }
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 
     public function create(Request $request)

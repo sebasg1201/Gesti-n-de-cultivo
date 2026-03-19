@@ -11,7 +11,7 @@ class Terreno extends Model
 
     protected $table = 'terreno';
     protected $primaryKey = 'id_terreno';
-    public $timestamps = false;
+    public $timestamps = true;
 
     protected $fillable = [
         'id_empresa',
