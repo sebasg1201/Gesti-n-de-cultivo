@@ -146,11 +146,8 @@ Route::middleware(['auth:usuario', 'check.license'])->group(function () {
     Route::post('/admin/cultivos/finalize/{id}', [\App\Http\Controllers\Admin\CultivoController::class, 'finalize'])->name('admin.cultivos.finalize');
     Route::resource('/admin/cultivos', \App\Http\Controllers\Admin\CultivoController::class, ['as' => 'admin']);
 
-    // Tipo Insumo (Configuración de Catálogo)
-    Route::get('/tipo_insumos/catalog', [\App\Http\Controllers\TipoInsumoController::class, 'catalog'])->name('tipo_insumos.catalog');
-    Route::resource('/admin/tipo_insumos', \App\Http\Controllers\TipoInsumoController::class, ['as' => 'admin'])->parameters([
-        'tipo_insumos' => 'tipo_insumo'
-    ]);
+    // Tipo Insumo
+    Route::resource('tipo_insumos', \App\Http\Controllers\TipoInsumoController::class);
 
     Route::resource('tipo_cosechas', TipoCosechaController::class)->except(['index', 'show', 'create', 'store', 'edit', 'update', 'destroy']);
 

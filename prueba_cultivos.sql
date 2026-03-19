@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 18-03-2026 a las 19:33:06
+-- Tiempo de generación: 19-03-2026 a las 19:47:36
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de datos: `cultivos`
+-- Base de datos: `prueba_cultivos`
 --
 
 -- --------------------------------------------------------
@@ -676,7 +676,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('SSGvXEkKHLSgh6d8zhtRImzCpu80VrgwkOFi5Zxe', 1104921223, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiUUluT2ZXcDZmMHdKQ3ZYZ0NrSFFoWlAwQ1dmakcxMzVxSGlER2FaUiI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzY6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZG1pbi90ZXJyZW5vcyI7czo1OiJyb3V0ZSI7czoyMDoiYWRtaW4udGVycmVub3MuaW5kZXgiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjM6InVybCI7YToxOntzOjg6ImludGVuZGVkIjtzOjM2OiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYWRtaW4vdGVycmVub3MiO31zOjU0OiJsb2dpbl91c3VhcmlvXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MTEwNDkyMTIyMzt9', 1773858652);
+('f9VFds3B2FKW092GiUZzeLgC53YU07JtiTu6lgdQ', 1110722345, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiRGFia2Q1dml6SVJDTFl5UVVPRVppRlQ4eDdhMmxPSHFDUXhKeUU1dyI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzY6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZG1pbi90ZXJyZW5vcyI7czo1OiJyb3V0ZSI7czoyMDoiYWRtaW4udGVycmVub3MuaW5kZXgiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjU0OiJsb2dpbl91c3VhcmlvXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MTExMDcyMjM0NTt9', 1773944673);
 
 -- --------------------------------------------------------
 
@@ -793,7 +793,8 @@ INSERT INTO `terreno` (`id_terreno`, `id_empresa`, `nombre`, `ubicacion`, `latit
 (6, '834324234', 'sebas', NULL, 7.56072491, -73.06678310, 400, 500, NULL, '', '', 0, 1, 2),
 (7, '834324234', 'Playa', 'Verda la cima', 4.32039334, -75.37376404, 500, 90, NULL, '', '', 0, 6, 2),
 (8, '988091212', 'Parcela Sur', 'Verdecito', 4.64751778, -74.69061985, 123, 76, NULL, '', '', 0, 6, 1),
-(9, '834324234', 'didier', 'kasdjs', 4.43537750, -75.20574426, 567, 3442, NULL, 'Tolima', '', 730002, 7, 3);
+(9, '834324234', 'didier', 'kasdjs', 4.43537750, -75.20574426, 567, 3442, NULL, 'Tolima', '', 730002, 7, 3),
+(10, '988091212', 'Parcela Norte', 'Vereda Via Cajamarca', 4.26935049, -74.79529904, 150, 75, NULL, 'Tolima', 'Flandes', 252432, 7, 1);
 
 -- --------------------------------------------------------
 
@@ -803,22 +804,23 @@ INSERT INTO `terreno` (`id_terreno`, `id_empresa`, `nombre`, `ubicacion`, `latit
 
 CREATE TABLE `tipo_insumo` (
   `id_tipo_insumo` int(11) NOT NULL,
-  `nombre` varchar(50) NOT NULL
+  `nombre` varchar(50) NOT NULL,
+  `id_empresa` varchar(14) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `tipo_insumo`
 --
 
-INSERT INTO `tipo_insumo` (`id_tipo_insumo`, `nombre`) VALUES
-(1, 'Fertilizante'),
-(2, 'Abono'),
-(3, 'Fungicida'),
-(4, 'Herbicida'),
-(6, 'Fertilizantes'),
-(7, 'Agroquímicos'),
-(8, 'Herramientas'),
-(9, 'Lubricantes');
+INSERT INTO `tipo_insumo` (`id_tipo_insumo`, `nombre`, `id_empresa`) VALUES
+(1, 'Fertilizante', NULL),
+(2, 'Abono', NULL),
+(3, 'Fungicida', NULL),
+(4, 'Herbicida', NULL),
+(6, 'Fertilizantes', NULL),
+(7, 'Agroquímicos', NULL),
+(8, 'Herramientas', NULL),
+(9, 'Lubricantes', NULL);
 
 -- --------------------------------------------------------
 
@@ -1268,7 +1270,8 @@ ALTER TABLE `terreno`
 -- Indices de la tabla `tipo_insumo`
 --
 ALTER TABLE `tipo_insumo`
-  ADD PRIMARY KEY (`id_tipo_insumo`);
+  ADD PRIMARY KEY (`id_tipo_insumo`),
+  ADD KEY `id_empresa` (`id_empresa`);
 
 --
 -- Indices de la tabla `tipo_licencia`
@@ -1484,7 +1487,7 @@ ALTER TABLE `super_admin`
 -- AUTO_INCREMENT de la tabla `terreno`
 --
 ALTER TABLE `terreno`
-  MODIFY `id_terreno` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id_terreno` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de la tabla `tipo_riego`
@@ -1646,6 +1649,12 @@ ALTER TABLE `terreno`
   ADD CONSTRAINT `fk_terreno_empresa` FOREIGN KEY (`id_empresa`) REFERENCES `empresa` (`id_empresa`),
   ADD CONSTRAINT `fk_terreno_estado` FOREIGN KEY (`id_estado`) REFERENCES `estado` (`id_estado`),
   ADD CONSTRAINT `fk_terreno_tipo_suelo` FOREIGN KEY (`id_tipo_suelo`) REFERENCES `tipo_suelo` (`id_tipo_suelo`);
+
+--
+-- Filtros para la tabla `tipo_insumo`
+--
+ALTER TABLE `tipo_insumo`
+  ADD CONSTRAINT `tipo_insumo_ibfk_1` FOREIGN KEY (`id_empresa`) REFERENCES `empresa` (`id_empresa`);
 
 --
 -- Filtros para la tabla `tipo_licencia`
