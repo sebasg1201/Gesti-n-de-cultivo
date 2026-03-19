@@ -14,6 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'check.license' => \App\Http\Middleware\CheckLicenseExpiration::class,
         ]);
+        $middleware->redirectGuestsTo(fn (\Illuminate\Http\Request $request) => $request->is('super-admin*') || $request->is('SuperAdmin*') ? route('superadmin.login') : route('usuario.login'));
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
