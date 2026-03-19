@@ -107,6 +107,43 @@
                 right: 'today'
             },
             events: '{{ route('trabajador.calendario.eventos') }}',
+            eventsSet: function(events) {
+                if (window.isCalendarFirstLoad === undefined) {
+                    window.isCalendarFirstLoad = true;
+                }
+                if (window.isCalendarFirstLoad) {
+                    window.isCalendarFirstLoad = false;
+                    
+                    // Pequeño timeout para asegurar que getEvents() está listo internamente en FullCalendar
+                    setTimeout(() => {
+                        const urlParams = new URLSearchParams(window.location.search);
+                        const focusDate = urlParams.get('date');
+                        if (focusDate) {
+                            calendar.gotoDate(focusDate);
+                            calendar.select(focusDate); // Selecciona visualmente el día
+                            
+                            const dateObj = new Date(focusDate + 'T12:00:00');
+                            updateDayDetails(focusDate, dateObj);
+                            
+                            const detailsCard = document.getElementById('dayDetailsCard');
+                            if (detailsCard) {
+                                detailsCard.classList.add('ring-4', 'ring-emerald-500/20', 'scale-[1.01]');
+                                setTimeout(() => detailsCard.classList.remove('ring-4', 'ring-emerald-500/20', 'scale-[1.01]'), 1000);
+                            }
+                        } else {
+                            const today = new Date();
+                            const todayStr = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
+                            calendar.select(todayStr);
+                            updateDayDetails(todayStr, today);
+                        }
+                    }, 50);
+                } else if (typeof selectedDate !== 'undefined' && selectedDate) {
+                    setTimeout(() => {
+                        const dateObj = new Date(selectedDate + 'T12:00:00');
+                        updateDayDetails(selectedDate, dateObj);
+                    }, 10);
+                }
+            },
             selectable: true,
             unselectAuto: false,
             dateClick: function(info) {
@@ -115,21 +152,6 @@
         });
         calendar.render();
 
-        // Manejar parámetro 'date' de la URL para redirección
-        const urlParams = new URLSearchParams(window.location.search);
-        const focusDate = urlParams.get('date');
-        if (focusDate) {
-            setTimeout(() => {
-                calendar.gotoDate(focusDate);
-                const dateObj = new Date(focusDate + 'T12:00:00');
-                updateDayDetails(focusDate, dateObj);
-                
-                // Aplicar efecto de resaltado al panel de detalles
-                const detailsCard = document.getElementById('dayDetailsCard');
-                detailsCard.classList.add('ring-4', 'ring-emerald-500/20', 'scale-[1.01]');
-                setTimeout(() => detailsCard.classList.remove('ring-4', 'ring-emerald-500/20', 'scale-[1.01]'), 1000);
-            }, 300);
-        }
     });
 
     function updateDayDetails(dateStr, dateObj) {
@@ -195,61 +217,79 @@
                         </div>
                     `);
                 } else if (props.tipo === 'fase') {
+                    const isPerdida = props.estado == 16;
+                    const colorFase = isPerdida ? 'red' : 'blue';
+                    const iconColor = isPerdida ? '#ef4444' : '#3b82f6';
+                    
                     listEl.insertAdjacentHTML('beforeend', `
-                        <div class="bg-blue-50 border border-blue-100 p-6 rounded-[2rem] space-y-4">
+                        <div class="bg-${colorFase}-50 border border-${colorFase}-100 p-6 rounded-[2rem] space-y-4">
                             <div class="flex items-center gap-4">
-                                <div class="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white shadow-lg">
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                                <div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-${colorFase}-600 border border-gray-100 shadow-lg" style="color: ${iconColor};">
+                                    ${isPerdida 
+                                        ? '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"/></svg>'
+                                        : '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>'
+                                    }
                                 </div>
                                 <div>
-                                    <p class="text-[10px] font-black text-blue-600 uppercase tracking-widest leading-none mb-1">Fase de Cultivo</p>
-                                    <p class="font-black text-blue-900 text-lg">${props.cultivo || 'Cosecha'}</p>
+                                    <p class="text-[10px] font-black text-${colorFase}-600 uppercase tracking-widest leading-none mb-1">Fase de Cultivo ${isPerdida ? '(Perdida)' : ''}</p>
+                                    <p class="font-black text-${colorFase}-900 text-lg ${isPerdida ? 'line-through opacity-70' : ''}">${props.cultivo || 'Cosecha'}</p>
                                 </div>
                             </div>
-                            <div class="bg-white/60 p-4 rounded-2xl border border-blue-100/50">
-                                <p class="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-1">Actividad Programada</p>
-                                <p class="text-sm font-bold text-blue-800 leading-tight mb-2">
+                            <div class="bg-white/60 p-4 rounded-2xl border border-${colorFase}-100/50">
+                                <p class="text-[10px] font-black text-${colorFase}-400 uppercase tracking-widest mb-1">Actividad Programada</p>
+                                <p class="text-sm font-bold text-${colorFase}-800 leading-tight mb-2 ${isPerdida ? 'line-through opacity-70' : ''}">
                                     ${props.descripcion}
                                 </p>
-                                <div class="pt-2 border-t border-blue-100/30">
-                                    <p class="text-[9px] font-black text-blue-300 uppercase tracking-widest mb-1">Resumen de labores</p>
-                                    <p class="text-[11px] text-blue-700 leading-relaxed">
+                                <div class="pt-2 border-t border-${colorFase}-100/30">
+                                    <p class="text-[9px] font-black text-${colorFase}-300 uppercase tracking-widest mb-1">Resumen de labores</p>
+                                    <p class="text-[11px] text-${colorFase}-700 leading-relaxed">
                                         ${props.resumen || 'Sigue las instrucciones estándar para esta fase.'}
                                     </p>
                                 </div>
                                 ${props.foto_url ? `
-                                    <div class="pt-3 mt-3 border-t border-blue-100/30">
-                                        <p class="text-[9px] font-black text-blue-400 uppercase tracking-widest mb-2">Evidencia Fotográfica</p>
-                                        <div class="relative group cursor-pointer overflow-hidden rounded-xl border border-blue-200 shadow-sm" onclick="viewPhoto('${props.foto_url}')">
+                                    <div class="pt-3 mt-3 border-t border-${colorFase}-100/30">
+                                        <p class="text-[9px] font-black text-${colorFase}-400 uppercase tracking-widest mb-2">Evidencia Fotográfica</p>
+                                        <div class="relative group cursor-pointer overflow-hidden rounded-xl border border-${colorFase}-200 shadow-sm" onclick="viewPhoto('${props.foto_url}')">
                                             <img src="${props.foto_url}" class="w-full h-24 object-cover group-hover:scale-105 transition-transform duration-500">
-                                            <div class="absolute inset-0 bg-blue-900/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                                <span class="bg-white text-blue-700 px-3 py-1 rounded-full text-[10px] font-black shadow-lg">Ver Foto</span>
+                                            <div class="absolute inset-0 bg-${colorFase}-900/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <span class="bg-white text-${colorFase}-700 px-3 py-1 rounded-full text-[10px] font-black shadow-lg">Ver Foto</span>
                                             </div>
                                         </div>
                                     </div>
                                 ` : ''}
                             </div>
+                            ${!isPerdida ? `
                             <div class="flex items-center gap-2 px-2">
-                                <div class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></div>
-                                <span class="text-[10px] font-black text-blue-500 uppercase tracking-tighter">Acción requerida para hoy</span>
+                                <div class="w-2 h-2 rounded-full bg-${colorFase}-400 animate-pulse"></div>
+                                <span class="text-[10px] font-black text-${colorFase}-500 uppercase tracking-tighter">Acción requerida para hoy</span>
                             </div>
+                            ` : `
+                            <div class="flex items-center gap-2 px-2">
+                                <div class="w-2 h-2 rounded-full bg-red-400"></div>
+                                <span class="text-[10px] font-black text-red-500 uppercase tracking-tighter w-full text-center">La fecha límite para esta labor ha expirado</span>
+                            </div>
+                            `}
                         </div>
                     `);
                 } else {
+                    const isPerdida = props.estado == 16;
                     const isRiego = props.tipo === 'riego';
-                    const colorClass = isRiego ? 'sky' : 'purple';
-                    const canRegister = props.tipo === 'insumo'; 
+                    const colorClass = isPerdida ? 'red' : (isRiego ? 'sky' : 'purple');
+                    const canRegister = props.tipo === 'insumo' && !isPerdida; 
                     
                     listEl.insertAdjacentHTML('beforeend', `
-                        <div class="bg-${colorClass}-50/50 border border-${colorClass}-100 p-5 rounded-3xl flex flex-col gap-4 group hover:bg-white hover:shadow-xl hover:shadow-${colorClass}-200/50 transition-all">
+                        <div class="bg-${colorClass}-50/50 border border-${colorClass}-100 p-5 rounded-3xl flex flex-col gap-4 group hover:bg-white hover:shadow-xl hover:shadow-${colorClass}-200/50 transition-all ${isPerdida ? 'opacity-90' : ''}">
                             <div class="flex items-center justify-between gap-4 w-full">
                                 <div class="flex items-center gap-4">
-                                    <div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-gray-400 border border-gray-100 group-hover:text-${colorClass}-600 transition-colors" style="color: ${ev.backgroundColor}">
-                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                                    <div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-gray-400 border border-gray-100 group-hover:text-${colorClass}-600 transition-colors shadow-sm" style="color: ${isPerdida ? '#ef4444' : ev.backgroundColor}">
+                                        ${isPerdida 
+                                            ? '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"/></svg>'
+                                            : '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2-2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>'
+                                        }
                                     </div>
                                     <div>
-                                        <p class="text-[10px] font-black text-${colorClass}-400 uppercase tracking-widest">${props.tipo}</p>
-                                        <p class="font-bold text-${colorClass}-900">${ev.title}</p>
+                                        <p class="text-[10px] font-black text-${colorClass}-400 uppercase tracking-widest">${props.tipo} ${isPerdida ? '(Perdida)' : ''}</p>
+                                        <p class="font-bold text-${colorClass}-900 ${isPerdida ? 'line-through opacity-70' : ''}">${ev.title}</p>
                                     </div>
                                 </div>
                                 <div class="flex items-center gap-2">

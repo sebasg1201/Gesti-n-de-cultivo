@@ -38,7 +38,7 @@ class GenerarRiegos extends Command
             $cosecha = Cosecha::find($riego->id_cosecha);
             if ($cosecha && $cosecha->fecha_estimada) {
                 $nuevaFecha = Carbon::parse($cosecha->fecha_estimada)->addDays(2);
-                DB::table('cosechas')
+                DB::table('cosecha')
                     ->where('id_cosecha', $cosecha->id_cosecha)
                     ->update(['fecha_estimada' => $nuevaFecha->format('Y-m-d')]);
 
@@ -64,15 +64,36 @@ class GenerarRiegos extends Command
             $fechaSiembra = Carbon::parse($cosecha->fecha_siembra)->startOfDay();
             $diasTranscurridos = $fechaSiembra->diffInDays($hoy, false);
 
-            // El día 0 ya se crea al registrar la siembra
             if ($diasTranscurridos <= 0) {
                 continue;
             }
 
-            // ¿Toca riego hoy según la frecuencia?
-            if ($cosecha->frecuencia_riego_dias > 0 && ($diasTranscurridos % $cosecha->frecuencia_riego_dias) == 0) {
-                $this->info("Generando riego para cosecha #{$cosecha->id_cosecha}");
-                $this->generarRiegoParaCosecha($cosecha, $hoy);
+            // En lugar de chequear solo el mod de hoy, encontramos el último riego registrado
+            $ultimoRiego = Riego::where('id_cosecha', $cosecha->id_cosecha)
+                ->orderBy('fecha_programada', 'desc')
+                ->first();
+
+            if ($ultimoRiego) {
+                $fechaUltimoRiego = Carbon::parse($ultimoRiego->fecha_programada)->startOfDay();
+                
+                // Si la frecuencia es mayor a 0, calculamos los días faltantes
+                $frecuencia = $cosecha->frecuencia_riego_dias;
+                if ($frecuencia > 0) {
+                    $fechaIteracion = $fechaUltimoRiego->copy()->addDays($frecuencia);
+                    
+                    // Genera todos los riegos faltantes desde el último hasta hoy
+                    while ($fechaIteracion <= $hoy) {
+                        $this->info("Generando riego recuperado/programado para cosecha #{$cosecha->id_cosecha} del día {$fechaIteracion->format('Y-m-d')}");
+                        $this->generarRiegoParaCosecha($cosecha, $fechaIteracion);
+                        $fechaIteracion->addDays($frecuencia);
+                    }
+                }
+            } else {
+                // Failsafe por si no hay un último riego (solo debería pasar si se borró de la BD manualmente)
+                if ($cosecha->frecuencia_riego_dias > 0 && ($diasTranscurridos % $cosecha->frecuencia_riego_dias) == 0) {
+                    $this->info("Generando riego para cosecha #{$cosecha->id_cosecha}");
+                    $this->generarRiegoParaCosecha($cosecha, $hoy);
+                }
             }
         }
 

@@ -1,0 +1,15 @@
+1 - pendiente
+2 - bloqueada
+3 - activa
+5 - aprobada
+6 - ocupado
+7 - disponible
+8 - suspendido
+10 - Siembra
+11 - Vegetativo
+12 - Floración
+13 - Llenado
+14 - Cosecha
+15 - Realizado
+16 - Perdida
+17 - En Proceso

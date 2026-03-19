@@ -114,8 +114,8 @@
                                     <div class="flex justify-between items-start mb-6">
                                         <span
                                             class="px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest shadow-sm
-                                                    {{ $fase->id_estado == 1 ? 'bg-amber-100 text-amber-700 border border-amber-200' : ($fase->id_estado == 17 ? 'bg-sky-100 text-sky-700 border border-sky-200' : 'bg-emerald-100 text-emerald-700 border border-emerald-200') }}">
-                                            {{ $fase->id_estado == 1 ? 'Pendiente' : ($fase->id_estado == 17 ? 'En Proceso' : 'Realizado') }}
+                                                    {{ $fase->id_estado == 1 ? 'bg-amber-100 text-amber-700 border border-amber-200' : ($fase->id_estado == 17 ? 'bg-sky-100 text-sky-700 border border-sky-200' : ($fase->id_estado == 16 ? 'bg-red-100 text-red-700 border border-red-200' : 'bg-emerald-100 text-emerald-700 border border-emerald-200')) }}">
+                                            {{ $fase->id_estado == 1 ? 'Pendiente' : ($fase->id_estado == 17 ? 'En Proceso' : ($fase->id_estado == 16 ? 'Perdida' : 'Realizado')) }}
                                         </span>
 
                                         <div class="text-right">
@@ -123,13 +123,13 @@
                                                 class="text-[9px] text-gray-400 font-black uppercase tracking-widest leading-none mb-1">
                                                 Entrega</p>
                                             <p
-                                                class="text-xs font-black text-gray-800 bg-white px-2 py-1 rounded-lg border border-gray-100 shadow-sm">
+                                                class="text-xs font-black text-gray-800 bg-white px-2 py-1 rounded-lg border border-gray-100 shadow-sm {{ $fase->id_estado == 16 ? 'text-red-600 line-through opacity-70' : '' }}">
                                                 {{ \Carbon\Carbon::parse($fase->fecha_programada)->format('d/m/Y') }}</p>
                                         </div>
                                     </div>
 
                                     <h3
-                                        class="text-xl font-black text-gray-900 mb-6 leading-tight flex-grow group-hover/card:text-emerald-700 transition-colors">
+                                        class="text-xl font-black text-gray-900 mb-6 leading-tight flex-grow {{ $fase->id_estado == 16 ? 'line-through opacity-70 group-hover/card:text-red-700' : 'group-hover/card:text-emerald-700' }} transition-colors">
                                         {{ $fase->descripcion }}
                                     </h3>
 
@@ -146,7 +146,7 @@
                                                 'fase_id' => $fase->tipo_tarea == 'riego' ? $fase->id_riego : ($fase->tipo_tarea == 'insumo' ? $fase->id_insumo_cosecha : $fase->id_fase),
                                                 'tipo_tarea' => $fase->tipo_tarea,
                                                 'tipo_label' => $tipoEtiqueta,
-                                                'estado' => $fase->id_estado == 1 ? 'Pendiente' : ($fase->id_estado == 17 ? 'En Proceso' : ($fase->id_estado == 15 ? 'Realizado' : 'Otro')),
+                                                'estado' => $fase->id_estado == 1 ? 'Pendiente' : ($fase->id_estado == 17 ? 'En Proceso' : ($fase->id_estado == 15 ? 'Realizado' : ($fase->id_estado == 16 ? 'Perdida' : 'Otro'))),
                                                 'descripcion' => $fase->descripcion ?? 'Sin descripción',
                                                 'obs_trabajador' => $fase->observacion_trabajador ?? '',
                                                 'fecha' => $fase->fecha_programada ? \Carbon\Carbon::parse($fase->fecha_programada)->format('d/m/Y') : 'No definida',
@@ -179,7 +179,7 @@
                                             Detalles de Tarea
                                         </button>
 
-                                        <a href="{{ route('trabajador.calendario', ['date' => $fase->fecha_programada]) }}"
+                                        <a href="{{ route('trabajador.calendario', ['date' => \Carbon\Carbon::parse($fase->fecha_programada)->format('Y-m-d')]) }}"
                                             title="Ver en Mi Calendario"
                                             class="w-12 h-12 rounded-2xl bg-white border border-gray-100 flex items-center justify-center text-emerald-600 shadow-sm hover:scale-110 hover:shadow-emerald-100 hover:border-emerald-200 transition-all">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
@@ -309,8 +309,8 @@
                                 Gestionar Progreso</p>
                             <form id="modalFormEstado" method="POST" class="max-w-md mx-auto" enctype="multipart/form-data">
                                 @csrf
-                                {{-- 15 = Realizado --}}
-                                <input type="hidden" name="id_estado" value="15">
+                                {{-- 15 = Realizado, 18 = Perdida Oculta --}}
+                                <input type="hidden" name="id_estado" value="15" id="inputIdEstado">
 
                                 {{-- Observación del trabajador - solo visible si ya la tiene (tarea completada) --}}
                                 <div id="obsGuardadaWrap"
@@ -332,11 +332,11 @@
                                         placeholder="Ej: Realicé el riego completo de la parcela, revise los goteros y todo funcionó correctamente..."></textarea>
                                 </div>
 
-                                <div class="mb-6 text-left">
+                                <div class="mb-6 text-left" id="evidenciaFotoWrap">
                                     <label for="evidencia_foto"
                                         class="block text-[10px] font-black text-emerald-600 uppercase tracking-widest ml-1 mb-2">Evidencia
                                         Fotográfica Requerida</label>
-                                    <input type="file" name="evidencia_foto" id="evidencia_foto" accept="image/*" required
+                                    <input type="file" name="evidencia_foto" id="evidencia_foto" accept="image/*"
                                         class="w-full text-sm text-gray-500 file:mr-4 file:py-3 file:px-6 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 transition-all border border-gray-200 rounded-xl p-2 bg-white">
                                     <p class="text-[9px] text-gray-400 mt-2 ml-1">Debe adjuntar una foto del trabajo
                                         realizado (&lt; 2MB).</p>
@@ -374,51 +374,79 @@
         }
 
         function showTaskDetails(btn) {
-            const ds = btn.dataset;
-            document.getElementById('modalFaseId').innerText = (ds.tipoLabel || 'Fase') + ' #' + (ds.faseId || '---');
-            document.getElementById('modalTipoTarea').innerText = ds.tipoLabel || 'Detalle de Trabajo';
-            document.getElementById('modalDescripcion').innerText = ds.descripcion || 'Sin descripción';
-            document.getElementById('modalFecha').innerText = ds.fecha || 'No definida';
-            document.getElementById('modalCultivo').innerText = ds.cultivo || 'Cosecha';
-            document.getElementById('modalEstimada').innerText = ds.estimada || 'Pendiente';
-            document.getElementById('modalParcela').innerText = ds.parcela || 'N/A';
-            document.getElementById('modalUbicacion').innerText = ds.ubicacion || 'N/A';
+            try {
+                const ds = btn.dataset;
+                document.getElementById('modalFaseId').innerText = (ds.tipoLabel || 'Fase') + ' #' + (ds.faseId || '---');
+                document.getElementById('modalTipoTarea').innerText = ds.tipoLabel || 'Detalle de Trabajo';
+                document.getElementById('modalDescripcion').innerText = ds.descripcion || 'Sin descripción';
+                document.getElementById('modalFecha').innerText = ds.fecha || 'No definida';
+                document.getElementById('modalCultivo').innerText = ds.cultivo || 'Cosecha';
+                document.getElementById('modalEstimada').innerText = ds.estimada || 'Pendiente';
+                if (document.getElementById('modalParcela')) document.getElementById('modalParcela').innerText = ds.parcela || 'N/A';
+                if (document.getElementById('modalUbicacion')) document.getElementById('modalUbicacion').innerText = ds.ubicacion || 'N/A';
+                if (document.getElementById('modalDimensiones')) document.getElementById('modalDimensiones').innerText = ds.dimensiones || 'N/A';
+                if (document.getElementById('modalSuelo')) document.getElementById('modalSuelo').innerText = ds.suelo || 'N/A';
+                if (document.getElementById('modalSiembra')) document.getElementById('modalSiembra').innerText = ds.siembra || 'N/A';
+                if (document.getElementById('modalCantidad')) document.getElementById('modalCantidad').innerText = ds.cantidad || 'N/A';
+                if (document.getElementById('modalProduccion')) document.getElementById('modalProduccion').innerText = ds.produccion || 'N/A';
 
-            // Mostrar/ocultar observación del trabajador ya guardada
-            const obsGuardadaWrap = document.getElementById('obsGuardadaWrap');
-            const obsGuardadaTexto = document.getElementById('obsGuardadaTexto');
-            const obsInputWrap = document.getElementById('obsInputWrap');
-            const obsTextarea = document.getElementById('observacion_trabajador');
-            if (ds.obsTrabajador && ds.obsTrabajador.trim() !== '') {
-                obsGuardadaTexto.innerText = '"' + ds.obsTrabajador + '"';
-                obsGuardadaWrap.classList.remove('hidden');
-            } else {
-                obsGuardadaWrap.classList.add('hidden');
-            }
-            if (obsTextarea) obsTextarea.value = '';
+                // Mostrar/ocultar observación del trabajador ya guardada
+                const obsGuardadaWrap = document.getElementById('obsGuardadaWrap');
+                const obsGuardadaTexto = document.getElementById('obsGuardadaTexto');
+                const obsInputWrap = document.getElementById('obsInputWrap');
+                const obsTextarea = document.getElementById('observacion_trabajador');
+                if (ds.obsTrabajador && ds.obsTrabajador.trim() !== '') {
+                    obsGuardadaTexto.innerText = '"' + ds.obsTrabajador + '"';
+                    obsGuardadaWrap.classList.remove('hidden');
+                } else {
+                    obsGuardadaWrap.classList.add('hidden');
+                }
+                if (obsTextarea) obsTextarea.value = '';
 
-            const modalForm = document.getElementById('modalFormEstado');
+                const modalForm = document.getElementById('modalFormEstado');
             const btnFinalizar = document.getElementById('btnFinalizarTarea');
             if (modalForm && ds.updateUrl) {
                 modalForm.action = ds.updateUrl;
                 const currentStatus = parseInt(ds.idEstado || '1');
 
-                if (currentStatus === 15) {
-                    btnFinalizar.disabled = true;
-                    btnFinalizar.innerText = 'Trabajo Finalizado ✓';
-                    btnFinalizar.classList.remove('bg-emerald-600', 'hover:bg-emerald-700', 'shadow-emerald-200/50');
-                    btnFinalizar.classList.add('bg-gray-300', 'text-gray-500', 'cursor-not-allowed', 'shadow-none');
-                    // Ocultar inputs al estar finalizado
-                    obsInputWrap.classList.add('hidden');
-                    document.getElementById('evidencia_foto').closest('div').classList.add('hidden');
+                const inputIdEstado = document.getElementById('inputIdEstado');
+                const reqInput = document.getElementById('evidencia_foto');
+                const fotoWrap = document.getElementById('evidenciaFotoWrap');
+
+                if (currentStatus === 15 || currentStatus === 16) {
+                    if (currentStatus === 15) {
+                        btnFinalizar.disabled = true;
+                        btnFinalizar.innerText = 'Trabajo Finalizado ✓';
+                        btnFinalizar.classList.remove('bg-emerald-600', 'hover:bg-emerald-700', 'shadow-emerald-200/50', 'bg-red-500', 'text-white');
+                        btnFinalizar.classList.add('bg-gray-300', 'text-gray-500', 'cursor-not-allowed', 'shadow-none');
+                        
+                        obsInputWrap.classList.add('hidden');
+                        if(fotoWrap) fotoWrap.classList.add('hidden');
+                        if(reqInput) reqInput.required = false;
+                    } else if (currentStatus === 16) {
+                        btnFinalizar.disabled = false;
+                        btnFinalizar.innerText = 'Aceptar Tarea Perdida';
+                        btnFinalizar.classList.remove('bg-emerald-600', 'hover:bg-emerald-700', 'shadow-emerald-200/50', 'bg-gray-300', 'text-gray-500', 'cursor-not-allowed', 'shadow-none');
+                        btnFinalizar.classList.add('bg-red-500', 'hover:bg-red-600', 'text-white', 'shadow-red-200/50', 'cursor-pointer');
+                        
+                        if(inputIdEstado) inputIdEstado.value = 18;
+                        
+                        obsInputWrap.classList.add('hidden');
+                        if(fotoWrap) fotoWrap.classList.add('hidden');
+                        if(reqInput) reqInput.required = false;
+                    }
                 } else {
                     btnFinalizar.disabled = false;
                     btnFinalizar.innerText = 'Finalizar Trabajo';
-                    btnFinalizar.classList.remove('bg-gray-300', 'text-gray-500', 'cursor-not-allowed', 'shadow-none');
+                    btnFinalizar.classList.remove('bg-gray-300', 'text-gray-500', 'cursor-not-allowed', 'shadow-none', 'bg-red-500', 'hover:bg-red-600');
                     btnFinalizar.classList.add('bg-emerald-600', 'hover:bg-emerald-700', 'text-white', 'shadow-emerald-200/50');
+                    
+                    if(inputIdEstado) inputIdEstado.value = 15;
+                    
                     // Mostrar inputs
                     obsInputWrap.classList.remove('hidden');
-                    document.getElementById('evidencia_foto').closest('div').classList.remove('hidden');
+                    if(fotoWrap) fotoWrap.classList.remove('hidden');
+                    if(reqInput) reqInput.required = true;
                 }
 
                 if (currentStatus === 1) {
@@ -467,13 +495,22 @@
                 }
             }
 
-            const modal = document.getElementById('modalTarea');
-            modal.classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
+                const modal = document.getElementById('modalTarea');
+                if (modal) {
+                    modal.classList.remove('hidden');
+                }
+                document.body.style.overflow = 'hidden';
+            } catch (e) {
+                alert("JS ERROR DETECTED: " + e.message + "\n\nStack:\n" + e.stack);
+                console.error(e);
+            }
         }
 
         function closeTaskModal() {
-            document.getElementById('modalTarea').classList.add('hidden');
+            const modal = document.getElementById('modalTarea');
+            if (modal) {
+                modal.classList.add('hidden');
+            }
             document.body.style.overflow = 'auto';
         }
     </script>

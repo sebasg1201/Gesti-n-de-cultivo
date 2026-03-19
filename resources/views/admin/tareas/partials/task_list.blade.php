@@ -69,6 +69,12 @@
                         <div class="w-10 h-10 bg-amber-500 rounded-2xl text-white flex items-center justify-center shadow-lg shadow-amber-200 animate-pulse-slow">
                             <span class="w-3 h-3 bg-white rounded-full"></span>
                         </div>
+                    @elseif($task->id_estado == 16) {{-- Perdida --}}
+                        <div class="w-10 h-10 bg-red-500 rounded-2xl text-white flex items-center justify-center shadow-lg shadow-red-200">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                        </div>
                     @else
                         <div class="w-10 h-10 rounded-2xl border-2 border-gray-200 bg-white group-hover:border-{{ $borderColor }} transition-all duration-300 flex items-center justify-center">
                             <div class="w-4 h-4 rounded-md bg-gray-50 group-hover:bg-{{ $bgLight }} transition-colors"></div>
@@ -79,7 +85,7 @@
                 {{-- Core Task Info --}}
                 <div class="flex-grow space-y-3">
                     <div class="flex flex-col gap-0.5">
-                        <h5 class="text-lg font-black {{ $task->id_estado == 15 ? 'text-gray-400 line-through decoration-2' : 'text-gray-900 group-hover:text-' . $borderColor }} transition-colors">
+                        <h5 class="text-lg font-black {{ $task->id_estado == 15 ? 'text-gray-400 line-through decoration-2' : ($task->id_estado == 16 ? 'text-red-400 line-through decoration-2' : 'text-gray-900 group-hover:text-' . $borderColor) }} transition-colors">
                             {{ $task->descripcion }}
                         </h5>
                         @if(!empty($task->sub_descripcion))
