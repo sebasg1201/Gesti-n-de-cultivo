@@ -14,7 +14,8 @@ class TipoInsumo extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'nombre'
+        'nombre',
+        'id_empresa'
     ];
 
     public function catalogos()

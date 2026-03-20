@@ -116,6 +116,7 @@
                     $gestionActive = request()->routeIs('tipo_cosechas.*') ||
                         request()->routeIs('tipo_riegos.*') ||
                         request()->routeIs('tipo_semillas.*') ||
+                        request()->routeIs('tipo_insumos.*') ||
                         request()->routeIs('tipo_suelos.*') ||
                         request()->routeIs('insumos.*') ||
                         request()->routeIs('estados.*') ||
@@ -166,6 +167,12 @@
                                 class="group flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-200 {{ active('tipo_semillas.*') }}">
                                 <div class="w-1 h-1 bg-emerald-400 rounded-full shrink-0"></div>
                                 <span class="whitespace-nowrap font-medium">Tipos de Semilla</span>
+                            </a>
+
+                            <a href="{{ route('tipo_insumos.index') }}"
+                                class="group flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-200 {{ active('tipo_insumos.*') }}">
+                                <div class="w-1 h-1 bg-emerald-400 rounded-full shrink-0"></div>
+                                <span class="whitespace-nowrap font-medium">Tipos de Insumo</span>
                             </a>
 
                             <a href="{{ route('tipo_suelos.index') }}"
