@@ -52,7 +52,20 @@
                     <!-- Google Maps Integration -->
                     <div class="space-y-4">
                         <label class="block text-xs font-bold text-emerald-700 uppercase tracking-wider mb-2">Seleccionar en el Mapa</label>
-                        <div id="map" class="w-full h-64 rounded-2xl border-2 border-emerald-100 shadow-inner overflow-hidden"></div>
+                         <div class="relative">
+                            <div id="map" class="w-full h-64 rounded-2xl border-2 border-emerald-100 shadow-inner overflow-hidden"></div>
+                            
+                            <!-- Weather Overlay on Map -->
+                            <div id="map-weather" class="absolute top-2 right-2 z-[1000] bg-white/90 backdrop-blur-sm rounded-xl p-2 shadow-lg border border-emerald-100 min-w-[100px] transition-all duration-300 pointer-events-none opacity-0 translate-y-2">
+                                <div class="flex items-center gap-2">
+                                    <div id="map-weather-icon" class="text-yellow-500">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                                    </div>
+                                    <span id="map-weather-temp" class="text-sm font-black text-emerald-950">--°C</span>
+                                </div>
+                                <p id="map-weather-desc" class="text-[8px] font-bold text-emerald-600 uppercase tracking-widest mt-0.5">Sincronizando...</p>
+                            </div>
+                        </div>
                         
                         <div class="grid grid-cols-2 gap-4">
                             <div>
@@ -402,6 +415,40 @@
         
         // Auto-fill from API
         reverseGeocode(latlng.lat, latlng.lng);
+        
+        // Fetch weather for this position
+        fetchMapWeather(latlng.lat, latlng.lng);
+    }
+
+    function fetchMapWeather(lat, lon) {
+        const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code&timezone=auto`;
+        const overlay = document.getElementById('map-weather');
+
+        fetch(weatherUrl)
+            .then(res => res.json())
+            .then(data => {
+                const current = data.current;
+                const temp = Math.round(current.temperature_2m);
+                const code = current.weather_code;
+                
+                const weatherMap = {
+                    0: { text: 'Despejado', icon: 'M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z', color: 'text-yellow-500' },
+                    2: { text: 'Parcial', icon: 'M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z', color: 'text-gray-400' },
+                    3: { text: 'Nublado', icon: 'M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z', color: 'text-gray-500' },
+                    61: { text: 'Lluvia', icon: 'M20 16.242c-.22.217-.457.417-.71.598A7.923 7.923 0 0112 19a7.923 7.923 0 01-7.29-2.16m15.29-2.082A8.001 8.001 0 004.5 9h.5A7 7 0 1119.5 9h.5a8.001 8.001 0 00-7.29 5.242', color: 'text-blue-500' },
+                    95: { text: 'Tormenta', icon: 'M13 10V3L4 14h7v7l9-11h-7z', color: 'text-yellow-700' }
+                };
+
+                const condition = weatherMap[code] || { text: 'Variable', icon: 'M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z', color: 'text-yellow-500' };
+
+                document.getElementById('map-weather-temp').textContent = `${temp}°C`;
+                document.getElementById('map-weather-desc').textContent = condition.text;
+                document.getElementById('map-weather-icon').innerHTML = `<svg class="w-5 h-5 ${condition.color}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${condition.icon}"></path></svg>`;
+                
+                overlay.classList.remove('opacity-0', 'translate-y-2');
+                overlay.classList.add('opacity-100', 'translate-y-0');
+            })
+            .catch(err => console.error("Error fetching map weather:", err));
     }
 
     function renderAllTerrenos() {
@@ -584,6 +631,7 @@
                 const pos = [parsedLat, parsedLng];
                 marker.setLatLng(pos);
                 map.flyTo(pos, 16, { animate: true, duration: 1.5 });
+                fetchMapWeather(parsedLat, parsedLng);
             } else {
                 console.warn("Terreno sin coordenadas válidas, usando ubicación por defecto", {lat, lng});
                 marker.setLatLng(defaultLocation);
@@ -645,6 +693,7 @@
         if (map && marker) {
             marker.setLatLng(defaultLocation);
             map.setView(defaultLocation, 13);
+            fetchMapWeather(defaultLocation[0], defaultLocation[1]);
             
             // Forzar redibujado progresivo
             [100, 300, 800].forEach(time => {
