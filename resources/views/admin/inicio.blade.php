@@ -1,17 +1,17 @@
 @extends('layouts.admin')
 
-@section('title', 'Dashboard')
+@section('title', 'Control y Reportes')
 
 @section('content')
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
     <!-- Header Section -->
     <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
         <div>
-            <h1 class="text-3xl font-bold text-gray-900">Hola, {{ $usuario->nombre ?? 'Usuario' }}</h1>
-            <p class="text-sm text-gray-500 mt-1 flex items-center gap-2">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                {{ \Carbon\Carbon::now()->translatedFormat('d de F, Y') }}
-            </p>
+<h1 class="text-3xl font-bold text-gray-900">
+    Hola, {{ auth()->user()->nombre }} {{ auth()->user()->apellido ?? '' }}
+</h1>
+
+<p class="text-sm text-gray-500 mt-1 flex items-center gap-2">
         </div>
         <div class="flex items-center gap-3">
             <button onclick="downloadReport()" class="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
