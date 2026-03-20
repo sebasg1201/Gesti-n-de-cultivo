@@ -771,6 +771,7 @@
                                 const pos = [parsedLat, parsedLng];
                                 marker.setLatLng(pos);
                                 map.flyTo(pos, 16, { animate: true, duration: 1.5 });
+                                fetchMapWeather(parsedLat, parsedLng);
                             } else {
                                 console.warn("Terreno sin coordenadas válidas, usando ubicación por defecto", { lat, lng });
                                 marker.setLatLng(defaultLocation);
