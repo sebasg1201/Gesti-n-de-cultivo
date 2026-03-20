@@ -183,6 +183,12 @@
             dailyEvents.forEach(ev => {
                 const props = ev.extendedProps;
                 if (props.tipo === 'registro') {
+                    // Si es un registro automático de "perdida ocultada", no mostrar el bloque de asistencia
+                    // para no confundir al usuario, ya que solo fue una confirmación de pérdida.
+                    if (props.observacion === 'Tarea perdida ocultada por el trabajador.') {
+                        return;
+                    }
+                    
                     yaRegistroGeneral = true;
                     listEl.insertAdjacentHTML('afterbegin', `
                         <div class="bg-emerald-50 border border-emerald-100 p-6 rounded-[2rem] space-y-4 shadow-sm shadow-emerald-50/50">
@@ -217,7 +223,7 @@
                         </div>
                     `);
                 } else if (props.tipo === 'fase') {
-                    const isPerdida = props.estado == 16;
+                    const isPerdida = (props.estado == 16 || props.estado == 18);
                     const colorFase = isPerdida ? 'red' : 'blue';
                     const iconColor = isPerdida ? '#ef4444' : '#3b82f6';
                     
@@ -272,7 +278,7 @@
                         </div>
                     `);
                 } else {
-                    const isPerdida = props.estado == 16;
+                    const isPerdida = (props.estado == 16 || props.estado == 18);
                     const isRiego = props.tipo === 'riego';
                     const colorClass = isPerdida ? 'red' : (isRiego ? 'sky' : 'purple');
                     const canRegister = props.tipo === 'insumo' && !isPerdida; 

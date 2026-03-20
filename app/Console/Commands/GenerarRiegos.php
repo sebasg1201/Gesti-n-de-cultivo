@@ -20,35 +20,32 @@ class GenerarRiegos extends Command
         $hoy = Carbon::today();
 
         // ====================================================
-        // PASO 1: Marcar como Perdida los riegos no hechos
-        // Un riego se considera "perdido" si su fecha_programada
-        // es de ayer o antes y sigue en estado Pendiente (1) o En Proceso (17)
-        // ====================================================
-        $riegosPerdidos = Riego::whereIn('id_estado', [1, 17]) // Pendiente o En Proceso
-            ->whereDate('fecha_programada', '<', $hoy)         // Anteriores a hoy
+        // 1. Riegos
+        $riegosPerdidos = DB::table('riego')->whereIn('id_estado', [1, 17])
+            ->whereDate('fecha_programada', '<', $hoy)
             ->get();
 
         foreach ($riegosPerdidos as $riego) {
-            // Marcar como Perdida (16)
-            DB::table('riego')
-                ->where('id_riego', $riego->id_riego)
-                ->update(['id_estado' => 16]);
-
-            // Aumentar 2 días a la fecha estimada de la cosecha
+            DB::table('riego')->where('id_riego', $riego->id_riego)->update(['id_estado' => 16]);
             $cosecha = Cosecha::find($riego->id_cosecha);
             if ($cosecha && $cosecha->fecha_estimada) {
                 $nuevaFecha = Carbon::parse($cosecha->fecha_estimada)->addDays(2);
-                DB::table('cosecha')
-                    ->where('id_cosecha', $cosecha->id_cosecha)
-                    ->update(['fecha_estimada' => $nuevaFecha->format('Y-m-d')]);
-
-                Log::info("Riego #{$riego->id_riego} marcado como Perdida. Cosecha #{$cosecha->id_cosecha} extendida 2 días → {$nuevaFecha->format('Y-m-d')}");
-            } else {
-                Log::info("Riego #{$riego->id_riego} marcado como Perdida (cosecha sin fecha estimada).");
+                DB::table('cosecha')->where('id_cosecha', $cosecha->id_cosecha)->update(['fecha_estimada' => $nuevaFecha->format('Y-m-d')]);
+                Log::info("Riego #{$riego->id_riego} marcado como Perdida. Cosecha #{$cosecha->id_cosecha} extendida 2 días.");
             }
         }
 
-        $this->info("Riegos perdidos procesados: {$riegosPerdidos->count()}");
+        // 2. Fases Programadas
+        $fasesPerdidas = DB::table('fases_programadas')->whereIn('id_estado', [1, 17])
+            ->whereDate('fecha_programada', '<', $hoy)
+            ->update(['id_estado' => 16]);
+
+        // 3. Insumos
+        $insumosPerdidos = DB::table('insumo_cosecha')->whereIn('id_estado', [1, 17])
+            ->whereDate('fecha_programada', '<', $hoy)
+            ->update(['id_estado' => 16]);
+
+        $this->info("Riegos perdidos: " . count($riegosPerdidos) . ", Fases perdidas: $fasesPerdidas, Insumos perdidos: $insumosPerdidos");
 
         // ====================================================
         // PASO 2: Generar nuevas tareas de riego para hoy

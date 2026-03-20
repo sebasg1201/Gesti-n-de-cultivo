@@ -69,7 +69,7 @@
                         <div class="w-10 h-10 bg-amber-500 rounded-2xl text-white flex items-center justify-center shadow-lg shadow-amber-200 animate-pulse-slow">
                             <span class="w-3 h-3 bg-white rounded-full"></span>
                         </div>
-                    @elseif($task->id_estado == 16) {{-- Perdida --}}
+                    @elseif(in_array($task->id_estado, [16, 18])) {{-- Perdida o Perdida Oculta --}}
                         <div class="w-10 h-10 bg-red-500 rounded-2xl text-white flex items-center justify-center shadow-lg shadow-red-200">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"/>
@@ -85,7 +85,7 @@
                 {{-- Core Task Info --}}
                 <div class="flex-grow space-y-3">
                     <div class="flex flex-col gap-0.5">
-                        <h5 class="text-lg font-black {{ $task->id_estado == 15 ? 'text-gray-400 line-through decoration-2' : ($task->id_estado == 16 ? 'text-red-400 line-through decoration-2' : 'text-gray-900 group-hover:text-' . $borderColor) }} transition-colors">
+                        <h5 class="text-lg font-black {{ $task->id_estado == 15 ? 'text-gray-400 line-through decoration-2' : (in_array($task->id_estado, [16, 18]) ? 'text-red-400 line-through decoration-2' : 'text-gray-900 group-hover:text-' . $borderColor) }} transition-colors">
                             {{ $task->descripcion }}
                         </h5>
                         @if(!empty($task->sub_descripcion))
@@ -136,8 +136,8 @@
                         } elseif($task->id_estado == 17) { // En Proceso
                             $statusText = 'En Proceso';
                             $statusClass = 'bg-blue-50 text-blue-700 border-blue-100';
-                        } elseif($task->id_estado == 16 || $date->isPast()) { // Perdida o Atrasada
-                            $statusText = $task->id_estado == 16 ? 'Perdida' : $statusText;
+                        } elseif(in_array($task->id_estado, [16, 18]) || $date->isPast()) { // Perdida u Oculta o Atrasada
+                            $statusText = in_array($task->id_estado, [16, 18]) ? 'Perdida' : $statusText;
                             $statusClass = 'bg-red-50 text-red-700 border-red-100';
                         }
                     @endphp
