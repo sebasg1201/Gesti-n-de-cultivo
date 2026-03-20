@@ -97,7 +97,7 @@ class AdminController extends Controller
         $cosechaActiva = \App\Models\Cosecha::with('terreno.tipoSuelo')->where('id_empresa', $id_empresa)->first();
         $humedad = 70; // Default
         $ph = 6.5;    // Default
-        if ($cosechaActiva && isset($cosechaActiva->terreno) && isset($cosechaActiva->terreno->tipoSuelo)) {
+        if ($cosechaActiva && $cosechaActiva->terreno?->tipoSuelo) {
             // Ajustar valores basados en el tipo de suelo
             $tipoSuelo = strtolower($cosechaActiva->terreno->tipoSuelo->nombre ?? '');
             if (str_contains($tipoSuelo, 'arenoso')) {
@@ -120,12 +120,28 @@ class AdminController extends Controller
             }
         }
 
+        $latitud = 4.6097; // Bogotá por defecto
+        $longitud = -74.0817;
+
+        if ($cosechaActiva && $cosechaActiva->terreno) {
+            $latitud = $cosechaActiva->terreno->latitud ?? $latitud;
+            $longitud = $cosechaActiva->terreno->longitud ?? $longitud;
+        } else {
+            $primerTerreno = \App\Models\Terreno::where('id_empresa', $id_empresa)->first();
+            if ($primerTerreno) {
+                $latitud = $primerTerreno->latitud ?? $latitud;
+                $longitud = $primerTerreno->longitud ?? $longitud;
+            }
+        }
+
         $estadoTerreno = [
             'humedad' => $humedad,
             'ph' => $ph,
             'nitrogeno' => rand(30, 60), // Mock NPK
             'fosforo' => rand(15, 30),
-            'potasio' => rand(80, 150)
+            'potasio' => rand(80, 150),
+            'latitud' => $latitud,
+            'longitud' => $longitud
         ];
 
         $stats = [
