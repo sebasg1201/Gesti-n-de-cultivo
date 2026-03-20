@@ -6,6 +6,15 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>AgriManager</title>
     @vite('resources/css/app.css')
+    <style>
+        /* Ocultar texto de resultados en paginación solo para el panel de SuperAdmin */
+        nav[role="navigation"] div.hidden.sm\:flex-1.sm\:flex.sm\:items-center.sm\:justify-between > div:first-child {
+            display: none !important;
+        }
+        nav[role="navigation"] {
+            justify-content: flex-end !important;
+        }
+    </style>
 </head>
 
 <body class="bg-gradient-to-br from-emerald-50 via-white to-green-100 min-h-screen text-gray-800">

@@ -112,8 +112,8 @@
                 </div>
             </div>
 
-            <!-- 4 Cards de Métricas (Inspirado en Mockup del Usuario) -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
+            <!-- Metric Cards Row -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 <!-- Card 1: Cosecha Estimada -->
                 <div
                     class="bg-white rounded-[2rem] p-6 shadow-sm border border-emerald-50 relative overflow-hidden group hover:shadow-md transition-shadow">
@@ -178,6 +178,52 @@
                                     d="M5 13l4 4L19 7" />
                             </svg>
                             {{ $riegosCompletados }} completados
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 5: Clima del Terreno (Dynamic) -->
+                <div
+                    class="bg-emerald-900 rounded-[2rem] p-6 shadow-xl border border-emerald-800 relative overflow-hidden group transition-all duration-500">
+                    <div
+                        class="absolute -right-6 -top-6 w-32 h-32 bg-emerald-800/50 rounded-full blur-2xl group-hover:scale-125 transition-transform duration-700">
+                    </div>
+
+                    <div class="relative z-10 flex flex-col h-full justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex items-center gap-2 text-emerald-400 font-black uppercase tracking-widest text-[10px]">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                                    </svg>
+                                    Estado Clima
+                                </div>
+                                <span class="px-2 py-0.5 bg-emerald-800/50 rounded-lg text-[8px] font-bold text-emerald-400 border border-emerald-700 uppercase tracking-widest">Vivo</span>
+                            </div>
+
+                            <div class="flex items-center gap-4">
+                                <div id="weather-icon-main" class="w-12 h-12 rounded-2xl bg-emerald-800 flex items-center justify-center text-yellow-400 shadow-inner">
+                                    <svg class="w-7 h-7 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 id="weather-temp-main" class="text-4xl font-black text-white leading-none">--°C</h3>
+                                    <p id="weather-desc-main" class="text-[10px] font-bold text-emerald-400 uppercase tracking-widest mt-1">Sincronizando...</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 pt-4 border-t border-emerald-800/50 flex items-center justify-between">
+                            <div class="text-[9px] font-medium text-emerald-500 uppercase tracking-wider">
+                                {{ $cosecha->terreno->nombre ?? 'Ubicación' }}
+                            </div>
+                            <div id="weather-humidity" class="text-[10px] font-black text-white flex items-center gap-1">
+                                <svg class="w-3 h-3 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                                </svg>
+                                --% HR
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -407,5 +453,61 @@
             </div>
 
         </div>
-    </div>
+    @push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            @if($cosecha->terreno && $cosecha->terreno->latitud && $cosecha->terreno->longitud)
+                const lat = {{ number_format($cosecha->terreno->latitud, 8, '.', '') }};
+                const lon = {{ number_format($cosecha->terreno->longitud, 8, '.', '') }};
+                fetchWeather(lat, lon);
+            @else
+                // Fallback to a default location if no coordinates are found
+                const lat = 4.570868;
+                const lon = -74.297333;
+                fetchWeather(lat, lon);
+            @endif
+
+            function fetchWeather(la, lo) {
+                const url = `https://api.open-meteo.com/v1/forecast?latitude=${la}&longitude=${lo}&current=temperature_2m,relative_humidity_2m,weather_code&timezone=auto`;
+                
+                fetch(url)
+                    .then(res => res.json())
+                    .then(data => {
+                        const current = data.current;
+                        const temp = Math.round(current.temperature_2m);
+                        const hum = current.relative_humidity_2m;
+                        const code = current.weather_code;
+
+                        const weatherMap = {
+                            0: { text: 'Despejado', icon: 'M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z', color: 'text-yellow-400' },
+                            1: { text: 'P. Nublado', icon: 'M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z', color: 'text-emerald-200' },
+                            2: { text: 'Parcial', icon: 'M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z', color: 'text-emerald-300' },
+                            3: { text: 'Nublado', icon: 'M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z', color: 'text-gray-400' },
+                            45: { text: 'Niebla', icon: 'M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z', color: 'text-gray-300' },
+                            61: { text: 'Lluvia', icon: 'M20 16.242c-.22.217-.457.417-.71.598A7.923 7.923 0 0112 19a7.923 7.923 0 01-7.29-2.16m15.29-2.082A8.001 8.001 0 004.5 9h.5A7 7 0 1119.5 9h.5a8.001 8.001 0 00-7.29 5.242', color: 'text-blue-400' },
+                            80: { text: 'Chubascos', icon: 'M20 16.242c-.22.217-.457.417-.71.598A7.923 7.923 0 0112 19a7.923 7.923 0 01-7.29-2.16m15.29-2.082A8.001 8.001 0 004.5 9h.5A7 7 0 1119.5 9h.5a8.001 8.001 0 00-7.29 5.242', color: 'text-blue-500' },
+                            95: { text: 'Tormenta', icon: 'M13 10V3L4 14h7v7l9-11h-7z', color: 'text-yellow-600' }
+                        };
+
+                        const condition = weatherMap[code] || { text: 'Variable', icon: 'M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z', color: 'text-yellow-400' };
+
+                        document.getElementById('weather-temp-main').textContent = `${temp}°C`;
+                        document.getElementById('weather-desc-main').textContent = condition.text;
+                        document.getElementById('weather-humidity').innerHTML = `
+                            <svg class="w-3 h-3 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                            </svg> ${hum}% HR`;
+                        document.getElementById('weather-icon-main').innerHTML = `
+                            <svg class="w-7 h-7 ${condition.color}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${condition.icon}"></path>
+                            </svg>`;
+                    })
+                    .catch(err => {
+                        console.error('Error fetching weather:', err);
+                        document.getElementById('weather-desc-main').textContent = 'Error';
+                    });
+            }
+        });
+    </script>
+    @endpush
 @endsection
