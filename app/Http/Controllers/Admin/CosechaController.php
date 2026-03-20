@@ -336,7 +336,7 @@ class CosechaController extends Controller
 
             if ($r->id_estado == 15) {
                 $r->estado_historial = 'Completado';
-            } elseif ($r->id_estado == 16) {
+            } elseif ($r->id_estado == 16 || $r->id_estado == 18) {
                 $r->estado_historial = 'Perdida';
             } elseif ($r->id_estado == 17) {   // En Proceso
                 $r->estado_historial = 'En Proceso';
@@ -351,7 +351,7 @@ class CosechaController extends Controller
             $i->fecha_historial = $i->fecha_programada;
             $i->titulo_historial = 'Aplicación de Insumo';
             $i->descripcion_historial = ($i->insumo->Nombre ?? 'Insumo') . ' (Cant: ' . $i->cantidad_usada . ')';
-            $i->estado_historial = in_array($i->id_estado, [15]) ? 'Completado' : ($i->id_estado == 17 ? 'En Proceso' : ($i->id_estado == 16 ? 'Perdida' : 'Pendiente'));
+            $i->estado_historial = in_array($i->id_estado, [15]) ? 'Completado' : ($i->id_estado == 17 ? 'En Proceso' : (in_array($i->id_estado, [16, 18]) ? 'Perdida' : 'Pendiente'));
             $historial->push($i);
         }
 
@@ -360,7 +360,7 @@ class CosechaController extends Controller
             $f->fecha_historial = $f->fecha_programada;
             $f->titulo_historial = 'Fase de Mantenimiento';
             $f->descripcion_historial = $f->descripcion;
-            $f->estado_historial = in_array($f->id_estado, [15]) ? 'Completado' : ($f->id_estado == 17 ? 'En Proceso' : ($f->id_estado == 16 ? 'Perdida' : 'Pendiente'));
+            $f->estado_historial = in_array($f->id_estado, [15]) ? 'Completado' : ($f->id_estado == 17 ? 'En Proceso' : (in_array($f->id_estado, [16, 18]) ? 'Perdida' : 'Pendiente'));
             $historial->push($f);
         }
 
