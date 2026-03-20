@@ -180,7 +180,7 @@ class AdminController extends Controller
         // 1. Fase Programada
         $fases = \App\Models\FaseProgramada::with(['cosecha.semilla', 'cosecha.terreno.tipoSuelo'])
             ->where('documento_trabajador', $usuario->documento)
-            ->whereIn('id_estado', [1, 17]) // Solo Pendiente y En Proceso
+            ->whereIn('id_estado', [1, 16, 17]) // Pendiente, Perdida y En Proceso
             ->get()->map(function ($t) {
                 $t->tipo_tarea = 'fase';
                 return $t;
@@ -189,7 +189,7 @@ class AdminController extends Controller
         // 2. Riego
         $riegos = \App\Models\Riego::with(['cosecha.semilla', 'cosecha.terreno.tipoSuelo', 'tipoRiego'])
             ->where('documento_trabajador', $usuario->documento)
-            ->whereIn('id_estado', [1, 17]) // Solo Pendiente y En Proceso
+            ->whereIn('id_estado', [1, 16, 17]) // Pendiente, Perdida y En Proceso
             ->get()->map(function ($t) {
                 $t->tipo_tarea = 'riego';
                 $t->descripcion = $t->observaciones ?: ('Riego: ' . ($t->tipoRiego?->tipo_riego ?? 'General'));
@@ -199,7 +199,7 @@ class AdminController extends Controller
         // 3. Insumos
         $insumos = \App\Models\InsumoCosecha::with(['cosecha.semilla', 'cosecha.terreno.tipoSuelo', 'insumo'])
             ->where('documento_trabajador', $usuario->documento)
-            ->whereIn('id_estado', [1, 17]) // Solo Pendiente y En Proceso
+            ->whereIn('id_estado', [1, 16, 17]) // Pendiente, Perdida y En Proceso
             ->get()->map(function ($t) {
                 $t->tipo_tarea = 'insumo';
                 $t->descripcion = 'Aplicación de Insumo: ' . ($t->insumo?->Nombre ?? 'Desconocido');
@@ -243,8 +243,8 @@ class AdminController extends Controller
         $usuario = auth()->guard('usuario')->user();
 
         $request->validate([
-            // 1=Pendiente, 17=En Proceso, 15=Realizado, 16=Perdida
-            'id_estado' => 'required|integer|in:1,17,15,16',
+            // 1=Pendiente, 17=En Proceso, 15=Realizado, 16=Perdida, 18=Perdida Oculta
+            'id_estado' => 'required|integer|in:1,17,15,16,18',
             // La foto es obligatoria solo al finalizar (id_estado=15)
             'evidencia_foto' => ($request->id_estado == 15) ? 'required|image|max:2048' : 'nullable|image|max:2048',
         ]);
@@ -257,8 +257,8 @@ class AdminController extends Controller
             ->firstOrFail();
 
         // Evitar que el trabajador vuelva a un estado anterior
-        // Orden lógico: 1 (Pendiente) < 17 (En Proceso) < 15 (Realizado) / 16 (Perdida)
-        $ordenEstados = [1 => 1, 17 => 2, 15 => 3, 16 => 3];
+        // Orden lógico: 1 (Pendiente) < 17 (En Proceso) < 15 (Realizado) / 16 (Perdida) < 18 (Perdida Oculta)
+        $ordenEstados = [1 => 1, 17 => 2, 15 => 3, 16 => 3, 18 => 4];
         $nuevoEstado = (int)$request->id_estado;
         $estadoActual = (int)$tarea->id_estado;
 
@@ -295,6 +295,20 @@ class AdminController extends Controller
             }
             // Para riego y fases_programadas no hay FK en registro_trabajo,
             // se identifica por documento + fecha_trabajada
+
+            \Illuminate\Support\Facades\DB::table('registro_trabajo')->insert($registroData);
+        } elseif ($nuevoEstado === 18) {
+            $registroData = [
+                'documento_trabajador' => $usuario->documento,
+                'fecha_trabajada'      => now()->toDateString(),
+                'estado_aprobacion'    => 'pendiente',
+                'observacion'          => 'Tarea perdida ocultada por el trabajador.',
+                'created_at'           => now(),
+            ];
+
+            if ($tipo === 'insumo') {
+                $registroData['id_insumo_cosecha'] = $id;
+            }
 
             \Illuminate\Support\Facades\DB::table('registro_trabajo')->insert($registroData);
         }
@@ -510,11 +524,18 @@ class AdminController extends Controller
                 ? $fase->cosecha->semilla->descripcion
                 : 'Realizar labores de mantenimiento para la fase de ' . $fase->descripcion;
 
+            $color = match((int)$fase->id_estado) {
+                15 => '#10b981', // Realizado -> Verde
+                17 => '#f59e0b', // En Proceso -> Ambar
+                16, 18 => '#ef4444', // Perdida o Perdida Oculta -> Rojo
+                default => '#3b82f6' // Pendiente u otro -> Azul
+            };
+
             $eventos[] = [
                 'id' => 'fase_' . $fase->id_fase,
                 'title' => 'Fase: ' . $fase->descripcion,
                 'start' => $fase->fecha_programada,
-                'color' => $fase->id_estado == 9 ? '#10b981' : ($fase->id_estado == 8 ? '#f59e0b' : '#3b82f6'),
+                'color' => $color,
                 'extendedProps' => [
                     'tipo' => 'fase',
                     'descripcion' => $fase->descripcion,
@@ -529,11 +550,18 @@ class AdminController extends Controller
         // 2. Riego
         $riegos = \App\Models\Riego::where('documento_trabajador', $usuario->documento)->get();
         foreach ($riegos as $riego) {
+            $color = match((int)$riego->id_estado) {
+                15 => '#10b981', // Realizado -> Verde
+                17 => '#f59e0b', // En Proceso -> Ambar
+                16, 18 => '#ef4444', // Perdida o Perdida Oculta -> Rojo
+                default => '#0ea5e9' // Pendiente u otro -> Azul Claro
+            };
+
             $eventos[] = [
                 'id' => 'riego_' . $riego->id_riego,
                 'title' => 'Riego: ' . ($riego->observaciones ?: 'Programado'),
                 'start' => $riego->fecha_programada,
-                'color' => '#0ea5e9',
+                'color' => $color,
                 'extendedProps' => [
                     'tipo' => 'riego',
                     'descripcion' => $riego->observaciones,
@@ -546,11 +574,18 @@ class AdminController extends Controller
         // 3. Insumos
         $insumos = \App\Models\InsumoCosecha::with('insumo')->where('documento_trabajador', $usuario->documento)->get();
         foreach ($insumos as $insumo) {
+            $color = match((int)$insumo->id_estado) {
+                15 => '#10b981', // Realizado -> Verde
+                17 => '#f59e0b', // En Proceso -> Ambar
+                16, 18 => '#ef4444', // Perdida o Perdida Oculta -> Rojo
+                default => '#8b5cf6' // Pendiente u otro -> Purpura
+            };
+
             $eventos[] = [
                 'id' => 'insumo_' . $insumo->id_insumo_cosecha,
                 'title' => 'Insumo: ' . ($insumo->insumo->Nombre ?? 'Aplicación'),
                 'start' => $insumo->fecha_programada,
-                'color' => '#8b5cf6',
+                'color' => $color,
                 'extendedProps' => [
                     'tipo' => 'insumo',
                     'descripcion' => 'Aplicación de ' . ($insumo->insumo->Nombre ?? 'insumo'),

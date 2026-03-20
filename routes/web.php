@@ -132,25 +132,26 @@ Route::middleware(['auth:usuario', 'check.license'])->group(function () {
     Route::post('/admin/usuarios/{usuario}/asignar-trabajo', [\App\Http\Controllers\Admin\UsuarioEmpresaController::class, 'storeTrabajo'])->name('admin.usuarios.store_trabajo');
     Route::get('/admin/usuarios/{usuario}/exportar-pagos', [\App\Http\Controllers\Admin\UsuarioEmpresaController::class, 'exportPagos'])->name('admin.usuarios.exportar_pagos');
 
-    // Gestión de Cosechas
-    Route::resource('/admin/cosechas', \App\Http\Controllers\Admin\CosechaController::class, ['as' => 'admin']);
-
     // Insumos y Proveedores
+    Route::get('/admin/insumos/export', [\App\Http\Controllers\InsumoController::class, 'exportCSV'])->name('admin.insumos.export');
     Route::post('/admin/proveedores/{id}/entradas', [\App\Http\Controllers\ProveedorController::class, 'storeEntrada'])->name('admin.proveedores.entradas.store');
     Route::get('/admin/proveedores/{id}/historial', [\App\Http\Controllers\ProveedorController::class, 'historial'])->name('admin.proveedores.historial');
     Route::get('/admin/proveedores/entradas-dashboard', [\App\Http\Controllers\ProveedorController::class, 'entradasDashboard'])->name('admin.proveedores.entradas_dashboard');
     Route::get('/admin/proveedores/entradas-dashboard/exportar', [\App\Http\Controllers\ProveedorController::class, 'exportarEntradas'])->name('admin.proveedores.exportar_entradas');
     Route::resource('/admin/proveedores', \App\Http\Controllers\ProveedorController::class, ['as' => 'admin']);
     Route::resource('/admin/insumos', \App\Http\Controllers\InsumoController::class, ['as' => 'admin']);
+    
+    // Cosechas y Cultivos
+    Route::get('/admin/cosechas/export', [\App\Http\Controllers\Admin\CosechaController::class, 'exportCSV'])->name('admin.cosechas.export');
+    Route::resource('/admin/cosechas', \App\Http\Controllers\Admin\CosechaController::class, ['as' => 'admin']);
+
+    Route::get('/admin/cultivos/export', [\App\Http\Controllers\Admin\CultivoController::class, 'exportCSV'])->name('admin.cultivos.export');
     Route::get('/admin/cultivos/cosecha/{id}', [\App\Http\Controllers\Admin\CultivoController::class, 'cosechaDetail'])->name('admin.cultivos.cosechaDetail');
     Route::post('/admin/cultivos/finalize/{id}', [\App\Http\Controllers\Admin\CultivoController::class, 'finalize'])->name('admin.cultivos.finalize');
     Route::resource('/admin/cultivos', \App\Http\Controllers\Admin\CultivoController::class, ['as' => 'admin']);
 
-    // Tipo Insumo (Configuración de Catálogo)
-    Route::get('/tipo_insumos/catalog', [\App\Http\Controllers\TipoInsumoController::class, 'catalog'])->name('tipo_insumos.catalog');
-    Route::resource('/admin/tipo_insumos', \App\Http\Controllers\TipoInsumoController::class, ['as' => 'admin'])->parameters([
-        'tipo_insumos' => 'tipo_insumo'
-    ]);
+    // Tipo Insumo
+    Route::resource('tipo_insumos', \App\Http\Controllers\TipoInsumoController::class);
 
     Route::resource('tipo_cosechas', TipoCosechaController::class)->except(['index', 'show', 'create', 'store', 'edit', 'update', 'destroy']);
 
@@ -169,6 +170,7 @@ Route::middleware(['auth:usuario', 'check.license'])->group(function () {
 
     Route::resource('estados', \App\Http\Controllers\EstadoController::class);
 
+    Route::get('admin/terrenos/export', [\App\Http\Controllers\TerrenoController::class, 'exportCSV'])->name('admin.terrenos.export');
     Route::resource('admin/terrenos', \App\Http\Controllers\TerrenoController::class, ['as' => 'admin']);
 });
 

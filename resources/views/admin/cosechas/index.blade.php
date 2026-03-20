@@ -127,24 +127,56 @@
                         producción.</p>
                 </div>
 
-                <!-- Filtros dinámicos por fase -->
-                <div class="flex flex-wrap gap-2">
-                    <a href="{{ route('admin.cosechas.index') }}"
-                        class="px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest transition-all {{ !request('fase') ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-200 scale-105' : 'bg-white text-emerald-600 border border-emerald-100 hover:bg-emerald-50' }}">
-                        Todos
-                    </a>
-                    @foreach(['Siembra', 'Vegetativo', 'Floración', 'Llenado', 'Cosecha'] as $fase)
-                        <a href="{{ route('admin.cosechas.index', ['fase' => $fase]) }}"
-                            class="px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest transition-all flex items-center gap-2 {{ request('fase') == $fase ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-200 scale-105' : 'bg-white text-emerald-600 border border-emerald-100 hover:bg-emerald-50' }}">
-                            <span class="w-1.5 h-1.5 rounded-full {{ 
-                                $fase == 'Siembra' ? 'bg-blue-400' : (
-                                $fase == 'Vegetativo' ? 'bg-emerald-400' : (
-                                $fase == 'Floración' ? 'bg-rose-400' : (
-                                $fase == 'Llenado' ? 'bg-amber-400' : 'bg-orange-400'))) 
-                            }}"></span>
-                            {{ $fase }}
+                <div class="flex flex-col items-end gap-3">
+                    <div class="flex flex-wrap justify-end gap-2">
+                        <a href="{{ route('admin.cosechas.index') }}"
+                            class="px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest transition-all {{ !request('fase') ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-200 scale-105' : 'bg-white text-emerald-600 border border-emerald-100 hover:bg-emerald-50' }}">
+                            Todos
                         </a>
-                    @endforeach
+                        @foreach(['Siembra', 'Vegetativo', 'Floración', 'Llenado', 'Cosecha'] as $fase)
+                            <a href="{{ route('admin.cosechas.index', array_merge(request()->query(), ['fase' => $fase])) }}"
+                                class="px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest transition-all flex items-center gap-2 {{ request('fase') == $fase ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-200 scale-105' : 'bg-white text-emerald-600 border border-emerald-100 hover:bg-emerald-50' }}">
+                                <span class="w-1.5 h-1.5 rounded-full {{ 
+                                    $fase == 'Siembra' ? 'bg-blue-400' : (
+                                    $fase == 'Vegetativo' ? 'bg-emerald-400' : (
+                                    $fase == 'Floración' ? 'bg-rose-400' : (
+                                    $fase == 'Llenado' ? 'bg-amber-400' : 'bg-orange-400'))) 
+                                }}"></span>
+                                {{ $fase }}
+                            </a>
+                        @endforeach
+                    </div>
+
+                    <div class="flex flex-wrap items-center justify-end gap-3">
+                        <form action="{{ route('admin.cosechas.index') }}" method="GET" class="flex items-center gap-2 bg-white p-1 rounded-full border border-emerald-100 shadow-sm">
+                            @if(request('fase'))
+                                <input type="hidden" name="fase" value="{{ request('fase') }}">
+                            @endif
+                            <select name="month" class="bg-transparent border-0 text-[10px] font-bold text-emerald-700 focus:ring-0 cursor-pointer pl-4 pr-8">
+                                <option value="">Mes...</option>
+                                @php
+                                    $meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+                                @endphp
+                                @foreach($meses as $index => $mes)
+                                    <option value="{{ $index + 1 }}" {{ request('month') == ($index + 1) ? 'selected' : '' }}>{{ $mes }}</option>
+                                @endforeach
+                            </select>
+                            <select name="year" class="bg-transparent border-0 text-[10px] font-bold text-emerald-700 focus:ring-0 cursor-pointer pr-8">
+                                <option value="">Año...</option>
+                                @for($y = date('Y'); $y >= 2024; $y--)
+                                    <option value="{{ $y }}" {{ request('year') == $y ? 'selected' : '' }}>{{ $y }}</option>
+                                @endfor
+                            </select>
+                            <button type="submit" class="p-1.5 bg-emerald-50 text-emerald-600 rounded-full hover:bg-emerald-100 transition-colors mr-1">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                            </button>
+                        </form>
+                        
+                        <a href="{{ route('admin.cosechas.export', request()->all()) }}" class="flex items-center gap-2 px-5 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg shadow-emerald-100 transition-all transform hover:-translate-y-0.5">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                            Exportar CSV
+                        </a>
+                    </div>
                 </div>
             </div>
 

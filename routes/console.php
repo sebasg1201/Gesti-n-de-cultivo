@@ -13,4 +13,4 @@ use Illuminate\Support\Facades\Schedule;
 // Registering commands implicitly works in recent Laravel versions if in App\Console\Commands
 
 Schedule::command('app:check-license-expiration')->daily();
-Schedule::command('app:generar-riegos')->daily();
+Schedule::command('app:generar-riegos')->everyFiveMinutes();

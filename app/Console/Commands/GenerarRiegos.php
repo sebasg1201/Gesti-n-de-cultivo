@@ -20,35 +20,32 @@ class GenerarRiegos extends Command
         $hoy = Carbon::today();
 
         // ====================================================
-        // PASO 1: Marcar como Perdida los riegos no hechos
-        // Un riego se considera "perdido" si su fecha_programada
-        // es de ayer o antes y sigue en estado Pendiente (1) o En Proceso (17)
-        // ====================================================
-        $riegosPerdidos = Riego::whereIn('id_estado', [1, 17]) // Pendiente o En Proceso
-            ->whereDate('fecha_programada', '<', $hoy)         // Anteriores a hoy
+        // 1. Riegos
+        $riegosPerdidos = DB::table('riego')->whereIn('id_estado', [1, 17])
+            ->whereDate('fecha_programada', '<', $hoy)
             ->get();
 
         foreach ($riegosPerdidos as $riego) {
-            // Marcar como Perdida (16)
-            DB::table('riego')
-                ->where('id_riego', $riego->id_riego)
-                ->update(['id_estado' => 16]);
-
-            // Aumentar 2 días a la fecha estimada de la cosecha
+            DB::table('riego')->where('id_riego', $riego->id_riego)->update(['id_estado' => 16]);
             $cosecha = Cosecha::find($riego->id_cosecha);
             if ($cosecha && $cosecha->fecha_estimada) {
                 $nuevaFecha = Carbon::parse($cosecha->fecha_estimada)->addDays(2);
-                DB::table('cosechas')
-                    ->where('id_cosecha', $cosecha->id_cosecha)
-                    ->update(['fecha_estimada' => $nuevaFecha->format('Y-m-d')]);
-
-                Log::info("Riego #{$riego->id_riego} marcado como Perdida. Cosecha #{$cosecha->id_cosecha} extendida 2 días → {$nuevaFecha->format('Y-m-d')}");
-            } else {
-                Log::info("Riego #{$riego->id_riego} marcado como Perdida (cosecha sin fecha estimada).");
+                DB::table('cosecha')->where('id_cosecha', $cosecha->id_cosecha)->update(['fecha_estimada' => $nuevaFecha->format('Y-m-d')]);
+                Log::info("Riego #{$riego->id_riego} marcado como Perdida. Cosecha #{$cosecha->id_cosecha} extendida 2 días.");
             }
         }
 
-        $this->info("Riegos perdidos procesados: {$riegosPerdidos->count()}");
+        // 2. Fases Programadas
+        $fasesPerdidas = DB::table('fases_programadas')->whereIn('id_estado', [1, 17])
+            ->whereDate('fecha_programada', '<', $hoy)
+            ->update(['id_estado' => 16]);
+
+        // 3. Insumos
+        $insumosPerdidos = DB::table('insumo_cosecha')->whereIn('id_estado', [1, 17])
+            ->whereDate('fecha_programada', '<', $hoy)
+            ->update(['id_estado' => 16]);
+
+        $this->info("Riegos perdidos: " . count($riegosPerdidos) . ", Fases perdidas: $fasesPerdidas, Insumos perdidos: $insumosPerdidos");
 
         // ====================================================
         // PASO 2: Generar nuevas tareas de riego para hoy
@@ -64,15 +61,36 @@ class GenerarRiegos extends Command
             $fechaSiembra = Carbon::parse($cosecha->fecha_siembra)->startOfDay();
             $diasTranscurridos = $fechaSiembra->diffInDays($hoy, false);
 
-            // El día 0 ya se crea al registrar la siembra
             if ($diasTranscurridos <= 0) {
                 continue;
             }
 
-            // ¿Toca riego hoy según la frecuencia?
-            if ($cosecha->frecuencia_riego_dias > 0 && ($diasTranscurridos % $cosecha->frecuencia_riego_dias) == 0) {
-                $this->info("Generando riego para cosecha #{$cosecha->id_cosecha}");
-                $this->generarRiegoParaCosecha($cosecha, $hoy);
+            // En lugar de chequear solo el mod de hoy, encontramos el último riego registrado
+            $ultimoRiego = Riego::where('id_cosecha', $cosecha->id_cosecha)
+                ->orderBy('fecha_programada', 'desc')
+                ->first();
+
+            if ($ultimoRiego) {
+                $fechaUltimoRiego = Carbon::parse($ultimoRiego->fecha_programada)->startOfDay();
+                
+                // Si la frecuencia es mayor a 0, calculamos los días faltantes
+                $frecuencia = $cosecha->frecuencia_riego_dias;
+                if ($frecuencia > 0) {
+                    $fechaIteracion = $fechaUltimoRiego->copy()->addDays($frecuencia);
+                    
+                    // Genera todos los riegos faltantes desde el último hasta hoy
+                    while ($fechaIteracion <= $hoy) {
+                        $this->info("Generando riego recuperado/programado para cosecha #{$cosecha->id_cosecha} del día {$fechaIteracion->format('Y-m-d')}");
+                        $this->generarRiegoParaCosecha($cosecha, $fechaIteracion);
+                        $fechaIteracion->addDays($frecuencia);
+                    }
+                }
+            } else {
+                // Failsafe por si no hay un último riego (solo debería pasar si se borró de la BD manualmente)
+                if ($cosecha->frecuencia_riego_dias > 0 && ($diasTranscurridos % $cosecha->frecuencia_riego_dias) == 0) {
+                    $this->info("Generando riego para cosecha #{$cosecha->id_cosecha}");
+                    $this->generarRiegoParaCosecha($cosecha, $hoy);
+                }
             }
         }
 

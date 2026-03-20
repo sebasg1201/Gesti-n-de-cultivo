@@ -17,18 +17,14 @@ class TipoInsumoController extends Controller
     public function index()
     {
         $id_empresa = $this->getEmpresaId();
-        $tipoInsumos = TipoInsumo::with('catalogo')
-            ->where('id_empresa', $id_empresa)
+        // Show types belonging to this company OR those that are global (id_empresa NULL)
+        $tipoInsumos = TipoInsumo::where(function($query) use ($id_empresa) {
+                $query->where('id_empresa', $id_empresa)
+                      ->orWhereNull('id_empresa');
+            })
             ->paginate(10);
 
         return view('admin.tipo_insumos.index', compact('tipoInsumos'));
-    }
-
-    public function catalog(Request $request)
-    {
-        $search = $request->get('q');
-        $items = CatalogoInsumo::where('nombre', 'LIKE', "%{$search}%")->get();
-        return response()->json($items);
     }
 
     public function store(Request $request)
@@ -36,45 +32,33 @@ class TipoInsumoController extends Controller
         $idEmpresa = $this->getEmpresaId();
 
         $request->validate([
-            'id_catalogo' => 'nullable|exists:catalogo_insumos,id',
-            'nombre_insumo' => 'required|string|max:100',
-            'descripcion' => 'nullable|string|max:250',
+            'nombre' => 'required|string|max:50',
         ]);
 
-        if ($request->filled('id_catalogo')) {
-            $exists = TipoInsumo::where('id_empresa', $idEmpresa)
-                ->where('id_catalogo', $request->id_catalogo)
-                ->exists();
+        $exists = TipoInsumo::where('nombre', $request->nombre)
+            ->where(function($query) use ($idEmpresa) {
+                $query->where('id_empresa', $idEmpresa)
+                      ->orWhereNull('id_empresa');
+            })
+            ->exists();
 
-            if ($exists) {
-                return redirect()->back()->with('error', 'Este tipo de insumo ya está registrado en su catálogo.');
-            }
-        } else {
-            $exists = TipoInsumo::where('id_empresa', $idEmpresa)
-                ->where('nombre_insumo', $request->nombre_insumo)
-                ->exists();
-
-            if ($exists) {
-                return redirect()->back()->with('error', 'Ya exite un insumo personalizado registrado con este nombre.');
-            }
+        if ($exists) {
+            return redirect()->back()->with('error', 'Este tipo de insumo ya existe.');
         }
 
         TipoInsumo::create([
             'id_empresa' => $idEmpresa,
-            'id_catalogo' => $request->id_catalogo ?: null,
-            'nombre_insumo' => $request->nombre_insumo,
-            'descripcion' => $request->descripcion,
+            'nombre' => $request->nombre,
         ]);
 
-        return redirect()->route('admin.tipo_insumos.index')
-            ->with('success', 'Tipo de insumo configurado y habilitado correctamente.');
+        return redirect()->route('tipo_insumos.index')
+            ->with('success', 'Tipo de insumo creado correctamente.');
     }
 
     public function update(Request $request, $id)
     {
         $request->validate([
-            'nombre_insumo' => 'required|string|max:100',
-            'descripcion' => 'required|string|max:250',
+            'nombre' => 'required|string|max:50',
         ]);
 
         $tipoInsumo = TipoInsumo::where('id_tipo_insumo', $id)
@@ -82,12 +66,11 @@ class TipoInsumoController extends Controller
             ->firstOrFail();
 
         $tipoInsumo->update([
-            'nombre_insumo' => $request->nombre_insumo,
-            'descripcion' => $request->descripcion,
+            'nombre' => $request->nombre,
         ]);
 
         return redirect()->route('tipo_insumos.index')
-            ->with('success', 'Información del tipo de insumo actualizada.');
+            ->with('success', 'Tipo de insumo actualizado.');
     }
 
     public function destroy($id)
@@ -96,15 +79,15 @@ class TipoInsumoController extends Controller
             ->where('id_empresa', $this->getEmpresaId())
             ->firstOrFail();
 
-        // Optional: Check if the type is being used by any supply before deleting to prevent integrity issues.
-        if ($tipoInsumo->insumos()->count() > 0) {
+        // Check if there are catalog items using this type
+        if ($tipoInsumo->catalogos()->count() > 0) {
             return redirect()->route('tipo_insumos.index')
-                ->with('error', 'No se puede eliminar el tipo de insumo porque actualmente está asignado a uno o más insumos registrados.');
+                ->with('error', 'No se puede eliminar porque tiene insumos en el catálogo asociados.');
         }
 
         $tipoInsumo->delete();
 
         return redirect()->route('tipo_insumos.index')
-            ->with('success', 'Tipo de insumo eliminado de su catálogo correctamente.');
+            ->with('success', 'Tipo de insumo eliminado correctamente.');
     }
 }

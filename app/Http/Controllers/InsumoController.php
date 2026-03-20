@@ -15,17 +15,77 @@ class InsumoController extends Controller
         return Auth::guard('usuario')->user()->id_empresa;
     }
 
-    public function index()
+    public function index(Request $request)
     {
         $id_empresa = $this->getEmpresaId();
+        $month = $request->get('month');
+        $year = $request->get('year');
 
-        $insumos = Insumo::with(['catalogo.tipoInsumo'])
-            ->where('id_empresa', $id_empresa)
-            ->paginate(10);
+        $query = Insumo::with(['catalogo.tipoInsumo'])
+            ->where('id_empresa', $id_empresa);
 
+        if ($month) {
+            $query->whereMonth('created_at', $month);
+        }
+        if ($year) {
+            $query->whereYear('created_at', $year);
+        }
+
+        $insumos = $query->orderBy('created_at', 'desc')->paginate(10);
         $tiposInsumo = \App\Models\TipoInsumo::all();
 
         return view('admin.insumos.index', compact('insumos', 'tiposInsumo'));
+    }
+
+    public function exportCSV(Request $request)
+    {
+        $id_empresa = $this->getEmpresaId();
+        $month = $request->get('month');
+        $year = $request->get('year');
+
+        $query = Insumo::with(['catalogo.tipoInsumo'])
+            ->where('id_empresa', $id_empresa);
+
+        if ($month) {
+            $query->whereMonth('created_at', $month);
+        }
+        if ($year) {
+            $query->whereYear('created_at', $year);
+        }
+
+        $insumos = $query->get();
+
+        $filename = "reporte_insumos_" . date('Y-m-d_H-i-s') . ".csv";
+        $headers = [
+            "Content-type"        => "text/csv; charset=UTF-8",
+            "Content-Disposition" => "attachment; filename=$filename",
+            "Pragma"              => "no-cache",
+            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"             => "0"
+        ];
+
+        $columns = ['ID', 'Nombre', 'Categoria', 'Stock Actual', 'Impacto Dias', 'F. Registro'];
+
+        $callback = function() use($insumos, $columns) {
+            $file = fopen('php://output', 'w');
+            fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF)); // BOM for UTF-8
+            fputcsv($file, $columns, ';');
+
+            foreach ($insumos as $insumo) {
+                fputcsv($file, [
+                    $insumo->ID_insumo,
+                    $insumo->Nombre,
+                    $insumo->catalogo->tipoInsumo->nombre ?? 'N/A',
+                    $insumo->stock_actual,
+                    $insumo->impacto_dias,
+                    $insumo->created_at ? $insumo->created_at->format('Y-m-d') : 'N/A'
+                ], ';');
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 
     public function catalog(Request $request)
