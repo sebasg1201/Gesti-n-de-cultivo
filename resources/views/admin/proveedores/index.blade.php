@@ -308,49 +308,47 @@
             </div>
             <form id="formEntrada" method="POST" action="" class="p-8 space-y-6">
                 @csrf
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-bold text-emerald-700 uppercase tracking-wider mb-2">Tipo de
-                            Item</label>
-                        <select name="tipo_item" id="tipoSelectItem" onchange="toggleItemSelect()" required
-                            class="w-full px-4 py-3 rounded-2xl border-emerald-100 focus:border-emerald-500 focus:ring-emerald-500 bg-emerald-50/30 text-sm">
-                            <option value="insumo">Insumo General</option>
-                            <option value="semilla">Semilla / Variedad</option>
-                        </select>
+                <div class="relative">
+                    <label class="block text-xs font-bold text-emerald-700 uppercase tracking-wider mb-2">Buscar Producto en Inventario</label>
+                    <div class="relative group">
+                        <input type="text" id="itemSearchInput" autocomplete="off" 
+                            placeholder="Escriba para buscar (Semilla o Insumo)..."
+                            class="w-full pl-12 pr-4 py-4 rounded-2xl border-2 border-emerald-50 focus:border-emerald-500 focus:ring-0 bg-emerald-50/30 text-sm transition-all text-emerald-950 font-medium"
+                            oninput="debounceSearch(this.value)">
+                        <div class="absolute left-4 top-1/2 -translate-y-1/2 text-emerald-400">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </div>
                     </div>
-                    <div>
-                        <label class="block text-xs font-bold text-emerald-700 uppercase tracking-wider mb-2">Producto de
-                            Inventario</label>
-                        <div id="containerInsumo" class="flex gap-2">
-                            <select name="id_item_insumo" id="selectInsumo"
-                                class="w-full px-4 py-3 rounded-2xl border-emerald-100 focus:border-emerald-500 focus:ring-emerald-500 bg-emerald-50/30 text-sm">
-                                <option value="">-- Seleccionar --</option>
-                                @foreach($insumosParaEntrada as $ins)
-                                    <option value="{{ $ins->ID_insumo }}">{{ $ins->Nombre }}</option>
-                                @endforeach
-                            </select>
-                            <a href="{{ route('insumos.index') }}" title="Ir a crear nuevo Insumo" class="bg-emerald-100 hover:bg-emerald-200 text-emerald-700 flex items-center justify-center p-3 rounded-2xl transition-colors shrink-0">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                                </svg>
-                            </a>
+
+                    <!-- Search Results Dropdown -->
+                    <div id="searchResults" class="hidden absolute left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl border border-emerald-100 z-[110] max-h-60 overflow-y-auto overflow-x-hidden">
+                        <!-- Results will be injected here -->
+                    </div>
+
+                    <!-- Hidden Inputs for Form Submission -->
+                    <input type="hidden" name="id_item" id="hiddenIdItem">
+                    <input type="hidden" name="tipo_item" id="hiddenTipoItem">
+                </div>
+
+                <!-- Selected Item Feedback -->
+                <div id="selectedItemFeedback" class="hidden animate-in fade-in slide-in-from-top-2 duration-300">
+                    <div class="bg-emerald-50 border border-emerald-100 p-4 rounded-2xl flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div id="feedbackIcon" class="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm">
+                                <!-- Type specific icon -->
+                            </div>
+                            <div>
+                                <p id="feedbackName" class="text-xs font-black text-emerald-900 leading-none mb-1">Nombre del Item</p>
+                                <p id="feedbackType" class="text-[9px] font-bold text-emerald-500 uppercase tracking-widest">Tipo</p>
+                            </div>
                         </div>
-                        <div id="containerSemilla" class="hidden flex gap-2">
-                            <select name="id_item_semilla" id="selectSemilla"
-                                class="w-full px-4 py-3 rounded-2xl border-emerald-100 focus:border-emerald-500 focus:ring-emerald-500 bg-emerald-50/30 text-sm">
-                                <option value="">-- Seleccionar --</option>
-                                @foreach($semillasParaEntrada as $sem)
-                                    <option value="{{ $sem->id_semilla }}">{{ $sem->nombre_semilla }}</option>
-                                @endforeach
-                            </select>
-                            <a href="{{ route('tipo_semillas.index') }}" title="Ir a crear nueva Semilla" class="bg-emerald-100 hover:bg-emerald-200 text-emerald-700 flex items-center justify-center p-3 rounded-2xl transition-colors shrink-0">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                                </svg>
-                            </a>
-                        </div>
-                        <!-- Hidden input to unify both selects in controller -->
-                        <input type="hidden" name="id_item" id="hiddenIdItem">
+                        <button type="button" onclick="clearSelection()" class="p-2 text-emerald-400 hover:text-red-500 transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
                     </div>
                 </div>
 
@@ -361,8 +359,8 @@
                         <div class="relative">
                             <input type="number" name="cantidad_recibida" step="0.01" required placeholder="0.00"
                                 class="w-full pl-4 pr-12 py-3 rounded-2xl border-emerald-100 focus:border-emerald-500 focus:ring-emerald-500 bg-emerald-50/30 text-sm">
-                            <span
-                                class="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-bold text-emerald-400">UNID</span>
+                             <span id="unitLabel"
+                                 class="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-bold text-emerald-400">UNID</span>
                         </div>
                     </div>
                     <div>
@@ -406,28 +404,118 @@
                 document.getElementById(id).classList.add('hidden');
             }
 
-            function toggleItemSelect() {
-                const type = document.getElementById('tipoSelectItem').value;
-                const groupVencimiento = document.getElementById('vencimientoGroup');
+            let searchTimeout = null;
 
-                if (type === 'insumo') {
-                    document.getElementById('containerInsumo').classList.remove('hidden');
-                    document.getElementById('containerSemilla').classList.add('hidden');
-                    groupVencimiento.classList.remove('hidden');
+            function debounceSearch(query) {
+                clearTimeout(searchTimeout);
+                if (query.length < 2) {
+                    document.getElementById('searchResults').classList.add('hidden');
+                    return;
+                }
+                searchTimeout = setTimeout(() => performSearch(query), 300);
+            }
+
+            function performSearch(query) {
+                const resultsDiv = document.getElementById('searchResults');
+                resultsDiv.innerHTML = '<div class="p-4 text-center text-xs text-emerald-600 font-bold animate-pulse">Buscando...</div>';
+                resultsDiv.classList.remove('hidden');
+
+                fetch(`{{ route('admin.proveedores.buscar_items') }}?q=${encodeURIComponent(query)}`)
+                    .then(res => res.json())
+                    .then(items => {
+                        resultsDiv.innerHTML = '';
+                        if (items.length === 0) {
+                            resultsDiv.innerHTML = `
+                                <div class="p-6 text-center">
+                                    <p class="text-xs text-gray-400 italic mb-4">No se encontraron productos.</p>
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <a href="{{ route('insumos.index') }}" class="flex flex-col items-center p-3 rounded-xl bg-purple-50 hover:bg-purple-100 border border-purple-100 transition-all group">
+                                            <div class="w-8 h-8 bg-white rounded-lg flex items-center justify-center mb-2 shadow-sm text-purple-500">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
+                                            </div>
+                                            <span class="text-[10px] font-black text-purple-700 uppercase">Nuevo Insumo</span>
+                                        </a>
+                                        <a href="{{ route('tipo_semillas.index') }}" class="flex flex-col items-center p-3 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-100 transition-all group">
+                                            <div class="w-8 h-8 bg-white rounded-lg flex items-center justify-center mb-2 shadow-sm text-emerald-500">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                                            </div>
+                                            <span class="text-[10px] font-black text-emerald-700 uppercase">Nueva Semilla</span>
+                                        </a>
+                                    </div>
+                                </div>
+                            `;
+                            return;
+                        }
+
+                        items.forEach(item => {
+                            const btn = document.createElement('button');
+                            btn.type = 'button';
+                            btn.className = "w-full text-left p-4 hover:bg-emerald-50 border-b border-gray-50 last:border-0 transition-colors flex items-center justify-between group";
+                            const icon = item.tipo === 'semilla' 
+                                ? '<svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>'
+                                : '<svg class="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>';
+                            
+                            btn.innerHTML = `
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center group-hover:bg-white transition-colors">
+                                        ${icon}
+                                    </div>
+                                    <div>
+                                        <p class="text-xs font-bold text-gray-900">${item.nombre}</p>
+                                        <p class="text-[9px] text-gray-400 uppercase font-black">${item.tipo}</p>
+                                    </div>
+                                </div>
+                                <svg class="w-4 h-4 text-emerald-200 opacity-0 group-hover:opacity-100 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                                </svg>
+                            `;
+                            btn.onclick = () => selectItem(item);
+                            resultsDiv.appendChild(btn);
+                        });
+                    });
+            }
+
+            function selectItem(item) {
+                document.getElementById('hiddenIdItem').value = item.id;
+                document.getElementById('hiddenTipoItem').value = item.tipo;
+                document.getElementById('itemSearchInput').value = '';
+                document.getElementById('searchResults').classList.add('hidden');
+
+                // Feedback
+                document.getElementById('feedbackName').innerText = item.nombre;
+                document.getElementById('feedbackType').innerText = item.tipo;
+                document.getElementById('feedbackIcon').innerHTML = item.tipo === 'semilla' 
+                    ? '<svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>'
+                    : '<svg class="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>';
+                
+                document.getElementById('selectedItemFeedback').classList.remove('hidden');
+                document.querySelector('#itemSearchInput').closest('.relative').classList.add('hidden');
+
+                // Update Unit Label
+                document.getElementById('unitLabel').innerText = item.unidad || 'UNID';
+                
+                // Toggle Vencimiento
+                const vGroup = document.getElementById('vencimientoGroup');
+                if (item.tipo === 'insumo') {
+                    vGroup.classList.remove('hidden');
                 } else {
-                    document.getElementById('containerInsumo').classList.add('hidden');
-                    document.getElementById('containerSemilla').classList.remove('hidden');
-                    groupVencimiento.classList.add('hidden');
+                    vGroup.classList.add('hidden');
                 }
             }
 
-            // Capture the correct ID before submitting entry form
-            document.getElementById('formEntrada').addEventListener('submit', function (e) {
-                const type = document.getElementById('tipoSelectItem').value;
-                if (type === 'insumo') {
-                    document.getElementById('hiddenIdItem').value = document.getElementById('selectInsumo').value;
-                } else {
-                    document.getElementById('hiddenIdItem').value = document.getElementById('selectSemilla').value;
+            function clearSelection() {
+                document.getElementById('hiddenIdItem').value = '';
+                document.getElementById('hiddenTipoItem').value = '';
+                document.getElementById('selectedItemFeedback').classList.add('hidden');
+                document.querySelector('#itemSearchInput').closest('.relative').classList.remove('hidden');
+                document.getElementById('itemSearchInput').value = '';
+                document.getElementById('itemSearchInput').focus();
+            }
+
+            // Close results on click outside
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('#itemSearchInput') && !e.target.closest('#searchResults')) {
+                    document.getElementById('searchResults').classList.add('hidden');
                 }
             });
 

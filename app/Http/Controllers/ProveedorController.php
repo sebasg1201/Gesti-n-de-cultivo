@@ -32,12 +32,8 @@ class ProveedorController extends Controller
         }
 
         $proveedores = $query->orderBy('id_proveedor', 'desc')->paginate(10);
-
-        // Cargar insumos y semillas para el modal de entrada
-        $insumosParaEntrada = Insumo::where('id_empresa', $id_empresa)->get();
-        $semillasParaEntrada = TipoSemilla::where('id_empresa', $id_empresa)->get();
-
-        return view('admin.proveedores.index', compact('proveedores', 'insumosParaEntrada', 'semillasParaEntrada'));
+        
+        return view('admin.proveedores.index', compact('proveedores'));
     }
 
     public function store(Request $request)
@@ -58,6 +54,38 @@ class ProveedorController extends Controller
         ]);
 
         return redirect()->route('admin.proveedores.index')->with('success', 'Proveedor registrado exitosamente.');
+    }
+
+    public function buscarItems(Request $request)
+    {
+        $id_empresa = $this->getEmpresaId();
+        $search = $request->query('q', '');
+
+        $insumos = Insumo::where('id_empresa', $id_empresa)
+            ->where('Nombre', 'like', "%{$search}%")
+            ->get()
+            ->map(function($i) {
+                return [
+                    'id' => $i->ID_insumo,
+                    'nombre' => $i->Nombre,
+                    'tipo' => 'insumo',
+                    'unidad' => $i->Unidad_medida ?? 'UNID'
+                ];
+            });
+
+        $semillas = TipoSemilla::where('id_empresa', $id_empresa)
+            ->where('nombre_semilla', 'like', "%{$search}%")
+            ->get()
+            ->map(function($s) {
+                return [
+                    'id' => $s->id_semilla,
+                    'nombre' => $s->nombre_semilla,
+                    'tipo' => 'semilla',
+                    'unidad' => 'UNID'
+                ];
+            });
+
+        return response()->json($insumos->concat($semillas));
     }
 
     public function storeEntrada(Request $request, $id)

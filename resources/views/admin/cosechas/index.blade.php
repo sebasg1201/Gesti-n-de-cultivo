@@ -361,35 +361,68 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <!-- Terreno -->
-                    <div class="space-y-3">
-                        <label class="block text-xs font-black text-emerald-950 uppercase tracking-widest ml-4">Terreno
-                            Disponible</label>
-                        <select name="id_terreno" id="select-terreno" required
-                            class="w-full bg-emerald-50 border-2 border-emerald-50 rounded-2xl p-4 text-emerald-900 font-bold focus:border-emerald-500 transition-all">
-                            <option value="" disabled selected>Seleccione Terreno</option>
-                            @foreach($terrenos as $terreno)
-                                <option value="{{ $terreno->id_terreno }}"
-                                    data-impacto="{{ $terreno->tipoSuelo->impacto_dias ?? 0 }}">
-                                    {{ $terreno->nombre }} ({{ $terreno->Ancho * $terreno->Alto }} m²)
-                                </option>
-                            @endforeach
-                        </select>
+                    <div class="space-y-3 relative">
+                        <label class="block text-xs font-black text-emerald-950 uppercase tracking-widest ml-4">Terreno Disponible</label>
+                        <div id="terrenoSearchContainer" class="relative group">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                            </div>
+                            <input type="text" id="terrenoSearchInput" oninput="debounceTerrenoSearch(this.value)"
+                                placeholder="Buscar terreno..."
+                                class="w-full bg-emerald-50 border-2 border-emerald-50 rounded-2xl py-4 pl-10 pr-4 text-emerald-900 font-bold placeholder:text-emerald-200 focus:border-emerald-500 transition-all">
+                            
+                            <div id="terrenoResults" class="absolute z-[110] w-full mt-2 bg-white rounded-2xl shadow-2xl border border-emerald-50 hidden max-h-60 overflow-y-auto"></div>
+                        </div>
+
+                        <!-- Feedback for selected terrain -->
+                        <div id="selectedTerrenoFeedback" class="hidden p-4 bg-emerald-600 rounded-2xl flex items-center justify-between group shadow-lg shadow-emerald-100 animate-in slide-in-from-top-2">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center text-white">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /></svg>
+                                </div>
+                                <div>
+                                    <p id="feedbackTerrenoName" class="text-xs font-black text-white uppercase"></p>
+                                    <p id="feedbackTerrenoInfo" class="text-[9px] text-emerald-200 font-bold uppercase"></p>
+                                </div>
+                            </div>
+                            <button type="button" onclick="clearTerrenoSelection()" class="p-1 hover:bg-white/10 rounded-lg text-emerald-100 transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12" /></svg>
+                            </button>
+                        </div>
+                        <input type="hidden" name="id_terreno" id="hiddenIdTerreno" required>
                     </div>
 
-                    <!-- Semilla -->
-                    <div class="space-y-3">
-                        <label class="block text-xs font-black text-emerald-950 uppercase tracking-widest ml-4">Especie a
-                            Sembrar</label>
-                        <select name="id_semilla" id="select-semilla" required
-                            class="w-full bg-emerald-50 border-2 border-emerald-50 rounded-2xl p-4 text-emerald-900 font-bold focus:border-emerald-500 transition-all">
-                            <option value="" disabled selected>Seleccione Variedad</option>
-                            @foreach($semillas as $semilla)
-                                <option value="{{ $semilla->id_semilla }}" data-yield="{{ $semilla->rendimiento_promedio }}"
-                                    data-base-dias="{{ $semilla->tiempo_base_dias ?? 0 }}">
-                                    {{ $semilla->nombre_semilla }}
-                                </option>
-                            @endforeach
-                        </select>
+                    <!-- Semilla (Hidden initially) -->
+                    <div id="speciesSearchGroup" class="space-y-3 relative hidden animate-in fade-in slide-in-from-left-4 duration-500">
+                        <label class="block text-xs font-black text-emerald-950 uppercase tracking-widest ml-4">Especie a Sembrar</label>
+                        <div id="speciesSearchContainer" class="relative group">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                            </div>
+                            <input type="text" id="speciesSearchInput" oninput="debounceSpeciesSearch(this.value)"
+                                autocomplete="off"
+                                placeholder="Buscar variedad..."
+                                class="w-full bg-emerald-50 border-2 border-emerald-50 rounded-2xl py-4 pl-10 pr-4 text-emerald-900 font-bold placeholder:text-emerald-200 focus:border-emerald-500 transition-all">
+                            
+                            <div id="speciesResults" class="absolute z-[110] w-full mt-2 bg-white rounded-2xl shadow-2xl border border-emerald-50 hidden max-h-60 overflow-y-auto"></div>
+                        </div>
+
+                        <!-- Feedback for selected species -->
+                        <div id="selectedSpeciesFeedback" class="hidden p-4 bg-emerald-800 rounded-2xl flex items-center justify-between group shadow-lg shadow-emerald-100 animate-in slide-in-from-top-2">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center text-white">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                                </div>
+                                <div>
+                                    <p id="feedbackSpeciesName" class="text-xs font-black text-white uppercase"></p>
+                                    <p id="feedbackSpeciesInfo" class="text-[9px] text-emerald-200 font-bold uppercase"></p>
+                                </div>
+                            </div>
+                            <button type="button" onclick="clearSpeciesSelection()" class="p-1 hover:bg-white/10 rounded-lg text-emerald-100 transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12" /></svg>
+                            </button>
+                        </div>
+                        <input type="hidden" name="id_semilla" id="hiddenIdSemilla" required>
                     </div>
 
                     <!-- Riego -->
@@ -515,9 +548,187 @@
 
     @push('scripts')
         <script>
+            let terrenoSearchTimeout = null;
+            let speciesSearchTimeout = null;
+            let selectedTerrenoData = null;
+            let selectedSpeciesData = null;
+
+            function debounceTerrenoSearch(query) {
+                clearTimeout(terrenoSearchTimeout);
+                if (query.trim().length === 0) {
+                    document.getElementById('terrenoResults').classList.add('hidden');
+                    return;
+                }
+                terrenoSearchTimeout = setTimeout(() => performTerrenoSearch(query), 300);
+            }
+
+            function performTerrenoSearch(query) {
+                const resultsDiv = document.getElementById('terrenoResults');
+                resultsDiv.innerHTML = '<div class="p-4 text-center text-xs text-emerald-600 font-bold animate-pulse">Buscando terrenos...</div>';
+                resultsDiv.classList.remove('hidden');
+
+                fetch(`{{ route('admin.cosechas.buscar_terrenos') }}?q=${encodeURIComponent(query)}`)
+                    .then(res => res.json())
+                    .then(items => {
+                        resultsDiv.innerHTML = '';
+                        if (items.length === 0) {
+                            resultsDiv.innerHTML = `
+                                <div class="p-6 text-center">
+                                    <p class="text-xs text-gray-400 italic mb-4">No se encontró el terreno (puede estar ocupado).</p>
+                                    <a href="{{ route('admin.terrenos.index') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-700 rounded-xl text-[10px] font-black uppercase hover:bg-emerald-100 transition-all">
+                                        Gestión de Terrenos
+                                    </a>
+                                </div>
+                            `;
+                            return;
+                        }
+
+                        items.forEach(item => {
+                            const btn = document.createElement('button');
+                            btn.type = 'button';
+                            btn.className = "w-full text-left p-4 hover:bg-emerald-50 border-b border-gray-50 last:border-0 transition-colors flex items-center justify-between group";
+                            btn.innerHTML = `
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center group-hover:bg-white transition-colors">
+                                        <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /></svg>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs font-bold text-gray-900">${item.nombre}</p>
+                                        <p class="text-[9px] text-gray-400 uppercase font-black">${item.suelo} • ${item.area} m²</p>
+                                    </div>
+                                </div>
+                            `;
+                            btn.onclick = () => selectTerreno(item);
+                            resultsDiv.appendChild(btn);
+                        });
+                    });
+            }
+
+            function selectTerreno(item) {
+                selectedTerrenoData = item;
+                document.getElementById('hiddenIdTerreno').value = item.id;
+                document.getElementById('feedbackTerrenoName').innerText = item.nombre;
+                document.getElementById('feedbackTerrenoInfo').innerText = `${item.suelo} • ${item.area} m²`;
+                
+                document.getElementById('terrenoSearchContainer').classList.add('hidden');
+                document.getElementById('selectedTerrenoFeedback').classList.remove('hidden');
+                document.getElementById('terrenoResults').classList.add('hidden');
+
+                // Show species search
+                document.getElementById('speciesSearchGroup').classList.remove('hidden');
+                
+                updatePreview();
+            }
+
+            function clearTerrenoSelection() {
+                selectedTerrenoData = null;
+                document.getElementById('hiddenIdTerreno').value = '';
+                document.getElementById('terrenoSearchContainer').classList.remove('hidden');
+                document.getElementById('selectedTerrenoFeedback').classList.add('hidden');
+                document.getElementById('terrenoSearchInput').value = '';
+                
+                // Hide species search and reset it
+                document.getElementById('speciesSearchGroup').classList.add('hidden');
+                clearSpeciesSelection();
+                
+                updatePreview();
+            }
+
+            function debounceSpeciesSearch(query) {
+                clearTimeout(speciesSearchTimeout);
+                if (query.trim().length === 0) {
+                    document.getElementById('speciesResults').classList.add('hidden');
+                    return;
+                }
+                speciesSearchTimeout = setTimeout(() => performSpeciesSearch(query), 300);
+            }
+
+            function performSpeciesSearch(query) {
+                const resultsDiv = document.getElementById('speciesResults');
+                resultsDiv.innerHTML = '<div class="p-4 text-center text-xs text-emerald-600 font-bold animate-pulse">Buscando especies...</div>';
+                resultsDiv.classList.remove('hidden');
+
+                fetch(`{{ route('admin.cosechas.buscar_especies') }}?q=${encodeURIComponent(query)}`)
+                    .then(res => res.json())
+                    .then(items => {
+                        resultsDiv.innerHTML = '';
+                        if (items.length === 0) {
+                            resultsDiv.innerHTML = `
+                                <div class="p-6 text-center">
+                                    <p class="text-xs text-gray-400 italic mb-4">No se encontró la variedad.</p>
+                                    <a href="{{ route('tipo_semillas.index') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-700 rounded-xl text-[10px] font-black uppercase hover:bg-emerald-100 transition-all">
+                                        Configurar Nueva Semilla
+                                    </a>
+                                </div>
+                            `;
+                            return;
+                        }
+
+                        items.forEach(item => {
+                            const hasStock = parseFloat(item.stock) > 0;
+                            const itemDiv = document.createElement('div');
+                            itemDiv.className = "w-full border-b border-gray-50 last:border-0 flex items-center justify-between group";
+
+                            const btn = document.createElement('button');
+                            btn.type = 'button';
+                            btn.disabled = !hasStock;
+                            btn.className = `flex-1 text-left p-4 transition-colors flex items-center gap-3 ${hasStock ? 'hover:bg-emerald-50' : 'opacity-60 cursor-not-allowed bg-gray-50'}`;
+                            btn.innerHTML = `
+                                <div class="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center group-hover:bg-white transition-colors">
+                                    <svg class="w-4 h-4 ${hasStock ? 'text-emerald-600' : 'text-gray-400'}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-bold text-gray-900">${item.nombre}</p>
+                                    <p class="text-[9px] uppercase font-black ${hasStock ? 'text-gray-400' : 'text-red-500'}">
+                                        ${hasStock ? `Stock: ${item.stock} • Ciclo: ${item.base_dias} días` : 'SIN STOCK (0 DISPONIBLE)'}
+                                    </p>
+                                </div>
+                            `;
+                            if (hasStock) btn.onclick = () => selectSpecies(item);
+                            
+                            itemDiv.appendChild(btn);
+
+                            if (!hasStock) {
+                                const buyLink = document.createElement('a');
+                                buyLink.href = "{{ route('admin.proveedores.index') }}";
+                                buyLink.className = "mr-4 p-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors flex items-center gap-1 group/buy";
+                                buyLink.title = "Comprar a Proveedor";
+                                buyLink.innerHTML = `
+                                    <span class="text-[8px] font-black uppercase hidden lg:inline">Comprar</span>
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                                `;
+                                itemDiv.appendChild(buyLink);
+                            }
+
+                            resultsDiv.appendChild(itemDiv);
+                        });
+                    });
+            }
+
+            function selectSpecies(item) {
+                selectedSpeciesData = item;
+                document.getElementById('hiddenIdSemilla').value = item.id;
+                document.getElementById('feedbackSpeciesName').innerText = item.nombre;
+                document.getElementById('feedbackSpeciesInfo').innerText = `Stock: ${item.stock} • Ciclo: ${item.base_dias} días`;
+                
+                document.getElementById('speciesSearchContainer').classList.add('hidden');
+                document.getElementById('selectedSpeciesFeedback').classList.remove('hidden');
+                document.getElementById('speciesResults').classList.add('hidden');
+
+                updatePreview();
+            }
+
+            function clearSpeciesSelection() {
+                selectedSpeciesData = null;
+                document.getElementById('hiddenIdSemilla').value = '';
+                document.getElementById('speciesSearchContainer').classList.remove('hidden');
+                document.getElementById('selectedSpeciesFeedback').classList.add('hidden');
+                document.getElementById('speciesSearchInput').value = '';
+                
+                updatePreview();
+            }
+
             document.addEventListener('DOMContentLoaded', function () {
-                const selectSemilla = document.getElementById('select-semilla');
-                const selectTerreno = document.getElementById('select-terreno');
                 const selectRiego = document.getElementById('select-riego');
                 const inputCantidad = document.getElementById('input-cantidad');
                 const inputFecha = document.getElementById('input-fecha');
@@ -527,11 +738,9 @@
                 const fechaEstimadaPreview = document.getElementById('fecha-estimada-preview');
 
                 function updatePreview() {
-                    const optionSemilla = selectSemilla.options[selectSemilla.selectedIndex];
-                    const optionTerreno = selectTerreno ? selectTerreno.options[selectTerreno.selectedIndex] : null;
                     const optionRiego = selectRiego ? selectRiego.options[selectRiego.selectedIndex] : null;
 
-                    const yieldValue = optionSemilla && !optionSemilla.disabled ? parseFloat(optionSemilla.getAttribute('data-yield')) : 0;
+                    const yieldValue = selectedSpeciesData ? parseFloat(selectedSpeciesData.yield) : 0;
                     const cantidad = parseFloat(inputCantidad.value) || 0;
 
                     let showPreview = false;
@@ -549,9 +758,9 @@
                     }
 
                     // Update Date
-                    if (optionSemilla && optionTerreno && optionRiego && inputFecha.value && !optionSemilla.disabled && !optionTerreno.disabled && !optionRiego.disabled) {
-                        const baseDias = parseInt(optionSemilla.getAttribute('data-base-dias') || 0);
-                        const impactoSuelo = parseInt(optionTerreno.getAttribute('data-impacto') || 0);
+                    if (selectedSpeciesData && selectedTerrenoData && optionRiego && inputFecha.value && !optionRiego.disabled) {
+                        const baseDias = parseInt(selectedSpeciesData.base_dias || 0);
+                        const impactoSuelo = parseInt(selectedTerrenoData.impacto || 0);
                         const impactoRiego = parseInt(optionRiego.getAttribute('data-impacto') || 0);
 
                         const totalDias = baseDias + impactoSuelo + impactoRiego;
@@ -575,11 +784,11 @@
                     }
                 }
 
-                if (selectSemilla) selectSemilla.addEventListener('change', updatePreview);
-                if (selectTerreno) selectTerreno.addEventListener('change', updatePreview);
                 if (selectRiego) selectRiego.addEventListener('change', updatePreview);
                 if (inputCantidad) inputCantidad.addEventListener('input', updatePreview);
                 if (inputFecha) inputFecha.addEventListener('change', updatePreview);
+
+                window.updatePreview = updatePreview; // Expose to global for button clicks
 
                 const inputImagen = document.getElementById('input-imagen');
                 const fileNameDisplay = document.getElementById('file-name-display');
