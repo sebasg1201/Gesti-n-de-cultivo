@@ -153,16 +153,23 @@ class GenerarRiegos extends Command
 
         $fechaProgramadaHora = $fecha->copy()->setTimeFrom(Carbon::now());
 
+        $id_estado = $fecha->lt(Carbon::today()) ? 16 : 1;
+
         Riego::create([
             'cant_agua_apl'        => $cosecha->litros_por_riego,
             'id_tipo_riego'        => $ultimoRiego->id_tipo_riego,
             'id_cosecha'           => $cosecha->id_cosecha,
             'documento_trabajador' => $id_asignado,
-            'id_estado'            => 1, // Pendiente
+            'id_estado'            => $id_estado,
             'fecha_programada'     => $fechaProgramadaHora->format('Y-m-d H:i:s'),
             'observaciones'        => "Aplicar {$cosecha->litros_por_riego}L - Riego programado automáticamente.",
         ]);
 
-        Log::info("Riego creado para cosecha #{$cosecha->id_cosecha} → trabajador #{$id_asignado} para {$fechaProgramadaHora->format('Y-m-d')}");
+        if ($id_estado == 16 && $cosecha->fecha_estimada) {
+            $nuevaFecha = Carbon::parse($cosecha->fecha_estimada)->addDays(2);
+            $cosecha->update(['fecha_estimada' => $nuevaFecha->format('Y-m-d')]);
+        }
+
+        Log::info("Riego creado para cosecha #{$cosecha->id_cosecha} → trabajador #{$id_asignado} para {$fechaProgramadaHora->format('Y-m-d')} (Estado: {$id_estado})");
     }
 }
