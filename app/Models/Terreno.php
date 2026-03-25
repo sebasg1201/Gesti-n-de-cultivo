@@ -20,7 +20,7 @@ class Terreno extends Model
         'latitud',
         'longitud',
         'Ancho',
-        'Alto',
+        'Largo',
         'area_m2',
         'id_estado',
         'id_tipo_suelo',

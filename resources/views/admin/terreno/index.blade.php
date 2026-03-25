@@ -141,11 +141,11 @@
                                     </div>
                                     <div>
                                         <label
-                                            class="block text-xs font-bold text-emerald-700 uppercase tracking-wider mb-2">Alto
+                                            class="block text-xs font-bold text-emerald-700 uppercase tracking-wider mb-2">Largo
                                             (m)</label>
-                                        <input type="number" step="0.01" name="Alto" id="Alto" required min="1"
+                                        <input type="number" step="0.01" name="Largo" id="Largo" required min="1"
                                             class="w-full px-4 py-3 rounded-2xl border-emerald-100 focus:border-emerald-500 focus:ring-emerald-500 bg-emerald-50/30 text-sm transition-all"
-                                            value="{{ old('Alto') }}">
+                                            value="{{ old('Largo') }}">
                                     </div>
                                 </div>
 
@@ -341,11 +341,11 @@
                                                                 stroke-width="2"
                                                                 d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
                                                         </svg>
-                                                        {{ $terreno->Ancho }}m &times; {{ $terreno->Alto }}m
+                                                        {{ $terreno->Ancho }}m &times; {{ $terreno->Largo }}m
                                                     </span>
                                                     <span
                                                         class="text-[9px] font-bold text-emerald-700 bg-emerald-50 px-2 py-1 rounded-lg mt-0.5 inline-block border border-emerald-100">
-                                                        &approx; {{ number_format($terreno->Ancho * $terreno->Alto, 2) }}
+                                                        &approx; {{ number_format($terreno->area_m2 ?? ($terreno->Ancho * $terreno->Largo), 2) }}
                                                         m&sup2;
                                                     </span>
                                                 </div>
@@ -618,7 +618,7 @@
                                 const popupContent = `
                                         <div class="p-2">
                                             <h4 class="font-bold text-emerald-800 text-sm mb-1">${t.nombre}</h4>
-                                            <p class="text-[10px] text-gray-500 mb-2">${t.Ancho}m x ${t.Alto}m</p>
+                                            <p class="text-[10px] text-gray-500 mb-2">${t.Ancho}m x ${t.Largo}m</p>
                                             <button onclick='window.editFromMap(${JSON.stringify(t)})' 
                                                class="w-full bg-emerald-600 text-white text-[10px] py-1 px-2 rounded-lg hover:bg-emerald-700 transition-colors">
                                                Editar Terreno
@@ -683,7 +683,7 @@
 
                     function toggleReadOnly(isReadOnly) {
                         const inputs = [
-                            'nombre', 'ubicacion', 'Ancho', 'Alto', 'id_tipo_suelo', 'id_estado', 'latitud', 'longitud', 'departamento', 'ciudad', 'codigo_postal'
+                            'nombre', 'ubicacion', 'Ancho', 'Largo', 'id_tipo_suelo', 'id_estado', 'latitud', 'longitud', 'departamento', 'ciudad', 'codigo_postal'
                         ];
 
                         inputs.forEach(id => {
@@ -725,7 +725,7 @@
                         document.getElementById('nombre').value = terreno.nombre || '';
                         if (document.getElementById('ubicacion')) document.getElementById('ubicacion').value = terreno.ubicacion || '';
                         document.getElementById('Ancho').value = terreno.Ancho || '';
-                        document.getElementById('Alto').value = terreno.Alto || '';
+                        document.getElementById('Largo').value = terreno.Largo || terreno.Alto || '';
 
                         if (document.getElementById('departamento')) document.getElementById('departamento').value = terreno.departamento || '';
                         if (document.getElementById('ciudad')) document.getElementById('ciudad').value = terreno.ciudad || '';
