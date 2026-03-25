@@ -89,7 +89,7 @@
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
                 </div>
                 <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-orange-100 text-orange-800">
-                    Progreso hoy
+                    Progreso semanal
                 </span>
             </div>
             <div>
@@ -292,58 +292,91 @@
             <section class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 hidden xl:block">
                 <div class="flex justify-between items-center mb-5">
                     <h2 class="text-lg font-bold text-gray-900">Tareas de Hoy</h2>
-                    <a href="{{ route('admin.tareas.index') }}" class="text-xs font-bold text-green-600 hover:text-green-700 uppercase tracking-wider">+ Crear</a>
+                    <a href="{{ route('admin.tareas.index') }}" class="text-xs font-bold text-green-600 hover:text-green-700 uppercase tracking-wider">+ CREAR</a>
                 </div>
                 
-                <div class="space-y-4">
+                <div class="space-y-3">
                     @forelse($stats['lista_tareas_hoy'] as $tarea)
-                    <div class="flex items-start gap-3 group">
-                        <div class="mt-1 flex-shrink-0">
-                            @if($tarea->id_estado == 9)
-                                <div class="w-5 h-5 rounded flex items-center justify-center bg-green-500 text-white shadow-sm">
-                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                    <div class="flex items-center gap-4 p-3 rounded-xl border border-gray-50 hover:border-green-100 hover:bg-green-50/30 transition-all duration-300 group">
+                        <div class="flex-shrink-0">
+                            @if($tarea->id_estado == 15 || $tarea->id_estado == 9)
+                                <div class="w-8 h-8 rounded-full flex items-center justify-center bg-green-100 text-green-600">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
                                 </div>
-                            @elseif($tarea->id_estado == 8)
-                                <div class="w-5 h-5 rounded flex items-center justify-center bg-orange-500 text-white shadow-sm">
-                                    <svg class="w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            @elseif($tarea->id_estado == 17 || $tarea->id_estado == 8)
+                                <div class="w-8 h-8 rounded-full flex items-center justify-center bg-orange-100 text-orange-600 animate-pulse">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                                 </div>
                             @else
-                                <div class="w-5 h-5 rounded border-2 border-gray-300 bg-white group-hover:border-green-400 transition-colors"></div>
+                                <div class="w-8 h-8 rounded-full border-2 border-gray-200 bg-white group-hover:border-green-400 transition-colors flex items-center justify-center">
+                                    <div class="w-2 h-2 rounded-full bg-gray-200 group-hover:bg-green-400"></div>
+                                </div>
                             @endif
                         </div>
-                        <div>
-                            <p class="text-sm font-bold {{ $tarea->id_estado == 9 ? 'text-gray-400 line-through' : 'text-gray-900' }}">{{ $tarea->descripcion }}</p>
-                            <p class="text-xs text-gray-500 flex items-center gap-1 mt-0.5">
-                                @if($tarea->id_estado == 9)
-                                    Completado
-                                @else
-                                    Asignado a: {{ $tarea->usuario->nombre ?? 'Usuario' }}
-                                @endif
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-bold truncate {{ ($tarea->id_estado == 15 || $tarea->id_estado == 9) ? 'text-gray-400 line-through font-medium' : 'text-gray-800' }}">
+                                {{ $tarea->descripcion }}
                             </p>
+                            <div class="flex items-center gap-2 mt-0.5">
+                                <span class="text-[10px] text-gray-500 font-medium">{{ $tarea->usuario->nombre ?? 'Asignado' }}</span>
+                                <span class="w-1 h-1 rounded-full bg-gray-300"></span>
+                                <span class="px-1.5 py-0.5 rounded text-[9px] uppercase font-bold {{ $tarea->tipo_tarea == 'riego' ? 'bg-blue-100 text-blue-600' : ($tarea->tipo_tarea == 'insumo' ? 'bg-purple-100 text-purple-600' : 'bg-green-100 text-green-600') }}">
+                                    {{ $tarea->tipo_tarea }}
+                                </span>
+                            </div>
                         </div>
                     </div>
                     @empty
-                    <div class="text-center text-sm text-gray-500 py-4">
-                        No hay tareas programadas para hoy.
+                    <div class="text-center py-8">
+                        <div class="w-12 h-12 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <svg class="w-6 h-6 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
+                        </div>
+                        <p class="text-sm text-gray-500">No hay tareas programadas para hoy.</p>
                     </div>
                     @endforelse
                 </div>
+
+                @if(count($stats['lista_tareas_hoy']) > 0)
+                <div class="mt-6 pt-4 border-t border-gray-50">
+                    <a href="{{ route('admin.tareas.index') }}" class="flex items-center justify-center w-full py-2 px-4 bg-gray-50 text-gray-700 text-sm font-bold rounded-xl hover:bg-gray-100 transition-colors group">
+                        Gestionar Tareas
+                        <svg class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+                    </a>
+                </div>
+                @endif
             </section>
             
-            <!-- Estado del Terreno -->
-            <section class="bg-gradient-to-br from-[#1b4332] to-[#081c15] rounded-2xl shadow-md p-6 text-white relative overflow-hidden hidden xl:block">
+            <!-- Estado del Terreno (Clima Rotativo) -->
+            <section class="bg-gradient-to-br from-[#1b4332] to-[#081c15] rounded-2xl shadow-md p-6 text-white relative overflow-hidden hidden xl:block min-h-[160px] group/weather">
                 <!-- Decorative background elements -->
                 <div class="absolute -top-10 -right-10 w-32 h-32 bg-white opacity-5 rounded-full blur-2xl"></div>
                 <div class="absolute bottom-0 right-0 w-full h-1/2 bg-gradient-to-t from-black/20 to-transparent"></div>
                 
-                <h2 class="text-lg font-bold mb-4 relative z-10">Clima Real</h2>
+                <!-- Manual Controls (Hover only) -->
+                <div class="absolute inset-y-0 left-0 flex items-center z-20 opacity-0 group-hover/weather:opacity-100 transition-opacity duration-300 pl-2">
+                    <button onclick="prevTerrain()" class="text-white/70 hover:text-white transition-all transform hover:scale-125 border-none outline-none drop-shadow-md">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
+                    </button>
+                </div>
+                <div class="absolute inset-y-0 right-0 flex items-center z-20 opacity-0 group-hover/weather:opacity-100 transition-opacity duration-300 pr-2">
+                    <button onclick="nextTerrain()" class="text-white/70 hover:text-white transition-all transform hover:scale-125 border-none outline-none drop-shadow-md">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
+                    </button>
+                </div>
+
+                <div class="flex justify-between items-center mb-4 relative z-10">
+                    <h2 class="text-lg font-bold">Clima Real</h2>
+                    <div id="terrain-indicator" class="flex gap-1">
+                        <!-- Dots will be inserted here by JS -->
+                    </div>
+                </div>
                 
-                <!-- Weather API Integration -->
+                <!-- Weather info container -->
                 <div id="weather-card-info" class="relative z-10 transition-all duration-500 opacity-0 transform translate-y-2">
-                    <div class="flex items-center justify-between">
+                    <div class="flex items-center justify-between mb-4 px-2">
                         <div class="flex items-center gap-3">
                             <div id="weather-icon-large" class="text-yellow-400">
-                                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                                <!-- Icon here -->
                             </div>
                             <div>
                                 <p id="weather-temp-large" class="text-2xl font-bold">--°C</p>
@@ -353,6 +386,18 @@
                         <div class="text-right">
                             <p class="text-[10px] text-green-200 uppercase tracking-wider mb-1">Precipitación</p>
                             <p id="weather-precip" class="text-sm font-bold">-- mm</p>
+                        </div>
+                    </div>
+                    
+                    <!-- New Fields: Crop and Location -->
+                    <div class="flex justify-between items-end border-t border-white/10 pt-3 mt-1 px-1">
+                        <div class="overflow-hidden">
+                            <p class="text-[10px] text-green-300 uppercase tracking-wider leading-none mb-1">Cosecha Actual</p>
+                            <p id="weather-crop" class="text-sm font-bold truncate">--</p>
+                        </div>
+                        <div class="text-right flex-shrink-0 ml-4">
+                            <p class="text-[10px] text-green-300 uppercase tracking-wider leading-none mb-1">Terreno</p>
+                            <p id="weather-location" class="text-sm font-bold">--</p>
                         </div>
                     </div>
                 </div>
@@ -368,76 +413,129 @@
         window.print();
     }
 
-    // Weather API Integration
+    // Weather API Integration with Rotation
     document.addEventListener('DOMContentLoaded', function() {
-        const fallBackLat = {{ $stats['estado_terreno']['latitud'] }};
-        const fallBackLon = {{ $stats['estado_terreno']['longitud'] }};
+        const terrenos = @json($stats['terrenos_clima']);
+        let currentIndex = 0;
+        let rotationInterval;
+
+        if (!terrenos || terrenos.length === 0) {
+            const descElement = document.getElementById('weather-desc-large');
+            if (descElement) descElement.textContent = 'No hay terrenos registrados';
+            return;
+        }
+
+        // Initialize dots indicator
+        const indicator = document.getElementById('terrain-indicator');
+        if (indicator) {
+            terrenos.forEach((_, i) => {
+                const dot = document.createElement('div');
+                dot.className = `w-1.5 h-1.5 rounded-full transition-all duration-300 ${i === 0 ? 'bg-white w-3' : 'bg-white/30'}`;
+                dot.id = `dot-${i}`;
+                indicator.appendChild(dot);
+            });
+        }
         
-        function fetchWeather(lat, lon) {
-            const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code&timezone=auto`;
+        function updateWeatherUI(terrain, weatherData) {
+            const current = weatherData.current;
+            const temp = Math.round(current.temperature_2m);
+            const code = current.weather_code;
+            const precip = current.precipitation;
+            
+            const weatherMap = {
+                0: { text: 'Cielo Despejado', icon: 'M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z', color: 'text-yellow-400' },
+                1: { text: 'Principalmente Despejado', icon: 'M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z', color: 'text-yellow-400' },
+                2: { text: 'Parcialmente Nublado', icon: 'M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z', color: 'text-gray-300' },
+                3: { text: 'Nublado', icon: 'M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z', color: 'text-gray-400' },
+                45: { text: 'Niebla', icon: 'M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z', color: 'text-gray-200' },
+                48: { text: 'Niebla Escarchada', icon: 'M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z', color: 'text-gray-200' },
+                51: { text: 'Llovizna Ligera', icon: 'M20 16.242c-.22.217-.457.417-.71.598A7.923 7.923 0 0112 19a7.923 7.923 0 01-7.29-2.16m15.29-2.082A8.001 8.001 0 004.5 9h.5A7 7 0 1119.5 9h.5a8.001 8.001 0 00-7.29 5.242', color: 'text-blue-200' },
+                61: { text: 'Lluvia Ligera', icon: 'M20 16.242c-.22.217-.457.417-.71.598A7.923 7.923 0 0112 19a7.923 7.923 0 01-7.29-2.16m15.29-2.082A8.001 8.001 0 004.5 9h.5A7 7 0 1119.5 9h.5a8.001 8.001 0 00-7.29 5.242', color: 'text-blue-300' },
+                80: { text: 'Chubascos de Lluvia', icon: 'M20 16.242c-.22.217-.457.417-.71.598A7.923 7.923 0 0112 19a7.923 7.923 0 01-7.29-2.16m15.29-2.082A8.001 8.001 0 004.5 9h.5A7 7 0 1119.5 9h.5a8.001 8.001 0 00-7.29 5.242', color: 'text-blue-400' },
+                95: { text: 'Tormenta', icon: 'M13 10V3L4 14h7v7l9-11h-7z', color: 'text-yellow-600' }
+            };
 
-            fetch(weatherUrl)
-                .then(response => response.json())
-                .then(data => {
-                    const current = data.current;
-                    const temp = Math.round(current.temperature_2m);
-                    const code = current.weather_code;
-                    const precip = current.precipitation;
-                    
-                    const weatherMap = {
-                        0: { text: 'Cielo Despejado', icon: 'M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z', color: 'text-yellow-400' },
-                        1: { text: 'Principalmente Despejado', icon: 'M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z', color: 'text-yellow-400' },
-                        2: { text: 'Parcialmente Nublado', icon: 'M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z', color: 'text-gray-300' },
-                        3: { text: 'Nublado', icon: 'M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z', color: 'text-gray-400' },
-                        45: { text: 'Niebla', icon: 'M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z', color: 'text-gray-200' },
-                        48: { text: 'Niebla Escarchada', icon: 'M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z', color: 'text-gray-200' },
-                        51: { text: 'Llovizna Ligera', icon: 'M20 16.242c-.22.217-.457.417-.71.598A7.923 7.923 0 0112 19a7.923 7.923 0 01-7.29-2.16m15.29-2.082A8.001 8.001 0 004.5 9h.5A7 7 0 1119.5 9h.5a8.001 8.001 0 00-7.29 5.242', color: 'text-blue-200' },
-                        61: { text: 'Lluvia Ligera', icon: 'M20 16.242c-.22.217-.457.417-.71.598A7.923 7.923 0 0112 19a7.923 7.923 0 01-7.29-2.16m15.29-2.082A8.001 8.001 0 004.5 9h.5A7 7 0 1119.5 9h.5a8.001 8.001 0 00-7.29 5.242', color: 'text-blue-300' },
-                        80: { text: 'Chubascos de Lluvia', icon: 'M20 16.242c-.22.217-.457.417-.71.598A7.923 7.923 0 0112 19a7.923 7.923 0 01-7.29-2.16m15.29-2.082A8.001 8.001 0 004.5 9h.5A7 7 0 1119.5 9h.5a8.001 8.001 0 00-7.29 5.242', color: 'text-blue-400' },
-                        95: { text: 'Tormenta', icon: 'M13 10V3L4 14h7v7l9-11h-7z', color: 'text-yellow-600' }
-                    };
+            const condition = weatherMap[code] || { text: 'Variado', icon: 'M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z', color: 'text-yellow-400' };
 
-                    const condition = weatherMap[code] || { text: 'Variado', icon: 'M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z', color: 'text-yellow-400' };
-
-                    // Update Card
-                    document.getElementById('weather-temp-large').textContent = `${temp}°C`;
-                    document.getElementById('weather-desc-large').textContent = condition.text;
-                    document.getElementById('weather-precip').textContent = `${precip} mm`;
-                    document.getElementById('weather-icon-large').innerHTML = `
-                        <svg class="w-10 h-10 ${condition.color}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${condition.icon}"></path></svg>
-                    `;
-                    
-                    // Show card info with animation
-                    const weatherInfo = document.getElementById('weather-card-info');
-                    weatherInfo.classList.remove('opacity-0', 'translate-y-2');
-                    weatherInfo.classList.add('opacity-100', 'translate-y-0');
-                })
-                .catch(error => {
-                    console.error('Error fetching weather:', error);
-                    // Update header weather on error
-                    // This element doesn't seem to exist in the provided HTML, but keeping it as per original logic
-                    const headerWeatherElement = document.getElementById('header-weather');
-                    if (headerWeatherElement) {
-                        headerWeatherElement.textContent = 'Error al cargar clima';
+            // Update Elements
+            document.getElementById('weather-temp-large').textContent = `${temp}°C`;
+            document.getElementById('weather-desc-large').textContent = condition.text;
+            document.getElementById('weather-precip').textContent = `${precip} mm`;
+            document.getElementById('weather-crop').textContent = terrain.cosecha || 'Sin cosecha';
+            document.getElementById('weather-location').textContent = terrain.nombre;
+            document.getElementById('weather-icon-large').innerHTML = `
+                <svg class="w-10 h-10 ${condition.color}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${condition.icon}"></path></svg>
+            `;
+            
+            // Animate dots
+            terrenos.forEach((_, i) => {
+                const d = document.getElementById(`dot-${i}`);
+                if (d) {
+                    if (i === currentIndex) {
+                        d.classList.add('bg-white', 'w-3');
+                        d.classList.remove('bg-white/30');
+                    } else {
+                        d.classList.remove('bg-white', 'w-3');
+                        d.classList.add('bg-white/30');
                     }
-                });
+                }
+            });
+
+            // Show card info
+            const weatherInfo = document.getElementById('weather-card-info');
+            if (weatherInfo) {
+                weatherInfo.classList.remove('opacity-0', 'translate-y-2');
+                weatherInfo.classList.add('opacity-100', 'translate-y-0');
+            }
         }
 
-        // Intenta obtener la ubicación del navegador
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    fetchWeather(position.coords.latitude, position.coords.longitude);
-                },
-                (error) => {
-                    console.warn("Ubicación rechazada, usando ubicación del terreno:", error.message);
-                    fetchWeather(fallBackLat, fallBackLon);
-                }
-            );
-        } else {
-            console.warn("Geolocalización no soportada, usando ubicación del terreno.");
-            fetchWeather(fallBackLat, fallBackLon);
+        function fetchAndDisplayTerrain(index) {
+            const terrain = terrenos[index];
+            const lat = terrain.latitud || 4.6097;
+            const lon = terrain.longitud || -74.0817;
+
+            // Fade out
+            const weatherInfo = document.getElementById('weather-card-info');
+            if (weatherInfo) {
+                weatherInfo.classList.add('opacity-0', 'translate-y-2');
+                weatherInfo.classList.remove('opacity-100', 'translate-y-0');
+            }
+
+            setTimeout(() => {
+                fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code,precipitation&timezone=auto`)
+                .then(r => r.json())
+                .then(data => {
+                    updateWeatherUI(terrain, data);
+                })
+                .catch(e => console.error('Error clima:', e));
+            }, 500);
         }
+
+        function autoRotate() {
+            currentIndex = (currentIndex + 1) % terrenos.length;
+            fetchAndDisplayTerrain(currentIndex);
+        }
+
+        function resetInterval() {
+            clearInterval(rotationInterval);
+            rotationInterval = setInterval(autoRotate, 10000);
+        }
+
+        window.nextTerrain = function() {
+            currentIndex = (currentIndex + 1) % terrenos.length;
+            fetchAndDisplayTerrain(currentIndex);
+            resetInterval();
+        }
+
+        window.prevTerrain = function() {
+            currentIndex = (currentIndex - 1 + terrenos.length) % terrenos.length;
+            fetchAndDisplayTerrain(currentIndex);
+            resetInterval();
+        }
+
+        // Start
+        fetchAndDisplayTerrain(currentIndex);
+        rotationInterval = setInterval(autoRotate, 10000); // 10 seconds
     });
 </script>
 <style>
