@@ -104,8 +104,10 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         @foreach($grupoTareas as $fase)
                             <div
-                                class="group/card bg-white rounded-[2.5rem] p-1 border border-gray-100 shadow-xl shadow-gray-100/50 hover:shadow-2xl hover:shadow-emerald-200/40 hover:-translate-y-2 transition-all duration-500">
+                                class="group/card bg-white rounded-[2.5rem] p-1 border border-gray-100 shadow-xl shadow-gray-100/50 hover:shadow-2xl hover:{{ $shadowColor }} hover:-translate-y-2 transition-all duration-500">
                                 <div class="bg-gray-50/50 rounded-[2.2rem] p-7 h-full flex flex-col relative overflow-hidden">
+                                    {{-- Left Accent Border --}}
+                                    <div class="absolute left-0 top-0 bottom-0 w-3 {{ $barColor }} opacity-80 group-hover/card:opacity-100 transition-opacity"></div>
                                     {{-- Background Pattern --}}
                                     <div
                                         class="absolute -right-4 -top-4 w-24 h-24 bg-emerald-500/5 rounded-full blur-2xl group-hover/card:bg-emerald-500/10 transition-colors">
@@ -129,7 +131,7 @@
                                     </div>
 
                                     <h3
-                                        class="text-xl font-black text-gray-900 mb-6 leading-tight flex-grow {{ $fase->id_estado == 16 ? 'line-through opacity-70 group-hover/card:text-red-700' : 'group-hover/card:text-emerald-700' }} transition-colors">
+                                        class="text-xl font-black text-gray-900 mb-6 leading-tight flex-grow {{ $fase->id_estado == 16 ? 'line-through opacity-70 group-hover/card:text-red-700' : $hoverText }} transition-colors">
                                         {{ $fase->descripcion }}
                                     </h3>
 
@@ -137,10 +139,21 @@
                                         @php
                                             $terreno = optional($cosecha)->terreno ?? null;
                                             $tipoEtiqueta = 'General';
-                                            if ($fase->tipo_tarea == 'riego')
+                                            $barColor = 'bg-emerald-500';
+                                            $shadowColor = 'shadow-emerald-200/40';
+                                            $hoverText = 'group-hover/card:text-emerald-700';
+
+                                            if ($fase->tipo_tarea == 'riego') {
                                                 $tipoEtiqueta = 'Riego';
-                                            elseif ($fase->tipo_tarea == 'insumo')
+                                                $barColor = 'bg-blue-600';
+                                                $shadowColor = 'shadow-blue-200/40';
+                                                $hoverText = 'group-hover/card:text-blue-700';
+                                            } elseif ($fase->tipo_tarea == 'insumo') {
                                                 $tipoEtiqueta = 'Insumo';
+                                                $barColor = 'bg-purple-600';
+                                                $shadowColor = 'shadow-purple-200/40';
+                                                $hoverText = 'group-hover/card:text-purple-700';
+                                            }
 
                                             $details = [
                                                 'fase_id' => $fase->tipo_tarea == 'riego' ? $fase->id_riego : ($fase->tipo_tarea == 'insumo' ? $fase->id_insumo_cosecha : $fase->id_fase),
