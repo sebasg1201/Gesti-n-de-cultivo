@@ -39,18 +39,41 @@ class AdminController extends Controller
         // 3. Cosechas en Proceso
         $cosechasEnProceso = \App\Models\Cosecha::where('id_empresa', $id_empresa)->count(); // Simplified for now
 
-        // 4. Progreso Tareas (Tareas de hoy completadas vs totales)
-        $hoy = \Carbon\Carbon::now()->format('Y-m-d');
+        // 4. Progreso Tareas ULTIMOS 7 DIAS (Fases, Riegos e Insumos) - Rolling window
+        $inicioSemana = \Carbon\Carbon::now()->subDays(7)->startOfDay();
+        $finSemana = \Carbon\Carbon::now()->endOfDay();
 
-        $tareasHoyTotal = \App\Models\FaseProgramada::whereHas('cosecha', function ($q) use ($id_empresa) {
+        // Totales de la semana
+        $fasesSemanaTotal = \App\Models\FaseProgramada::whereHas('cosecha', function ($q) use ($id_empresa) {
             $q->where('id_empresa', $id_empresa);
-        })->whereDate('fecha_programada', $hoy)->count();
+        })->whereBetween('fecha_programada', [$inicioSemana, $finSemana])->count();
 
-        $tareasHoyCompletadas = \App\Models\FaseProgramada::whereHas('cosecha', function ($q) use ($id_empresa) {
+        $riegosSemanaTotal = \App\Models\Riego::whereHas('cosecha', function ($q) use ($id_empresa) {
             $q->where('id_empresa', $id_empresa);
-        })->whereDate('fecha_programada', $hoy)->where('id_estado', 9)->count(); // 9 = Realizado
+        })->whereBetween('fecha_programada', [$inicioSemana, $finSemana])->count();
 
-        $progresoTareas = $tareasHoyTotal > 0 ? round(($tareasHoyCompletadas / $tareasHoyTotal) * 100) : 0;
+        $insumosSemanaTotal = \App\Models\InsumoCosecha::whereHas('cosecha', function ($q) use ($id_empresa) {
+            $q->where('id_empresa', $id_empresa);
+        })->whereBetween('fecha_programada', [$inicioSemana, $finSemana])->count();
+
+        $totalTareasSemana = $fasesSemanaTotal + $riegosSemanaTotal + $insumosSemanaTotal;
+
+        // Completadas de la semana (9 = Realizado/Aplicado, 15 = Completado/Realizado)
+        $fasesSemanaCompletas = \App\Models\FaseProgramada::whereHas('cosecha', function ($q) use ($id_empresa) {
+            $q->where('id_empresa', $id_empresa);
+        })->whereBetween('fecha_programada', [$inicioSemana, $finSemana])->whereIn('id_estado', [9, 15])->count();
+
+        $riegosSemanaCompletas = \App\Models\Riego::whereHas('cosecha', function ($q) use ($id_empresa) {
+            $q->where('id_empresa', $id_empresa);
+        })->whereBetween('fecha_programada', [$inicioSemana, $finSemana])->whereIn('id_estado', [9, 15])->count();
+
+        $insumosSemanaCompletas = \App\Models\InsumoCosecha::whereHas('cosecha', function ($q) use ($id_empresa) {
+            $q->where('id_empresa', $id_empresa);
+        })->whereBetween('fecha_programada', [$inicioSemana, $finSemana])->whereIn('id_estado', [9, 15])->count();
+
+        $totalCompletasSemana = $fasesSemanaCompletas + $riegosSemanaCompletas + $insumosSemanaCompletas;
+
+        $progresoTareas = $totalTareasSemana > 0 ? round(($totalCompletasSemana / $totalTareasSemana) * 100) : 0;
 
         // 5. Estado de Cultivos (primeros 4 para la tarjeta)
         $cultivos = \App\Models\Cosecha::with(['terreno', 'semilla'])
@@ -83,16 +106,58 @@ class AdminController extends Controller
             ->take(3)
             ->get();
 
-        // 8. Tareas de Hoy (Lista para el sidebar) - EXACTAMENTE HOY
-        $listaTareasHoy = \App\Models\FaseProgramada::with(['usuario'])
+        // 8. Tareas de Hoy (Lista Consolidada para el sidebar) - EXACTAMENTE HOY
+        $hoy = \Carbon\Carbon::now()->format('Y-m-d');
+        
+        $fasesHoy = \App\Models\FaseProgramada::with(['usuario', 'cosecha.semilla'])
             ->whereHas('cosecha', function ($q) use ($id_empresa) {
                 $q->where('id_empresa', $id_empresa);
             })->whereDate('fecha_programada', $hoy)
-            ->orderBy('fecha_programada', 'asc')
-            ->take(4)
-            ->get();
+            ->get()->map(function($t) {
+                $t->tipo_tarea = 'fase';
+                return $t;
+            });
 
-        // 9. Estado del Terreno (Mock data with real context combined)
+        $riegosHoy = \App\Models\Riego::with(['usuario', 'cosecha.semilla', 'tipoRiego'])
+            ->whereHas('cosecha', function ($q) use ($id_empresa) {
+                $q->where('id_empresa', $id_empresa);
+            })->whereDate('fecha_programada', $hoy)
+            ->get()->map(function($t) {
+                $t->tipo_tarea = 'riego';
+                $t->descripcion = $t->observaciones ?: ('Riego: ' . ($t->tipoRiego?->tipo_riego ?? 'General'));
+                return $t;
+            });
+
+        $insumosHoy = \App\Models\InsumoCosecha::with(['usuario', 'cosecha.semilla', 'insumo'])
+            ->whereHas('cosecha', function ($q) use ($id_empresa) {
+                $q->where('id_empresa', $id_empresa);
+            })->whereDate('fecha_programada', $hoy)
+            ->get()->map(function($t) {
+                $t->tipo_tarea = 'insumo';
+                $t->descripcion = 'Aplicación de Insumo: ' . ($t->insumo?->Nombre ?? 'Desconocido');
+                return $t;
+            });
+
+        $listaTareasHoy = $fasesHoy->concat($riegosHoy)->concat($insumosHoy)
+            ->sortBy('id_estado') // O cualquier otro criterio
+            ->take(3); // Solo 3 como solicitó el usuario
+
+        // 9. Terrenos para el clima rotativo
+        $terrenosClima = \App\Models\Terreno::where('id_empresa', $id_empresa)
+            ->with(['cosechas' => function($q) {
+                $q->with('semilla')->where('id_estado', 1)->take(1); // 1 = Activo (asumiendo)
+            }])->get()->map(function($terreno) {
+                $cosecha = $terreno->cosechas->first();
+                return [
+                    'nombre' => $terreno->nombre,
+                    'ubicacion' => $terreno->ubicacion,
+                    'latitud' => $terreno->latitud,
+                    'longitud' => $terreno->longitud,
+                    'cosecha' => $cosecha ? $cosecha->semilla->nombre_semilla : 'Sin cosecha activa'
+                ];
+            });
+
+        // 10. Estado del Terreno (Mock data with real context combined)
         // Intentar obtener el terreno de la primera cosecha activa
         $cosechaActiva = \App\Models\Cosecha::with('terreno.tipoSuelo')->where('id_empresa', $id_empresa)->first();
         $humedad = 70; // Default
@@ -155,6 +220,7 @@ class AdminController extends Controller
             'lista_alertas' => $listaAlertas,
             'lista_tareas_hoy' => $listaTareasHoy,
             'estado_terreno' => $estadoTerreno,
+            'terrenos_clima' => $terrenosClima,
         ];
 
         $stats['trabajos_en_proceso'] = \App\Models\FaseProgramada::whereHas('usuario', function ($q) use ($id_empresa) {
