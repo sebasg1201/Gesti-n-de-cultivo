@@ -1,0 +1,272 @@
+[
+    {
+        "nombre_comercial": "Fertilizante Triple 15",
+        "descripcion": "Fertilizante granulado balanceado",
+        "impacto_dias": 6,
+        "tipo_insumo": "Fertilizantes"
+    },
+    {
+        "nombre_comercial": "DAP Fosfato Diamónico",
+        "descripcion": "Fuente de fósforo para raíces",
+        "impacto_dias": 7,
+        "tipo_insumo": "Fertilizantes"
+    },
+    {
+        "nombre_comercial": "Cloruro de Potasio",
+        "descripcion": "Aporte de potasio para fructificación",
+        "impacto_dias": 6,
+        "tipo_insumo": "Fertilizantes"
+    },
+    {
+        "nombre_comercial": "Abono Orgánico Compost",
+        "descripcion": "Materia orgánica para mejorar el suelo",
+        "impacto_dias": 10,
+        "tipo_insumo": "Abono"
+    },
+    {
+        "nombre_comercial": "Humus de Lombriz",
+        "descripcion": "Fertilizante natural rico en nutrientes",
+        "impacto_dias": 9,
+        "tipo_insumo": "Abono"
+    },
+    {
+        "nombre_comercial": "Glifosato 480 SL",
+        "descripcion": "Herbicida sistémico no selectivo",
+        "impacto_dias": -5,
+        "tipo_insumo": "Herbicida"
+    },
+    {
+        "nombre_comercial": "Paraquat",
+        "descripcion": "Herbicida de contacto",
+        "impacto_dias": -4,
+        "tipo_insumo": "Herbicida"
+    },
+    {
+        "nombre_comercial": "2,4-D Amina",
+        "descripcion": "Control de malezas hoja ancha",
+        "impacto_dias": -3,
+        "tipo_insumo": "Herbicida"
+    },
+    {
+        "nombre_comercial": "Mancozeb",
+        "descripcion": "Fungicida preventivo",
+        "impacto_dias": -2,
+        "tipo_insumo": "Fungicida"
+    },
+    {
+        "nombre_comercial": "Carbendazim",
+        "descripcion": "Fungicida sistémico",
+        "impacto_dias": -2,
+        "tipo_insumo": "Fungicida"
+    },
+    {
+        "nombre_comercial": "Oxicloruro de Cobre",
+        "descripcion": "Control de enfermedades bacterianas",
+        "impacto_dias": -1,
+        "tipo_insumo": "Fungicida"
+    },
+    {
+        "nombre_comercial": "Imidacloprid",
+        "descripcion": "Insecticida sistémico",
+        "impacto_dias": -3,
+        "tipo_insumo": "Pesticida"
+    },
+    {
+        "nombre_comercial": "Clorpirifos",
+        "descripcion": "Insecticida organofosforado",
+        "impacto_dias": -4,
+        "tipo_insumo": "Pesticida"
+    },
+    {
+        "nombre_comercial": "Lambda Cihalotrina",
+        "descripcion": "Control de insectos masticadores",
+        "impacto_dias": -3,
+        "tipo_insumo": "Pesticida"
+    },
+    {
+        "nombre_comercial": "Azufre Agrícola",
+        "descripcion": "Control de hongos y ácaros",
+        "impacto_dias": -1,
+        "tipo_insumo": "Agroquímicos"
+    },
+    {
+        "nombre_comercial": "Cal Agrícola",
+        "descripcion": "Corrector de pH del suelo",
+        "impacto_dias": 8,
+        "tipo_insumo": "Agroquímicos"
+    },
+    {
+        "nombre_comercial": "Yeso Agrícola",
+        "descripcion": "Mejora estructura del suelo",
+        "impacto_dias": 7,
+        "tipo_insumo": "Agroquímicos"
+    },
+    {
+        "nombre_comercial": "Bioestimulante Algas Marinas",
+        "descripcion": "Estimula crecimiento vegetal",
+        "impacto_dias": 6,
+        "tipo_insumo": "Agroquímicos"
+    },
+    {
+        "nombre_comercial": "Melaza Agrícola",
+        "descripcion": "Estimula microorganismos del suelo",
+        "impacto_dias": 5,
+        "tipo_insumo": "Agroquímicos"
+    },
+    {
+        "nombre_comercial": "Azadón Profesional",
+        "descripcion": "Herramienta para labranza",
+        "impacto_dias": 0,
+        "tipo_insumo": "Herramientas"
+    },
+    {
+        "nombre_comercial": "Rastrillo Metálico",
+        "descripcion": "Nivelación de terreno",
+        "impacto_dias": 0,
+        "tipo_insumo": "Herramientas"
+    },
+    {
+        "nombre_comercial": "Carretilla Agrícola",
+        "descripcion": "Transporte de materiales",
+        "impacto_dias": 0,
+        "tipo_insumo": "Herramientas"
+    },
+    {
+        "nombre_comercial": "Guadaña Manual",
+        "descripcion": "Corte de maleza",
+        "impacto_dias": 0,
+        "tipo_insumo": "Herramientas"
+    },
+    {
+        "nombre_comercial": "Tijeras de Poda",
+        "descripcion": "Poda de cultivos",
+        "impacto_dias": 0,
+        "tipo_insumo": "Herramientas"
+    },
+    {
+        "nombre_comercial": "Grasa Multipropósito",
+        "descripcion": "Lubricante para maquinaria",
+        "impacto_dias": 0,
+        "tipo_insumo": "Lubricantes"
+    },
+    {
+        "nombre_comercial": "Aceite Hidráulico",
+        "descripcion": "Para sistemas hidráulicos",
+        "impacto_dias": 0,
+        "tipo_insumo": "Lubricantes"
+    },
+    {
+        "nombre_comercial": "Diesel Agrícola",
+        "descripcion": "Combustible maquinaria",
+        "impacto_dias": 0,
+        "tipo_insumo": "Lubricantes"
+    },
+    {
+        "nombre_comercial": "Micorrizas",
+        "descripcion": "Mejora absorción de nutrientes",
+        "impacto_dias": 9,
+        "tipo_insumo": "Agroquímicos"
+    },
+    {
+        "nombre_comercial": "Trichoderma",
+        "descripcion": "Control biológico de hongos",
+        "impacto_dias": 7,
+        "tipo_insumo": "Agroquímicos"
+    },
+    {
+        "nombre_comercial": "Bacillus Thuringiensis",
+        "descripcion": "Control biológico de insectos",
+        "impacto_dias": -1,
+        "tipo_insumo": "Agroquímicos"
+    },
+    {
+        "nombre_comercial": "Nitrato de Calcio",
+        "descripcion": "Fuente de calcio y nitrógeno",
+        "impacto_dias": 6,
+        "tipo_insumo": "Fertilizantes"
+    },
+    {
+        "nombre_comercial": "Sulfato de Magnesio",
+        "descripcion": "Aporte de magnesio",
+        "impacto_dias": 5,
+        "tipo_insumo": "Fertilizantes"
+    },
+    {
+        "nombre_comercial": "Quelato de Hierro",
+        "descripcion": "Corrige clorosis férrica",
+        "impacto_dias": 4,
+        "tipo_insumo": "Fertilizantes"
+    },
+    {
+        "nombre_comercial": "Silicato de Potasio",
+        "descripcion": "Fortalece resistencia vegetal",
+        "impacto_dias": 6,
+        "tipo_insumo": "Fertilizantes"
+    },
+    {
+        "nombre_comercial": "Extracto de Neem",
+        "descripcion": "Insecticida natural",
+        "impacto_dias": -2,
+        "tipo_insumo": "Pesticida"
+    },
+    {
+        "nombre_comercial": "Fosfato Monoamónico MAP",
+        "descripcion": "Fuente de fósforo y nitrógeno",
+        "impacto_dias": 6,
+        "tipo_insumo": "Fertilizantes"
+    },
+    {
+        "nombre_comercial": "Nitrato de Potasio",
+        "descripcion": "Estimula floración y fructificación",
+        "impacto_dias": 5,
+        "tipo_insumo": "Fertilizantes"
+    },
+    {
+        "nombre_comercial": "Ácido Húmico Líquido",
+        "descripcion": "Mejora estructura del suelo",
+        "impacto_dias": 8,
+        "tipo_insumo": "Abono"
+    },
+    {
+        "nombre_comercial": "Ácido Fúlvico",
+        "descripcion": "Favorece absorción de nutrientes",
+        "impacto_dias": 7,
+        "tipo_insumo": "Abono"
+    },
+    {
+        "nombre_comercial": "Spinosad",
+        "descripcion": "Insecticida biológico",
+        "impacto_dias": -2,
+        "tipo_insumo": "Pesticida"
+    },
+    {
+        "nombre_comercial": "Abamectina",
+        "descripcion": "Control de ácaros e insectos",
+        "impacto_dias": -3,
+        "tipo_insumo": "Pesticida"
+    },
+    {
+        "nombre_comercial": "Metalaxil",
+        "descripcion": "Fungicida sistémico",
+        "impacto_dias": -2,
+        "tipo_insumo": "Fungicida"
+    },
+    {
+        "nombre_comercial": "Atrazina",
+        "descripcion": "Herbicida preemergente",
+        "impacto_dias": -4,
+        "tipo_insumo": "Herbicida"
+    },
+    {
+        "nombre_comercial": "Pulverizador Manual 20L",
+        "descripcion": "Equipo para aplicación de insumos",
+        "impacto_dias": 0,
+        "tipo_insumo": "Herramientas"
+    },
+    {
+        "nombre_comercial": "Aceite 2T",
+        "descripcion": "Lubricante para guadaña",
+        "impacto_dias": 0,
+        "tipo_insumo": "Lubricantes"
+    }
+]

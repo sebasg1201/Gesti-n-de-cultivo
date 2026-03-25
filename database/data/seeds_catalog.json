@@ -3,72 +3,329 @@
         "nombre": "Tomate Chonto",
         "descripcion": "Variedad de tomate muy resistente, ideal para salsas.",
         "tiempo_base_dias": 90,
-        "rendimiento_promedio": 12.0
+        "rendimiento_promedio": 12.0,
+        "espacio_por_planta_m2": 0.4
     },
     {
         "nombre": "Café Arábigo",
         "descripcion": "Variedad premium de café con aroma intenso y acidez equilibrada.",
-        "tiempo_base_dias": 210,
-        "rendimiento_promedio": 1.5
+        "tiempo_base_dias": 720,
+        "rendimiento_promedio": 1.5,
+        "espacio_por_planta_m2": 2.0
     },
     {
         "nombre": "Maíz Dulce",
         "descripcion": "Maíz de grano tierno y dulce, ideal para consumo humano directo.",
         "tiempo_base_dias": 85,
-        "rendimiento_promedio": 4.5
+        "rendimiento_promedio": 4.5,
+        "espacio_por_planta_m2": 0.3
     },
     {
         "nombre": "Cebolla Cabezona",
         "descripcion": "Bulbo de sabor fuerte, uso esencial en cocina.",
         "tiempo_base_dias": 120,
-        "rendimiento_promedio": 15.0
+        "rendimiento_promedio": 15.0,
+        "espacio_por_planta_m2": 0.08
     },
     {
         "nombre": "Papa Pastusa",
         "descripcion": "Variedad de papa de textura harinosa, muy popular en Colombia.",
-        "tiempo_base_dias": 135,
-        "rendimiento_promedio": 25.0
+        "tiempo_base_dias": 120,
+        "rendimiento_promedio": 25.0,
+        "espacio_por_planta_m2": 0.35
     },
     {
         "nombre": "Papa Criolla",
         "descripcion": "Papa pequeña y amarilla, ciclo corto y sabor suave.",
-        "tiempo_base_dias": 110,
-        "rendimiento_promedio": 10.0
+        "tiempo_base_dias": 100,
+        "rendimiento_promedio": 10.0,
+        "espacio_por_planta_m2": 0.3
     },
     {
         "nombre": "Zanahoria",
         "descripcion": "Raíz naranja rica en carotenos, ciclo productivo estándar.",
-        "tiempo_base_dias": 110,
-        "rendimiento_promedio": 20.0
+        "tiempo_base_dias": 100,
+        "rendimiento_promedio": 20.0,
+        "espacio_por_planta_m2": 0.05
     },
     {
         "nombre": "Fresa",
         "descripcion": "Fruta roja pequeña, requiere suelos ácidos y buen riego.",
-        "tiempo_base_dias": 150,
-        "rendimiento_promedio": 0.8
+        "tiempo_base_dias": 120,
+        "rendimiento_promedio": 0.8,
+        "espacio_por_planta_m2": 0.25
     },
     {
         "nombre": "Cacao Forastero",
         "descripcion": "Variedad de cacao muy productiva y resistente.",
-        "tiempo_base_dias": 165,
-        "rendimiento_promedio": 1.2
+        "tiempo_base_dias": 1095,
+        "rendimiento_promedio": 1.2,
+        "espacio_por_planta_m2": 9.0
     },
     {
         "nombre": "Plátano Hartón",
         "descripcion": "Plátano de gran tamaño usado principalmente para cocinar.",
-        "tiempo_base_dias": 360,
-        "rendimiento_promedio": 14.0
+        "tiempo_base_dias": 300,
+        "rendimiento_promedio": 14.0,
+        "espacio_por_planta_m2": 6.0
     },
     {
         "nombre": "Aguacate Hass",
         "descripcion": "Variedad de aguacate con piel rugosa y alto contenido de aceite.",
-        "tiempo_base_dias": 240,
-        "rendimiento_promedio": 8.0
+        "tiempo_base_dias": 1460,
+        "rendimiento_promedio": 8.0,
+        "espacio_por_planta_m2": 25.0
     },
     {
         "nombre": "Fríjol Cargamanto",
         "descripcion": "Leguminosa de grano grande, muy apreciada en la región andina.",
-        "tiempo_base_dias": 140,
-        "rendimiento_promedio": 2.2
+        "tiempo_base_dias": 120,
+        "rendimiento_promedio": 2.2,
+        "espacio_por_planta_m2": 0.2
+    },
+    {
+        "nombre": "Lechuga Romana",
+        "descripcion": "Hortaliza de hojas alargadas, muy usada en ensaladas.",
+        "tiempo_base_dias": 60,
+        "rendimiento_promedio": 3.0,
+        "espacio_por_planta_m2": 0.1
+    },
+    {
+        "nombre": "Espinaca",
+        "descripcion": "Hortaliza de hojas verdes rica en hierro.",
+        "tiempo_base_dias": 45,
+        "rendimiento_promedio": 2.5,
+        "espacio_por_planta_m2": 0.08
+    },
+    {
+        "nombre": "Pepino",
+        "descripcion": "Fruto alargado y refrescante, de rápido crecimiento.",
+        "tiempo_base_dias": 75,
+        "rendimiento_promedio": 8.0,
+        "espacio_por_planta_m2": 0.5
+    },
+    {
+        "nombre": "Pimentón",
+        "descripcion": "Fruto dulce de colores variados.",
+        "tiempo_base_dias": 100,
+        "rendimiento_promedio": 6.0,
+        "espacio_por_planta_m2": 0.4
+    },
+    {
+        "nombre": "Ajo",
+        "descripcion": "Bulbo aromático usado como condimento.",
+        "tiempo_base_dias": 150,
+        "rendimiento_promedio": 5.0,
+        "espacio_por_planta_m2": 0.1
+    },
+    {
+        "nombre": "Brócoli",
+        "descripcion": "Hortaliza rica en nutrientes, tipo col.",
+        "tiempo_base_dias": 90,
+        "rendimiento_promedio": 4.0,
+        "espacio_por_planta_m2": 0.4
+    },
+    {
+        "nombre": "Coliflor",
+        "descripcion": "Hortaliza de inflorescencia blanca.",
+        "tiempo_base_dias": 100,
+        "rendimiento_promedio": 3.5,
+        "espacio_por_planta_m2": 0.4
+    },
+    {
+        "nombre": "Repollo",
+        "descripcion": "Hortaliza de hojas compactas en forma de bola.",
+        "tiempo_base_dias": 110,
+        "rendimiento_promedio": 4.5,
+        "espacio_por_planta_m2": 0.5
+    },
+    {
+        "nombre": "Yuca",
+        "descripcion": "Raíz tropical rica en carbohidratos.",
+        "tiempo_base_dias": 300,
+        "rendimiento_promedio": 20.0,
+        "espacio_por_planta_m2": 1.0
+    },
+    {
+        "nombre": "Batata",
+        "descripcion": "Tubérculo dulce también conocido como camote.",
+        "tiempo_base_dias": 120,
+        "rendimiento_promedio": 18.0,
+        "espacio_por_planta_m2": 0.5
+    },
+    {
+        "nombre": "Sandía",
+        "descripcion": "Fruta grande y jugosa, de clima cálido.",
+        "tiempo_base_dias": 100,
+        "rendimiento_promedio": 10.0,
+        "espacio_por_planta_m2": 2.0
+    },
+    {
+        "nombre": "Melón",
+        "descripcion": "Fruta dulce de pulpa aromática.",
+        "tiempo_base_dias": 90,
+        "rendimiento_promedio": 8.0,
+        "espacio_por_planta_m2": 1.5
+    },
+    {
+        "nombre": "Calabacín",
+        "descripcion": "Variedad de calabaza de fruto tierno.",
+        "tiempo_base_dias": 60,
+        "rendimiento_promedio": 6.0,
+        "espacio_por_planta_m2": 0.6
+    },
+    {
+        "nombre": "Calabaza",
+        "descripcion": "Fruto grande utilizado en múltiples preparaciones.",
+        "tiempo_base_dias": 120,
+        "rendimiento_promedio": 12.0,
+        "espacio_por_planta_m2": 2.5
+    },
+    {
+        "nombre": "Apio",
+        "descripcion": "Hortaliza de tallos largos y crujientes.",
+        "tiempo_base_dias": 130,
+        "rendimiento_promedio": 4.0,
+        "espacio_por_planta_m2": 0.3
+    },
+    {
+        "nombre": "Cilantro",
+        "descripcion": "Hierba aromática muy usada en cocina.",
+        "tiempo_base_dias": 40,
+        "rendimiento_promedio": 1.5,
+        "espacio_por_planta_m2": 0.05
+    },
+    {
+        "nombre": "Perejil",
+        "descripcion": "Hierba aromática de uso culinario.",
+        "tiempo_base_dias": 70,
+        "rendimiento_promedio": 1.2,
+        "espacio_por_planta_m2": 0.05
+    },
+    {
+        "nombre": "Albahaca",
+        "descripcion": "Hierba aromática muy usada en cocina italiana.",
+        "tiempo_base_dias": 60,
+        "rendimiento_promedio": 1.0,
+        "espacio_por_planta_m2": 0.08
+    },
+    {
+        "nombre": "Orégano",
+        "descripcion": "Planta aromática resistente.",
+        "tiempo_base_dias": 80,
+        "rendimiento_promedio": 0.8,
+        "espacio_por_planta_m2": 0.1
+    },
+    {
+        "nombre": "Lenteja",
+        "descripcion": "Leguminosa rica en proteínas.",
+        "tiempo_base_dias": 110,
+        "rendimiento_promedio": 1.8,
+        "espacio_por_planta_m2": 0.15
+    },
+    {
+        "nombre": "Garbanzo",
+        "descripcion": "Leguminosa muy nutritiva.",
+        "tiempo_base_dias": 120,
+        "rendimiento_promedio": 2.0,
+        "espacio_por_planta_m2": 0.2
+    },
+    {
+        "nombre": "Sorgo",
+        "descripcion": "Cereal resistente a sequía.",
+        "tiempo_base_dias": 110,
+        "rendimiento_promedio": 3.0,
+        "espacio_por_planta_m2": 0.25
+    },
+    {
+        "nombre": "Avena",
+        "descripcion": "Cereal usado en alimentación humana y animal.",
+        "tiempo_base_dias": 120,
+        "rendimiento_promedio": 2.5,
+        "espacio_por_planta_m2": 0.2
+    },
+    {
+        "nombre": "Trigo",
+        "descripcion": "Cereal base para harina.",
+        "tiempo_base_dias": 130,
+        "rendimiento_promedio": 3.0,
+        "espacio_por_planta_m2": 0.2
+    },
+    {
+        "nombre": "Uva",
+        "descripcion": "Fruta cultivada en vides, usada para consumo y vino.",
+        "tiempo_base_dias": 365,
+        "rendimiento_promedio": 10.0,
+        "espacio_por_planta_m2": 3.0
+    },
+    {
+        "nombre": "Mango",
+        "descripcion": "Fruta tropical dulce y jugosa.",
+        "tiempo_base_dias": 1095,
+        "rendimiento_promedio": 15.0,
+        "espacio_por_planta_m2": 25.0
+    },
+    {
+        "nombre": "Piña",
+        "descripcion": "Fruta tropical de sabor ácido-dulce.",
+        "tiempo_base_dias": 540,
+        "rendimiento_promedio": 2.0,
+        "espacio_por_planta_m2": 0.6
+    },
+    {
+        "nombre": "Papaya",
+        "descripcion": "Fruta tropical de rápido crecimiento.",
+        "tiempo_base_dias": 300,
+        "rendimiento_promedio": 20.0,
+        "espacio_por_planta_m2": 4.0
+    },
+    {
+        "nombre": "Guayaba",
+        "descripcion": "Fruta tropical rica en vitamina C.",
+        "tiempo_base_dias": 720,
+        "rendimiento_promedio": 18.0,
+        "espacio_por_planta_m2": 9.0
+    },
+    {
+        "nombre": "Maracuyá",
+        "descripcion": "Fruta ácida usada en jugos.",
+        "tiempo_base_dias": 300,
+        "rendimiento_promedio": 12.0,
+        "espacio_por_planta_m2": 4.0
+    },
+    {
+        "nombre": "Granadilla",
+        "descripcion": "Fruta dulce de cáscara dura.",
+        "tiempo_base_dias": 270,
+        "rendimiento_promedio": 10.0,
+        "espacio_por_planta_m2": 4.0
+    },
+    {
+        "nombre": "Arveja",
+        "descripcion": "Leguminosa de grano verde.",
+        "tiempo_base_dias": 90,
+        "rendimiento_promedio": 2.5,
+        "espacio_por_planta_m2": 0.2
+    },
+    {
+        "nombre": "Habichuela",
+        "descripcion": "Vaina verde comestible.",
+        "tiempo_base_dias": 70,
+        "rendimiento_promedio": 3.0,
+        "espacio_por_planta_m2": 0.2
+    },
+    {
+        "nombre": "Rábano",
+        "descripcion": "Raíz de crecimiento muy rápido.",
+        "tiempo_base_dias": 30,
+        "rendimiento_promedio": 1.5,
+        "espacio_por_planta_m2": 0.05
+    },
+    {
+        "nombre": "Remolacha",
+        "descripcion": "Raíz roja rica en nutrientes.",
+        "tiempo_base_dias": 90,
+        "rendimiento_promedio": 6.0,
+        "espacio_por_planta_m2": 0.1
     }
 ]

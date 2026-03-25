@@ -23,6 +23,7 @@ class CatalogSeeder extends Seeder
                         'descripcion' => $seed['descripcion'],
                         'tiempo_base_dias' => $seed['tiempo_base_dias'],
                         'rendimiento_promedio' => $seed['rendimiento_promedio'] ?? 0,
+                        'espacio_por_planta_m2' => $seed['espacio_por_planta_m2'] ?? 0.5,
                     ]
                 );
             }
