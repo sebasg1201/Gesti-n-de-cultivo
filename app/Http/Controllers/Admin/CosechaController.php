@@ -369,7 +369,9 @@ class CosechaController extends Controller
         $riegosCompletados = $riegos->where('id_estado', 15)->count();
 
         $insumos = \App\Models\InsumoCosecha::with('insumo')->where('id_cosecha', $id)->get();
-        $fases = \App\Models\FaseProgramada::where('id_cosecha', $id)->get();
+        $fases = \App\Models\FaseProgramada::where('id_terreno', $cosecha->id_terreno)
+            ->whereBetween('fecha_programada', [$fechaSiembra, $fechaEstimada ?? \Carbon\Carbon::now()])
+            ->get();
 
         $historial = collect();
 

@@ -11,13 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('insumo', function (Blueprint $table) {
-            $table->timestamps();
-        });
+        if (!Schema::hasColumn('insumo', 'created_at')) {
+            Schema::table('insumo', function (Blueprint $table) {
+                $table->timestamps();
+            });
+        }
 
-        Schema::table('terreno', function (Blueprint $table) {
-            $table->timestamps();
-        });
+        if (!Schema::hasColumn('terreno', 'created_at')) {
+            Schema::table('terreno', function (Blueprint $table) {
+                $table->timestamps();
+            });
+        }
     }
 
     /**

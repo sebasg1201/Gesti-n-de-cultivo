@@ -168,7 +168,7 @@ class UsuarioEmpresaController extends Controller
 
         // Obtener tareas asignadas (Fases, Riegos, Insumos)
         $fases = \App\Models\FaseProgramada::where('documento_trabajador', $documento)
-            ->with(['cosecha.terreno', 'estado'])
+            ->with(['terreno', 'estado'])
             ->get()
             ->map(function($item) {
                 $item->tipo_actividad = 'Fase';

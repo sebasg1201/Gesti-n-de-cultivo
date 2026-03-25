@@ -56,8 +56,8 @@
                     $shadowColor = 'shadow-blue-200/40';
                     $accentColor = 'blue-600';
                     $barColor = 'bg-blue-600';
-                    $iconSvg = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>';
-                    $bgIconSvg = '<path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>';
+                    $iconSvg = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 21.5c-3.5 0-6.5-3-6.5-6.5 0-2.5 1.5-5 6.5-11 5 6 6.5 8.5 6.5 11 0 3.5-3 6.5-6.5 6.5z" /></svg>';
+                    $bgIconSvg = '<path d="M12 21.5c-3.5 0-6.5-3-6.5-6.5 0-2.5 1.5-5 6.5-11 5 6 6.5 8.5 6.5 11 0 3.5-3 6.5-6.5 6.5z"/>';
                 } elseif($itemType === 'insumo') {
                     $borderColor = 'purple-500';
                     $bgLight = 'purple-50';
@@ -65,8 +65,8 @@
                     $shadowColor = 'shadow-purple-200/40';
                     $accentColor = 'purple-600';
                     $barColor = 'bg-purple-600';
-                    $iconSvg = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 01-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>';
-                    $bgIconSvg = '<path d="M19 13H5v-2h14v2z"/>';
+                    $iconSvg = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>';
+                    $bgIconSvg = '<path d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />';
                 }
             @endphp
             <div class="task-card group bg-white rounded-[2rem] p-5 border border-gray-100 shadow-sm hover:shadow-xl hover:{{ $shadowColor }} transition-all duration-500 relative overflow-hidden flex flex-col md:flex-row md:items-center gap-5">
@@ -125,15 +125,23 @@
                             <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
                             </svg>
-                            Lote #{{ $task->id_cosecha }}
+                            @if($itemType === 'general')
+                                Terreno: {{ $task->terreno?->nombre ?? 'N/A' }}
+                            @else
+                                Lote #{{ $task->id_cosecha }}
+                            @endif
                         </div>
 
-                        {{-- Crop / Variety Badge --}}
+                        {{-- Crop / Variety / Location Badge --}}
                         <div class="flex items-center gap-1.5 px-3 py-1.5 bg-{{ $bgLight }} rounded-xl text-{{ $textColor }} text-[11px] font-black border border-{{ $borderColor }}/20 uppercase tracking-tight group-hover:bg-white transition-colors">
                             <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71z"/>
                             </svg>
-                            {{ $task->cosecha?->semilla?->nombre_semilla ?? 'Variedad' }}
+                            @if($itemType === 'general')
+                                {{ $task->terreno?->ubicacion ?? 'Ubicación General' }}
+                            @else
+                                {{ $task->cosecha?->semilla?->nombre_semilla ?? 'Variedad' }}
+                            @endif
                         </div>
 
                         {{-- Worker Badge (Mini) --}}
