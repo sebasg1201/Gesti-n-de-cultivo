@@ -18,6 +18,51 @@ class CosechaController extends Controller
         return Auth::guard('usuario')->user()->id_empresa;
     }
 
+    public function buscarTerrenos(Request $request)
+    {
+        $id_empresa = $this->getEmpresaId();
+        $query = $request->get('q');
+
+        $terrenos = Terreno::with('tipoSuelo')
+            ->where('id_empresa', $id_empresa)
+            ->where('id_estado', 7) // Disponible
+            ->where('nombre', 'LIKE', "%{$query}%")
+            ->get()
+            ->map(function ($t) {
+                return [
+                    'id' => $t->id_terreno,
+                    'nombre' => $t->nombre,
+                    'area' => $t->area_m2 ?? ($t->Ancho * $t->Alto),
+                    'suelo' => $t->tipoSuelo->nombre ?? 'N/A',
+                    'impacto' => $t->tipoSuelo->impacto_dias ?? 0
+                ];
+            });
+
+        return response()->json($terrenos);
+    }
+
+    public function buscarEspecies(Request $request)
+    {
+        $id_empresa = $this->getEmpresaId();
+        $query = $request->get('q');
+
+        $especies = TipoSemilla::where('id_empresa', $id_empresa)
+            ->where('nombre_semilla', 'LIKE', "%{$query}%")
+            ->get()
+            ->map(function ($s) {
+                return [
+                    'id' => $s->id_semilla,
+                    'nombre' => $s->nombre_semilla,
+                    'stock' => $s->stock_actual,
+                    'espacio' => $s->espacio_por_planta_m2 ?? 0.25,
+                    'yield' => $s->rendimiento_promedio,
+                    'base_dias' => $s->tiempo_base_dias ?? 0
+                ];
+            });
+
+        return response()->json($especies);
+    }
+
     public function index(Request $request)
     {
         $id_empresa = $this->getEmpresaId();

@@ -138,11 +138,14 @@ Route::middleware(['auth:usuario', 'check.license'])->group(function () {
     Route::get('/admin/proveedores/{id}/historial', [\App\Http\Controllers\ProveedorController::class, 'historial'])->name('admin.proveedores.historial');
     Route::get('/admin/proveedores/entradas-dashboard', [\App\Http\Controllers\ProveedorController::class, 'entradasDashboard'])->name('admin.proveedores.entradas_dashboard');
     Route::get('/admin/proveedores/entradas-dashboard/exportar', [\App\Http\Controllers\ProveedorController::class, 'exportarEntradas'])->name('admin.proveedores.exportar_entradas');
+    Route::get('/admin/proveedores/buscar-items', [\App\Http\Controllers\ProveedorController::class, 'buscarItems'])->name('admin.proveedores.buscar_items');
     Route::resource('/admin/proveedores', \App\Http\Controllers\ProveedorController::class, ['as' => 'admin']);
     Route::resource('/admin/insumos', \App\Http\Controllers\InsumoController::class, ['as' => 'admin']);
     
     // Cosechas y Cultivos
     Route::get('/admin/cosechas/export', [\App\Http\Controllers\Admin\CosechaController::class, 'exportCSV'])->name('admin.cosechas.export');
+    Route::get('/admin/cosechas/buscar-terrenos', [\App\Http\Controllers\Admin\CosechaController::class, 'buscarTerrenos'])->name('admin.cosechas.buscar_terrenos');
+    Route::get('/admin/cosechas/buscar-especies', [\App\Http\Controllers\Admin\CosechaController::class, 'buscarEspecies'])->name('admin.cosechas.buscar_especies');
     Route::resource('/admin/cosechas', \App\Http\Controllers\Admin\CosechaController::class, ['as' => 'admin']);
 
     Route::get('/admin/cultivos/export', [\App\Http\Controllers\Admin\CultivoController::class, 'exportCSV'])->name('admin.cultivos.export');

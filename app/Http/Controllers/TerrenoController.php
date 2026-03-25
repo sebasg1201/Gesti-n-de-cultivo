@@ -144,6 +144,7 @@ class TerrenoController extends Controller
             'longitud' => $request->longitud,
             'Ancho' => $request->Ancho,
             'Alto' => $request->Alto,
+            'area_m2' => $request->Ancho * $request->Alto,
             'id_estado' => 7, // 7 = Disponible
             'id_tipo_suelo' => $request->id_tipo_suelo,
             'departamento' => $request->departamento,
@@ -184,6 +185,7 @@ class TerrenoController extends Controller
             'longitud' => $request->longitud,
             'Ancho' => $request->Ancho,
             'Alto' => $request->Alto,
+            'area_m2' => $request->Ancho * $request->Alto,
             'id_tipo_suelo' => $request->id_tipo_suelo,
             'id_estado' => $request->id_estado,
             'departamento' => $request->departamento,
