@@ -341,12 +341,26 @@ class AdminController extends Controller
 
         // Si el trabajador finaliza la tarea (15=Realizado), guardamos la evidencia en registro_trabajo
         if ($nuevoEstado === 15) {
-            $registroData = [
-                'documento_trabajador' => $usuario->documento,
-                'fecha_trabajada'      => now()->toDateString(),
-                'estado_aprobacion'    => 'pendiente',
-                'created_at'           => now(),
-            ];
+            // Evitar duplicados: Verificar si ya existe un registro para esta tarea específica
+            $existeRegistro = \Illuminate\Support\Facades\DB::table('registro_trabajo')
+                ->where('documento_trabajador', $usuario->documento)
+                ->where(function($q) use ($tipo, $id) {
+                    if ($tipo === 'insumo') $q->where('id_insumo_cosecha', $id);
+                    elseif ($tipo === 'riego') $q->where('id_riego', $id);
+                    elseif ($tipo === 'fase') $q->where('id_fase', $id);
+                })
+                ->exists();
+
+            if ($existeRegistro) {
+                // Si ya existe registro, solo actualizamos el estado de la tarea (esto se hace al final de la función)
+                // saltamos la inserción.
+            } else {
+                $registroData = [
+                    'documento_trabajador' => $usuario->documento,
+                    'fecha_trabajada'      => now()->toDateString(),
+                    'estado_aprobacion'    => 'pendiente',
+                    'created_at'           => now(),
+                ];
 
             // Foto de evidencia
             if ($request->hasFile('evidencia_foto')) {
@@ -358,13 +372,6 @@ class AdminController extends Controller
             // Observación del trabajador
             if ($request->filled('observacion_trabajador')) {
                 $registroData['observacion'] = $request->observacion_trabajador;
-                // Save to task table (column names differ)
-                if ($tipo === 'riego') {
-                    $updateData['observaciones'] = $request->observacion_trabajador;
-                } else {
-                    // For fases and insumo_cosecha, there's no clear 'observacion' column in the main table based on previous check, 
-                    // but we will rely on the evidence_foto for the UI or fetch it from registro_trabajo if needed.
-                }
             }
 
             // Enlazar con el tipo de tarea correspondiente
@@ -377,6 +384,7 @@ class AdminController extends Controller
             }
 
             \Illuminate\Support\Facades\DB::table('registro_trabajo')->insert($registroData);
+            }
         } elseif ($nuevoEstado === 18) {
             $registroData = [
                 'documento_trabajador' => $usuario->documento,
@@ -597,22 +605,34 @@ class AdminController extends Controller
         
         $eventos = [];
 
-        // 0. Asistencias (Registros del trabajador)
-        $asistencias = \App\Models\RegistroTrabajo::where('documento_trabajador', $usuario->documento)->get();
+        // 0. Asistencias (Registros del trabajador) - Mostrar todas (incluyendo vinculadas)
+        // Excepto las que son tareas ocultas/omitidas
+        $asistencias = \App\Models\RegistroTrabajo::where('documento_trabajador', $usuario->documento)
+            ->where('observacion', '!=', 'Tarea perdida ocultada por el trabajador.')
+            ->get();
         foreach ($asistencias as $asist) {
             $eventos[] = [
                 'id' => 'registro_' . $asist->id_registro_trabajo,
                 'title' => 'Asistencia Confirmada',
-                'start' => $asist->fecha_trabajada,
+                'start' => date('Y-m-d', strtotime($asist->fecha_trabajada)),
                 'color' => '#10b981', // Verde esmeralda
                 'extendedProps' => [
                     'tipo' => 'registro',
-                    'descripcion' => $asist->observacion,
-                    'foto_url' => $asist->foto_evidencia ? asset('storage/' . $asist->foto_evidencia) : null,
+                    'observacion' => $asist->observacion,
+                    'foto_url' => $asist->foto_evidencia ? asset('uploads/' . $asist->foto_evidencia) : null,
                     'estado' => 15
                 ]
             ];
         }
+
+        // Fetch observations for lookup
+        $registros = \Illuminate\Support\Facades\DB::table('registro_trabajo')
+            ->where('documento_trabajador', $usuario->documento)
+            ->get();
+        
+        $obsFase = $registros->whereNotNull('id_fase')->pluck('observacion', 'id_fase')->toArray();
+        $obsRiego = $registros->whereNotNull('id_riego')->pluck('observacion', 'id_riego')->toArray();
+        $obsInsumo = $registros->whereNotNull('id_insumo_cosecha')->pluck('observacion', 'id_insumo_cosecha')->toArray();
 
         // 1. Fase Programada
         $fases = \App\Models\FaseProgramada::with(['terreno'])
@@ -638,7 +658,8 @@ class AdminController extends Controller
                     'descripcion' => $fase->descripcion,
                     'cultivo' => $nombreLugar,
                     'estado' => $fase->id_estado,
-                    'foto_url' => $fase->evidencia_foto ? asset('storage/' . $fase->evidencia_foto) : null
+                    'foto_url' => $fase->evidencia_foto ? asset('uploads/' . $fase->evidencia_foto) : null,
+                    'observacion' => $obsFase[$fase->id_fase] ?? null
                 ]
             ];
         }
@@ -664,7 +685,8 @@ class AdminController extends Controller
                     'tipo' => 'riego',
                     'descripcion' => $riego->observaciones,
                     'estado' => $riego->id_estado,
-                    'foto_url' => $riego->evidencia_foto ? asset('storage/' . $riego->evidencia_foto) : null
+                    'foto_url' => $riego->evidencia_foto ? asset('uploads/' . $riego->evidencia_foto) : null,
+                    'observacion' => $obsRiego[$riego->id_riego] ?? $riego->observaciones
                 ]
             ];
         }
@@ -690,7 +712,8 @@ class AdminController extends Controller
                     'tipo' => 'insumo',
                     'descripcion' => 'Aplicación de ' . ($insumo->insumo->Nombre ?? 'insumo'),
                     'estado' => $insumo->id_estado,
-                    'foto_url' => $insumo->evidencia_foto ? asset('storage/' . $insumo->evidencia_foto) : null
+                    'foto_url' => $insumo->evidencia_foto ? asset('uploads/' . $insumo->evidencia_foto) : null,
+                    'observacion' => $obsInsumo[$insumo->id_insumo_cosecha] ?? null
                 ]
             ];
         }

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 25-03-2026 a las 22:36:46
+-- Tiempo de generación: 25-03-2026 a las 23:00:46
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de datos: `prueba_cultivos`
+-- Base de datos: `cultivos`
 --
 
 -- --------------------------------------------------------
@@ -68,7 +68,52 @@ INSERT INTO `catalogo_insumos` (`id_catalogo_insumo`, `nombre_comercial`, `descr
 (3, 'Urea Agrícola 46%', 'Fuente concentrada de nitrógeno', 3, 6),
 (4, 'Pala Punta Huevo', 'Herramienta resistente para trabajo de campo', 0, 8),
 (5, 'Machete 22 Pulgadas', 'Acero al carbono, ideal para desmonte', 0, 8),
-(6, 'Aceite Motor Diesel 15W40', 'Lubricante para tractores y maquinaria pesada', 0, 9);
+(6, 'Aceite Motor Diesel 15W40', 'Lubricante para tractores y maquinaria pesada', 0, 9),
+(8, 'Fertilizante Triple 15', 'Fertilizante granulado balanceado', 6, 6),
+(9, 'DAP Fosfato Diamónico', 'Fuente de fósforo para raíces', 7, 6),
+(10, 'Cloruro de Potasio', 'Aporte de potasio para fructificación', 6, 6),
+(11, 'Abono Orgánico Compost', 'Materia orgánica para mejorar el suelo', 10, 2),
+(12, 'Humus de Lombriz', 'Fertilizante natural rico en nutrientes', 9, 2),
+(13, 'Glifosato 480 SL', 'Herbicida sistémico no selectivo', -5, 4),
+(14, 'Paraquat', 'Herbicida de contacto', -4, 4),
+(15, '2,4-D Amina', 'Control de malezas hoja ancha', -3, 4),
+(16, 'Mancozeb', 'Fungicida preventivo', -2, 3),
+(17, 'Carbendazim', 'Fungicida sistémico', -2, 3),
+(18, 'Oxicloruro de Cobre', 'Control de enfermedades bacterianas', -1, 3),
+(19, 'Imidacloprid', 'Insecticida sistémico', -3, 10),
+(20, 'Clorpirifos', 'Insecticida organofosforado', -4, 10),
+(21, 'Lambda Cihalotrina', 'Control de insectos masticadores', -3, 10),
+(22, 'Azufre Agrícola', 'Control de hongos y ácaros', -1, 7),
+(23, 'Cal Agrícola', 'Corrector de pH del suelo', 8, 7),
+(24, 'Yeso Agrícola', 'Mejora estructura del suelo', 7, 7),
+(25, 'Bioestimulante Algas Marinas', 'Estimula crecimiento vegetal', 6, 7),
+(26, 'Melaza Agrícola', 'Estimula microorganismos del suelo', 5, 7),
+(27, 'Azadón Profesional', 'Herramienta para labranza', 0, 8),
+(28, 'Rastrillo Metálico', 'Nivelación de terreno', 0, 8),
+(29, 'Carretilla Agrícola', 'Transporte de materiales', 0, 8),
+(30, 'Guadaña Manual', 'Corte de maleza', 0, 8),
+(31, 'Tijeras de Poda', 'Poda de cultivos', 0, 8),
+(32, 'Grasa Multipropósito', 'Lubricante para maquinaria', 0, 9),
+(33, 'Aceite Hidráulico', 'Para sistemas hidráulicos', 0, 9),
+(34, 'Diesel Agrícola', 'Combustible maquinaria', 0, 9),
+(35, 'Micorrizas', 'Mejora absorción de nutrientes', 9, 7),
+(36, 'Trichoderma', 'Control biológico de hongos', 7, 7),
+(37, 'Bacillus Thuringiensis', 'Control biológico de insectos', -1, 7),
+(38, 'Nitrato de Calcio', 'Fuente de calcio y nitrógeno', 6, 6),
+(39, 'Sulfato de Magnesio', 'Aporte de magnesio', 5, 6),
+(40, 'Quelato de Hierro', 'Corrige clorosis férrica', 4, 6),
+(41, 'Silicato de Potasio', 'Fortalece resistencia vegetal', 6, 6),
+(42, 'Extracto de Neem', 'Insecticida natural', -2, 10),
+(43, 'Fosfato Monoamónico MAP', 'Fuente de fósforo y nitrógeno', 6, 6),
+(44, 'Nitrato de Potasio', 'Estimula floración y fructificación', 5, 6),
+(45, 'Ácido Húmico Líquido', 'Mejora estructura del suelo', 8, 2),
+(46, 'Ácido Fúlvico', 'Favorece absorción de nutrientes', 7, 2),
+(47, 'Spinosad', 'Insecticida biológico', -2, 10),
+(48, 'Abamectina', 'Control de ácaros e insectos', -3, 10),
+(49, 'Metalaxil', 'Fungicida sistémico', -2, 3),
+(50, 'Atrazina', 'Herbicida preemergente', -4, 4),
+(51, 'Pulverizador Manual 20L', 'Equipo para aplicación de insumos', 0, 8),
+(52, 'Aceite 2T', 'Lubricante para guadaña', 0, 9);
 
 -- --------------------------------------------------------
 
@@ -119,21 +164,56 @@ CREATE TABLE `catalogo_semillas` (
 --
 
 INSERT INTO `catalogo_semillas` (`id`, `nombre`, `descripcion`, `tiempo_base_dias`, `rendimiento_promedio`, `created_at`, `updated_at`, `espacio_por_planta_m2`) VALUES
-(1, 'Tomate Chonto', 'Variedad de tomate muy resistente, ideal para salsas.', 90, 12.00, '2026-03-07 19:26:40', '2026-03-07 19:27:51', 0.2500),
-(2, 'Café Arábigo', 'Variedad premium de café con aroma intenso y acidez equilibrada.', 210, 1.50, '2026-03-07 19:26:40', '2026-03-07 19:27:51', 0.2500),
-(3, 'Maíz Amarillo', 'Cereal básico para la alimentación, ciclo corto.', 120, 3.50, NULL, NULL, 0.2500),
-(4, 'Papa Pastusa', 'Variedad de papa de textura harinosa, muy popular en Colombia.', 135, 25.00, '2026-03-07 19:26:40', '2026-03-07 19:27:51', 0.2500),
-(5, 'Cacao', 'Cultivo de clima cálido, base para el chocolate.', 180, 0.80, NULL, NULL, 0.2500),
-(6, 'Arroz', 'Cereal de inundación o secano, base de la dieta.', 130, 6.00, NULL, NULL, 0.2500),
-(7, 'Maíz Dulce', 'Maíz de grano tierno y dulce, ideal para consumo humano directo.', 85, 4.50, '2026-03-07 19:26:40', '2026-03-07 19:27:51', 0.2500),
-(8, 'Cebolla Cabezona', 'Bulbo de sabor fuerte, uso esencial en cocina.', 120, 15.00, '2026-03-07 19:26:40', '2026-03-07 19:27:51', 0.2500),
-(9, 'Papa Criolla', 'Papa pequeña y amarilla, ciclo corto y sabor suave.', 110, 10.00, '2026-03-07 19:26:40', '2026-03-07 19:27:51', 0.2500),
-(10, 'Zanahoria', 'Raíz naranja rica en carotenos, ciclo productivo estándar.', 110, 20.00, '2026-03-07 19:26:40', '2026-03-07 19:27:51', 0.2500),
-(11, 'Fresa', 'Fruta roja pequeña, requiere suelos ácidos y buen riego.', 150, 0.80, '2026-03-07 19:26:40', '2026-03-07 19:27:51', 0.2500),
-(12, 'Cacao Forastero', 'Variedad de cacao muy productiva y resistente.', 165, 1.20, '2026-03-07 19:26:40', '2026-03-07 19:27:51', 0.2500),
-(13, 'Plátano Hartón', 'Plátano de gran tamaño usado principalmente para cocinar.', 360, 14.00, '2026-03-07 19:26:40', '2026-03-07 19:27:51', 0.2500),
-(14, 'Aguacate Hass', 'Variedad de aguacate con piel rugosa y alto contenido de aceite.', 240, 8.00, '2026-03-07 19:26:40', '2026-03-07 19:27:51', 0.2500),
-(15, 'Fríjol Cargamanto', 'Leguminosa de grano grande, muy apreciada en la región andina.', 140, 2.20, '2026-03-07 19:26:40', '2026-03-07 19:27:51', 0.2500);
+(1, 'Tomate Chonto', 'Variedad de tomate muy resistente, ideal para salsas.', 90, 12.00, '2026-03-07 19:26:40', '2026-03-25 21:42:35', 0.4000),
+(2, 'Café Arábigo', 'Variedad premium de café con aroma intenso y acidez equilibrada.', 720, 1.50, '2026-03-07 19:26:40', '2026-03-25 21:42:35', 2.0000),
+(3, 'Maíz Amarillo', 'Cereal básico para la alimentación, ciclo corto.', 120, 3.50, NULL, NULL, 0.5000),
+(4, 'Papa Pastusa', 'Variedad de papa de textura harinosa, muy popular en Colombia.', 120, 25.00, '2026-03-07 19:26:40', '2026-03-25 21:42:35', 0.3500),
+(5, 'Cacao', 'Cultivo de clima cálido, base para el chocolate.', 180, 0.80, NULL, NULL, 0.5000),
+(6, 'Arroz', 'Cereal de inundación o secano, base de la dieta.', 130, 6.00, NULL, NULL, 0.5000),
+(7, 'Maíz Dulce', 'Maíz de grano tierno y dulce, ideal para consumo humano directo.', 85, 4.50, '2026-03-07 19:26:40', '2026-03-25 21:42:35', 0.3000),
+(8, 'Cebolla Cabezona', 'Bulbo de sabor fuerte, uso esencial en cocina.', 120, 15.00, '2026-03-07 19:26:40', '2026-03-25 21:42:35', 0.0800),
+(9, 'Papa Criolla', 'Papa pequeña y amarilla, ciclo corto y sabor suave.', 100, 10.00, '2026-03-07 19:26:40', '2026-03-25 21:42:35', 0.3000),
+(10, 'Zanahoria', 'Raíz naranja rica en carotenos, ciclo productivo estándar.', 100, 20.00, '2026-03-07 19:26:40', '2026-03-25 21:42:35', 0.0500),
+(11, 'Fresa', 'Fruta roja pequeña, requiere suelos ácidos y buen riego.', 120, 0.80, '2026-03-07 19:26:40', '2026-03-25 21:42:35', 0.2500),
+(12, 'Cacao Forastero', 'Variedad de cacao muy productiva y resistente.', 1095, 1.20, '2026-03-07 19:26:40', '2026-03-25 21:42:35', 9.0000),
+(13, 'Plátano Hartón', 'Plátano de gran tamaño usado principalmente para cocinar.', 300, 14.00, '2026-03-07 19:26:40', '2026-03-25 21:42:35', 6.0000),
+(14, 'Aguacate Hass', 'Variedad de aguacate con piel rugosa y alto contenido de aceite.', 1460, 8.00, '2026-03-07 19:26:40', '2026-03-25 21:42:35', 25.0000),
+(15, 'Fríjol Cargamanto', 'Leguminosa de grano grande, muy apreciada en la región andina.', 120, 2.20, '2026-03-07 19:26:40', '2026-03-25 21:42:35', 0.2000),
+(16, 'Lechuga Romana', 'Hortaliza de hojas alargadas, muy usada en ensaladas.', 60, 3.00, '2026-03-25 21:06:32', '2026-03-25 21:42:35', 0.1000),
+(17, 'Espinaca', 'Hortaliza de hojas verdes rica en hierro.', 45, 2.50, '2026-03-25 21:06:32', '2026-03-25 21:42:35', 0.0800),
+(18, 'Pepino', 'Fruto alargado y refrescante, de rápido crecimiento.', 75, 8.00, '2026-03-25 21:06:32', '2026-03-25 21:42:35', 0.5000),
+(19, 'Pimentón', 'Fruto dulce de colores variados.', 100, 6.00, '2026-03-25 21:06:32', '2026-03-25 21:42:35', 0.4000),
+(20, 'Ajo', 'Bulbo aromático usado como condimento.', 150, 5.00, '2026-03-25 21:06:32', '2026-03-25 21:42:35', 0.1000),
+(21, 'Brócoli', 'Hortaliza rica en nutrientes, tipo col.', 90, 4.00, '2026-03-25 21:06:32', '2026-03-25 21:42:35', 0.4000),
+(22, 'Coliflor', 'Hortaliza de inflorescencia blanca.', 100, 3.50, '2026-03-25 21:06:32', '2026-03-25 21:42:35', 0.4000),
+(23, 'Repollo', 'Hortaliza de hojas compactas en forma de bola.', 110, 4.50, '2026-03-25 21:06:32', '2026-03-25 21:42:35', 0.5000),
+(24, 'Yuca', 'Raíz tropical rica en carbohidratos.', 300, 20.00, '2026-03-25 21:06:32', '2026-03-25 21:42:35', 1.0000),
+(25, 'Batata', 'Tubérculo dulce también conocido como camote.', 120, 18.00, '2026-03-25 21:06:32', '2026-03-25 21:42:35', 0.5000),
+(26, 'Sandía', 'Fruta grande y jugosa, de clima cálido.', 100, 10.00, '2026-03-25 21:06:32', '2026-03-25 21:42:35', 2.0000),
+(27, 'Melón', 'Fruta dulce de pulpa aromática.', 90, 8.00, '2026-03-25 21:06:32', '2026-03-25 21:42:35', 1.5000),
+(28, 'Calabacín', 'Variedad de calabaza de fruto tierno.', 60, 6.00, '2026-03-25 21:06:32', '2026-03-25 21:42:35', 0.6000),
+(29, 'Calabaza', 'Fruto grande utilizado en múltiples preparaciones.', 120, 12.00, '2026-03-25 21:06:32', '2026-03-25 21:42:35', 2.5000),
+(30, 'Apio', 'Hortaliza de tallos largos y crujientes.', 130, 4.00, '2026-03-25 21:06:32', '2026-03-25 21:42:35', 0.3000),
+(31, 'Cilantro', 'Hierba aromática muy usada en cocina.', 40, 1.50, '2026-03-25 21:06:32', '2026-03-25 21:42:35', 0.0500),
+(32, 'Perejil', 'Hierba aromática de uso culinario.', 70, 1.20, '2026-03-25 21:06:32', '2026-03-25 21:42:35', 0.0500),
+(33, 'Albahaca', 'Hierba aromática muy usada en cocina italiana.', 60, 1.00, '2026-03-25 21:06:32', '2026-03-25 21:42:35', 0.0800),
+(34, 'Orégano', 'Planta aromática resistente.', 80, 0.80, '2026-03-25 21:06:32', '2026-03-25 21:42:35', 0.1000),
+(35, 'Lenteja', 'Leguminosa rica en proteínas.', 110, 1.80, '2026-03-25 21:06:32', '2026-03-25 21:42:35', 0.1500),
+(36, 'Garbanzo', 'Leguminosa muy nutritiva.', 120, 2.00, '2026-03-25 21:06:32', '2026-03-25 21:42:35', 0.2000),
+(37, 'Sorgo', 'Cereal resistente a sequía.', 110, 3.00, '2026-03-25 21:06:32', '2026-03-25 21:42:35', 0.2500),
+(38, 'Avena', 'Cereal usado en alimentación humana y animal.', 120, 2.50, '2026-03-25 21:06:32', '2026-03-25 21:42:35', 0.2000),
+(39, 'Trigo', 'Cereal base para harina.', 130, 3.00, '2026-03-25 21:06:32', '2026-03-25 21:42:35', 0.2000),
+(40, 'Uva', 'Fruta cultivada en vides, usada para consumo y vino.', 365, 10.00, '2026-03-25 21:06:32', '2026-03-25 21:42:35', 3.0000),
+(41, 'Mango', 'Fruta tropical dulce y jugosa.', 1095, 15.00, '2026-03-25 21:06:32', '2026-03-25 21:42:35', 25.0000),
+(42, 'Piña', 'Fruta tropical de sabor ácido-dulce.', 540, 2.00, '2026-03-25 21:06:32', '2026-03-25 21:42:35', 0.6000),
+(43, 'Papaya', 'Fruta tropical de rápido crecimiento.', 300, 20.00, '2026-03-25 21:06:32', '2026-03-25 21:42:35', 4.0000),
+(44, 'Guayaba', 'Fruta tropical rica en vitamina C.', 720, 18.00, '2026-03-25 21:06:32', '2026-03-25 21:42:35', 9.0000),
+(45, 'Maracuyá', 'Fruta ácida usada en jugos.', 300, 12.00, '2026-03-25 21:06:32', '2026-03-25 21:42:35', 4.0000),
+(46, 'Granadilla', 'Fruta dulce de cáscara dura.', 270, 10.00, '2026-03-25 21:06:32', '2026-03-25 21:42:35', 4.0000),
+(47, 'Arveja', 'Leguminosa de grano verde.', 90, 2.50, '2026-03-25 21:06:32', '2026-03-25 21:42:35', 0.2000),
+(48, 'Habichuela', 'Vaina verde comestible.', 70, 3.00, '2026-03-25 21:06:32', '2026-03-25 21:42:35', 0.2000),
+(49, 'Rábano', 'Raíz de crecimiento muy rápido.', 30, 1.50, '2026-03-25 21:06:32', '2026-03-25 21:42:35', 0.0500),
+(50, 'Remolacha', 'Raíz roja rica en nutrientes.', 90, 6.00, '2026-03-25 21:06:32', '2026-03-25 21:42:35', 0.1000);
 
 -- --------------------------------------------------------
 
@@ -191,7 +271,7 @@ CREATE TABLE `cosecha` (
 --
 
 INSERT INTO `cosecha` (`id_cosecha`, `id_empresa`, `Cantidad`, `id_terreno`, `id_semilla`, `id_estado`, `fecha_siembra`, `frecuencia_riego_dias`, `fecha_estimada`, `imagenes`, `produccion_estimada`, `litros_por_riego`) VALUES
-(22, '988091212', 50, 8, 3, 1, '2026-03-17', 1, '2026-06-29', 'cosechas/yT1SnFb6U20J6ZroWINQnQXFcBjdSil9uQUw3Wjz.jpg', 600.00, 2.00);
+(22, '988091212', 50, 8, 3, 1, '2026-03-17', 1, '2026-06-27', 'cosechas/yT1SnFb6U20J6ZroWINQnQXFcBjdSil9uQUw3Wjz.jpg', 600.00, 2.00);
 
 -- --------------------------------------------------------
 
@@ -404,7 +484,7 @@ CREATE TABLE `failed_jobs` (
 CREATE TABLE `fases_programadas` (
   `id_fase` int(11) NOT NULL,
   `descripcion` text DEFAULT NULL,
-  `fecha_programada` date DEFAULT NULL,
+  `fecha_programada` datetime DEFAULT NULL,
   `documento_trabajador` int(11) NOT NULL,
   `id_estado` int(11) NOT NULL DEFAULT 1,
   `evidencia_foto` varchar(255) DEFAULT NULL,
@@ -457,16 +537,8 @@ CREATE TABLE `insumo_cosecha` (
   `cantidad_usada` decimal(10,2) DEFAULT NULL,
   `impacto_dias` int(11) DEFAULT 0,
   `fecha_programada` datetime DEFAULT NULL,
-  `fecha_realizacion` date DEFAULT NULL
+  `fecha_realizacion` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `insumo_cosecha`
---
-
-INSERT INTO `insumo_cosecha` (`id_insumo_cosecha`, `id_cosecha`, `id_insumo`, `documento_trabajador`, `id_estado`, `evidencia_foto`, `cantidad_usada`, `impacto_dias`, `fecha_programada`, `fecha_realizacion`) VALUES
-(2, 22, 6, 1039253243, 1, NULL, 2.00, 0, '2026-03-29 00:00:00', NULL),
-(5, 22, 6, 1039253243, 17, NULL, 2.00, 0, '2026-03-25 15:34:53', NULL);
 
 -- --------------------------------------------------------
 
@@ -548,9 +620,7 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (26, '2026_03_16_145658_add_evidencia_foto_to_fases_programadas_table', 17),
 (27, '2026_03_16_145708_add_evidencia_foto_to_riego_table', 17),
 (28, '2026_03_16_145712_add_evidencia_foto_to_insumos_cosechas_table', 17),
-(29, '2026_03_17_000001_insert_en_proceso_estado', 17),
-(30, '2026_03_19_141013_add_timestamps_to_insumo_and_terreno', 18),
-(31, '2026_03_25_103434_fix_terreno_area_precision', 19);
+(29, '2026_03_17_000001_insert_en_proceso_estado', 17);
 
 -- --------------------------------------------------------
 
@@ -627,12 +697,7 @@ INSERT INTO `registro_trabajo` (`id_registro_trabajo`, `id_insumo_cosecha`, `doc
 (17, NULL, 1105461467, '2026-03-13', 'evidencias/UoEiLyHQl9hj3oFtzxLr1nJdyA83AugvK2Oryja7.png', 'pendiente', '9poikjuhygtrf', '2026-03-12 19:08:34'),
 (18, NULL, 1039253243, '2026-03-17', 'evidencias/ur4ABrNWTSkMZiqXeb8LizM4n4LKdfhWx9VcpbG2.jpg', 'pendiente', 'Realice el riego no jodan mas y paguen ya', '2026-03-17 18:30:41'),
 (19, NULL, 1039253243, '2026-03-19', NULL, 'pendiente', 'Tarea perdida ocultada por el trabajador.', '2026-03-19 20:21:49'),
-(20, NULL, 1039253243, '2026-03-24', 'evidencias/fW9yutc0h5RMKFBnar1z40PQlkS6vm1sPwFmKylu.jpg', 'pendiente', 'reigo echo', '2026-03-24 21:22:19'),
-(21, NULL, 1039253243, '2026-03-25', NULL, 'pendiente', 'Tarea perdida ocultada por el trabajador.', '2026-03-25 20:37:38'),
-(22, NULL, 1039253243, '2026-03-25', NULL, 'pendiente', 'Tarea perdida ocultada por el trabajador.', '2026-03-25 20:37:49'),
-(23, NULL, 1039253243, '2026-03-25', NULL, 'pendiente', 'Tarea perdida ocultada por el trabajador.', '2026-03-25 20:37:57'),
-(24, NULL, 1039253243, '2026-03-25', NULL, 'pendiente', 'Tarea perdida ocultada por el trabajador.', '2026-03-25 20:38:06'),
-(25, NULL, 1039253243, '2026-03-25', NULL, 'pendiente', 'Tarea perdida ocultada por el trabajador.', '2026-03-25 20:38:14');
+(20, NULL, 1039253243, '2026-03-24', 'evidencias/fW9yutc0h5RMKFBnar1z40PQlkS6vm1sPwFmKylu.jpg', 'pendiente', 'reigo echo', '2026-03-24 21:22:19');
 
 -- --------------------------------------------------------
 
@@ -659,14 +724,13 @@ CREATE TABLE `riego` (
 INSERT INTO `riego` (`id_riego`, `cant_agua_apl`, `observaciones`, `id_tipo_riego`, `id_cosecha`, `documento_trabajador`, `id_estado`, `evidencia_foto`, `fecha_programada`) VALUES
 (8, '2', 'Aplicar 2L en Parcela Sur al cultivo de Tomate Chonto.', 4, 22, 1039253243, 15, NULL, '2026-03-17 13:26:38'),
 (9, '2.00', 'Aplicar 2.00L - Riego programado automáticamente.', 4, 22, 1039253243, 18, NULL, '2026-03-18 14:12:44'),
-(10, '2.00', 'Aplicar 2.00L - Riego programado automáticamente.', 4, 22, 1039253243, 18, NULL, '2026-03-19 14:12:44'),
-(11, '2.00', 'Aplicar 2.00L - Riego programado automáticamente.', 4, 22, 1039253243, 18, NULL, '2026-03-20 12:58:04'),
-(12, '2.00', 'Aplicar 2.00L - Riego programado automáticamente.', 4, 22, 1039253243, 18, NULL, '2026-03-21 13:25:03'),
-(13, '2.00', 'Aplicar 2.00L - Riego programado automáticamente.', 4, 22, 1039253243, 18, NULL, '2026-03-22 13:25:04'),
-(14, '2.00', 'Aplicar 2.00L - Riego programado automáticamente.', 4, 22, 1039253243, 18, NULL, '2026-03-23 13:25:04'),
+(10, '2.00', 'Aplicar 2.00L - Riego programado automáticamente.', 4, 22, 1039253243, 16, NULL, '2026-03-19 14:12:44'),
+(11, '2.00', 'Aplicar 2.00L - Riego programado automáticamente.', 4, 22, 1039253243, 16, NULL, '2026-03-20 12:58:04'),
+(12, '2.00', 'Aplicar 2.00L - Riego programado automáticamente.', 4, 22, 1039253243, 16, NULL, '2026-03-21 13:25:03'),
+(13, '2.00', 'Aplicar 2.00L - Riego programado automáticamente.', 4, 22, 1039253243, 16, NULL, '2026-03-22 13:25:04'),
+(14, '2.00', 'Aplicar 2.00L - Riego programado automáticamente.', 4, 22, 1039253243, 16, NULL, '2026-03-23 13:25:04'),
 (15, '2.00', 'Aplicar 2.00L - Riego programado automáticamente.', 4, 22, 1039253243, 15, NULL, '2026-03-24 13:25:04'),
-(16, '2.00', 'Aplicar 2.00L - Riego programado automáticamente.', 4, 22, 1039253243, 17, NULL, '2026-03-25 13:45:03'),
-(18, '2', 'riega 2 litros de agua', 4, 22, 1039253243, 1, NULL, '2026-03-28 00:00:00');
+(16, '2.00', 'Aplicar 2.00L - Riego programado automáticamente.', 4, 22, 1039253243, 1, NULL, '2026-03-25 13:35:05');
 
 -- --------------------------------------------------------
 
@@ -705,10 +769,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('4CcJdbN4VT5Y9i8ksxMemEc2z6cTOnd7HyB8UBEr', 1110722345, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiZEhkY3dVekZTRVdQc1ExdHMxcTlpTlZVTkQ0ZGU3NHNtekpINW9HayI7czozOiJ1cmwiO2E6MTp7czo4OiJpbnRlbmRlZCI7czo0MzoiaHR0cDovLzEyNy4wLjAuMTo4MDAwL3RyYWJhamFkb3IvY2FsZW5kYXJpbyI7fXM6OToiX3ByZXZpb3VzIjthOjI6e3M6MzoidXJsIjtzOjM0OiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYWRtaW4vdGFyZWFzIjtzOjU6InJvdXRlIjtzOjE4OiJhZG1pbi50YXJlYXMuaW5kZXgiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjU0OiJsb2dpbl91c3VhcmlvXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MTExMDcyMjM0NTt9', 1774473492),
-('FP3dChtOdCI2oLMgyWYlP7snEhC8p5y9kJIQfis0', 1039253243, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoidUF0QlFmR1N0OXVLWms1M29lcFZTT1N5Y1RWc0xIY3ViVG41SjRUciI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MTI1OiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvdHJhYmFqYWRvci9jYWxlbmRhcmlvL2V2ZW50b3M/ZW5kPTIwMjYtMDQtMDZUMDAlM0EwMCUzQTAwLTA1JTNBMDAmc3RhcnQ9MjAyNi0wMi0yM1QwMCUzQTAwJTNBMDAtMDUlM0EwMCI7czo1OiJyb3V0ZSI7czoyOToidHJhYmFqYWRvci5jYWxlbmRhcmlvLmV2ZW50b3MiO31zOjU0OiJsb2dpbl91c3VhcmlvXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MTAzOTI1MzI0Mzt9', 1774473507),
-('gI3WAK4ugtEGycyOJL9az1xTFlLWElss067BDIkz', 1110722345, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiZDhORjM5dThvRjcwY3hjNnQwN0N3OHI2TmJwYUk5ZUc2U2oxWGlhSSI7czozOiJ1cmwiO2E6MTp7czo4OiJpbnRlbmRlZCI7czozNDoiaHR0cDovL2xvY2FsaG9zdDo4MDAwL2FkbWluL3RhcmVhcyI7fXM6OToiX3ByZXZpb3VzIjthOjI6e3M6MzoidXJsIjtzOjEyNToiaHR0cDovL2xvY2FsaG9zdDo4MDAwL3RyYWJhamFkb3IvY2FsZW5kYXJpby9ldmVudG9zP2VuZD0yMDI2LTA0LTA2VDAwJTNBMDAlM0EwMC0wNSUzQTAwJnN0YXJ0PTIwMjYtMDItMjNUMDAlM0EwMCUzQTAwLTA1JTNBMDAiO3M6NToicm91dGUiO3M6Mjk6InRyYWJhamFkb3IuY2FsZW5kYXJpby5ldmVudG9zIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo1NDoibG9naW5fdXN1YXJpb181OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjExMTA3MjIzNDU7fQ==', 1774473510),
-('oqm5qAj640qvwlOkyyNGzUbKnLqJ5DxiXqUxV6bj', 1110722345, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoibmxuR1o0ekRPd0N1WWJuZEk2bFlRdlVzWTVKUzQ3Y0F3eW1iRXA4ciI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzQ6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZG1pbi90YXJlYXMiO3M6NToicm91dGUiO3M6MTg6ImFkbWluLnRhcmVhcy5pbmRleCI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6NTQ6ImxvZ2luX3VzdWFyaW9fNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToxMTEwNzIyMzQ1O30=', 1774473501);
+('wgXvwMfeROrEEZbMExfZF2wseVrupuJmWaGRpC1l', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiR0N2bFQ3cHJqTGtlZWtpS3M3amxlakQ1b1oxR1ZzVkZMZWwwa0xpTyI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6Mjc6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9sb2dpbiI7czo1OiJyb3V0ZSI7czoxMzoidXN1YXJpby5sb2dpbiI7fXM6NTQ6ImxvZ2luX3VzdWFyaW9fNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToxMTEwNzIyMzQ1O30=', 1774475678);
 
 -- --------------------------------------------------------
 
@@ -808,7 +869,7 @@ CREATE TABLE `terreno` (
   `longitud` decimal(11,8) DEFAULT NULL,
   `Ancho` decimal(10,0) NOT NULL,
   `Alto` decimal(10,0) NOT NULL,
-  `area_m2` decimal(15,2) DEFAULT NULL,
+  `area_m2` decimal(8,2) DEFAULT NULL,
   `departamento` text NOT NULL,
   `ciudad` text NOT NULL,
   `codigo_postal` int(250) NOT NULL,
@@ -827,8 +888,8 @@ INSERT INTO `terreno` (`id_terreno`, `id_empresa`, `nombre`, `ubicacion`, `latit
 (6, '834324234', 'sebas', NULL, 7.56072491, -73.06678310, 400, 500, 200000.00, '', '', 0, 1, 2, '2026-03-20 18:34:26', '2026-03-24 20:13:48'),
 (7, '834324234', 'Playa', 'Verda la cima', 4.32039334, -75.37376404, 500, 90, 45000.00, '', '', 0, 6, 2, '2026-03-20 18:34:26', '2026-03-24 20:13:48'),
 (8, '988091212', 'Parcela Sur', 'Verdecito', 4.64751778, -74.69061985, 123, 76, 9348.00, '', '', 0, 6, 1, '2026-03-20 18:34:26', '2026-03-24 20:13:48'),
-(9, '834324234', 'didier', 'kasdjs', 4.43537750, -75.20574426, 567, 3442, NULL, 'Tolima', '', 730002, 7, 3, '2026-03-20 18:34:26', NULL),
-(10, '988091212', 'Parcela Norte', 'Vereda Via Cajamarca', 4.26935049, -74.79529904, 150, 75, NULL, 'Tolima', 'Flandes', 252432, 7, 1, '2026-03-20 18:34:26', NULL),
+(9, '834324234', 'didier', 'kasdjs', 4.43537750, -75.20574426, 567, 3442, NULL, 'Tolima', '', 730002, 7, 3, '2026-03-20 18:34:26', '0000-00-00 00:00:00'),
+(10, '988091212', 'Parcela Norte', 'Vereda Via Cajamarca', 4.26935049, -74.79529904, 150, 75, NULL, 'Tolima', 'Flandes', 252432, 7, 1, '2026-03-20 18:34:26', '0000-00-00 00:00:00'),
 (11, '988091212', 'Parcela Oeste', 'Vereda San Cristobal', 4.44011019, -75.21533432, 123, 70, NULL, 'Tolima', 'Ibagué', 730002, 7, 1, '2026-03-20 18:56:20', '2026-03-20 18:56:20'),
 (12, '988091212', 'Parcela Noroeste', 'Verda Napoles', 4.53245586, -74.74037075, 124, 70, 8680.00, 'Cundinamarca', 'Soacha', 250057, 7, 1, '2026-03-24 20:21:05', '2026-03-24 20:21:05');
 
@@ -952,11 +1013,11 @@ CREATE TABLE `tipo_semilla` (
 --
 
 INSERT INTO `tipo_semilla` (`id_semilla`, `id_empresa`, `id_catalogo`, `nombre_semilla`, `tiempo_base_dias`, `descripcion`, `rendimiento_promedio`, `stock_actual`, `espacio_por_planta_m2`) VALUES
-(3, '988091212', 1, 'Tomate Chonto', 90, 'Variedad de tomate muy resistente, ideal para salsas.', 12.00, 955.00, 0.2500),
-(4, '988091212', 3, 'Maíz Amarillo', 120, 'Cereal básico para la alimentación, ciclo corto.', 3.50, 0.00, 0.2500),
-(5, '834324234', 2, 'Café Arábigo', 210, 'Variedad premium de café con aroma intenso y acidez equilibrada.', 1.50, 5.00, 0.2500),
-(6, '834324234', NULL, 'fiojsdjkofa', 210, 'dkoaskdas', 1.20, 2.00, 0.2500),
-(7, '834324234', 12, 'Cacao Forastero', 165, 'Variedad de cacao muy productiva y resistente.', 1.20, 9.00, 0.2500);
+(3, '988091212', 1, 'Tomate Chonto', 90, 'Variedad de tomate muy resistente, ideal para salsas.', 12.00, 955.00, 0.5000),
+(4, '988091212', 3, 'Maíz Amarillo', 120, 'Cereal básico para la alimentación, ciclo corto.', 3.50, 0.00, 0.5000),
+(5, '834324234', 2, 'Café Arábigo', 210, 'Variedad premium de café con aroma intenso y acidez equilibrada.', 1.50, 5.00, 0.5000),
+(6, '834324234', NULL, 'fiojsdjkofa', 210, 'dkoaskdas', 1.20, 2.00, 0.5000),
+(7, '834324234', 12, 'Cacao Forastero', 165, 'Variedad de cacao muy productiva y resistente.', 1.20, 9.00, 0.5000);
 
 -- --------------------------------------------------------
 
@@ -1031,10 +1092,10 @@ INSERT INTO `usuario` (`documento`, `imagen`, `nombre`, `telefono`, `correo`, `c
 (1006511653, 'usuarios/TPn5OuzBFcUMBMTb27MDcG8KrMQg0nUiQau4ExxO.png', 'Sebas Alvarez', '3103524334', 'sombrahdepaz76@gmail.com', '$2y$12$ShO2KxmULq2i87gGWluCyeAy/C5fhUJt26ceeK7Nt/BKxRxQl/DRa', '', 1, 3, '103455657789', 1),
 (1034345454, 'usuarios/ohtjEMXYnEtIKQV6uXFyhSx4giqPArWo1ABQmYEk.jpg', 'Javier Gonza', '3223243434', 'bastobrayan246@gmail.com', '$2y$12$IXfjWMnY6Ul6L6B0trEKK.6obRkullnh7zI5H/sAO3/nHgpsQWjqq', '', 1, 3, '876767657', 1),
 (1039253243, 'usuarios/6DbIrTZ3euiLErVZDzRTjao6nJEXJkhLXQTrjUvt.jpg', 'JORGE EL CURIOSO', '3201434344', 'dos1234@gmail.com', '$2y$12$lpj3Lk3wm9lYHUhtI5YN1eMFAfgTiW8E8aPJxTuIGQxvyt1/QSNM2', NULL, 3, 3, '988091212', 1),
-(1104921223, 'usuarios/fxyI259nxaEdNx9meFLTLFkpNIRGXnj7nyy2Z8PX.png', 'julio profe', '3291231212', 'reyesz2803@gmail.com', '$2y$12$NcwOItyOjXK4jwD7js4ri.mghmiFTcxGEzjyPNbzJGOZ6lWJQ7Eou', 'CO4tvqUzjXfoaH4JzVrNbCx1fppx8aG6X8CEU0IrymLOIJwSWcQ8b3BC8zAZ', 1, 3, '834324234', 1),
+(1104921223, 'usuarios/fxyI259nxaEdNx9meFLTLFkpNIRGXnj7nyy2Z8PX.png', 'julio profe', '3291231212', 'reyesz2803@gmail.com', '$2y$12$NcwOItyOjXK4jwD7js4ri.mghmiFTcxGEzjyPNbzJGOZ6lWJQ7Eou', 'XD1IrkvBZ1eRiyeT8yUqhytd069lwzmBI3zkCBGZ2atwHN0nOESYa8V1nwOu', 1, 3, '834324234', 1),
 (1105461467, 'usuarios/DKOC3w5ZmiayRnVTgSMffJcI6AQhq9EdKtgtelwj.png', 'sebas', '3176060850', 'gasrciasebastian019@gmail.com', '$2y$12$vrnlIhSsriy/9tEB6L95eOc3SbwfjQhH6/DSuEM6tEPLe.glEsM1.', NULL, 3, 3, '834324234', 1),
 (1110722331, 'usuarios/useOl4EMIIlIsP0f8X6vMaoWPIjhX5Ml9tCDJ2bC.jpg', 'Didier', '3103527239', 'johsn@gmail.com', '$2y$12$4lNRhcjuBmkF25LyFWMLL.k5LlWvmOTnosiRabQoEgyG4ojfgk9am', '', 3, 3, '834324234', 1),
-(1110722345, 'usuarios/IEJRgrLlnPGGxJcaD5NFbzOnxj7DAVNxZXnoZjTr.jpg', 'Brayan Gutierez', '3029219231', 'sombrahdepaz@gmail.com', '$2y$12$ElMqaOG0Q30Gbt8q2RwPDudpzZPaIlhmEoA4Ldj0WQ6cW6zhcGAiK', 'tK4IFgcTHRfiObFl5SVU7GgMlISMxVJJZaKBoeF7HtoZe7ot7SUsWlVpae22', 1, 3, '988091212', 1);
+(1110722345, 'usuarios/IEJRgrLlnPGGxJcaD5NFbzOnxj7DAVNxZXnoZjTr.jpg', 'Brayan Gutierez', '3029219231', 'sombrahdepaz@gmail.com', '$2y$12$ElMqaOG0Q30Gbt8q2RwPDudpzZPaIlhmEoA4Ldj0WQ6cW6zhcGAiK', 'Jd6qMS7EEcuLVMY7y7yExtmCaMggEbEyNca6jHHpA30BgljDd3QaNbEVOlZm', 1, 3, '988091212', 1);
 
 -- --------------------------------------------------------
 
@@ -1173,8 +1234,8 @@ ALTER TABLE `failed_jobs`
 ALTER TABLE `fases_programadas`
   ADD PRIMARY KEY (`id_fase`),
   ADD KEY `id_usuario` (`documento_trabajador`),
-  ADD KEY `fk_fases_estado` (`id_estado`),
-  ADD KEY `id_terreno` (`id_terreno`);
+  ADD KEY `id_cosecha` (`id_terreno`),
+  ADD KEY `fk_fases_estado` (`id_estado`);
 
 --
 -- Indices de la tabla `insumo`
@@ -1380,7 +1441,7 @@ ALTER TABLE `venta_licencias`
 -- AUTO_INCREMENT de la tabla `catalogo_insumos`
 --
 ALTER TABLE `catalogo_insumos`
-  MODIFY `id_catalogo_insumo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id_catalogo_insumo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
 
 --
 -- AUTO_INCREMENT de la tabla `catalogo_riegos`
@@ -1392,7 +1453,7 @@ ALTER TABLE `catalogo_riegos`
 -- AUTO_INCREMENT de la tabla `catalogo_semillas`
 --
 ALTER TABLE `catalogo_semillas`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
 
 --
 -- AUTO_INCREMENT de la tabla `catalogo_suelos`
@@ -1458,7 +1519,7 @@ ALTER TABLE `insumo`
 -- AUTO_INCREMENT de la tabla `insumo_cosecha`
 --
 ALTER TABLE `insumo_cosecha`
-  MODIFY `id_insumo_cosecha` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_insumo_cosecha` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `jobs`
@@ -1470,7 +1531,7 @@ ALTER TABLE `jobs`
 -- AUTO_INCREMENT de la tabla `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT de la tabla `producto`
@@ -1488,13 +1549,13 @@ ALTER TABLE `proveedor`
 -- AUTO_INCREMENT de la tabla `registro_trabajo`
 --
 ALTER TABLE `registro_trabajo`
-  MODIFY `id_registro_trabajo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id_registro_trabajo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT de la tabla `riego`
 --
 ALTER TABLE `riego`
-  MODIFY `id_riego` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id_riego` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT de la tabla `salario`
