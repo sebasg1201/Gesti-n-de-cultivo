@@ -605,13 +605,18 @@ class AdminController extends Controller
         
         $eventos = [];
 
-        // 0. Asistencias (Registros del trabajador) - Mostrar todas (incluyendo vinculadas)
+        // 0. Asistencias (Registros del trabajador)
         // Excepto las que son tareas ocultas/omitidas
         $asistencias = \App\Models\RegistroTrabajo::where('documento_trabajador', $usuario->documento)
             ->where('observacion', '!=', 'Tarea perdida ocultada por el trabajador.')
             ->get();
         foreach ($asistencias as $asist) {
             $isLinked = $asist->id_fase || $asist->id_riego || $asist->id_insumo_cosecha;
+            if ($isLinked) {
+                // Ya no mostramos la tarjeta genérica "Asistencia Confirmada"
+                // si el registro pertenece a una labor específica.
+                continue;
+            }
             $eventos[] = [
                 'id' => 'registro_' . $asist->id_registro_trabajo,
                 'title' => 'Asistencia Confirmada',
@@ -619,8 +624,8 @@ class AdminController extends Controller
                 'color' => '#10b981', // Verde esmeralda
                 'extendedProps' => [
                     'tipo' => 'registro',
-                    'observacion' => $isLinked ? null : $asist->observacion,
-                    'foto_url' => $isLinked ? null : ($asist->foto_evidencia ? asset('uploads/' . $asist->foto_evidencia) : null),
+                    'observacion' => $asist->observacion,
+                    'foto_url' => $asist->foto_evidencia ? asset('uploads/' . $asist->foto_evidencia) : null,
                     'estado' => 15
                 ]
             ];
