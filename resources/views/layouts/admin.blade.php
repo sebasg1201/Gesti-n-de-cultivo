@@ -4,6 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <title>AgriManager - Admin</title>
+    @inject('notificationService', 'App\Services\NotificationService')
+    @php
+        $adminNotifications = $notificationService->getNotifications();
+        $notifCount = count($adminNotifications);
+    @endphp
+
+
     @vite('resources/css/app.css')
     <style>
         /* Estilos base para el Sidebar */
@@ -66,6 +73,35 @@
         .animate-fadeOut {
             animation: fadeOut 0.5s ease-out forwards;
         }
+
+        /* Toasts */
+        .toast-card {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            border-left: 4px solid #10b981;
+            padding: 1rem;
+            width: 320px;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            animation: slideInRight 0.4s ease-out forwards;
+            pointer-events: auto;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .toast-card:hover { transform: scale(1.02); }
+        .toast-card.hide { animation: slideOutRight 0.4s ease-in forwards; }
+
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideOutRight {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+
     </style>
 </head>
 
@@ -358,6 +394,72 @@
                             {{ now()->format('d M, Y') }}
                         </div>
 
+                        <!-- Notificaciones -->
+                        <div class="relative" id="notif-wrapper">
+                            <button onclick="toggleNotifPanel()" id="notif-btn"
+                                class="relative p-2.5 lg:p-3 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-md transition-all duration-200 cursor-pointer focus:outline-none">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 lg:w-6 lg:h-6 text-white" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                                </svg>
+                                @if($notifCount > 0)
+                                    <span id="notif-badge"
+                                        class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-4 h-4 lg:w-5 lg:h-5 rounded-full flex items-center justify-center shadow-lg border-2 border-white/30 transition-all duration-300">
+                                        {{ $notifCount }}
+                                    </span>
+                                @endif
+                            </button>
+
+                            <!-- PANEL DE NOTIFICACIONES -->
+                            <div id="notif-panel"
+                                class="hidden absolute right-0 mt-3 w-80 bg-white rounded-2xl shadow-2xl border border-emerald-100 z-[100] overflow-hidden">
+                                
+                                <div class="px-5 py-4 bg-gradient-to-r from-emerald-600 to-green-500 flex items-center justify-between">
+                                    <span class="text-white font-bold text-sm">Alertas del Sistema</span>
+                                    <span class="bg-white/20 text-white text-[10px] font-semibold px-2 py-0.5 rounded-full">
+                                        {{ $notifCount }} {{ $notifCount == 1 ? 'pendiente' : 'pendientes' }}
+                                    </span>
+                                </div>
+
+                                <div class="max-h-80 overflow-y-auto divide-y divide-gray-100">
+                                    @forelse($adminNotifications as $notif)
+                                        <a href="{{ $notif['url'] }}" class="flex items-start gap-3 px-4 py-3.5 hover:bg-emerald-50 transition-colors duration-150 decoration-none group">
+                                            <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm mt-0.5 
+                                                {{ $notif['type'] == 'irrigation' ? 'bg-blue-100 text-blue-600' : ($notif['type'] == 'stock' ? 'bg-amber-100 text-amber-600' : 'bg-red-100 text-red-600') }}">
+                                                @if($notif['type'] == 'irrigation')
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4a2 2 0 012-2m16 0h-2M4 13H6m10-4V7a1 1 0 00-1-1H9a1 1 0 00-1 1v2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                @elseif($notif['type'] == 'stock')
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                @else
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                @endif
+                                            </div>
+                                            <div class="flex-1 min-w-0">
+                                                <p class="text-sm font-semibold text-gray-800 group-hover:text-emerald-700 transition-colors">{{ $notif['title'] }}</p>
+                                                <p class="text-xs text-gray-500 mt-0.5 leading-relaxed">{{ $notif['message'] }}</p>
+                                                <p class="text-[10px] text-emerald-600 font-medium mt-1 uppercase tracking-wider">
+                                                    {{ $notif['date']->diffForHumans() }}
+                                                </p>
+                                            </div>
+                                        </a>
+                                    @empty
+                                        <div class="py-10 text-center">
+                                            <svg class="w-10 h-10 mx-auto text-gray-200 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4a2 2 0 012-2m16 0h-2M4 13H6m10-4V7a1 1 0 00-1-1H9a1 1 0 00-1 1v2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                            <p class="text-sm text-gray-400">No hay alertas pendientes</p>
+                                        </div>
+                                    @endforelse
+                                </div>
+
+                                @if($notifCount > 0)
+                                    <div class="p-3 bg-gray-50 border-t border-gray-100 text-center">
+                                        <p class="text-[10px] text-gray-400 font-medium italic">Mantén tus cultivos al día</p>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+
+
                         <!-- Usuario -->
                         <div class="relative group">
 
@@ -466,13 +568,11 @@
                 sidebar.classList.toggle("sidebar-collapsed");
             }
 
-            // Forzar redimensionado de componentes (como gráficas) tras la transición
             setTimeout(() => {
                 window.dispatchEvent(new Event('resize'));
             }, 350);
         }
 
-        // Cerrar sidebar al hacer clic en el overlay (móvil)
         function closeSidebar() {
             const sidebar = document.getElementById("sidebar");
             const overlay = document.getElementById("sidebar-overlay");
@@ -480,7 +580,6 @@
             overlay.classList.add("hidden");
         }
 
-        // Asegurar estado consistente al redimensionar
         window.addEventListener('resize', () => {
             if (window.innerWidth >= 1024) {
                 closeSidebar();
@@ -501,24 +600,99 @@
                 arrow.classList.remove('rotate-180');
             }
         }
-    </script>
 
-    <script>
-        // Auto-dismiss de alertas después de 5 segundos
+        // Auto-dismiss alerts
         document.addEventListener('DOMContentLoaded', function() {
             setTimeout(function() {
                 const alerts = document.querySelectorAll('.auto-dismiss');
                 alerts.forEach(function(alert) {
-                    alert.classList.add('animate-fadeOut');
-                    setTimeout(function() {
-                        alert.remove();
-                    }, 500); // Dar tiempo a la animación
+                    alert.classList.add('fadeOut');
+                    setTimeout(() => alert.remove(), 500);
                 });
             }, 5000);
         });
+
+        /* ==================== NOTIFICACIONES ==================== */
+        let notifPanelOpen = false;
+
+        function toggleNotifPanel() {
+            const panel = document.getElementById('notif-panel');
+            if(!panel) return;
+            
+            notifPanelOpen = !notifPanelOpen;
+            if (notifPanelOpen) {
+                panel.classList.remove('hidden');
+                panel.style.opacity = '0';
+                panel.style.transform = 'translateY(-10px)';
+                requestAnimationFrame(() => {
+                    panel.style.transition = 'all 0.2s ease-out';
+                    panel.style.opacity = '1';
+                    panel.style.transform = 'translateY(0)';
+                });
+            } else {
+                panel.style.opacity = '0';
+                panel.style.transform = 'translateY(-10px)';
+                setTimeout(() => panel.classList.add('hidden'), 200);
+            }
+        }
+
+        document.addEventListener('click', function (e) {
+            const wrapper = document.getElementById('notif-wrapper');
+            if (wrapper && !wrapper.contains(e.target) && notifPanelOpen) {
+                toggleNotifPanel();
+            }
+        });
+
+        /* ==================== TOASTS ==================== */
+        function showToast(notif) {
+            const container = document.getElementById('toast-container');
+            if(!container) return;
+
+            const toast = document.createElement('div');
+            toast.className = 'toast-card';
+            if (notif.type === 'stock') toast.style.borderLeftColor = '#f59e0b';
+            if (notif.type === 'insecticide') toast.style.borderLeftColor = '#ef4444';
+            if (notif.type === 'irrigation') toast.style.borderLeftColor = '#3b82f6';
+
+            toast.innerHTML = `
+                <div class="flex-1">
+                    <p class="text-sm font-bold text-gray-800">${notif.title}</p>
+                    <p class="text-xs text-gray-500 mt-0.5">${notif.message}</p>
+                </div>
+            `;
+
+            toast.onclick = () => window.location.href = notif.url;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.add('hide');
+                setTimeout(() => toast.remove(), 400);
+            }, 10000);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const notifications = {!! json_encode($adminNotifications) !!};
+            const shownToasts = JSON.parse(sessionStorage.getItem('shownToasts') || '[]');
+            
+            let shownCount = 0;
+            notifications.forEach(n => {
+                const notifId = n.type + '-' + n.id;
+                if (!shownToasts.includes(notifId) && shownCount < 3) {
+                    setTimeout(() => showToast(n), shownCount * 500);
+                    shownToasts.push(notifId);
+                    shownCount++;
+                }
+            });
+            sessionStorage.setItem('shownToasts', JSON.stringify(shownToasts));
+        });
     </script>
+
+
+    <div id="toast-container" class="fixed bottom-6 right-6 z-[1000] flex flex-col gap-3 pointer-events-none"></div>
+
     @stack('scripts')
     <script src="{{ asset('js/validation.js') }}"></script>
 </body>
+
 
 </html>

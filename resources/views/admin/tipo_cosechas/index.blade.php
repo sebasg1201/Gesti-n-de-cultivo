@@ -103,7 +103,7 @@
 
                 <div class="mb-3">
                     <label class="block text-sm font-medium mb-1">Tiempo</label>
-                    <input type="datetime" name="tiempo" id="editTiempo"
+                    <input type="number" name="tiempo" id="editTiempo"
                         class="w-full border border-gray-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-green-500 focus:outline-none">
                 </div>
 

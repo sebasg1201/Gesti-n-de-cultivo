@@ -94,4 +94,15 @@ class Cosecha extends Model
     {
         return $this->hasMany(Cultivo::class, 'id_cosecha', 'id_cosecha');
     }
+
+    public function riegos()
+    {
+        return $this->hasMany(Riego::class, 'id_cosecha', 'id_cosecha');
+    }
+
+    public function insumosCosecha()
+    {
+        return $this->hasMany(InsumoCosecha::class, 'id_cosecha', 'id_cosecha');
+    }
 }
+

@@ -17,7 +17,9 @@ class FaseProgramada extends Model
         'descripcion',
         'fecha_programada',
         'id_estado',
+        'evidencia_foto',
         'id_cosecha',
+        'impacto_dias',
         'documento_trabajador'
     ];
 
