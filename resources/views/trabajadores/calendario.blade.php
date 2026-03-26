@@ -170,7 +170,7 @@
         });
 
         listEl.innerHTML = '';
-        let yaRegistroGeneral = false;
+        window._sidebarRenderedKeys = new Set();
 
         if (dailyEvents.length === 0) {
             listEl.innerHTML = `
@@ -182,143 +182,69 @@
         } else {
             dailyEvents.forEach(ev => {
                 const props = ev.extendedProps;
+                const isRealizado = (props.estado == 15);
+                const isPerdida = (props.estado == 16 || props.estado == 18);
+                const tipoLower = props.tipo.toLowerCase();
+                
+                // --- VISTA REALIZADO (Diseño Imagen 1228) ---
                 if (props.tipo === 'registro') {
-                    // Si es un registro automático de "perdida ocultada", no mostrar el bloque de asistencia
-                    // para no confundir al usuario, ya que solo fue una confirmación de pérdida.
-                    if (props.observacion === 'Tarea perdida ocultada por el trabajador.') {
-                        return;
-                    }
-                    
-                    yaRegistroGeneral = true;
-                    listEl.insertAdjacentHTML('afterbegin', `
-                        <div class="bg-emerald-50 border border-emerald-100 p-6 rounded-[2rem] space-y-4 shadow-sm shadow-emerald-50/50">
-                            <div class="flex items-center gap-4">
-                                <div class="w-12 h-12 bg-emerald-600 rounded-2xl flex items-center justify-center text-white shadow-lg">
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
-                                </div>
-                                <div>
-                                    <p class="text-[10px] font-black text-emerald-600 uppercase tracking-widest leading-none mb-1">Tu Registro</p>
-                                    <p class="font-black text-emerald-900 text-lg">Asistencia Confirmada</p>
-                                </div>
-                            </div>
+                    // Evitar duplicados exactos en el sidebar (Bug de varias tarjetas)
+                    const uniqueKey = `registro_${ev.start || ev.startStr}_${props.descripcion}`;
+                    if (window._sidebarRenderedKeys?.has(uniqueKey)) return;
+                    window._sidebarRenderedKeys?.add(uniqueKey);
+
+                    listEl.insertAdjacentHTML('beforeend', `
+                        <div class="bg-white border-2 border-emerald-50 p-8 rounded-[3rem] space-y-6 shadow-2xl shadow-emerald-700/5 relative overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500 mb-6 mx-2">
+                            <div class="absolute left-0 top-0 bottom-0 w-2.5 bg-emerald-500"></div>
                             
-                            <div class="bg-white/60 p-4 rounded-2xl border border-emerald-100/50">
-                                <p class="text-xs font-bold text-emerald-800 leading-relaxed italic">
-                                    "${props.observacion || 'Sin observaciones'}"
-                                </p>
+                            <div class="flex items-center gap-5">
+                                <div class="w-14 h-14 bg-emerald-500 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-emerald-200">
+                                    <svg class="w-9 h-9" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                                </div>
+                                <div class="space-y-0.5">
+                                    <p class="text-[10px] font-black text-emerald-400 uppercase tracking-[0.25em] leading-none mb-1">TU REGISTRO</p>
+                                    <h4 class="font-black text-emerald-900 text-xl tracking-tight">Asistencia Confirmada</h4>
+                                </div>
                             </div>
 
-                            ${props.foto_url ? `
-                                <div class="relative group cursor-pointer overflow-hidden rounded-2xl border-2 border-emerald-200 shadow-md" onclick="viewPhoto('${props.foto_url}')">
-                                    <img src="${props.foto_url}" class="w-full h-40 object-cover group-hover:scale-105 transition-transform duration-700" onerror="this.src='https://placehold.co/600x400/f0fdf4/059669?text=Error+al+cargar+imagen'">
-                                    <div class="absolute inset-0 bg-emerald-900/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <span class="bg-white text-emerald-700 px-6 py-2 rounded-full text-xs font-black shadow-xl">Ver evidencia completa</span>
-                                    </div>
+                            <div class="bg-gray-50/70 p-8 rounded-[2.5rem] border border-gray-100/50 shadow-inner px-8">
+                                <div class="flex items-center gap-2 mb-3">
+                                    <div class="w-2.5 h-2.5 bg-emerald-400 rounded-full shadow-[0_0_8px_rgba(52,211,153,0.6)]"></div>
+                                    <p class="text-[11px] font-black text-emerald-400 uppercase tracking-widest">${tipoLower === 'riego' ? 'HIDRATACIÓN' : (tipoLower === 'insumo' ? 'NUTRICIÓN' : 'LABOR GENERAL')}</p>
                                 </div>
-                            ` : `
-                                <div class="p-4 bg-gray-50/50 rounded-2xl border border-gray-100 text-center">
-                                    <p class="text-[10px] font-bold text-gray-400">Sin foto de evidencia</p>
-                                </div>
-                            `}
-                        </div>
-                    `);
-                } else if (props.tipo === 'fase') {
-                    const isPerdida = (props.estado == 16 || props.estado == 18);
-                    const colorFase = isPerdida ? 'red' : 'blue';
-                    const iconColor = isPerdida ? '#ef4444' : '#3b82f6';
-                    
-                    listEl.insertAdjacentHTML('beforeend', `
-                        <div class="bg-${colorFase}-50 border border-${colorFase}-100 p-6 rounded-[2rem] space-y-4">
-                            <div class="flex items-center gap-4">
-                                <div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-${colorFase}-600 border border-gray-100 shadow-lg" style="color: ${iconColor};">
-                                    ${isPerdida 
-                                        ? '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"/></svg>'
-                                        : '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>'
-                                    }
-                                </div>
-                                <div>
-                                    <p class="text-[10px] font-black text-${colorFase}-600 uppercase tracking-widest leading-none mb-1">Fase de Cultivo ${isPerdida ? '(Perdida)' : ''}</p>
-                                    <p class="font-black text-${colorFase}-900 text-lg ${isPerdida ? 'line-through opacity-70' : ''}">${props.cultivo || 'Cosecha'}</p>
-                                </div>
-                            </div>
-                            <div class="bg-white/60 p-4 rounded-2xl border border-${colorFase}-100/50">
-                                <p class="text-[10px] font-black text-${colorFase}-400 uppercase tracking-widest mb-1">Actividad Programada</p>
-                                <p class="text-sm font-bold text-${colorFase}-800 leading-tight mb-2 ${isPerdida ? 'line-through opacity-70' : ''}">
-                                    ${props.descripcion}
+                                <p class="text-emerald-950 font-bold italic leading-relaxed text-base">
+                                    "${props.descripcion || 'Se completó la tarea satisfactoriamente.'}"
                                 </p>
-                                <div class="pt-2 border-t border-${colorFase}-100/30">
-                                    <p class="text-[9px] font-black text-${colorFase}-300 uppercase tracking-widest mb-1">Resumen de labores</p>
-                                    <p class="text-[11px] text-${colorFase}-700 leading-relaxed">
-                                        ${props.resumen || 'Sigue las instrucciones estándar para esta fase.'}
-                                    </p>
-                                </div>
-                                ${props.foto_url ? `
-                                    <div class="pt-3 mt-3 border-t border-${colorFase}-100/30">
-                                        <p class="text-[9px] font-black text-${colorFase}-400 uppercase tracking-widest mb-2">Evidencia Fotográfica</p>
-                                        <div class="relative group cursor-pointer overflow-hidden rounded-xl border border-${colorFase}-200 shadow-sm" onclick="viewPhoto('${props.foto_url}')">
-                                            <img src="${props.foto_url}" class="w-full h-24 object-cover group-hover:scale-105 transition-transform duration-500">
-                                            <div class="absolute inset-0 bg-${colorFase}-900/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                                <span class="bg-white text-${colorFase}-700 px-3 py-1 rounded-full text-[10px] font-black shadow-lg">Ver Foto</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ` : ''}
                             </div>
-                            ${!isPerdida ? `
-                            <div class="flex items-center gap-2 px-2">
-                                <div class="w-2 h-2 rounded-full bg-${colorFase}-400 animate-pulse"></div>
-                                <span class="text-[10px] font-black text-${colorFase}-500 uppercase tracking-tighter">Acción requerida para hoy</span>
-                            </div>
-                            ` : `
-                            <div class="flex items-center gap-2 px-2">
-                                <div class="w-2 h-2 rounded-full bg-red-400"></div>
-                                <span class="text-[10px] font-black text-red-500 uppercase tracking-tighter w-full text-center">La fecha límite para esta labor ha expirado</span>
-                            </div>
-                            `}
                         </div>
                     `);
+                    return;
                 } else {
-                    const isPerdida = (props.estado == 16 || props.estado == 18);
-                    const isRiego = props.tipo === 'riego';
-                    const colorClass = isPerdida ? 'red' : (isRiego ? 'sky' : 'purple');
-                    const canRegister = props.tipo === 'insumo' && !isPerdida; 
+                    const isRealizado = (props.estado == 15);
+                    const colorClass = isPerdida ? 'red' : (tipoLower === 'riego' ? 'blue' : (tipoLower === 'insumo' ? 'purple' : 'emerald'));
                     
                     listEl.insertAdjacentHTML('beforeend', `
-                        <div class="bg-${colorClass}-50/50 border border-${colorClass}-100 p-5 rounded-3xl flex flex-col gap-4 group hover:bg-white hover:shadow-xl hover:shadow-${colorClass}-200/50 transition-all ${isPerdida ? 'opacity-90' : ''}">
-                            <div class="flex items-center justify-between gap-4 w-full">
+                        <div class="bg-white border border-gray-100 p-6 rounded-[2.5rem] flex flex-col gap-4 group hover:shadow-xl hover:shadow-${colorClass}-200/50 transition-all ${isPerdida ? 'opacity-90' : ''} relative overflow-hidden mb-6 mx-2">
+                            <div class="absolute left-0 top-0 bottom-0 w-2 bg-${colorClass}-600 opacity-60"></div>
+                            
+                            <div class="flex items-center justify-between gap-4 w-full pl-2">
                                 <div class="flex items-center gap-4">
-                                    <div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-gray-400 border border-gray-100 group-hover:text-${colorClass}-600 transition-colors shadow-sm" style="color: ${isPerdida ? '#ef4444' : ev.backgroundColor}">
+                                    <div class="w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center text-gray-400 border border-gray-100 group-hover:text-${colorClass}-600 group-hover:bg-${colorClass}-50 transition-all shadow-sm">
                                         ${isPerdida 
-                                            ? '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"/></svg>'
-                                            : '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2-2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>'
+                                            ? '<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"/></svg>'
+                                            : (tipoLower === 'riego' 
+                                                ? '<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 21.5c-3.5 0-6.5-3-6.5-6.5 0-2.5 1.5-5 6.5-11 5 6 6.5 8.5 6.5 11 0 3.5-3 6.5-6.5 6.5z" /></svg>'
+                                                : (tipoLower === 'insumo'
+                                                    ? '<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>'
+                                                    : '<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>'))
                                         }
                                     </div>
                                     <div>
-                                        <p class="text-[10px] font-black text-${colorClass}-400 uppercase tracking-widest">${props.tipo} ${isPerdida ? '(Perdida)' : ''}</p>
-                                        <p class="font-bold text-${colorClass}-900 ${isPerdida ? 'line-through opacity-70' : ''}">${ev.title}</p>
+                                        <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">${props.tipo} ${isPerdida ? '(Perdida)' : ''} ${isRealizado ? '(Completada)' : ''}</p>
+                                        <p class="font-black text-gray-900 text-lg tracking-tight ${isPerdida ? 'line-through opacity-70' : ''}">${ev.title}</p>
                                     </div>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    ${canRegister ? `
-                                        <button onclick="openRegistroModal(null, '${props.id_original}', '${ev.title}')" 
-                                                class="bg-white text-${colorClass}-600 p-3 rounded-xl border border-${colorClass}-100 hover:bg-${colorClass}-600 hover:text-white transition-all shadow-sm flex-shrink-0" title="Registrar Trabajo">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                                        </button>
-                                    ` : ''}
                                 </div>
                             </div>
-                            
-                            ${props.foto_url ? `
-                                <div class="pt-3 mt-1 border-t border-${colorClass}-100/30">
-                                    <p class="text-[9px] font-black text-${colorClass}-400 uppercase tracking-widest mb-2">Evidencia Fotográfica</p>
-                                    <div class="relative group/img cursor-pointer overflow-hidden rounded-xl border border-${colorClass}-200 shadow-sm" onclick="viewPhoto('${props.foto_url}')">
-                                        <img src="${props.foto_url}" class="w-full h-32 object-cover group-hover/img:scale-105 transition-transform duration-500">
-                                        <div class="absolute inset-0 bg-${colorClass}-900/40 flex items-center justify-center opacity-0 group-hover/img:opacity-100 transition-opacity">
-                                            <span class="bg-white text-${colorClass}-700 px-3 py-1 rounded-full text-[10px] font-black shadow-lg">Ver Evidencia Completa</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            ` : ''}
                         </div>
                     `);
                 }

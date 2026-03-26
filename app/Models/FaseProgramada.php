@@ -17,13 +17,13 @@ class FaseProgramada extends Model
         'descripcion',
         'fecha_programada',
         'id_estado',
-        'id_cosecha',
+        'id_terreno',
         'documento_trabajador'
     ];
 
-    public function cosecha()
+    public function terreno()
     {
-        return $this->belongsTo(Cosecha::class, 'id_cosecha', 'id_cosecha');
+        return $this->belongsTo(Terreno::class, 'id_terreno', 'id_terreno');
     }
 
     public function usuario()

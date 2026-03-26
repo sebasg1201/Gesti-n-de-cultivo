@@ -44,7 +44,7 @@
                 </div>
                 <div class="space-y-2">
                     <label class="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Fecha Programada</label>
-                    <input type="date" name="fecha_programada" required class="w-full bg-gray-50 border border-gray-100 rounded-2xl py-4 px-5 focus:outline-none focus:border-blue-500 transition-all font-bold text-gray-700">
+                    <input type="date" name="fecha_programada" value="{{ date('Y-m-d') }}" min="{{ date('Y-m-d') }}" required class="w-full bg-gray-50 border border-gray-100 rounded-2xl py-4 px-5 focus:outline-none focus:border-blue-500 transition-all font-bold text-gray-700">
                 </div>
                 <div class="space-y-2">
                     <label class="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Observaciones</label>
@@ -105,7 +105,7 @@
                 </div>
                 <div class="space-y-2">
                     <label class="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Fecha Programada</label>
-                    <input type="date" name="fecha_programada" required class="w-full bg-gray-50 border border-gray-100 rounded-2xl py-4 px-5 focus:outline-none focus:border-purple-500 transition-all font-bold text-gray-700">
+                    <input type="date" name="fecha_programada" value="{{ date('Y-m-d') }}" min="{{ date('Y-m-d') }}" required class="w-full bg-gray-50 border border-gray-100 rounded-2xl py-4 px-5 focus:outline-none focus:border-purple-500 transition-all font-bold text-gray-700">
                 </div>
                 
                 <div class="pt-4 flex gap-3">
@@ -136,10 +136,10 @@
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="space-y-2">
-                        <label class="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Lote de Cosecha</label>
-                        <select name="id_cosecha" required class="w-full bg-gray-50 border border-gray-100 rounded-2xl py-4 px-5 focus:outline-none focus:border-emerald-500 transition-all font-bold text-gray-700">
-                            @foreach($cosechas as $c)
-                                <option value="{{ $c->id_cosecha }}">Lote #{{ $c->id_cosecha }} - {{ $c->semilla?->nombre_semilla ?? 'N/A' }}</option>
+                        <label class="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Terreno</label>
+                        <select name="id_terreno" required class="w-full bg-gray-50 border border-gray-100 rounded-2xl py-4 px-5 focus:outline-none focus:border-emerald-500 transition-all font-bold text-gray-700">
+                            @foreach($terrenosLibres as $t)
+                                <option value="{{ $t->id_terreno }}">{{ $t->nombre }} ({{ $t->ubicacion ?? 'Sin ubicación' }})</option>
                             @endforeach
                         </select>
                     </div>
@@ -154,7 +154,7 @@
                 </div>
                 <div class="space-y-2">
                     <label class="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Fecha Programada</label>
-                    <input type="date" name="fecha_programada" required class="w-full bg-gray-50 border border-gray-100 rounded-2xl py-4 px-5 focus:outline-none focus:border-emerald-500 transition-all font-bold text-gray-700">
+                    <input type="date" name="fecha_programada" value="{{ date('Y-m-d') }}" min="{{ date('Y-m-d') }}" required class="w-full bg-gray-50 border border-gray-100 rounded-2xl py-4 px-5 focus:outline-none focus:border-emerald-500 transition-all font-bold text-gray-700">
                 </div>
                 
                 <div class="pt-4 flex gap-3">

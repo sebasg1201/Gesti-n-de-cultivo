@@ -78,7 +78,7 @@ class UsuarioEmpresaController extends Controller
             ->firstOrFail();
 
         $roles = TipoUsuario::whereIn('id_tipo_usuario', [2, 3])->get();
-        $estados = \App\Models\Estado::whereIn('id_estado', [1, 3, 10])->get(); // Pendiente, Activa, Suspendido
+        $estados = \App\Models\Estado::whereIn('id_estado', [1, 3, 8])->get(); // Pendiente, Activa, Suspendido
 
         return view('admin.usuarios.edit', compact('usuario', 'roles', 'estados'));
     }
@@ -168,7 +168,7 @@ class UsuarioEmpresaController extends Controller
 
         // Obtener tareas asignadas (Fases, Riegos, Insumos)
         $fases = \App\Models\FaseProgramada::where('documento_trabajador', $documento)
-            ->with(['cosecha.terreno', 'estado'])
+            ->with(['terreno', 'estado'])
             ->get()
             ->map(function($item) {
                 $item->tipo_actividad = 'Fase';

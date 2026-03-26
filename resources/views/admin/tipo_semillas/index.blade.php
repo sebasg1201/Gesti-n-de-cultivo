@@ -180,7 +180,10 @@
                                                 </div>
                                                 <p class="text-[10px] text-emerald-400 italic max-w-[140px] truncate">
                                                     {{ $semilla->descripcion }}</p>
-                                                <p class="text-[9px] font-bold text-blue-500">Densidad: {{ number_format($semilla->espacio_por_planta_m2, 4) }} m²</p>
+                                                <p class="text-[9px] font-bold text-blue-500 flex flex-col gap-0.5">
+                                                    <span>Densidad: {{ number_format($semilla->espacio_por_planta_m2, 4) }} m² ({{ number_format(1 / ($semilla->espacio_por_planta_m2 ?: 1), 2) }} pl/m²)</span>
+                                                    <span class="text-emerald-600">Capacidad (8,610 m²): {{ number_format(8610 / ($semilla->espacio_por_planta_m2 ?: 1), 0) }} plantas</span>
+                                                </p>
                                             </div>
                                         </td>
                                         <td class="px-4 py-2">
@@ -193,7 +196,7 @@
                                         </td>
                                         <td class="px-4 py-2">
                                             <div class="flex flex-col gap-0.5">
-                                                <span class="text-[8px] font-black text-emerald-400 uppercase tracking-widest">Stock</span>
+
                                                 <div class="flex items-center gap-1.5">
                                                     <span class="text-base font-black text-emerald-950">{{ number_format($semilla->stock_actual ?? 0, 0) }}</span>
                                                     @if(($semilla->stock_actual ?? 0) <= 0)
