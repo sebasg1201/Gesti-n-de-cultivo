@@ -271,7 +271,10 @@ class AdminController extends Controller
             ->whereIn('id_estado', [1, 16, 17]) // Pendiente, Perdida y En Proceso
             ->get()->map(function ($t) {
                 $t->tipo_tarea = 'insumo';
-                $t->descripcion = 'Aplicación de Insumo: ' . ($t->insumo?->Nombre ?? 'Desconocido');
+                $unidad = $t->insumo?->Unidad_Medida ?? 'unidades';
+                $cantidadLimpia = (float) $t->cantidad_usada;
+                $cantidadText = $cantidadLimpia > 0 ? " (Usar: {$cantidadLimpia} {$unidad})" : '';
+                $t->descripcion = 'Aplicación de Insumo: ' . ($t->insumo?->Nombre ?? 'Desconocido') . $cantidadText;
                 $t->id_agrupador = 'terreno_' . ($t->cosecha?->id_terreno ?? '0');
                 return $t;
             });
@@ -470,7 +473,8 @@ class AdminController extends Controller
         foreach ($insumoCosecha as $t) {
             $t->tipo_referencia = 'insumo';
             $insumoNombre = $t->insumo?->Nombre ?? 'Insumo';
-            $t->descripcion = "Aplicación: " . $insumoNombre . " (" . ($t->cantidad_usada ?? 0) . ")";
+            $cantidadLimpia = (float) ($t->cantidad_usada ?? 0);
+            $t->descripcion = "Aplicación: " . $insumoNombre . " (" . $cantidadLimpia . ")";
         }
 
         // Fases general: fetch those linked to terrenos
@@ -709,6 +713,10 @@ class AdminController extends Controller
                 default => '#8b5cf6'
             };
 
+            $unidad = $insumo->insumo?->Unidad_Medida ?? 'unidades';
+            $cantidadLimpia = (float) $insumo->cantidad_usada;
+            $cantidadText = $cantidadLimpia > 0 ? " (Usar: {$cantidadLimpia} {$unidad})" : '';
+
             $eventos[] = [
                 'id' => 'insumo_' . $insumo->id_insumo_cosecha,
                 'title' => 'INSUMO - ' . $nombreLugar,
@@ -716,7 +724,7 @@ class AdminController extends Controller
                 'color' => $color,
                 'extendedProps' => [
                     'tipo' => 'insumo',
-                    'descripcion' => 'Aplicación de ' . ($insumo->insumo->Nombre ?? 'insumo'),
+                    'descripcion' => 'Aplicación de Insumo: ' . ($insumo->insumo?->Nombre ?? 'Desconocido') . $cantidadText,
                     'estado' => $insumo->id_estado,
                     'foto_url' => $insumo->evidencia_foto ? asset('uploads/' . $insumo->evidencia_foto) : null,
                     'observacion' => $obsInsumo[$insumo->id_insumo_cosecha] ?? null
