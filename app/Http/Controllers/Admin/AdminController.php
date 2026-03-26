@@ -611,6 +611,7 @@ class AdminController extends Controller
             ->where('observacion', '!=', 'Tarea perdida ocultada por el trabajador.')
             ->get();
         foreach ($asistencias as $asist) {
+            $isLinked = $asist->id_fase || $asist->id_riego || $asist->id_insumo_cosecha;
             $eventos[] = [
                 'id' => 'registro_' . $asist->id_registro_trabajo,
                 'title' => 'Asistencia Confirmada',
@@ -618,8 +619,8 @@ class AdminController extends Controller
                 'color' => '#10b981', // Verde esmeralda
                 'extendedProps' => [
                     'tipo' => 'registro',
-                    'observacion' => $asist->observacion,
-                    'foto_url' => $asist->foto_evidencia ? asset('uploads/' . $asist->foto_evidencia) : null,
+                    'observacion' => $isLinked ? null : $asist->observacion,
+                    'foto_url' => $isLinked ? null : ($asist->foto_evidencia ? asset('uploads/' . $asist->foto_evidencia) : null),
                     'estado' => 15
                 ]
             ];
