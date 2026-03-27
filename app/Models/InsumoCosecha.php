@@ -20,8 +20,8 @@ class InsumoCosecha extends Model
         'id_estado',
         'cantidad_usada',
         'impacto_dias',
-        'fecha_programada',
-        'fecha_realizacion'
+        'observaciones',
+        'fecha_programada'
     ];
 
     public function cosecha()

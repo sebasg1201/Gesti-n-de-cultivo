@@ -32,7 +32,7 @@ class CosechaController extends Controller
                 return [
                     'id' => $t->id_terreno,
                     'nombre' => $t->nombre,
-                    'area' => $t->area_m2 ?? ($t->Ancho * $t->Alto),
+                    'area' => $t->area_m2 ?? ($t->Ancho * $t->Largo),
                     'suelo' => $t->tipoSuelo->nombre ?? 'N/A',
                     'impacto' => $t->tipoSuelo->impacto_dias ?? 0
                 ];
@@ -54,7 +54,7 @@ class CosechaController extends Controller
                     'id' => $s->id_semilla,
                     'nombre' => $s->nombre_semilla,
                     'stock' => $s->stock_actual,
-                    'espacio' => $s->espacio_por_planta_m2 ?? 0.25,
+                    'espacio' => $s->espacio_por_planta_m2 ?? 0.5,
                     'yield' => $s->rendimiento_promedio,
                     'base_dias' => $s->tiempo_base_dias ?? 0
                 ];
@@ -191,8 +191,8 @@ class CosechaController extends Controller
         $fechaEstimada = \Carbon\Carbon::parse($request->fecha_siembra)->addDays($totalDays);
 
         // 1. Validation: Terrain Capacity Density
-        $area = $terreno->area_m2 ?? ($terreno->Ancho * $terreno->Alto);
-        $espacio = $semilla->espacio_por_planta_m2 > 0 ? $semilla->espacio_por_planta_m2 : 0.25;
+        $area = $terreno->area_m2 ?? ($terreno->Ancho * $terreno->Largo);
+        $espacio = $semilla->espacio_por_planta_m2 > 0 ? $semilla->espacio_por_planta_m2 : 0.5;
         $capacidadMaxima = $area / $espacio;
 
         if ($request->cantidad_sembrada > $capacidadMaxima) {

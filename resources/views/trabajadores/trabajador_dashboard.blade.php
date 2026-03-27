@@ -157,7 +157,8 @@
                                     'siembra' => $tareaCosecha && $tareaCosecha->fecha_siembra ? \Carbon\Carbon::parse($tareaCosecha->fecha_siembra)->format('d/m/Y') : 'No registrada',
                                     'estimada' => $tareaCosecha && $tareaCosecha->fecha_estimada ? \Carbon\Carbon::parse($tareaCosecha->fecha_estimada)->format('d/m/Y') : 'Pendiente',
                                     'cantidad' => $tareaCosecha ? (($tareaCosecha->Cantidad ?? '0') . ' unidades') : 'N/A',
-                                    'produccion' => $tareaCosecha ? (($tareaCosecha->produccion_estimada ?? '0') . ' kg est.') : 'N/A'
+                                    'produccion' => $tareaCosecha ? (($tareaCosecha->produccion_estimada ?? '0') . ' kg est.') : 'N/A',
+                                    'instrucciones' => $fase->sub_descripcion ?? null
                                 ];
                             @endphp
                             <div
@@ -209,6 +210,7 @@
                                             data-cultivo="{{ $details['cultivo'] }}" data-siembra="{{ $details['siembra'] }}"
                                             data-estimada="{{ $details['estimada'] }}" data-cantidad="{{ $details['cantidad'] }}"
                                             data-produccion="{{ $details['produccion'] }}" data-id-estado="{{ $fase->id_estado }}"
+                                            data-instrucciones="{{ $details['instrucciones'] }}"
                                             data-fecha-raw="{{ \Carbon\Carbon::parse($fase->fecha_programada)->format('Y-m-d') }}"
                                             data-update-url="{{ route('trabajador.tareas.estado', ['id' => $details['fase_id'], 'tipo' => $fase->tipo_tarea]) }}"
                                             onclick="showTaskDetails(this)"
@@ -287,8 +289,15 @@
                         <div>
                             <h3 class="text-xs font-black text-gray-400 uppercase tracking-widest mb-3 ml-1"
                                 id="modalTituloTipo">Descripción de la Tarea</h3>
-                            <p class="text-gray-700 text-xl font-bold leading-snug bg-gray-50 p-6 rounded-[2rem] border border-gray-100 shadow-inner"
+                            <p class="text-gray-700 text-xl font-bold leading-snug bg-gray-50 p-6 rounded-[2rem] border border-gray-100 shadow-inner mb-6"
                                 id="modalDescripcion"></p>
+                            
+                            <div id="modalInstruccionesWrap" class="hidden">
+                                <h4 class="text-[10px] font-black text-amber-600 uppercase tracking-widest mb-3 ml-1">Instrucciones del Administrador</h4>
+                                <div class="bg-amber-50 border border-amber-100 p-6 rounded-[2rem] shadow-sm">
+                                    <p class="text-amber-900 font-bold leading-relaxed" id="modalInstrucciones"></p>
+                                </div>
+                            </div>
                         </div>
 
 
@@ -426,6 +435,16 @@
                 if (document.getElementById('modalSiembra')) document.getElementById('modalSiembra').innerText = ds.siembra || 'N/A';
                 if (document.getElementById('modalCantidad')) document.getElementById('modalCantidad').innerText = ds.cantidad || 'N/A';
                 if (document.getElementById('modalProduccion')) document.getElementById('modalProduccion').innerText = ds.produccion || 'N/A';
+                
+                // Mostrar/ocultar instrucciones del administrador
+                const instWrap = document.getElementById('modalInstruccionesWrap');
+                const instText = document.getElementById('modalInstrucciones');
+                if (ds.instrucciones && ds.instrucciones.trim() !== '' && ds.instrucciones !== 'null') {
+                    instText.innerText = ds.instrucciones;
+                    instWrap.classList.remove('hidden');
+                } else {
+                    instWrap.classList.add('hidden');
+                }
 
                 // Actualizar Icono y Color según tipo
                 const iconContainer = document.getElementById('modalIconContainer');

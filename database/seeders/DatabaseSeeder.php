@@ -12,19 +12,16 @@ class DatabaseSeeder extends Seeder
 
     /**
      * Seed the application's database.
-     */
-    public function run(): void
-    {
+     */    public function run(): void    {
         // User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        // User::factory()->create([
+        //     'name' => 'Test User',
+        //     'email' => 'test@example.com',
+        // ]);
 
         $this->call([
-            CatalogSeeder::class, // Just in case it's not being called natively although it seems they run it manually
-            CatalogoInsumoSeeder::class,
-        ]);
-    }
+            CatalogSeeder::class ,
+            CatalogoInsumoSeeder::class ,
+        ]);    }
 }

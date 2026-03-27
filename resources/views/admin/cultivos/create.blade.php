@@ -6,7 +6,7 @@
 
             <!-- Header -->
             <div class="flex items-center gap-4">
-                <a href="{{ $id_cosecha ? route('admin.cultivos.cosechaDetail', $id_cosecha) : route('admin.cultivos.index') }}"
+                <a href="{{ $id_cosecha ? route('admin.cosechas.show', $id_cosecha) : route('admin.cultivos.index') }}"
                     class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-emerald-600 shadow-sm border border-emerald-100 hover:bg-emerald-50 transition-colors">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -162,7 +162,7 @@
                 </div>
 
                 <div class="flex gap-4">
-                    <a href="{{ route('admin.cultivos.index') }}"
+                    <a href="{{ $id_cosecha ? route('admin.cosechas.show', $id_cosecha) : route('admin.cultivos.index') }}"
                         class="flex-1 bg-white border-2 border-slate-100 text-slate-500 font-bold py-4 rounded-2xl hover:bg-slate-50 transition-all text-center">
                         Descartar
                     </a>

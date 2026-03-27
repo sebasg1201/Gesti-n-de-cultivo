@@ -26,13 +26,6 @@
                             </svg>
                             Volver
                         </a>
-                        <a href="{{ route('admin.cultivos.create', ['id_cosecha' => $cosecha->id_cosecha]) }}" 
-                           class="px-8 py-3 bg-emerald-600 text-white font-black rounded-xl hover:bg-emerald-700 hover:shadow-lg hover:shadow-emerald-100 transition-all flex items-center gap-2 text-sm">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                            </svg>
-                            Nueva Recolección
-                        </a>
                     </div>
                 </div>
             </div>
@@ -173,10 +166,6 @@
                                     </div>
                                     <h3 class="text-xl font-black text-slate-800 mb-2">Sin recolecciones registradas</h3>
                                     <p class="text-sm font-bold text-slate-400 max-w-xs mx-auto mb-8">Este ciclo de siembra aún no cuenta con ingresos de producción registrados.</p>
-                                    <a href="{{ route('admin.cultivos.create', ['id_cosecha' => $cosecha->id_cosecha]) }}" 
-                                       class="px-8 py-3 bg-emerald-600 text-white font-black rounded-xl hover:bg-emerald-700 transition-all text-sm">
-                                        Registrar Primera Recolección
-                                    </a>
                                 </div>
                             @endif
                         </div>

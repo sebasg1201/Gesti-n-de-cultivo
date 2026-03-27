@@ -248,7 +248,7 @@
                         class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 relative {{ active('admin.cultivos.*') }}">
                         <div class="w-1 h-5 bg-emerald-400 rounded-full {{ request()->routeIs('admin.cultivos.*') ? 'opacity-100' : 'opacity-0' }} group-hover:opacity-100 transition-all shadow-[0_0_10px_rgba(52,211,153,0.8)]">
                         </div>
-                        <span class="font-bold whitespace-nowrap tracking-tight">Cultivos / Recolección</span>
+                        <span class="font-bold whitespace-nowrap tracking-tight">Cultivos</span>
                     </a>
 
                     <a href="{{ route('admin.proveedores.index') }}"

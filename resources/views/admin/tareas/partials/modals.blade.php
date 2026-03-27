@@ -107,6 +107,10 @@
                     <label class="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Fecha Programada</label>
                     <input type="date" name="fecha_programada" value="{{ date('Y-m-d') }}" min="{{ date('Y-m-d') }}" required class="w-full bg-gray-50 border border-gray-100 rounded-2xl py-4 px-5 focus:outline-none focus:border-purple-500 transition-all font-bold text-gray-700">
                 </div>
+                <div class="space-y-2">
+                    <label class="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Observaciones / Instrucciones</label>
+                    <textarea name="observaciones" rows="3" class="w-full bg-gray-50 border border-gray-100 rounded-2xl py-4 px-5 focus:outline-none focus:border-purple-500 transition-all font-bold text-gray-700" placeholder="Ej: Aplicar en la base de la planta, evitar contacto con las hojas..."></textarea>
+                </div>
                 
                 <div class="pt-4 flex gap-3">
                     <button type="button" onclick="closeModal('modalInsumo')" class="flex-1 py-4 rounded-2xl font-bold bg-gray-100 text-gray-600 hover:bg-gray-200 transition-all">Cancelar</button>
