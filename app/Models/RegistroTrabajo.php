@@ -17,10 +17,11 @@ class RegistroTrabajo extends Model
         'id_insumo_cosecha',
         'id_fase',
         'id_riego',
+        'id_cultivo',
         'documento_trabajador',
         'fecha_trabajada',
         'foto_evidencia',
-        'estado_aprobacion',
+        'id_estado',
         'observacion'
     ];
 
@@ -42,5 +43,10 @@ class RegistroTrabajo extends Model
     public function riego()
     {
         return $this->belongsTo(Riego::class, 'id_riego', 'id_riego');
+    }
+
+    public function cultivo()
+    {
+        return $this->belongsTo(Cultivo::class, 'id_cultivo', 'id_cultivo');
     }
 }

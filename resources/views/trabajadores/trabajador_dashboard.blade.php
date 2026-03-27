@@ -68,13 +68,15 @@
         <div class="space-y-16">
             @forelse($tareas as $id_agrupador => $grupoTareas)
                 @php
-                    $primeraTarea = $grupoTareas->first();
+                    // Wrap in collect() to prevent stdClass error if $grupoTareas is an array
+                    $grupoCol = collect($grupoTareas);
+                    $primeraTarea = $grupoCol->first();
                     $cosecha = $primeraTarea->tipo_tarea === 'fase' ? null : $primeraTarea->cosecha;
                     $terreno = $primeraTarea->tipo_tarea === 'fase' ? $primeraTarea->terreno : ($cosecha ? $cosecha->terreno : null);
                     
                     // Si no hay cosecha en la primera tarea, buscamos si hay alguna en el grupo
                     if (!$cosecha) {
-                        foreach($grupoTareas as $tg) {
+                        foreach($grupoCol as $tg) {
                             if ($tg->cosecha) {
                                 $cosecha = $tg->cosecha;
                                 break;
@@ -139,10 +141,15 @@
                                     $barColor = 'bg-purple-600';
                                     $shadowColor = 'shadow-purple-200/40';
                                     $hoverText = 'group-hover/card:text-purple-700';
+                                } elseif ($fase->tipo_tarea == 'recoleccion') {
+                                    $tipoEtiqueta = 'Recolección';
+                                    $barColor = 'bg-amber-500';
+                                    $shadowColor = 'shadow-amber-200/40';
+                                    $hoverText = 'group-hover/card:text-amber-700';
                                 }
 
                                 $details = [
-                                    'fase_id' => $fase->tipo_tarea == 'riego' ? $fase->id_riego : ($fase->tipo_tarea == 'insumo' ? $fase->id_insumo_cosecha : $fase->id_fase),
+                                    'fase_id' => $fase->tipo_tarea == 'riego' ? $fase->id_riego : ($fase->tipo_tarea == 'insumo' ? $fase->id_insumo_cosecha : ($fase->tipo_tarea == 'recoleccion' ? $fase->id_cultivo : $fase->id_fase)),
                                     'tipo_tarea' => $fase->tipo_tarea,
                                     'tipo_label' => $tipoEtiqueta,
                                     'estado' => $fase->id_estado == 1 ? 'Pendiente' : ($fase->id_estado == 17 ? 'En Proceso' : ($fase->id_estado == 15 ? 'Realizado' : ($fase->id_estado == 16 ? 'Perdida' : 'Otro'))),
@@ -158,7 +165,7 @@
                                     'estimada' => $tareaCosecha && $tareaCosecha->fecha_estimada ? \Carbon\Carbon::parse($tareaCosecha->fecha_estimada)->format('d/m/Y') : 'Pendiente',
                                     'cantidad' => $tareaCosecha ? (($tareaCosecha->Cantidad ?? '0') . ' unidades') : 'N/A',
                                     'produccion' => $tareaCosecha ? (($tareaCosecha->produccion_estimada ?? '0') . ' kg est.') : 'N/A',
-                                    'instrucciones' => $fase->sub_descripcion ?? null
+                                    'instrucciones' => $fase->sub_descripcion ?? $fase->observaciones ?? $fase->descripcion_recoleccion ?? null
                                 ];
                             @endphp
                             <div
@@ -378,6 +385,27 @@
                                         placeholder="Ej: Realicé el riego completo de la parcela, revise los goteros y todo funcionó correctamente..."></textarea>
                                 </div>
 
+                                {{-- Specific inputs for Recoleccion --}}
+                                <div id="recoleccionInputsWrap" class="hidden space-y-5 mb-5 text-left border border-amber-100 bg-amber-50/30 p-4 rounded-2xl">
+                                    <p class="text-[10px] font-black text-amber-600 uppercase tracking-widest ml-1">Datos de Producción (Obligatorios)</p>
+                                    <div>
+                                        <label for="cantidad" class="block text-[10px] font-black text-gray-600 uppercase tracking-widest ml-1 mb-2">Cantidad Obtenida (Kg/Und)</label>
+                                        <input type="number" step="0.01" name="cantidad" id="inputCantidad"
+                                            class="w-full bg-white border border-gray-200 rounded-xl p-3 text-sm text-gray-700 focus:outline-none focus:border-amber-400 transition-all shadow-inner"
+                                            placeholder="Ej: 540.50">
+                                    </div>
+                                    <div>
+                                        <label for="calidad" class="block text-[10px] font-black text-gray-600 uppercase tracking-widest ml-1 mb-2">Calidad del Producto</label>
+                                        <select name="calidad" id="inputCalidad"
+                                            class="w-full bg-white border border-gray-200 rounded-xl p-3 text-sm text-gray-700 focus:outline-none focus:border-amber-400 transition-all shadow-inner">
+                                            <option value="" disabled selected>Seleccione calidad...</option>
+                                            <option value="Primera">Primera (Premium)</option>
+                                            <option value="Segunda">Segunda (Estándar)</option>
+                                            <option value="Tercera">Tercera (Industrial)</option>
+                                        </select>
+                                    </div>
+                                </div>
+
                                 <div class="mb-6 text-left" id="evidenciaFotoWrap">
                                     <label for="evidencia_foto"
                                         class="block text-[10px] font-black text-emerald-600 uppercase tracking-widest ml-1 mb-2">Evidencia
@@ -456,6 +484,9 @@
                 } else if (ds.tipoTarea === 'insumo') {
                     iconContainer.className = 'bg-purple-600 p-5 rounded-[1.5rem] text-white shadow-xl shadow-purple-200';
                     iconSvg.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />';
+                } else if (ds.tipoTarea === 'recoleccion') {
+                    iconContainer.className = 'bg-amber-500 p-5 rounded-[1.5rem] text-white shadow-xl shadow-amber-200';
+                    iconSvg.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />';
                 } else {
                     iconContainer.className = 'bg-emerald-600 p-5 rounded-[1.5rem] text-white shadow-xl shadow-emerald-200';
                     iconSvg.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />';
@@ -466,6 +497,10 @@
                 const obsGuardadaTexto = document.getElementById('obsGuardadaTexto');
                 const obsInputWrap = document.getElementById('obsInputWrap');
                 const obsTextarea = document.getElementById('observacion_trabajador');
+                const recoleccionWrap = document.getElementById('recoleccionInputsWrap');
+                const inputCantidad = document.getElementById('inputCantidad');
+                const inputCalidad = document.getElementById('inputCalidad');
+
                 if (ds.obsTrabajador && ds.obsTrabajador.trim() !== '') {
                     obsGuardadaTexto.innerText = '"' + ds.obsTrabajador + '"';
                     obsGuardadaWrap.classList.remove('hidden');
@@ -497,8 +532,11 @@
                         btnFinalizar.classList.add('bg-gray-300', 'text-gray-500', 'cursor-not-allowed', 'shadow-none');
                         
                         obsInputWrap.classList.add('hidden');
+                        if (recoleccionWrap) recoleccionWrap.classList.add('hidden');
                         if(fotoWrap) fotoWrap.classList.add('hidden');
                         if(reqInput) reqInput.required = false;
+                        if(inputCantidad) inputCantidad.required = false;
+                        if(inputCalidad) inputCalidad.required = false;
                     } else if (currentStatus === 16) {
                         btnFinalizar.disabled = false;
                         btnFinalizar.innerText = 'Aceptar Tarea Perdida';
@@ -508,8 +546,11 @@
                         if(inputIdEstado) inputIdEstado.value = 18;
                         
                         obsInputWrap.classList.add('hidden');
+                        if (recoleccionWrap) recoleccionWrap.classList.add('hidden');
                         if(fotoWrap) fotoWrap.classList.add('hidden');
                         if(reqInput) reqInput.required = false;
+                        if(inputCantidad) inputCantidad.required = false;
+                        if(inputCalidad) inputCalidad.required = false;
                     }
                 } else if (!isTaskDay) {
                     btnFinalizar.disabled = true;
@@ -518,8 +559,11 @@
                     btnFinalizar.classList.add('bg-gray-200', 'text-gray-400', 'cursor-not-allowed', 'shadow-none', 'border-gray-200');
                     
                     obsInputWrap.classList.add('hidden');
+                    if (recoleccionWrap) recoleccionWrap.classList.add('hidden');
                     if(fotoWrap) fotoWrap.classList.add('hidden');
                     if(reqInput) reqInput.required = false;
+                    if(inputCantidad) inputCantidad.required = false;
+                    if(inputCalidad) inputCalidad.required = false;
                 } else {
                     btnFinalizar.disabled = false;
                     btnFinalizar.innerText = 'Finalizar Trabajo';
@@ -530,6 +574,17 @@
                     
                     // Mostrar inputs
                     obsInputWrap.classList.remove('hidden');
+
+                    if (ds.tipoTarea === 'recoleccion') {
+                        if (recoleccionWrap) recoleccionWrap.classList.remove('hidden');
+                        if (inputCantidad) inputCantidad.required = true;
+                        if (inputCalidad) inputCalidad.required = true;
+                    } else {
+                        if (recoleccionWrap) recoleccionWrap.classList.add('hidden');
+                        if (inputCantidad) inputCantidad.required = false;
+                        if (inputCalidad) inputCalidad.required = false;
+                    }
+
                     if(fotoWrap) fotoWrap.classList.remove('hidden');
                     if(reqInput) reqInput.required = true;
                 }
@@ -539,6 +594,7 @@
                     btnFinalizar.disabled = true;
                     btnFinalizar.innerText = 'Procesando...';
                     obsInputWrap.classList.add('hidden');
+                    if (recoleccionWrap) recoleccionWrap.classList.add('hidden');
                     document.getElementById('evidencia_foto').closest('div').classList.add('hidden');
 
                     // Pasar automáticamente a "En Proceso" (id=17) al abrir los detalles
@@ -568,6 +624,7 @@
                         btnFinalizar.classList.remove('bg-gray-300', 'text-gray-500', 'cursor-not-allowed', 'shadow-none');
                         btnFinalizar.classList.add('bg-emerald-600', 'hover:bg-emerald-700', 'text-white', 'shadow-emerald-200/50');
                         obsInputWrap.classList.remove('hidden');
+                        if (ds.tipoTarea === 'recoleccion' && recoleccionWrap) recoleccionWrap.classList.remove('hidden');
                         document.getElementById('evidencia_foto').closest('div').classList.remove('hidden');
                     }).catch(e => {
                         console.error(e);
@@ -575,6 +632,7 @@
                         btnFinalizar.disabled = false;
                         btnFinalizar.innerText = 'Finalizar Trabajo';
                         obsInputWrap.classList.remove('hidden');
+                        if (ds.tipoTarea === 'recoleccion' && recoleccionWrap) recoleccionWrap.classList.remove('hidden');
                         document.getElementById('evidencia_foto').closest('div').classList.remove('hidden');
                     });
                 }

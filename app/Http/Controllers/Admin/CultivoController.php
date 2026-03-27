@@ -155,10 +155,6 @@ class CultivoController extends Controller
             'id_cosecha' => 'required|exists:cosecha,id_cosecha',
             'documento_trabajador' => 'required|exists:usuario,documento',
             'fecha_recoleccion' => 'required|date',
-            'cantidad' => 'required|numeric|min:0.1',
-            'calidad' => 'required|string|max:50',
-            'nombre_producto' => 'required|string|max:100',
-            'codigo_referencia' => 'nullable|string|max:50',
             'observaciones' => 'nullable|string'
         ]);
 
@@ -166,39 +162,19 @@ class CultivoController extends Controller
         $cosecha = Cosecha::where('id_empresa', $id_empresa)->findOrFail($request->id_cosecha);
 
         try {
-            DB::beginTransaction();
-
-            // 1. Crear el producto (o buscarlo si ya existe uno con ese nombre y código)
-            $producto = Producto::create([
-                'nombre' => $request->nombre_producto,
-                'Codigo_Referencia' => $request->codigo_referencia ?? 'REF-' . time(),
-                'descripcion' => 'Producto recolectado de la cosecha #' . $cosecha->id_cosecha
-            ]);
-
-            // 2. Crear el registro de cultivo
-            $cultivo = Cultivo::create([
+            // Crear el registro de cultivo como tarea pendiente
+            Cultivo::create([
                 'fecha_recoleccion' => $request->fecha_recoleccion,
                 'id_cosecha' => $cosecha->id_cosecha,
                 'documento_trabajador' => $request->documento_trabajador,
-                'observaciones' => $request->observaciones
+                'descripcion_recoleccion' => $request->observaciones,
+                'id_estado' => 1 // Pendiente
             ]);
 
-            // 3. Crear el detalle del producto en el cultivo
-            DetalleProductoCultivo::create([
-                'id_cultivo' => $cultivo->id_cultivo,
-                'id_producto' => $producto->id_producto,
-                'cantidad' => $request->cantidad,
-                'calidad' => $request->calidad
-            ]);
-
-            // 4. Finalización manual desde la vista de cosecha
-            DB::commit();
-
-            return redirect()->route('admin.cultivos.index')->with('success', 'Recolección registrada exitosamente.');
+            return redirect()->route('admin.cultivos.index')->with('success', 'Tarea de recolección asignada al trabajador exitosamente.');
 
         } catch (\Exception $e) {
-            DB::rollBack();
-            return redirect()->back()->with('error', 'Error al registrar la recolección: ' . $e->getMessage())->withInput();
+            return redirect()->back()->with('error', 'Error al asignar la recolección: ' . $e->getMessage())->withInput();
         }
     }
 

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 27-03-2026 a las 22:14:09
+-- Tiempo de generación: 27-03-2026 a las 22:51:02
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -699,7 +699,7 @@ CREATE TABLE `registro_trabajo` (
   `documento_trabajador` int(11) NOT NULL,
   `fecha_trabajada` date NOT NULL,
   `foto_evidencia` varchar(255) DEFAULT NULL,
-  `estado_aprobacion` enum('pendiente','aprobado','rechazado') DEFAULT 'pendiente',
+  `id_estado` int(11) NOT NULL,
   `observacion` text DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -708,21 +708,21 @@ CREATE TABLE `registro_trabajo` (
 -- Volcado de datos para la tabla `registro_trabajo`
 --
 
-INSERT INTO `registro_trabajo` (`id_registro_trabajo`, `id_insumo_cosecha`, `id_fase`, `id_riego`, `documento_trabajador`, `fecha_trabajada`, `foto_evidencia`, `estado_aprobacion`, `observacion`, `created_at`) VALUES
-(16, NULL, 0, 0, 1105461467, '2026-03-19', 'evidencias/Quk6Vto5Dh48UZUvqvnHq7P9XlO1XbTyPora7Juu.png', 'pendiente', 'trabajo', '2026-03-12 01:34:36'),
-(17, NULL, 0, 0, 1105461467, '2026-03-13', 'evidencias/UoEiLyHQl9hj3oFtzxLr1nJdyA83AugvK2Oryja7.png', 'pendiente', '9poikjuhygtrf', '2026-03-12 19:08:34'),
-(18, NULL, 0, 0, 1039253243, '2026-03-17', 'evidencias/ur4ABrNWTSkMZiqXeb8LizM4n4LKdfhWx9VcpbG2.jpg', 'pendiente', 'Realice el riego no jodan mas y paguen ya', '2026-03-17 18:30:41'),
-(19, NULL, 0, 0, 1039253243, '2026-03-19', NULL, 'pendiente', 'Tarea perdida ocultada por el trabajador.', '2026-03-19 20:21:49'),
-(20, NULL, 0, 0, 1039253243, '2026-03-24', 'evidencias/fW9yutc0h5RMKFBnar1z40PQlkS6vm1sPwFmKylu.jpg', 'pendiente', 'reigo echo', '2026-03-24 21:22:19'),
-(21, NULL, 0, 10, 1039253243, '2026-03-27', NULL, 'pendiente', 'Tarea perdida ocultada por el trabajador.', '2026-03-27 18:28:09'),
-(22, NULL, NULL, 11, 1039253243, '2026-03-27', NULL, 'pendiente', 'Tarea perdida ocultada por el trabajador.', '2026-03-27 18:51:01'),
-(23, NULL, NULL, 12, 1039253243, '2026-03-27', NULL, 'pendiente', 'Tarea perdida ocultada por el trabajador.', '2026-03-27 18:51:16'),
-(24, NULL, NULL, 13, 1039253243, '2026-03-27', NULL, 'pendiente', 'Tarea perdida ocultada por el trabajador.', '2026-03-27 18:51:21'),
-(25, NULL, NULL, 14, 1039253243, '2026-03-27', NULL, 'pendiente', 'Tarea perdida ocultada por el trabajador.', '2026-03-27 18:51:26'),
-(26, NULL, NULL, 16, 1039253243, '2026-03-27', NULL, 'pendiente', 'Tarea perdida ocultada por el trabajador.', '2026-03-27 18:51:30'),
-(30, NULL, NULL, 19, 1039253243, '2026-03-27', 'evidencias/Iu8ZIQWbqoqW2GOpsOr6fYLJDW4QQgelS3rhgU2o.jpg', 'pendiente', 'Realice El Riego', '2026-03-27 20:38:14'),
-(31, 3, NULL, NULL, 1039253243, '2026-03-27', 'evidencias/74pgabqWo8dE9SM0bLH0hqjbo6AqzYBjuSEhBNND.jpg', 'pendiente', 'Realice la tarea del insumo', '2026-03-27 20:49:04'),
-(32, NULL, 8, NULL, 1039253243, '2026-03-27', 'evidencias/lZ38SWsKT4cAr3FmAzCqT0rS0GRhxM3qCGIr0miX.jpg', 'pendiente', 'Ya Podé el terreno', '2026-03-27 20:52:17');
+INSERT INTO `registro_trabajo` (`id_registro_trabajo`, `id_insumo_cosecha`, `id_fase`, `id_riego`, `documento_trabajador`, `fecha_trabajada`, `foto_evidencia`, `id_estado`, `observacion`, `created_at`) VALUES
+(16, NULL, 0, 0, 1105461467, '2026-03-19', 'evidencias/Quk6Vto5Dh48UZUvqvnHq7P9XlO1XbTyPora7Juu.png', 1, 'trabajo', '2026-03-12 01:34:36'),
+(17, NULL, 0, 0, 1105461467, '2026-03-13', 'evidencias/UoEiLyHQl9hj3oFtzxLr1nJdyA83AugvK2Oryja7.png', 1, '9poikjuhygtrf', '2026-03-12 19:08:34'),
+(18, NULL, 0, 0, 1039253243, '2026-03-17', 'evidencias/ur4ABrNWTSkMZiqXeb8LizM4n4LKdfhWx9VcpbG2.jpg', 1, 'Realice el riego no jodan mas y paguen ya', '2026-03-17 18:30:41'),
+(19, NULL, 0, 0, 1039253243, '2026-03-19', NULL, 1, 'Tarea perdida ocultada por el trabajador.', '2026-03-19 20:21:49'),
+(20, NULL, 0, 0, 1039253243, '2026-03-24', 'evidencias/fW9yutc0h5RMKFBnar1z40PQlkS6vm1sPwFmKylu.jpg', 1, 'reigo echo', '2026-03-24 21:22:19'),
+(21, NULL, 0, 10, 1039253243, '2026-03-27', NULL, 1, 'Tarea perdida ocultada por el trabajador.', '2026-03-27 18:28:09'),
+(22, NULL, NULL, 11, 1039253243, '2026-03-27', NULL, 1, 'Tarea perdida ocultada por el trabajador.', '2026-03-27 18:51:01'),
+(23, NULL, NULL, 12, 1039253243, '2026-03-27', NULL, 1, 'Tarea perdida ocultada por el trabajador.', '2026-03-27 18:51:16'),
+(24, NULL, NULL, 13, 1039253243, '2026-03-27', NULL, 1, 'Tarea perdida ocultada por el trabajador.', '2026-03-27 18:51:21'),
+(25, NULL, NULL, 14, 1039253243, '2026-03-27', NULL, 1, 'Tarea perdida ocultada por el trabajador.', '2026-03-27 18:51:26'),
+(26, NULL, NULL, 16, 1039253243, '2026-03-27', NULL, 1, 'Tarea perdida ocultada por el trabajador.', '2026-03-27 18:51:30'),
+(30, NULL, NULL, 19, 1039253243, '2026-03-27', 'evidencias/Iu8ZIQWbqoqW2GOpsOr6fYLJDW4QQgelS3rhgU2o.jpg', 1, 'Realice El Riego', '2026-03-27 20:38:14'),
+(31, 3, NULL, NULL, 1039253243, '2026-03-27', 'evidencias/74pgabqWo8dE9SM0bLH0hqjbo6AqzYBjuSEhBNND.jpg', 1, 'Realice la tarea del insumo', '2026-03-27 20:49:04'),
+(32, NULL, 8, NULL, 1039253243, '2026-03-27', 'evidencias/lZ38SWsKT4cAr3FmAzCqT0rS0GRhxM3qCGIr0miX.jpg', 1, 'Ya Podé el terreno', '2026-03-27 20:52:17');
 
 -- --------------------------------------------------------
 
@@ -795,8 +795,8 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('8tHmv5gRucwQWvPX8OgTYuajENfMJVNY8bSGxNoB', 1110722345, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiazdWZ0VVWVExSFdIUUEwYk14TkRsdDJMejNCWDUzQTNyWVFoNnZUMCI7czozOiJ1cmwiO2E6MTp7czo4OiJpbnRlbmRlZCI7czozNDoiaHR0cDovLzEyNy4wLjAuMTo4MDAwL2FkbWluL3RhcmVhcyI7fXM6OToiX3ByZXZpb3VzIjthOjI6e3M6MzoidXJsIjtzOjU3OiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYWRtaW4vY3VsdGl2b3MvY3JlYXRlP2lkX2Nvc2VjaGE9MjIiO3M6NToicm91dGUiO3M6MjE6ImFkbWluLmN1bHRpdm9zLmNyZWF0ZSI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6NTQ6ImxvZ2luX3VzdWFyaW9fNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToxMTEwNzIyMzQ1O30=', 1774645632),
-('VTBFdAlsIPyjEixo6qXdj7C2xTZtXghNQjScFSUl', 1039253243, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiRWZpR3VZajZVODVPclQzMk1MYUdna1NOU292YnV6YkV5VmU5MmdWTCI7czozOiJ1cmwiO2E6MTp7czo4OiJpbnRlbmRlZCI7czo0MjoiaHR0cDovLzEyNy4wLjAuMTo4MDAwL3RyYWJhamFkb3IvZGFzaGJvYXJkIjt9czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MTI1OiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvdHJhYmFqYWRvci9jYWxlbmRhcmlvL2V2ZW50b3M/ZW5kPTIwMjYtMDQtMDZUMDAlM0EwMCUzQTAwLTA1JTNBMDAmc3RhcnQ9MjAyNi0wMi0yM1QwMCUzQTAwJTNBMDAtMDUlM0EwMCI7czo1OiJyb3V0ZSI7czoyOToidHJhYmFqYWRvci5jYWxlbmRhcmlvLmV2ZW50b3MiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjU0OiJsb2dpbl91c3VhcmlvXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MTAzOTI1MzI0Mzt9', 1774645520);
+('8tHmv5gRucwQWvPX8OgTYuajENfMJVNY8bSGxNoB', 1110722345, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiazdWZ0VVWVExSFdIUUEwYk14TkRsdDJMejNCWDUzQTNyWVFoNnZUMCI7czozOiJ1cmwiO2E6MTp7czo4OiJpbnRlbmRlZCI7czozNDoiaHR0cDovLzEyNy4wLjAuMTo4MDAwL2FkbWluL3RhcmVhcyI7fXM6OToiX3ByZXZpb3VzIjthOjI6e3M6MzoidXJsIjtzOjU3OiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYWRtaW4vY3VsdGl2b3MvY3JlYXRlP2lkX2Nvc2VjaGE9MjIiO3M6NToicm91dGUiO3M6MjE6ImFkbWluLmN1bHRpdm9zLmNyZWF0ZSI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6NTQ6ImxvZ2luX3VzdWFyaW9fNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToxMTEwNzIyMzQ1O30=', 1774647965),
+('VTBFdAlsIPyjEixo6qXdj7C2xTZtXghNQjScFSUl', 1039253243, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiRWZpR3VZajZVODVPclQzMk1MYUdna1NOU292YnV6YkV5VmU5MmdWTCI7czozOiJ1cmwiO2E6MTp7czo4OiJpbnRlbmRlZCI7czo0MjoiaHR0cDovLzEyNy4wLjAuMTo4MDAwL3RyYWJhamFkb3IvZGFzaGJvYXJkIjt9czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MTI1OiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvdHJhYmFqYWRvci9jYWxlbmRhcmlvL2V2ZW50b3M/ZW5kPTIwMjYtMDQtMDZUMDAlM0EwMCUzQTAwLTA1JTNBMDAmc3RhcnQ9MjAyNi0wMi0yM1QwMCUzQTAwJTNBMDAtMDUlM0EwMCI7czo1OiJyb3V0ZSI7czoyOToidHJhYmFqYWRvci5jYWxlbmRhcmlvLmV2ZW50b3MiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjU0OiJsb2dpbl91c3VhcmlvXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MTAzOTI1MzI0Mzt9', 1774647901);
 
 -- --------------------------------------------------------
 
@@ -1330,7 +1330,8 @@ ALTER TABLE `registro_trabajo`
   ADD UNIQUE KEY `unique_registro_trabajo` (`id_insumo_cosecha`,`documento_trabajador`,`fecha_trabajada`),
   ADD KEY `fk_registro_trabajo_usuario` (`documento_trabajador`),
   ADD KEY `id_fase` (`id_fase`),
-  ADD KEY `id_riego` (`id_riego`);
+  ADD KEY `id_riego` (`id_riego`),
+  ADD KEY `id_estado` (`id_estado`);
 
 --
 -- Indices de la tabla `riego`
@@ -1735,7 +1736,8 @@ ALTER TABLE `registro_trabajo`
   ADD CONSTRAINT `fk_registro_trabajo_insumo_cosecha` FOREIGN KEY (`id_insumo_cosecha`) REFERENCES `insumo_cosecha` (`id_insumo_cosecha`),
   ADD CONSTRAINT `fk_registro_trabajo_usuario` FOREIGN KEY (`documento_trabajador`) REFERENCES `usuario` (`documento`),
   ADD CONSTRAINT `registro_trabajo_ibfk_1` FOREIGN KEY (`id_fase`) REFERENCES `fases_programadas` (`id_fase`),
-  ADD CONSTRAINT `registro_trabajo_ibfk_2` FOREIGN KEY (`id_riego`) REFERENCES `riego` (`id_riego`);
+  ADD CONSTRAINT `registro_trabajo_ibfk_2` FOREIGN KEY (`id_riego`) REFERENCES `riego` (`id_riego`),
+  ADD CONSTRAINT `registro_trabajo_ibfk_3` FOREIGN KEY (`id_estado`) REFERENCES `estado` (`id_estado`);
 
 --
 -- Filtros para la tabla `riego`

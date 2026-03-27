@@ -14,10 +14,11 @@ class Cultivo extends Model
     public $timestamps = false;
 
     protected $fillable = [
+        'id_estado',
         'fecha_recoleccion',
         'id_cosecha',
         'documento_trabajador',
-        'observaciones'
+        'descripcion_recoleccion'
     ];
 
     public function cosecha()

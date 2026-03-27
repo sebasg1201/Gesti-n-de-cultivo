@@ -281,8 +281,21 @@ class AdminController extends Controller
                 return $t;
             });
 
+        // 4. Recoleccion
+        $recolecciones = \App\Models\Cultivo::with(['cosecha.semilla', 'cosecha.terreno.tipoSuelo'])
+            ->where('documento_trabajador', $usuario->documento)
+            ->whereIn('id_estado', [1, 16, 17]) // Pendiente, Perdida y En Proceso
+            ->get()->map(function ($t) {
+                $t->tipo_tarea = 'recoleccion';
+                $t->descripcion = 'Cosecha/Recolección';
+                $t->id_agrupador = 'terreno_' . ($t->cosecha?->id_terreno ?? '0');
+                // Maps fields so they show in dashboard
+                $t->fecha_programada = $t->fecha_recoleccion;
+                return $t;
+            });
+
         // Unificar y Agrupar por Terreno
-        $tareas = $fases->concat($riegos)->concat($insumos)
+        $tareas = $fases->concat($riegos)->concat($insumos)->concat($recolecciones)
             ->sortBy('fecha_programada')
             ->groupBy('id_agrupador');
 
@@ -324,6 +337,13 @@ class AdminController extends Controller
             'evidencia_foto' => ($request->id_estado == 15) ? 'required|image|max:2048' : 'nullable|image|max:2048',
         ]);
 
+        if ($tipo === 'recoleccion' && $request->id_estado == 15) {
+            $request->validate([
+                'cantidad' => 'required|numeric|min:0.1',
+                'calidad' => 'required|string|max:50',
+            ]);
+        }
+
         $model = $this->getTaskModel($tipo);
         $idField = $this->getTaskIdField($tipo);
 
@@ -356,6 +376,8 @@ class AdminController extends Controller
                         $q->where('id_riego', $id);
                     elseif ($tipo === 'fase')
                         $q->where('id_fase', $id);
+                    elseif ($tipo === 'recoleccion')
+                        $q->where('id_cultivo', $id);
                 })
                 ->exists();
 
@@ -366,7 +388,7 @@ class AdminController extends Controller
                 $registroData = [
                     'documento_trabajador' => $usuario->documento,
                     'fecha_trabajada' => now()->toDateString(),
-                    'estado_aprobacion' => 'pendiente',
+                    'id_estado' => 1,
                     'created_at' => now(),
                 ];
 
@@ -388,6 +410,24 @@ class AdminController extends Controller
                     $registroData['id_riego'] = $id;
                 } elseif ($tipo === 'fase') {
                     $registroData['id_fase'] = $id;
+                } elseif ($tipo === 'recoleccion') {
+                    $registroData['id_cultivo'] = $id;
+
+                    $cosecha = $tarea->cosecha;
+                    $productoNombre = $cosecha && $cosecha->semilla ? $cosecha->semilla->nombre_semilla : 'Producto Recolectado';
+                    
+                    $producto = \App\Models\Producto::create([
+                        'nombre' => $productoNombre,
+                        'Codigo_Referencia' => 'REF-' . time() . '-' . rand(100, 999),
+                        'descripcion' => 'Producto recolectado de la cosecha #' . ($cosecha ? $cosecha->id_cosecha : 'N/A')
+                    ]);
+
+                    \App\Models\DetalleProductoCultivo::create([
+                        'id_cultivo' => $tarea->id_cultivo,
+                        'id_producto' => $producto->id_producto,
+                        'cantidad' => $request->cantidad,
+                        'calidad' => $request->calidad
+                    ]);
                 }
 
                 \Illuminate\Support\Facades\DB::table('registro_trabajo')->insert($registroData);
@@ -396,12 +436,13 @@ class AdminController extends Controller
             $registroData = [
                 'documento_trabajador' => $usuario->documento,
                 'fecha_trabajada' => now()->toDateString(),
-                'estado_aprobacion' => 'pendiente',
+                'id_estado' => 1,
                 'observacion' => 'Tarea perdida ocultada por el trabajador.',
                 'created_at' => now(),
                 'id_fase' => ($tipo === 'fase') ? $id : null,
                 'id_riego' => ($tipo === 'riego') ? $id : null,
                 'id_insumo_cosecha' => ($tipo === 'insumo') ? $id : null,
+                'id_cultivo' => ($tipo === 'recoleccion') ? $id : null,
             ];
 
             \Illuminate\Support\Facades\DB::table('registro_trabajo')->insert($registroData);
@@ -434,6 +475,8 @@ class AdminController extends Controller
                 return \App\Models\Riego::class;
             case 'insumo':
                 return \App\Models\InsumoCosecha::class;
+            case 'recoleccion':
+                return \App\Models\Cultivo::class;
             default:
                 return \App\Models\FaseProgramada::class;
         }
@@ -446,6 +489,8 @@ class AdminController extends Controller
                 return 'id_riego';
             case 'insumo':
                 return 'id_insumo_cosecha';
+            case 'recoleccion':
+                return 'id_cultivo';
             default:
                 return 'id_fase';
         }
@@ -467,6 +512,10 @@ class AdminController extends Controller
             $q->where('id_empresa', $id_empresa);
         })->with(['usuario', 'cosecha.semilla', 'insumo'])->get();
 
+        $recoleccion = \App\Models\Cultivo::whereHas('cosecha', function ($q) use ($id_empresa) {
+            $q->where('id_empresa', $id_empresa);
+        })->with(['trabajador', 'cosecha.semilla'])->get();
+
         // Standardize descripcion and type for the view
         foreach ($riego as $t) {
             $t->tipo_referencia = 'riego';
@@ -480,6 +529,14 @@ class AdminController extends Controller
             $cantidadLimpia = (float) ($t->cantidad_usada ?? 0);
             $t->descripcion = "Aplicación: " . $insumoNombre . " (" . $cantidadLimpia . ")";
             $t->sub_descripcion = $t->observaciones ?? null;
+        }
+
+        foreach ($recoleccion as $t) {
+            $t->tipo_referencia = 'recoleccion';
+            $t->descripcion = "Extracción de Nivel Óptimo/Cosecha";
+            $t->sub_descripcion = $t->observaciones ?? null;
+            // Map the relation 'trabajador' to 'usuario' to prevent errors in view
+            $t->usuario = $t->trabajador;
         }
 
         // Fases general: fetch those linked to terrenos
@@ -515,7 +572,7 @@ class AdminController extends Controller
 
         $catalogoInsumos = \App\Models\Insumo::where('id_empresa', $id_empresa)->get();
 
-        return view('admin.tareas.index', compact('riego', 'insumoCosecha', 'general', 'trabajadores', 'cosechas', 'terrenosLibres', 'tiposRiego', 'catalogoInsumos'));
+        return view('admin.tareas.index', compact('riego', 'insumoCosecha', 'recoleccion', 'general', 'trabajadores', 'cosechas', 'terrenosLibres', 'tiposRiego', 'catalogoInsumos'));
     }
 
     public function storeRiego(Request $request)
@@ -623,7 +680,7 @@ class AdminController extends Controller
             ->where('observacion', '!=', 'Tarea perdida ocultada por el trabajador.')
             ->get();
         foreach ($asistencias as $asist) {
-            $isLinked = $asist->id_fase || $asist->id_riego || $asist->id_insumo_cosecha;
+            $isLinked = $asist->id_fase || $asist->id_riego || $asist->id_insumo_cosecha || $asist->id_cultivo;
             if ($isLinked) {
                 // Ya no mostramos la tarjeta genérica "Asistencia Confirmada"
                 // si el registro pertenece a una labor específica.
@@ -651,10 +708,12 @@ class AdminController extends Controller
         $obsFase = $registros->whereNotNull('id_fase')->pluck('observacion', 'id_fase')->toArray();
         $obsRiego = $registros->whereNotNull('id_riego')->pluck('observacion', 'id_riego')->toArray();
         $obsInsumo = $registros->whereNotNull('id_insumo_cosecha')->pluck('observacion', 'id_insumo_cosecha')->toArray();
+        $obsRecoleccion = $registros->whereNotNull('id_cultivo')->pluck('observacion', 'id_cultivo')->toArray();
 
         $fotoFase = $registros->whereNotNull('id_fase')->pluck('foto_evidencia', 'id_fase')->toArray();
         $fotoRiego = $registros->whereNotNull('id_riego')->pluck('foto_evidencia', 'id_riego')->toArray();
         $fotoInsumo = $registros->whereNotNull('id_insumo_cosecha')->pluck('foto_evidencia', 'id_insumo_cosecha')->toArray();
+        $fotoRecoleccion = $registros->whereNotNull('id_cultivo')->pluck('foto_evidencia', 'id_cultivo')->toArray();
 
         // 1. Fase Programada
         $fases = \App\Models\FaseProgramada::with(['terreno'])
@@ -744,8 +803,36 @@ class AdminController extends Controller
             ];
         }
 
+        // 4. Recoleccion
+        $recolecciones = \App\Models\Cultivo::with(['cosecha.terreno'])->where('documento_trabajador', $usuario->documento)->get();
+        foreach ($recolecciones as $reco) {
+            $nombreLugar = $reco->cosecha && $reco->cosecha->terreno ? $reco->cosecha->terreno->nombre : 'Terreno';
+
+            $color = match ((int) $reco->id_estado) {
+                15 => '#f97316', // Mantener color naranja
+                17 => '#f59e0b',
+                16, 18 => '#ef4444',
+                default => '#f97316'
+            };
+
+            $eventos[] = [
+                'id' => 'recoleccion_' . $reco->id_cultivo,
+                'title' => 'Cosecha/Recolección - ' . $nombreLugar,
+                'start' => $reco->fecha_programada ?? $reco->fecha_recoleccion,
+                'color' => $color,
+                'extendedProps' => [
+                    'tipo' => 'recoleccion',
+                    'descripcion' => $reco->descripcion_recoleccion,
+                    'estado' => $reco->id_estado,
+                    'foto_url' => isset($fotoRecoleccion[$reco->id_cultivo]) && $fotoRecoleccion[$reco->id_cultivo] ? asset('uploads/' . $fotoRecoleccion[$reco->id_cultivo]) : null,
+                    'observacion' => $obsRecoleccion[$reco->id_cultivo] ?? $reco->descripcion_recoleccion
+                ]
+            ];
+        }
+
         return response()->json($eventos);
     }
+
 
     public function storeRegistroTrabajo(Request $request)
     {
@@ -778,7 +865,7 @@ class AdminController extends Controller
             'fecha_trabajada' => $request->fecha_trabajada,
             'observacion' => $request->observacion,
             'id_insumo_cosecha' => $request->id_insumo_cosecha ?? null,
-            'estado_aprobacion' => 'pendiente',
+            'id_estado' => 1,
             'foto_evidencia' => $imagePath
         ]);
 

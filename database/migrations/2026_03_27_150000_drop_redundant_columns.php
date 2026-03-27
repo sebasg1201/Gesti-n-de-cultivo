@@ -12,16 +12,24 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('riego', function (Blueprint $table) {
-            $table->dropColumn('evidencia_foto');
+            if (Schema::hasColumn('riego', 'evidencia_foto')) {
+                $table->dropColumn('evidencia_foto');
+            }
         });
 
         Schema::table('fases_programadas', function (Blueprint $table) {
-            $table->dropColumn('evidencia_foto');
+            if (Schema::hasColumn('fases_programadas', 'evidencia_foto')) {
+                $table->dropColumn('evidencia_foto');
+            }
         });
 
         Schema::table('insumo_cosecha', function (Blueprint $table) {
-            $table->dropColumn('evidencia_foto');
-            $table->dropColumn('fecha_realizacion');
+            if (Schema::hasColumn('insumo_cosecha', 'evidencia_foto')) {
+                $table->dropColumn('evidencia_foto');
+            }
+            if (Schema::hasColumn('insumo_cosecha', 'fecha_realizacion')) {
+                $table->dropColumn('fecha_realizacion');
+            }
         });
     }
 

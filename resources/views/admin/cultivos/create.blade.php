@@ -87,7 +87,6 @@
                         Datos de Producción
                     </h3>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label
                                 class="block text-[10px] font-black text-emerald-900 uppercase tracking-widest mb-2">Trabajador
@@ -103,60 +102,30 @@
                         <div>
                             <label
                                 class="block text-[10px] font-black text-emerald-900 uppercase tracking-widest mb-2">Fecha
-                                de Recolección</label>
+                                Programada</label>
                             <input type="date" name="fecha_recoleccion"
                                 value="{{ old('fecha_recoleccion', date('Y-m-d')) }}"
                                 class="w-full px-4 py-3 bg-white border border-emerald-100 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all font-medium text-slate-700">
                         </div>
-                        <div>
-                            <label
-                                class="block text-[10px] font-black text-emerald-900 uppercase tracking-widest mb-2">Cantidad
-                                Obtenida (Kg/Und)</label>
-                            <input type="number" step="0.01" name="cantidad" value="{{ old('cantidad') }}"
-                                class="w-full px-4 py-3 bg-white border border-emerald-100 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all font-medium text-slate-700"
-                                placeholder="Ej: 540.50">
-                        </div>
-                        <div>
-                            <label
-                                class="block text-[10px] font-black text-emerald-900 uppercase tracking-widest mb-2">Calidad
-                                del Producto</label>
-                            <select name="calidad"
-                                class="w-full px-4 py-3 bg-white border border-emerald-100 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all font-medium text-slate-700 appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2310b981%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M6%209l6%206%206-6%22%3E%3C/path%3E%3C/svg%3E')] bg-[length:20px_20px] bg-no-repeat bg-[right_1rem_center]">
-                                <option value="Primera" {{ old('calidad') == 'Primera' ? 'selected' : '' }}>Primera (Premium)
-                                </option>
-                                <option value="Segunda" {{ old('calidad') == 'Segunda' ? 'selected' : '' }}>Segunda (Estándar)
-                                </option>
-                                <option value="Tercera" {{ old('calidad') == 'Tercera' ? 'selected' : '' }}>Tercera
-                                    (Industrial)</option>
-                            </select>
-                        </div>
                     </div>
                 </div>
 
-                <!-- Card de Observaciones y Referencia -->
+                <!-- Card de Instrucciones -->
                 <div class="bg-white rounded-[2rem] p-8 shadow-sm border border-emerald-50">
                     <h3 class="text-lg font-black text-slate-800 mb-6 flex items-center gap-2">
                         <span
                             class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-xs">3</span>
-                        Adicionales
+                        Instrucciones Adicionales
                     </h3>
 
                     <div class="space-y-6">
                         <div>
                             <label
-                                class="block text-[10px] font-black text-emerald-900 uppercase tracking-widest mb-2">Código
-                                de Referencia (SKU)</label>
-                            <input type="text" name="codigo_referencia" value="{{ old('codigo_referencia') }}"
-                                class="w-full px-4 py-3 bg-white border border-emerald-100 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all font-medium text-slate-700"
-                                placeholder="Dejar vacío para autogenerar">
-                        </div>
-                        <div>
-                            <label
-                                class="block text-[10px] font-black text-emerald-900 uppercase tracking-widest mb-2">Observaciones
-                                de la Recolección</label>
+                                class="block text-[10px] font-black text-emerald-900 uppercase tracking-widest mb-2">Instrucciones
+                                para el Trabajador</label>
                             <textarea name="observaciones" rows="3"
                                 class="w-full px-4 py-3 bg-white border border-emerald-100 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all font-medium text-slate-700"
-                                placeholder="Mencione cualquier anomalía o detalle relevante durante la cosecha...">{{ old('observaciones') }}</textarea>
+                                placeholder="Especifique cualquier instrucción especial para la recolección...">{{ old('observaciones') }}</textarea>
                         </div>
                     </div>
                 </div>
@@ -164,11 +133,11 @@
                 <div class="flex gap-4">
                     <a href="{{ $id_cosecha ? route('admin.cosechas.show', $id_cosecha) : route('admin.cultivos.index') }}"
                         class="flex-1 bg-white border-2 border-slate-100 text-slate-500 font-bold py-4 rounded-2xl hover:bg-slate-50 transition-all text-center">
-                        Descartar
+                        Cancelar
                     </a>
                     <button type="submit"
                         class="flex-[2] bg-emerald-600 text-white font-black py-4 rounded-2xl shadow-lg shadow-emerald-200 hover:bg-emerald-700 hover:-translate-y-1 transition-all">
-                        Finalizar y Registrar Recolección
+                        Asignar Tarea de Recolección
                     </button>
                 </div>
             </form>

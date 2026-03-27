@@ -1,10 +1,13 @@
 [
     "id_registro_trabajo",
     "id_insumo_cosecha",
+    "id_fase",
+    "id_riego",
+    "id_cultivo",
     "documento_trabajador",
     "fecha_trabajada",
     "foto_evidencia",
-    "estado_aprobacion",
+    "id_estado",
     "observacion",
     "created_at"
 ]
