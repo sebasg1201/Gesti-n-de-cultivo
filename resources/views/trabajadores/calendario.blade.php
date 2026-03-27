@@ -92,6 +92,9 @@
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
 <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.10/locales/es.global.min.js'></script>
 <script>
+    // Safelist para Tailwind CSS (colores dinámicos generados en JS)
+    const tlSafelist = "bg-sky-50 border-sky-100 text-sky-600 border-sky-200 text-sky-900 border-sky-100/20 text-sky-400 text-sky-800 border-sky-100/50 bg-sky-900/40 text-sky-700 shadow-sky-100/50 shadow-sky-50/50 bg-purple-50 border-purple-100 text-purple-600 border-purple-200 text-purple-900 border-purple-100/20 text-purple-400 text-purple-800 border-purple-100/50 bg-purple-900/40 text-purple-700 shadow-purple-100/50 shadow-purple-50/50 bg-emerald-50 border-emerald-100 text-emerald-600 border-emerald-200 text-emerald-900 border-emerald-100/20 text-emerald-400 text-emerald-800 border-emerald-100/50 bg-emerald-900/40 text-emerald-700 shadow-emerald-100/50 shadow-emerald-50/50 bg-amber-50 border-amber-100 text-amber-600 border-amber-200 text-amber-900 border-amber-100/20 text-amber-400 text-amber-800 border-amber-100/50 bg-amber-900/40 text-amber-700 border-red-50 border-red-100 border-red-100/20 text-red-400 text-red-800 text-red-900 text-red-600 bg-red-50 bg-red-900/40 text-red-700 border-red-200 border-red-100/50 shadow-red-100/50";
+
     let calendar;
     let selectedDate = null;
 
@@ -225,45 +228,54 @@
                     const iconColor = isFuturo ? '#d97706' : '#059669';
 
                     listEl.insertAdjacentHTML('beforeend', `
-                        <div class="bg-white rounded-[2rem] p-6 border shadow-sm space-y-4 mb-4 ${isRealizado ? 'bg-emerald-50 border-emerald-100 shadow-emerald-50/50' : 'border-' + colorFase + '-100'} animate-in fade-in duration-300">
-                            <div class="flex items-center gap-4">
-                                <div class="w-12 h-12 ${isRealizado ? 'bg-emerald-600 text-white' : 'bg-white text-' + colorFase + '-600'} rounded-2xl flex items-center justify-center border border-gray-100 shadow-lg" style="${isRealizado ? '' : 'color: ' + iconColor + ';'}">
-                                    ${isRealizado 
-                                        ? '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>'
-                                        : (isPerdida 
-                                            ? '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"/></svg>'
-                                            : '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>')
-                                    }
-                                </div>
-                                <div>
-                                    <p class="text-[10px] font-black text-${colorFase}-600 uppercase tracking-widest leading-none mb-1">
-                                        ${isRealizado ? 'Tu Registro' : 'Fase de Cultivo'} ${isPerdida ? '(Perdida)' : ''}
-                                    </p>
-                                    <p class="font-black text-${colorFase}-900 text-lg ${isPerdida ? 'line-through opacity-70' : ''}">
-                                        ${isRealizado ? 'Labor Completada' : (props.cultivo || 'Cosecha')}
-                                    </p>
+                        <div class="bg-${colorFase}-50 border border-${colorFase}-100 p-6 rounded-[2rem] space-y-4 mb-4 ${isRealizado ? 'shadow-sm shadow-emerald-100/50' : ''} animate-in fade-in duration-300">
+                            <div class="flex items-center justify-between gap-4 w-full">
+                                <div class="flex items-center gap-4 flex-1">
+                                    <div class="w-12 h-12 bg-white text-${colorFase}-600 rounded-2xl flex items-center justify-center border border-${colorFase}-200 shadow-sm flex-shrink-0" ${!isRealizado ? `style="color: ${iconColor};"` : ''}>
+                                        ${isRealizado 
+                                            ? '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>'
+                                            : (isPerdida 
+                                                ? '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"/></svg>'
+                                                : '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>')
+                                        }
+                                    </div>
+                                    <div>
+                                        <p class="text-[10px] font-black text-${colorFase}-600 uppercase tracking-widest leading-none mb-1">
+                                            ${isRealizado ? 'Tu Registro' : 'Fase de Cultivo'} ${isPerdida ? '(Perdida)' : ''}
+                                        </p>
+                                        <p class="font-black text-${colorFase}-900 text-base leading-tight ${isPerdida ? 'line-through opacity-70' : ''}">
+                                            ${isRealizado ? 'Labor Completada' : (props.cultivo || 'Cosecha')}
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                             
-                            <div class="bg-white/60 p-4 rounded-2xl border border-${colorFase}-100/50">
-                                <p class="text-[10px] font-black text-${colorFase}-400 uppercase tracking-widest mb-1">Actividad Programada</p>
-                                <p class="text-sm font-bold text-${colorFase}-800 leading-tight mb-2 ${isPerdida ? 'line-through opacity-70' : ''}">${props.descripcion}</p>
-                                <div class="pt-2 border-t border-${colorFase}-100/30">
-                                    <p class="text-[11px] text-${colorFase}-700 leading-relaxed">${props.resumen || 'Sigue las instrucciones estándar para esta fase.'}</p>
+                            ${isRealizado ? `
+                                <div class="px-4 py-3 bg-white/30 rounded-2xl border border-${colorFase}-100/20">
+                                    <p class="text-[9px] font-black text-${colorFase}-400 uppercase tracking-widest mb-1">Fase de Cultivo</p>
+                                    <p class="text-[11px] font-bold text-${colorFase}-800 leading-tight">${props.descripcion || 'Labor programada'}</p>
                                 </div>
-                            </div>
+                            ` : `
+                                <div class="bg-white/60 p-4 rounded-2xl border border-${colorFase}-100/50">
+                                    <p class="text-[10px] font-black text-${colorFase}-400 uppercase tracking-widest mb-1">Actividad Programada</p>
+                                    <p class="text-sm font-bold text-${colorFase}-800 leading-tight mb-2 ${isPerdida ? 'line-through opacity-70' : ''}">${props.descripcion}</p>
+                                    <div class="pt-2 border-t border-${colorFase}-100/30">
+                                        <p class="text-[11px] text-${colorFase}-700 leading-relaxed">${props.resumen || 'Sigue las instrucciones estándar para esta fase.'}</p>
+                                    </div>
+                                </div>
+                            `}
                             
                             ${isRealizado && props.observacion ? `
-                                <div class="bg-white/60 p-4 rounded-2xl border border-emerald-100/50">
-                                    <p class="text-xs font-bold text-emerald-800 leading-relaxed italic">"${props.observacion}"</p>
+                                <div class="bg-white/60 p-4 rounded-2xl border border-${colorFase}-100/50">
+                                    <p class="text-xs font-bold text-${colorFase}-800 leading-relaxed italic">"${props.observacion}"</p>
                                 </div>
                             ` : ''}
                             
                             ${isRealizado && props.foto_url ? `
-                                <div class="relative group/img cursor-pointer overflow-hidden rounded-[1.5rem] border-2 border-emerald-200 shadow-md" onclick="viewPhoto('${props.foto_url}')">
+                                <div class="relative group/img cursor-pointer overflow-hidden rounded-[1.5rem] border-2 border-${colorFase}-200 shadow-md" onclick="viewPhoto('${props.foto_url}')">
                                     <img src="${props.foto_url}" class="w-full h-40 object-cover group-hover/img:scale-105 transition-transform duration-700" onerror="this.src='https://placehold.co/600x400/f0fdf4/059669?text=Error+al+cargar+imagen'">
-                                    <div class="absolute inset-0 bg-emerald-900/40 flex items-center justify-center opacity-0 group-hover/img:opacity-100 transition-opacity">
-                                        <span class="bg-white text-emerald-700 px-6 py-2 rounded-full text-xs font-black shadow-xl">Ver evidencia</span>
+                                    <div class="absolute inset-0 bg-${colorFase}-900/40 flex items-center justify-center opacity-0 group-hover/img:opacity-100 transition-opacity">
+                                        <span class="bg-white text-${colorFase}-700 px-6 py-2 rounded-full text-xs font-black shadow-xl">Ver evidencia</span>
                                     </div>
                                 </div>
                             ` : ''}
@@ -272,7 +284,7 @@
                 } 
                 // 3. RIEGOS, INSUMOS Y OTROS
                 else {
-                    const colorClass = isPerdida ? 'red' : (isRealizado ? 'emerald' : (props.tipo === 'riego' ? 'sky' : 'purple'));
+                    const colorClass = isPerdida ? 'red' : (props.tipo === 'riego' ? 'sky' : 'purple');
                     const canRegister = props.tipo === 'insumo' && !isPerdida && !isRealizado; 
                     
                     if (listEl.children.length > 0) {
@@ -280,7 +292,7 @@
                     }
                     
                     listEl.insertAdjacentHTML('beforeend', `
-                        <div class="bg-${colorClass}-50 border border-${colorClass}-100 p-6 rounded-[2rem] space-y-4 mb-4 ${isRealizado ? 'shadow-sm shadow-emerald-50/50' : ''}">
+                        <div class="bg-${colorClass}-50 border border-${colorClass}-100 p-6 rounded-[2rem] space-y-4 mb-4 ${isRealizado ? `shadow-sm shadow-${colorClass}-100/50` : ''}">
                             <div class="flex items-center justify-between gap-4 w-full">
                                 <div class="flex items-center gap-4 flex-1">
                                     <div class="w-12 h-12 bg-white text-${colorClass}-600 rounded-2xl flex items-center justify-center border border-${colorClass}-200 shadow-sm flex-shrink-0">
@@ -303,23 +315,23 @@
                             </div>
                             
                             ${isRealizado ? `
-                                <div class="px-4 py-3 bg-white/30 rounded-2xl border border-emerald-100/20">
-                                    <p class="text-[9px] font-black text-emerald-400 uppercase tracking-widest mb-1">${props.tipo === 'riego' ? 'Riego' : 'Insumo'}</p>
-                                    <p class="text-[11px] font-bold text-emerald-800 leading-tight">${props.descripcion || 'Labor programada'}</p>
+                                <div class="px-4 py-3 bg-white/30 rounded-2xl border border-${colorClass}-100/20">
+                                    <p class="text-[9px] font-black text-${colorClass}-400 uppercase tracking-widest mb-1">${props.tipo === 'riego' ? 'Riego' : 'Insumo'}</p>
+                                    <p class="text-[11px] font-bold text-${colorClass}-800 leading-tight">${props.descripcion || 'Labor programada'}</p>
                                 </div>
                             ` : ''}
                             
                             ${isRealizado && props.observacion ? `
-                                <div class="bg-white/60 p-4 rounded-2xl border border-emerald-100/50">
-                                    <p class="text-xs font-bold text-emerald-800 leading-relaxed italic">"${props.observacion}"</p>
+                                <div class="bg-white/60 p-4 rounded-2xl border border-${colorClass}-100/50">
+                                    <p class="text-xs font-bold text-${colorClass}-800 leading-relaxed italic">"${props.observacion}"</p>
                                 </div>
                             ` : ''}
                             
                             ${isRealizado && props.foto_url ? `
-                                <div class="relative group/img cursor-pointer overflow-hidden rounded-[1.5rem] border-2 border-emerald-200 shadow-md" onclick="viewPhoto('${props.foto_url}')">
+                                <div class="relative group/img cursor-pointer overflow-hidden rounded-[1.5rem] border-2 border-${colorClass}-200 shadow-md" onclick="viewPhoto('${props.foto_url}')">
                                     <img src="${props.foto_url}" class="w-full h-40 object-cover group-hover/img:scale-105 transition-transform duration-700" onerror="this.src='https://placehold.co/600x400/f0fdf4/059669?text=Error+al+cargar+imagen'">
-                                    <div class="absolute inset-0 bg-emerald-900/40 flex items-center justify-center opacity-0 group-hover/img:opacity-100 transition-opacity">
-                                        <span class="bg-white text-emerald-700 px-6 py-2 rounded-full text-xs font-black shadow-xl">Ver evidencia</span>
+                                    <div class="absolute inset-0 bg-${colorClass}-900/40 flex items-center justify-center opacity-0 group-hover/img:opacity-100 transition-opacity">
+                                        <span class="bg-white text-${colorClass}-700 px-6 py-2 rounded-full text-xs font-black shadow-xl">Ver evidencia</span>
                                     </div>
                                 </div>
                             ` : ''}

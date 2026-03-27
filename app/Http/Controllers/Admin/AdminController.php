@@ -692,7 +692,7 @@ class AdminController extends Controller
             $nombreLugar = $riego->cosecha && $riego->cosecha->terreno ? $riego->cosecha->terreno->nombre : 'Terreno';
 
             $color = match ((int) $riego->id_estado) {
-                15 => '#10b981',
+                15 => '#0ea5e9', // Mantener color del riego (azul)
                 17 => '#f59e0b',
                 16, 18 => '#ef4444',
                 default => '#0ea5e9'
@@ -719,7 +719,7 @@ class AdminController extends Controller
             $nombreLugar = $insumo->cosecha && $insumo->cosecha->terreno ? $insumo->cosecha->terreno->nombre : 'Terreno';
 
             $color = match ((int) $insumo->id_estado) {
-                15 => '#10b981',
+                15 => '#8b5cf6', // Mantener color del insumo (morado)
                 17 => '#f59e0b',
                 16, 18 => '#ef4444',
                 default => '#8b5cf6'
