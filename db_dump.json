@@ -1,0 +1,33 @@
+{
+    "registro_trabajo": [
+        "id_registro_trabajo",
+        "id_insumo_cosecha",
+        "id_fase",
+        "id_riego",
+        "id_cultivo",
+        "documento_trabajador",
+        "fecha_trabajada",
+        "foto_evidencia",
+        "id_estado",
+        "observacion",
+        "created_at"
+    ],
+    "cultivo": [
+        "id_cultivo",
+        "fecha_recoleccion",
+        "id_cosecha",
+        "documento_trabajador"
+    ],
+    "producto": [
+        "id_producto",
+        "nombre",
+        "Codigo_Referencia"
+    ],
+    "detalle_producto_cultivo": [
+        "id_detalle",
+        "id_cultivo",
+        "id_producto",
+        "cantidad",
+        "calidad"
+    ]
+}

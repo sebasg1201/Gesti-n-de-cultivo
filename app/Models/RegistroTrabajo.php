@@ -20,27 +20,27 @@ class RegistroTrabajo extends Model
         'documento_trabajador',
         'fecha_trabajada',
         'foto_evidencia',
-        'estado_aprobacion',
+        'id_estado',
         'observacion'
     ];
 
     public function trabajador()
     {
-        return $this->belongsTo(Usuario::class, 'documento_trabajador', 'documento');
+        return $this->belongsTo(Usuario::class , 'documento_trabajador', 'documento');
     }
 
     public function insumoCosecha()
     {
-        return $this->belongsTo(InsumoCosecha::class, 'id_insumo_cosecha', 'id_insumo_cosecha');
+        return $this->belongsTo(InsumoCosecha::class , 'id_insumo_cosecha', 'id_insumo_cosecha');
     }
 
     public function fase()
     {
-        return $this->belongsTo(FaseProgramada::class, 'id_fase', 'id_fase');
+        return $this->belongsTo(FaseProgramada::class , 'id_fase', 'id_fase');
     }
 
     public function riego()
     {
-        return $this->belongsTo(Riego::class, 'id_riego', 'id_riego');
+        return $this->belongsTo(Riego::class , 'id_riego', 'id_riego');
     }
 }
