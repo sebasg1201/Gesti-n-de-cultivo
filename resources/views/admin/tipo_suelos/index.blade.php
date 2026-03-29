@@ -234,7 +234,9 @@
                                         <p class="text-[9px] text-gray-400 font-bold uppercase tracking-widest">${isAlreadyRegistered ? 'Ya configurado' : 'Sugerido por catálogo'}</p>
                                     </div>
                                     <div class="text-right">
-                                        <span class="block text-[10px] font-black ${item.impacto_dias >= 0 ? 'text-red-500' : 'text-green-500'}">${item.impacto_dias > 0 ? '+' : ''}${item.impacto_dias} días</span>
+                                        ${item.impacto_dias != 0 ? `
+                                            <span class="block text-[10px] font-black ${item.impacto_dias > 0 ? 'text-amber-500' : 'text-emerald-500'}">${item.impacto_dias > 0 ? '+' : ''}${item.impacto_dias} días</span>
+                                        ` : ''}
                                         <span class="block text-[10px] font-black text-blue-500">${item.capacidad_retencion_litros_m2 || '0.00'} L/m²</span>
                                     </div>
                                 </div>

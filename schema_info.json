@@ -281,9 +281,15 @@
         {
             "Field": "id_estado",
             "Type": "int(11)",
+<<<<<<< HEAD
             "Null": "NO",
             "Key": "MUL",
             "Default": null,
+=======
+            "Null": "YES",
+            "Key": "",
+            "Default": "1",
+>>>>>>> bf1050d53a09cc98d3f0b85d04ab5c8c233ae380
             "Extra": ""
         },
         {

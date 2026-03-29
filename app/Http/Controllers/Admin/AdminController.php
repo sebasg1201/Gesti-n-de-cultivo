@@ -388,7 +388,7 @@ class AdminController extends Controller
                 $registroData = [
                     'documento_trabajador' => $usuario->documento,
                     'fecha_trabajada' => now()->toDateString(),
-                    'id_estado' => 1,
+                    'id_estado' => '1',
                     'created_at' => now(),
                 ];
 
@@ -415,7 +415,7 @@ class AdminController extends Controller
 
                     $cosecha = $tarea->cosecha;
                     $productoNombre = $cosecha && $cosecha->semilla ? $cosecha->semilla->nombre_semilla : 'Producto Recolectado';
-                    
+
                     $producto = \App\Models\Producto::create([
                         'nombre' => $productoNombre,
                         'Codigo_Referencia' => 'REF-' . time() . '-' . rand(100, 999),
@@ -436,7 +436,7 @@ class AdminController extends Controller
             $registroData = [
                 'documento_trabajador' => $usuario->documento,
                 'fecha_trabajada' => now()->toDateString(),
-                'id_estado' => 1,
+                'id_estado' => '1',
                 'observacion' => 'Tarea perdida ocultada por el trabajador.',
                 'created_at' => now(),
                 'id_fase' => ($tipo === 'fase') ? $id : null,
@@ -454,12 +454,23 @@ class AdminController extends Controller
             ->where('documento_trabajador', $usuario->documento)
             ->update($updateData);
 
-        // Lógica adicional para riego (Siguiente asignación y aumento de días si es perdida)
-        if ($tipo === 'riego' && in_array($nuevoEstado, [15, 16])) {
+        // Lógica adicional para actualización de fecha estimada de cosecha basada en desempeño e insumos
+        $cosecha = null;
+        if ($tipo === 'riego' || $tipo === 'insumo') {
             $cosecha = $tarea->cosecha;
-            if ($cosecha) {
-                if ($nuevoEstado == 16) { // Perdida
-                    $fechaEstimada = \Carbon\Carbon::parse($cosecha->fecha_estimada)->addDays(2);
+        }
+
+        if ($cosecha) {
+            // 1. Si la tarea se perdió (16) u ocultó (18), se suma 1 día al ciclo base
+            if (in_array($nuevoEstado, [16, 18])) {
+                $fechaEstimada = \Carbon\Carbon::parse($cosecha->fecha_estimada)->addDay();
+                $cosecha->update(['fecha_estimada' => $fechaEstimada->format('Y-m-d')]);
+            }
+            // 2. Si es un insumo y se realizó (15), aplicamos su impacto específico
+            elseif ($tipo === 'insumo' && $nuevoEstado == 15) {
+                $impacto = (int) ($tarea->impacto_dias ?? 0);
+                if ($impacto != 0) {
+                    $fechaEstimada = \Carbon\Carbon::parse($cosecha->fecha_estimada)->addDays($impacto);
                     $cosecha->update(['fecha_estimada' => $fechaEstimada->format('Y-m-d')]);
                 }
             }
@@ -627,7 +638,7 @@ class AdminController extends Controller
                 'fecha_programada' => $request->fecha_programada . ' ' . date('H:i:s'),
                 'observaciones' => $request->observaciones ?? '',
                 'id_estado' => 1,
-                'impacto_dias' => 0
+                'impacto_dias' => $insumo->impacto_dias ?? 0
             ]);
 
             return redirect()->back()->with('success', 'Tarea de insumo asignada correctamente.');
@@ -875,7 +886,7 @@ class AdminController extends Controller
             'fecha_trabajada' => $request->fecha_trabajada,
             'observacion' => $request->observacion,
             'id_insumo_cosecha' => $request->id_insumo_cosecha ?? null,
-            'id_estado' => 1,
+            'id_estado' => '1',
             'foto_evidencia' => $imagePath
         ]);
 

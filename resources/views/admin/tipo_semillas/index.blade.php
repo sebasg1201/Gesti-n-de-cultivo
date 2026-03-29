@@ -173,11 +173,13 @@
                                         </td>
                                         <td class="px-4 py-3">
                                             <div class="space-y-0.5">
-                                                <div class="flex items-center gap-1.5">
-                                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                                                    <span class="text-[11px] font-bold text-emerald-900">{{ $semilla->tiempo_base_dias }}
-                                                        <span class="text-[9px] font-normal text-emerald-500">días ciclo</span></span>
-                                                </div>
+                                                @if($semilla->tiempo_base_dias != 0)
+                                                    <div class="flex items-center gap-1.5">
+                                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                                        <span class="text-[11px] font-bold text-emerald-900">{{ $semilla->tiempo_base_dias }}
+                                                            <span class="text-[9px] font-normal text-emerald-500 uppercase tracking-tighter">días ciclo</span></span>
+                                                    </div>
+                                                @endif
                                                 <p class="text-[9px] font-bold text-blue-500 flex flex-col gap-0.5">
                                                     <span>{{ number_format($semilla->espacio_por_planta_m2, 4) }} m²/pl</span>
                                                 </p>
@@ -270,7 +272,9 @@
                                             <div>
                                                 <p class="font-black text-emerald-950 text-sm leading-tight">${item.nombre}</p>
                                                 <p class="text-[9px] font-bold text-emerald-500 uppercase tracking-widest leading-none mt-1">
-                                                    ${isAlreadyRegistered ? 'En Inventario' : `${item.tiempo_base_dias}d ciclo • ${parseFloat(item.rendimiento_promedio).toFixed(2)} kg/m²`}
+                                                    ${isAlreadyRegistered ? 'En Inventario' : `
+                                                        ${item.tiempo_base_dias != 0 ? `${item.tiempo_base_dias}d ciclo • ` : ''}${parseFloat(item.rendimiento_promedio).toFixed(2)} kg/m²
+                                                    `}
                                                 </p>
                                             </div>
                                             <svg class="w-4 h-4 text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>

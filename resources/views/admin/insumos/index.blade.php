@@ -192,6 +192,13 @@
                                                 <div>
                                                     <span class="font-black text-emerald-950 block text-xs leading-tight">{{ $insumo->Nombre }}</span>
                                                     <span class="text-[9px] font-bold text-emerald-400 uppercase tracking-wider italic opacity-60">CAT: {{ $insumo->catalogo->nombre_comercial ?? 'PROPIO' }}</span>
+                                                    @if($insumo->impacto_dias != 0)
+                                                        @php $isNeg = $insumo->impacto_dias < 0; @endphp
+                                                        <div class="mt-1.5 flex items-center gap-1.5 px-2 py-0.5 {{ $isNeg ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-amber-50 text-amber-700 border-amber-100' }} border rounded-lg w-fit transition-colors shadow-sm">
+                                                            <span class="w-1.5 h-1.5 rounded-full {{ $isNeg ? 'bg-emerald-500' : 'bg-amber-500' }} animate-pulse"></span>
+                                                            <span class="text-[8px] font-black uppercase tracking-widest">{{ $insumo->impacto_dias > 0 ? '+' : '' }}{{ $insumo->impacto_dias }} DÍAS IMPACTO</span>
+                                                        </div>
+                                                    @endif
                                                 </div>
                                             </div>
                                         </td>
@@ -283,12 +290,14 @@
                                     div.innerHTML = `
                                         <div class="flex justify-between items-center">
                                             <div>
-                                                <p class="font-black text-emerald-950 text-sm leading-tight">${item.nombre_comercial}</p>
-                                                <p class="text-[9px] font-bold text-emerald-500 uppercase tracking-widest mt-1">
+                                                <p class="font-black text-emerald-950 text-sm leading-tight">${item.nombre}</p>
+                                                <p class="text-[9px] font-bold text-emerald-500 uppercase tracking-widest leading-none">
                                                     ${isAlreadyRegistered ? 'YA EN INVENTARIO' : (item.tipo_insumo ? item.tipo_insumo.nombre : 'GENERAL')}
                                                 </p>
+                                                ${item.impacto_dias != 0 ? `
+                                                    <span class="text-[8px] font-black ${item.impacto_dias < 0 ? 'text-emerald-500 bg-emerald-50' : 'text-amber-500 bg-amber-50'} px-1.5 py-0.5 rounded-md uppercase tracking-tighter">${item.impacto_dias > 0 ? '+' : ''}${item.impacto_dias}d impacto</span>
+                                                ` : ''}
                                             </div>
-                                            <svg class="w-4 h-4 text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
                                         </div>
                                     `;
                                     if (!isAlreadyRegistered) div.onclick = () => addToQueue(item);
@@ -362,7 +371,7 @@
                     chip.innerHTML = `
                         <div class="mr-1">
                             <p class="text-[10px] font-black uppercase text-white leading-none">${item.nombre}</p>
-                            <p class="text-[8px] font-bold text-emerald-200 uppercase tracking-tighter mt-1">${item.impacto_dias}d impacto</p>
+                            ${item.impacto_dias != 0 ? `<p class="text-[8px] font-bold ${item.impacto_dias < 0 ? 'text-emerald-200' : 'text-amber-200'} uppercase tracking-tight mt-1">${item.impacto_dias > 0 ? '+' : ''}${item.impacto_dias}d impacto</p>` : ''}
                         </div>
                         <button onclick="removeFromQueue(${index})" class="p-1 hover:bg-white/20 rounded-lg"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg></button>
                     `;
