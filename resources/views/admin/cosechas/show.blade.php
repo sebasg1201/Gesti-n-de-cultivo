@@ -458,16 +458,9 @@
     @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            @if($cosecha->terreno && $cosecha->terreno->latitud && $cosecha->terreno->longitud)
-                const lat = {{ number_format($cosecha->terreno->latitud, 8, '.', '') }};
-                const lon = {{ number_format($cosecha->terreno->longitud, 8, '.', '') }};
-                fetchWeather(lat, lon);
-            @else
-                // Fallback to a default location if no coordinates are found
-                const lat = 4.570868;
-                const lon = -74.297333;
-                fetchWeather(lat, lon);
-            @endif
+            const lat = {{ $cosecha->terreno && $cosecha->terreno->latitud ? number_format($cosecha->terreno->latitud, 8, '.', '') : '4.570868' }};
+            const lon = {{ $cosecha->terreno && $cosecha->terreno->longitud ? number_format($cosecha->terreno->longitud, 8, '.', '') : '-74.297333' }};
+            fetchWeather(lat, lon);
 
             function fetchWeather(la, lo) {
                 const url = `https://api.open-meteo.com/v1/forecast?latitude=${la}&longitude=${lo}&current=temperature_2m,relative_humidity_2m,weather_code&timezone=auto`;

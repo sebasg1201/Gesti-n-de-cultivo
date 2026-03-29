@@ -80,6 +80,13 @@
 @endphp
             <div class="task-card group bg-white rounded-[2rem] p-5 border border-gray-100 shadow-sm hover:shadow-xl hover:{{ $shadowColor }} transition-all duration-500 relative overflow-hidden flex flex-col md:flex-row md:items-center gap-5">
 
+                {{-- decorative top right icon --}}
+                <div class="absolute -top-3 -right-3 w-14 h-14 bg-{{ $borderColor }}/5 rounded-full flex items-center justify-center group-hover:bg-{{ $borderColor }}/10 transition-colors pointer-events-none">
+                    <div class="w-8 h-8 opacity-20 group-hover:opacity-30 transition-opacity">
+                        {!! $iconSvg !!}
+                    </div>
+                </div>
+
                 {{-- Decorative Background Icon --}}
                 <div class="absolute -right-4 -top-4 p-4 opacity-[0.03] group-hover:opacity-[0.07] transition-opacity pointer-events-none">
                     <svg class="w-24 h-24 text-{{ $accentColor }}" fill="currentColor" viewBox="0 0 24 24">

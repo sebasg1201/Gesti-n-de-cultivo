@@ -747,7 +747,7 @@ class AdminController extends Controller
         }
 
         // 2. Riego
-        $riegos = \App\Models\Riego::with(['cosecha.terreno'])->where('documento_trabajador', $usuario->documento)->get();
+        $riegos = \App\Models\Riego::with(['cosecha.terreno', 'cosecha.semilla'])->where('documento_trabajador', $usuario->documento)->get();
         foreach ($riegos as $riego) {
             $nombreLugar = $riego->cosecha && $riego->cosecha->terreno ? $riego->cosecha->terreno->nombre : 'Terreno';
 
@@ -767,6 +767,8 @@ class AdminController extends Controller
                     'tipo' => 'riego',
                     'descripcion' => $riego->observaciones,
                     'estado' => $riego->id_estado,
+                    'parcela' => $riego->cosecha?->terreno?->nombre,
+                    'variedad' => $riego->cosecha?->semilla?->nombre_semilla,
                     'foto_url' => isset($fotoRiego[$riego->id_riego]) && $fotoRiego[$riego->id_riego] ? asset('uploads/' . $fotoRiego[$riego->id_riego]) : null,
                     'observacion' => $obsRiego[$riego->id_riego] ?? $riego->observaciones
                 ]
@@ -774,7 +776,7 @@ class AdminController extends Controller
         }
 
         // 3. Insumos
-        $insumos = \App\Models\InsumoCosecha::with(['insumo', 'cosecha.terreno'])->where('documento_trabajador', $usuario->documento)->get();
+        $insumos = \App\Models\InsumoCosecha::with(['insumo', 'cosecha.terreno', 'cosecha.semilla'])->where('documento_trabajador', $usuario->documento)->get();
         foreach ($insumos as $insumo) {
             $nombreLugar = $insumo->cosecha && $insumo->cosecha->terreno ? $insumo->cosecha->terreno->nombre : 'Terreno';
 
@@ -798,6 +800,8 @@ class AdminController extends Controller
                     'tipo' => 'insumo',
                     'descripcion' => 'Aplicación de Insumo: ' . ($insumo->insumo?->Nombre ?? 'Desconocido') . $cantidadText,
                     'estado' => $insumo->id_estado,
+                    'parcela' => $insumo->cosecha?->terreno?->nombre,
+                    'variedad' => $insumo->cosecha?->semilla?->nombre_semilla,
                     'foto_url' => isset($fotoInsumo[$insumo->id_insumo_cosecha]) && $fotoInsumo[$insumo->id_insumo_cosecha] ? asset('uploads/' . $fotoInsumo[$insumo->id_insumo_cosecha]) : null,
                     'observacion' => $obsInsumo[$insumo->id_insumo_cosecha] ?? null
                 ]
@@ -805,7 +809,7 @@ class AdminController extends Controller
         }
 
         // 4. Recoleccion
-        $recolecciones = \App\Models\Cultivo::with(['cosecha.terreno'])->where('documento_trabajador', $usuario->documento)->get();
+        $recolecciones = \App\Models\Cultivo::with(['cosecha.terreno', 'cosecha.semilla', 'detalles.producto'])->where('documento_trabajador', $usuario->documento)->get();
         foreach ($recolecciones as $reco) {
             $nombreLugar = $reco->cosecha && $reco->cosecha->terreno ? $reco->cosecha->terreno->nombre : 'Terreno';
 
@@ -826,6 +830,10 @@ class AdminController extends Controller
                     'tipo' => 'recoleccion',
                     'descripcion' => $reco->descripcion_recoleccion,
                     'estado' => $reco->id_estado,
+                    'parcela' => $reco->cosecha?->terreno?->nombre,
+                    'variedad' => $reco->cosecha?->semilla?->nombre_semilla,
+                    'cantidad' => $reco->detalles->sum('cantidad'),
+                    'calidad' => $reco->detalles->first()?->calidad,
                     'foto_url' => isset($fotoRecoleccion[$reco->id_cultivo]) && $fotoRecoleccion[$reco->id_cultivo] ? asset('uploads/' . $fotoRecoleccion[$reco->id_cultivo]) : null,
                     'observacion' => $obsRecoleccion[$reco->id_cultivo] ?? $reco->descripcion_recoleccion
                 ]
