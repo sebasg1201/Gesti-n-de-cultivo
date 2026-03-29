@@ -108,7 +108,7 @@
     {{-- CATEGORIES CONTENT --}}
     <div id="content-todas" class="category-content space-y-4">
         @include('admin.tareas.partials.task_list', [
-            'tasks' => $riego->concat($insumoCosecha)->concat($general)->sortByDesc('fecha_programada'), 
+            'tasks' => $riego->concat($insumoCosecha)->concat($general)->concat($recoleccion)->sortByDesc('fecha_programada'), 
             'title' => 'Todas las Labores', 
             'type' => 'all'
         ])

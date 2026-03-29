@@ -87,6 +87,7 @@
                         Datos de Producción
                     </h3>
 
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label
                                 class="block text-[10px] font-black text-emerald-900 uppercase tracking-widest mb-2">Trabajador

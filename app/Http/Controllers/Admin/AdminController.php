@@ -533,8 +533,9 @@ class AdminController extends Controller
 
         foreach ($recoleccion as $t) {
             $t->tipo_referencia = 'recoleccion';
-            $t->descripcion = "Extracción de Nivel Óptimo/Cosecha";
-            $t->sub_descripcion = $t->observaciones ?? null;
+            $t->descripcion = "RECOLECCIÓN"; // More consistent with the others
+            $t->sub_descripcion = $t->descripcion_recoleccion ?? null;
+            $t->fecha_programada = $t->fecha_recoleccion; // Alias for sorting
             // Map the relation 'trabajador' to 'usuario' to prevent errors in view
             $t->usuario = $t->trabajador;
         }
@@ -817,9 +818,10 @@ class AdminController extends Controller
 
             $eventos[] = [
                 'id' => 'recoleccion_' . $reco->id_cultivo,
-                'title' => 'Cosecha/Recolección - ' . $nombreLugar,
-                'start' => $reco->fecha_programada ?? $reco->fecha_recoleccion,
+                'title' => 'RECOLECCIÓN - ' . $nombreLugar,
+                'start' => ($reco->fecha_programada ?? $reco->fecha_recoleccion) . ' 08:00:00',
                 'color' => $color,
+                'allDay' => false,
                 'extendedProps' => [
                     'tipo' => 'recoleccion',
                     'descripcion' => $reco->descripcion_recoleccion,

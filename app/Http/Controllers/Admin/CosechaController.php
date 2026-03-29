@@ -369,9 +369,6 @@ class CosechaController extends Controller
         $riegosCompletados = $riegos->where('id_estado', 15)->count();
 
         $insumos = \App\Models\InsumoCosecha::with('insumo')->where('id_cosecha', $id)->get();
-        $fases = \App\Models\FaseProgramada::where('id_terreno', $cosecha->id_terreno)
-            ->whereBetween('fecha_programada', [$fechaSiembra, $fechaEstimada ?? \Carbon\Carbon::now()])
-            ->get();
 
         $historial = collect();
 
@@ -403,13 +400,23 @@ class CosechaController extends Controller
             $historial->push($i);
         }
 
-        foreach ($fases as $f) {
-            $f->tipo_historial = 'fase';
-            $f->fecha_historial = $f->fecha_programada;
-            $f->titulo_historial = 'Fase de Mantenimiento';
-            $f->descripcion_historial = $f->descripcion;
-            $f->estado_historial = in_array($f->id_estado, [15]) ? 'Completado' : ($f->id_estado == 17 ? 'En Proceso' : (in_array($f->id_estado, [16, 18]) ? 'Perdida' : 'Pendiente'));
-            $historial->push($f);
+
+        foreach ($cosecha->cultivos as $c) {
+            $c->tipo_historial = 'recoleccion';
+            $c->fecha_historial = $c->fecha_recoleccion;
+            $c->titulo_historial = 'RECOLECCIÓN';
+            $c->descripcion_historial = $c->descripcion_recoleccion;
+            
+            if ($c->id_estado == 15) {
+                $c->estado_historial = 'Completado';
+            } elseif ($c->id_estado == 16 || $c->id_estado == 18) {
+                $c->estado_historial = 'Perdida';
+            } elseif ($c->id_estado == 17) {
+                $c->estado_historial = 'En Proceso';
+            } else {
+                $c->estado_historial = 'Pendiente';
+            }
+            $historial->push($c);
         }
 
         $historial = $historial->sortByDesc('fecha_historial');

@@ -405,11 +405,13 @@
                             
                             <!-- Icon -->
                             <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10
-                                {{ $item->tipo_historial == 'riego' ? 'bg-cyan-500' : ($item->tipo_historial == 'insumo' ? 'bg-purple-500' : 'bg-emerald-500') }} shadow-sm">
+                                {{ $item->tipo_historial == 'riego' ? 'bg-cyan-500' : ($item->tipo_historial == 'insumo' ? 'bg-purple-500' : ($item->tipo_historial == 'recoleccion' ? 'bg-orange-500' : 'bg-emerald-500')) }} shadow-sm">
                                 @if($item->tipo_historial == 'riego')
                                     <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" /></svg>
                                 @elseif($item->tipo_historial == 'insumo')
                                     <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>
+                                @elseif($item->tipo_historial == 'recoleccion')
+                                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" /></svg>
                                 @else
                                     <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.121 15.536c-1.171 1.952-3.07 1.952-4.242 0-1.172-1.953-1.172-5.119 0-7.072 1.171-1.952 3.07-1.952 4.242 0M8 10.5h4m-4 3h4m9-1.5a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                                 @endif
@@ -419,7 +421,7 @@
                             <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-[1.5rem] border border-slate-100 bg-white shadow-sm hover:shadow-md transition-all">
                                 <div class="flex items-center justify-between mb-1">
                                     <span class="text-[10px] uppercase tracking-widest font-black 
-                                        {{ $item->tipo_historial == 'riego' ? 'text-cyan-600' : ($item->tipo_historial == 'insumo' ? 'text-purple-600' : 'text-emerald-600') }}">
+                                        {{ $item->tipo_historial == 'riego' ? 'text-cyan-600' : ($item->tipo_historial == 'insumo' ? 'text-purple-600' : ($item->tipo_historial == 'recoleccion' ? 'text-orange-600' : 'text-emerald-600')) }}">
                                         {{ $item->titulo_historial }}
                                     </span>
                                     <span class="text-xs font-bold text-slate-400">{{ \Carbon\Carbon::parse($item->fecha_historial)->format('d/m/Y') }}</span>
