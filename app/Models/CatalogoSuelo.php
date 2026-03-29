@@ -7,5 +7,5 @@ use Illuminate\Database\Eloquent\Model;
 class CatalogoSuelo extends Model
 {
     protected $table = 'catalogo_suelos';
-    protected $fillable = ['nombre', 'impacto_dias', 'descripcion'];
+    protected $fillable = ['nombre', 'impacto_dias', 'descripcion', 'capacidad_retencion_litros_m2'];
 }

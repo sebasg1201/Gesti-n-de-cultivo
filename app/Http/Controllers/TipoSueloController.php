@@ -19,7 +19,12 @@ class TipoSueloController extends Controller
             ->where('id_empresa', $id_empresa)
             ->paginate(10);
 
-        return view('admin.tipo_suelos.index', compact('tipoSuelos'));
+        $registeredIds = TipoSuelo::where('id_empresa', $id_empresa)
+            ->whereNotNull('id_catalogo')
+            ->pluck('id_catalogo')
+            ->toArray();
+
+        return view('admin.tipo_suelos.index', compact('tipoSuelos', 'registeredIds'));
     }
 
     public function catalog(Request $request)
@@ -32,12 +37,39 @@ class TipoSueloController extends Controller
     public function store(Request $request)
     {
         $id_empresa = $this->getEmpresaId();
+
+        // Batch Store (Chips)
+        if ($request->has('items') && is_array($request->items)) {
+            $createdCount = 0;
+            foreach ($request->items as $item) {
+                if (isset($item['id_catalogo']) && $item['id_catalogo']) {
+                    $exists = TipoSuelo::where('id_empresa', $id_empresa)
+                        ->where('id_catalogo', $item['id_catalogo'])
+                        ->exists();
+                    if ($exists) continue;
+                }
+
+                TipoSuelo::create([
+                    'id_empresa' => $id_empresa,
+                    'id_catalogo' => $item['id_catalogo'] ?? null,
+                    'nombre' => $item['nombre'],
+                    'descripcion' => $item['descripcion'] ?? null,
+                    'impacto_dias' => $item['impacto_dias'] ?? 0,
+                    'capacidad_retencion_litros_m2' => $item['capacidad_retencion_litros_m2'] ?? 0,
+                ]);
+                $createdCount++;
+            }
+            return redirect()->route('tipo_suelos.index')
+                ->with('success', "$createdCount suelos registrados.");
+        }
+
+        // Single Store (Manual)
         $request->validate([
             'id_catalogo' => 'nullable|exists:catalogo_suelos,id',
             'nombre' => 'required|string|max:100',
             'descripcion' => 'nullable|string|max:250',
             'impacto_dias' => 'required|integer',
-            'consumo_agua_ideal' => 'nullable|numeric|min:0',
+            'capacidad_retencion_litros_m2' => 'nullable|numeric|min:0',
         ]);
 
         if ($request->filled('id_catalogo')) {
@@ -46,7 +78,7 @@ class TipoSueloController extends Controller
                 ->exists();
 
             if ($exists) {
-                return redirect()->back()->with('error', 'Este tipo de suelo ya está configurado en su empresa.');
+                return redirect()->back()->with('error', 'Este tipo de suelo ya está configurado.');
             }
         }
 
@@ -56,7 +88,7 @@ class TipoSueloController extends Controller
             'nombre' => $request->nombre,
             'descripcion' => $request->descripcion,
             'impacto_dias' => $request->impacto_dias,
-            'consumo_agua_ideal' => $request->consumo_agua_ideal,
+            'capacidad_retencion_litros_m2' => $request->capacidad_retencion_litros_m2 ?? 0,
         ]);
 
         return redirect()->route('tipo_suelos.index')
@@ -69,7 +101,7 @@ class TipoSueloController extends Controller
             'nombre' => 'required|string|max:100',
             'descripcion' => 'nullable|string|max:250',
             'impacto_dias' => 'required|integer',
-            'consumo_agua_ideal' => 'nullable|numeric|min:0',
+            'capacidad_retencion_litros_m2' => 'nullable|numeric|min:0',
         ]);
 
         $tipoSuelo = TipoSuelo::where('id_tipo_suelo', $id)
@@ -80,7 +112,7 @@ class TipoSueloController extends Controller
             'nombre' => $request->nombre,
             'descripcion' => $request->descripcion,
             'impacto_dias' => $request->impacto_dias,
-            'consumo_agua_ideal' => $request->consumo_agua_ideal,
+            'capacidad_retencion_litros_m2' => $request->capacidad_retencion_litros_m2,
         ]);
 
         return redirect()->route('tipo_suelos.index')

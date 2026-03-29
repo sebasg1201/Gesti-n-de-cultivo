@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 27-03-2026 a las 22:51:02
+-- Tiempo de generación: 30-03-2026 a las 00:10:41
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -271,7 +271,7 @@ CREATE TABLE `cosecha` (
 --
 
 INSERT INTO `cosecha` (`id_cosecha`, `id_empresa`, `Cantidad`, `id_terreno`, `id_semilla`, `id_estado`, `fecha_siembra`, `frecuencia_riego_dias`, `fecha_estimada`, `imagenes`, `produccion_estimada`, `litros_por_riego`) VALUES
-(22, '988091212', 50, 8, 3, 1, '2026-03-17', 1, '2026-07-01', 'cosechas/yT1SnFb6U20J6ZroWINQnQXFcBjdSil9uQUw3Wjz.jpg', 600.00, 2.00);
+(22, '988091212', 50, 8, 3, 1, '2026-03-17', 1, '2026-07-03', 'cosechas/yT1SnFb6U20J6ZroWINQnQXFcBjdSil9uQUw3Wjz.jpg', 600.00, 2.00);
 
 -- --------------------------------------------------------
 
@@ -283,9 +283,17 @@ CREATE TABLE `cultivo` (
   `id_cultivo` int(11) NOT NULL,
   `fecha_recoleccion` date DEFAULT NULL,
   `id_cosecha` int(11) DEFAULT NULL,
+  `id_estado` int(11) NOT NULL DEFAULT 1,
   `documento_trabajador` int(11) NOT NULL,
   `descripcion_recoleccion` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `cultivo`
+--
+
+INSERT INTO `cultivo` (`id_cultivo`, `fecha_recoleccion`, `id_cosecha`, `id_estado`, `documento_trabajador`, `descripcion_recoleccion`) VALUES
+(5, '2026-03-27', 22, 15, 1039253243, 'Realiza la recoleccion adecuada');
 
 -- --------------------------------------------------------
 
@@ -300,6 +308,13 @@ CREATE TABLE `detalle_producto_cultivo` (
   `cantidad` int(11) DEFAULT NULL,
   `calidad` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `detalle_producto_cultivo`
+--
+
+INSERT INTO `detalle_producto_cultivo` (`id_detalle`, `id_cultivo`, `id_producto`, `cantidad`, `calidad`) VALUES
+(5, 5, 5, 541, 'Primera');
 
 -- --------------------------------------------------------
 
@@ -551,7 +566,7 @@ CREATE TABLE `insumo_cosecha` (
 
 INSERT INTO `insumo_cosecha` (`id_insumo_cosecha`, `id_cosecha`, `id_insumo`, `documento_trabajador`, `id_estado`, `cantidad_usada`, `observaciones`, `impacto_dias`, `fecha_programada`) VALUES
 (3, 22, 6, 1039253243, 15, 2.00, 'Aplicar El Fertilizante', 0, '2026-03-27 15:47:39'),
-(4, 22, 6, 1039253243, 1, 5.00, 'Aplica Cuidadosamente', 0, '2026-03-29 15:54:32');
+(4, 22, 6, 1039253243, 15, 5.00, 'Aplica Cuidadosamente', 0, '2026-03-29 15:54:32');
 
 -- --------------------------------------------------------
 
@@ -635,7 +650,14 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (28, '2026_03_16_145712_add_evidencia_foto_to_insumos_cosechas_table', 17),
 (29, '2026_03_17_000001_insert_en_proceso_estado', 17),
 (30, '2026_03_19_141013_add_timestamps_to_insumo_and_terreno', 18),
-(31, '2026_03_25_170000_add_ids_to_registro_trabajo_table', 19);
+(31, '2026_03_25_170000_add_ids_to_registro_trabajo_table', 19),
+(32, '2026_03_27_162735_add_task_fields_to_cultivo_and_registro_trabajo', 20),
+(33, '2026_03_27_150000_drop_redundant_columns', 21),
+(34, '2026_03_27_171743_add_descripcion_to_producto_table', 22),
+(35, '2026_03_25_103434_fix_terreno_area_precision', 23),
+(36, '2026_03_25_162551_add_id_terreno_to_fases_programadas_table', 24),
+(37, '2026_03_27_140000_fix_registro_trabajo_nullability', 24),
+(38, '2026_03_29_001608_fix_registro_trabajo_foreign_keys_and_data', 24);
 
 -- --------------------------------------------------------
 
@@ -658,8 +680,16 @@ CREATE TABLE `password_reset_tokens` (
 CREATE TABLE `producto` (
   `id_producto` int(11) NOT NULL,
   `nombre` varchar(100) DEFAULT NULL,
-  `Codigo_Referencia` varchar(50) DEFAULT NULL
+  `Codigo_Referencia` varchar(50) DEFAULT NULL,
+  `descripcion` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `producto`
+--
+
+INSERT INTO `producto` (`id_producto`, `nombre`, `Codigo_Referencia`, `descripcion`) VALUES
+(5, 'Tomate Chonto', 'REF-1774650041-783', 'Producto recolectado de la cosecha #22');
 
 -- --------------------------------------------------------
 
@@ -694,6 +724,7 @@ INSERT INTO `proveedor` (`id_proveedor`, `nombre`, `producto`, `contacto`, `ID_i
 CREATE TABLE `registro_trabajo` (
   `id_registro_trabajo` int(11) NOT NULL,
   `id_insumo_cosecha` int(11) DEFAULT NULL,
+  `id_cultivo` int(11) DEFAULT NULL,
   `id_fase` int(11) DEFAULT NULL,
   `id_riego` int(11) DEFAULT NULL,
   `documento_trabajador` int(11) NOT NULL,
@@ -708,21 +739,25 @@ CREATE TABLE `registro_trabajo` (
 -- Volcado de datos para la tabla `registro_trabajo`
 --
 
-INSERT INTO `registro_trabajo` (`id_registro_trabajo`, `id_insumo_cosecha`, `id_fase`, `id_riego`, `documento_trabajador`, `fecha_trabajada`, `foto_evidencia`, `id_estado`, `observacion`, `created_at`) VALUES
-(16, NULL, 0, 0, 1105461467, '2026-03-19', 'evidencias/Quk6Vto5Dh48UZUvqvnHq7P9XlO1XbTyPora7Juu.png', 1, 'trabajo', '2026-03-12 01:34:36'),
-(17, NULL, 0, 0, 1105461467, '2026-03-13', 'evidencias/UoEiLyHQl9hj3oFtzxLr1nJdyA83AugvK2Oryja7.png', 1, '9poikjuhygtrf', '2026-03-12 19:08:34'),
-(18, NULL, 0, 0, 1039253243, '2026-03-17', 'evidencias/ur4ABrNWTSkMZiqXeb8LizM4n4LKdfhWx9VcpbG2.jpg', 1, 'Realice el riego no jodan mas y paguen ya', '2026-03-17 18:30:41'),
-(19, NULL, 0, 0, 1039253243, '2026-03-19', NULL, 1, 'Tarea perdida ocultada por el trabajador.', '2026-03-19 20:21:49'),
-(20, NULL, 0, 0, 1039253243, '2026-03-24', 'evidencias/fW9yutc0h5RMKFBnar1z40PQlkS6vm1sPwFmKylu.jpg', 1, 'reigo echo', '2026-03-24 21:22:19'),
-(21, NULL, 0, 10, 1039253243, '2026-03-27', NULL, 1, 'Tarea perdida ocultada por el trabajador.', '2026-03-27 18:28:09'),
-(22, NULL, NULL, 11, 1039253243, '2026-03-27', NULL, 1, 'Tarea perdida ocultada por el trabajador.', '2026-03-27 18:51:01'),
-(23, NULL, NULL, 12, 1039253243, '2026-03-27', NULL, 1, 'Tarea perdida ocultada por el trabajador.', '2026-03-27 18:51:16'),
-(24, NULL, NULL, 13, 1039253243, '2026-03-27', NULL, 1, 'Tarea perdida ocultada por el trabajador.', '2026-03-27 18:51:21'),
-(25, NULL, NULL, 14, 1039253243, '2026-03-27', NULL, 1, 'Tarea perdida ocultada por el trabajador.', '2026-03-27 18:51:26'),
-(26, NULL, NULL, 16, 1039253243, '2026-03-27', NULL, 1, 'Tarea perdida ocultada por el trabajador.', '2026-03-27 18:51:30'),
-(30, NULL, NULL, 19, 1039253243, '2026-03-27', 'evidencias/Iu8ZIQWbqoqW2GOpsOr6fYLJDW4QQgelS3rhgU2o.jpg', 1, 'Realice El Riego', '2026-03-27 20:38:14'),
-(31, 3, NULL, NULL, 1039253243, '2026-03-27', 'evidencias/74pgabqWo8dE9SM0bLH0hqjbo6AqzYBjuSEhBNND.jpg', 1, 'Realice la tarea del insumo', '2026-03-27 20:49:04'),
-(32, NULL, 8, NULL, 1039253243, '2026-03-27', 'evidencias/lZ38SWsKT4cAr3FmAzCqT0rS0GRhxM3qCGIr0miX.jpg', 1, 'Ya Podé el terreno', '2026-03-27 20:52:17');
+INSERT INTO `registro_trabajo` (`id_registro_trabajo`, `id_insumo_cosecha`, `id_cultivo`, `id_fase`, `id_riego`, `documento_trabajador`, `fecha_trabajada`, `foto_evidencia`, `id_estado`, `observacion`, `created_at`) VALUES
+(16, NULL, NULL, NULL, NULL, 1105461467, '2026-03-19', 'evidencias/Quk6Vto5Dh48UZUvqvnHq7P9XlO1XbTyPora7Juu.png', 1, 'trabajo', '2026-03-12 01:34:36'),
+(17, NULL, NULL, NULL, NULL, 1105461467, '2026-03-13', 'evidencias/UoEiLyHQl9hj3oFtzxLr1nJdyA83AugvK2Oryja7.png', 1, '9poikjuhygtrf', '2026-03-12 19:08:34'),
+(18, NULL, NULL, NULL, NULL, 1039253243, '2026-03-17', 'evidencias/ur4ABrNWTSkMZiqXeb8LizM4n4LKdfhWx9VcpbG2.jpg', 1, 'Realice el riego no jodan mas y paguen ya', '2026-03-17 18:30:41'),
+(19, NULL, NULL, NULL, NULL, 1039253243, '2026-03-19', NULL, 1, 'Tarea perdida ocultada por el trabajador.', '2026-03-19 20:21:49'),
+(20, NULL, NULL, NULL, NULL, 1039253243, '2026-03-24', 'evidencias/fW9yutc0h5RMKFBnar1z40PQlkS6vm1sPwFmKylu.jpg', 1, 'reigo echo', '2026-03-24 21:22:19'),
+(21, NULL, NULL, NULL, 10, 1039253243, '2026-03-27', NULL, 1, 'Tarea perdida ocultada por el trabajador.', '2026-03-27 18:28:09'),
+(22, NULL, NULL, NULL, 11, 1039253243, '2026-03-27', NULL, 1, 'Tarea perdida ocultada por el trabajador.', '2026-03-27 18:51:01'),
+(23, NULL, NULL, NULL, 12, 1039253243, '2026-03-27', NULL, 1, 'Tarea perdida ocultada por el trabajador.', '2026-03-27 18:51:16'),
+(24, NULL, NULL, NULL, 13, 1039253243, '2026-03-27', NULL, 1, 'Tarea perdida ocultada por el trabajador.', '2026-03-27 18:51:21'),
+(25, NULL, NULL, NULL, 14, 1039253243, '2026-03-27', NULL, 1, 'Tarea perdida ocultada por el trabajador.', '2026-03-27 18:51:26'),
+(26, NULL, NULL, NULL, 16, 1039253243, '2026-03-27', NULL, 1, 'Tarea perdida ocultada por el trabajador.', '2026-03-27 18:51:30'),
+(30, NULL, NULL, NULL, 19, 1039253243, '2026-03-27', 'evidencias/Iu8ZIQWbqoqW2GOpsOr6fYLJDW4QQgelS3rhgU2o.jpg', 1, 'Realice El Riego', '2026-03-27 20:38:14'),
+(31, 3, NULL, NULL, NULL, 1039253243, '2026-03-27', 'evidencias/74pgabqWo8dE9SM0bLH0hqjbo6AqzYBjuSEhBNND.jpg', 1, 'Realice la tarea del insumo', '2026-03-27 20:49:04'),
+(32, NULL, NULL, 8, NULL, 1039253243, '2026-03-27', 'evidencias/lZ38SWsKT4cAr3FmAzCqT0rS0GRhxM3qCGIr0miX.jpg', 1, 'Ya Podé el terreno', '2026-03-27 20:52:17'),
+(33, NULL, 5, NULL, NULL, 1039253243, '2026-03-27', 'evidencias/sEGlOFmoSulcq7E9m1d0MVbo5p0t3EIFyQLKCLBK.jpg', 1, 'Realice la recoleccion', '2026-03-27 22:20:41'),
+(34, NULL, NULL, NULL, 21, 1039253243, '2026-03-29', NULL, 1, 'Tarea perdida ocultada por el trabajador.', '2026-03-29 05:31:02'),
+(35, NULL, NULL, NULL, 22, 1039253243, '2026-03-29', 'evidencias/HOLVoti7VzbWojM9UcMGkM6sZUPj99qffz1fkNE2.jpg', 1, 'Ya realice el riego', '2026-03-29 05:35:50'),
+(36, 4, NULL, NULL, NULL, 1039253243, '2026-03-29', 'evidencias/1N8MUlVq8EJ9bK0xKGtIsZHUe2LecplSpgeHHU10.png', 1, 'Realice cuidadosamente los fertilizantes', '2026-03-29 05:36:44');
 
 -- --------------------------------------------------------
 
@@ -756,7 +791,9 @@ INSERT INTO `riego` (`id_riego`, `cant_agua_apl`, `observaciones`, `id_tipo_rieg
 (15, '2.00', 'Aplicar 2.00L - Riego programado automáticamente.', 4, 22, 1039253243, 15, '2026-03-24 13:25:04'),
 (16, '2.00', 'Aplicar 2.00L - Riego programado automáticamente.', 4, 22, 1039253243, 18, '2026-03-25 13:35:05'),
 (17, '2.00', 'Aplicar 2.00L - Riego programado automáticamente.', 4, 22, 1039253243, 18, '2026-03-26 13:20:03'),
-(19, '2.00', 'Aplicar 2.00L - Riego programado automáticamente.', 4, 22, 1039253243, 15, '2026-03-27 15:00:02');
+(19, '2.00', 'Aplicar 2.00L - Riego programado automáticamente.', 4, 22, 1039253243, 15, '2026-03-27 15:00:02'),
+(21, '2.00', 'Aplicar 2.00L - Riego programado automáticamente.', 4, 22, 1039253243, 18, '2026-03-28 00:30:00'),
+(22, '2.00', 'Aplicar 2.00L - Riego programado automáticamente.', 4, 22, 1039253243, 15, '2026-03-29 00:30:00');
 
 -- --------------------------------------------------------
 
@@ -795,8 +832,8 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('8tHmv5gRucwQWvPX8OgTYuajENfMJVNY8bSGxNoB', 1110722345, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiazdWZ0VVWVExSFdIUUEwYk14TkRsdDJMejNCWDUzQTNyWVFoNnZUMCI7czozOiJ1cmwiO2E6MTp7czo4OiJpbnRlbmRlZCI7czozNDoiaHR0cDovLzEyNy4wLjAuMTo4MDAwL2FkbWluL3RhcmVhcyI7fXM6OToiX3ByZXZpb3VzIjthOjI6e3M6MzoidXJsIjtzOjU3OiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYWRtaW4vY3VsdGl2b3MvY3JlYXRlP2lkX2Nvc2VjaGE9MjIiO3M6NToicm91dGUiO3M6MjE6ImFkbWluLmN1bHRpdm9zLmNyZWF0ZSI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6NTQ6ImxvZ2luX3VzdWFyaW9fNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToxMTEwNzIyMzQ1O30=', 1774647965),
-('VTBFdAlsIPyjEixo6qXdj7C2xTZtXghNQjScFSUl', 1039253243, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiRWZpR3VZajZVODVPclQzMk1MYUdna1NOU292YnV6YkV5VmU5MmdWTCI7czozOiJ1cmwiO2E6MTp7czo4OiJpbnRlbmRlZCI7czo0MjoiaHR0cDovLzEyNy4wLjAuMTo4MDAwL3RyYWJhamFkb3IvZGFzaGJvYXJkIjt9czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MTI1OiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvdHJhYmFqYWRvci9jYWxlbmRhcmlvL2V2ZW50b3M/ZW5kPTIwMjYtMDQtMDZUMDAlM0EwMCUzQTAwLTA1JTNBMDAmc3RhcnQ9MjAyNi0wMi0yM1QwMCUzQTAwJTNBMDAtMDUlM0EwMCI7czo1OiJyb3V0ZSI7czoyOToidHJhYmFqYWRvci5jYWxlbmRhcmlvLmV2ZW50b3MiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjU0OiJsb2dpbl91c3VhcmlvXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MTAzOTI1MzI0Mzt9', 1774647901);
+('owiNk83H9xC3afPVAItZ199hluut90TK0mJHhi3x', 1110722345, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoibWF4clY5YXFQVGhHTFhZdjF0aWdYSXFXdjZOWkxEQ0hxdDBaWXhEciI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6NDc6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC90aXBvX3JpZWdvcy9jYXRhbG9nP3E9bWljIjtzOjU6InJvdXRlIjtzOjE5OiJ0aXBvX3JpZWdvcy5jYXRhbG9nIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo1NDoibG9naW5fdXN1YXJpb181OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjExMTA3MjIzNDU7fQ==', 1774769526),
+('pxZsq6DyaQoPYzDQMnrdr7c9es4c5nXUdul3TjsT', 1039253243, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiZmMwZHJUWmE1Njh3SjdLOXlvcVcyMHFQYXZsVnVPT3dsdmpiMjVuSyI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MTI1OiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvdHJhYmFqYWRvci9jYWxlbmRhcmlvL2V2ZW50b3M/ZW5kPTIwMjYtMDQtMDZUMDAlM0EwMCUzQTAwLTA1JTNBMDAmc3RhcnQ9MjAyNi0wMi0yM1QwMCUzQTAwJTNBMDAtMDUlM0EwMCI7czo1OiJyb3V0ZSI7czoyOToidHJhYmFqYWRvci5jYWxlbmRhcmlvLmV2ZW50b3MiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjU0OiJsb2dpbl91c3VhcmlvXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MTAzOTI1MzI0Mzt9', 1774768343);
 
 -- --------------------------------------------------------
 
@@ -896,7 +933,7 @@ CREATE TABLE `terreno` (
   `longitud` decimal(11,8) DEFAULT NULL,
   `Ancho` decimal(10,0) NOT NULL,
   `Alto` decimal(10,0) NOT NULL,
-  `area_m2` decimal(8,2) DEFAULT NULL,
+  `area_m2` decimal(15,2) DEFAULT NULL,
   `departamento` text NOT NULL,
   `ciudad` text NOT NULL,
   `codigo_postal` int(250) NOT NULL,
@@ -915,10 +952,11 @@ INSERT INTO `terreno` (`id_terreno`, `id_empresa`, `nombre`, `ubicacion`, `latit
 (6, '834324234', 'sebas', NULL, 7.56072491, -73.06678310, 400, 500, 200000.00, '', '', 0, 1, 2, '2026-03-20 18:34:26', '2026-03-24 20:13:48'),
 (7, '834324234', 'Playa', 'Verda la cima', 4.32039334, -75.37376404, 500, 90, 45000.00, '', '', 0, 6, 2, '2026-03-20 18:34:26', '2026-03-24 20:13:48'),
 (8, '988091212', 'Parcela Sur', 'Verdecito', 4.64751778, -74.69061985, 123, 76, 9348.00, '', '', 0, 6, 1, '2026-03-20 18:34:26', '2026-03-24 20:13:48'),
-(9, '834324234', 'didier', 'kasdjs', 4.43537750, -75.20574426, 567, 3442, NULL, 'Tolima', '', 730002, 7, 3, '2026-03-20 18:34:26', '0000-00-00 00:00:00'),
-(10, '988091212', 'Parcela Norte', 'Vereda Via Cajamarca', 4.26935049, -74.79529904, 150, 75, NULL, 'Tolima', 'Flandes', 252432, 7, 1, '2026-03-20 18:34:26', '0000-00-00 00:00:00'),
+(9, '834324234', 'didier', 'kasdjs', 4.43537750, -75.20574426, 567, 3442, NULL, 'Tolima', '', 730002, 7, 3, '2026-03-20 18:34:26', NULL),
+(10, '988091212', 'Parcela Norte', 'Vereda Via Cajamarca', 4.26935049, -74.79529904, 150, 75, NULL, 'Tolima', 'Flandes', 252432, 7, 1, '2026-03-20 18:34:26', NULL),
 (11, '988091212', 'Parcela Oeste', 'Vereda San Cristobal', 4.44011019, -75.21533432, 123, 70, NULL, 'Tolima', 'Ibagué', 730002, 7, 1, '2026-03-20 18:56:20', '2026-03-20 18:56:20'),
-(12, '988091212', 'Parcela Noroeste', 'Verda Napoles', 4.53245586, -74.74037075, 124, 70, 8680.00, 'Cundinamarca', 'Soacha', 250057, 7, 1, '2026-03-24 20:21:05', '2026-03-24 20:21:05');
+(12, '988091212', 'Parcela Noroeste', 'Verda Napoles', 4.53245586, -74.74037075, 124, 70, 8680.00, 'Cundinamarca', 'Soacha', 250057, 7, 1, '2026-03-24 20:21:05', '2026-03-24 20:21:05'),
+(13, '988091212', 'Parcela Suroeste', 'Vereda Napoles', 4.30994358, -74.78608427, 130, 75, 9750.00, 'Cundinamarca', 'Girardot', 252431, 7, 1, '2026-03-29 07:15:34', '2026-03-29 07:15:34');
 
 -- --------------------------------------------------------
 
@@ -1059,17 +1097,16 @@ CREATE TABLE `tipo_suelo` (
   `nombre` varchar(100) DEFAULT NULL,
   `descripcion` text DEFAULT NULL,
   `impacto_dias` int(11) DEFAULT 0,
-  `consumo_agua_ideal` decimal(8,2) DEFAULT NULL
+  `capacidad_retencion_litros_m2` decimal(10,2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `tipo_suelo`
 --
 
-INSERT INTO `tipo_suelo` (`id_tipo_suelo`, `id_empresa`, `id_catalogo`, `nombre`, `descripcion`, `impacto_dias`, `consumo_agua_ideal`) VALUES
+INSERT INTO `tipo_suelo` (`id_tipo_suelo`, `id_empresa`, `id_catalogo`, `nombre`, `descripcion`, `impacto_dias`, `capacidad_retencion_litros_m2`) VALUES
 (1, '988091212', 1, 'Arcilloso', NULL, 5, NULL),
-(2, '834324234', 2, 'Arenoso', NULL, -3, NULL),
-(3, '834324234', NULL, 'ghgh', 'ojhjhjhil', 3, 5.50);
+(2, '834324234', 2, 'Arenoso', NULL, -3, NULL);
 
 -- --------------------------------------------------------
 
@@ -1501,13 +1538,13 @@ ALTER TABLE `cosecha`
 -- AUTO_INCREMENT de la tabla `cultivo`
 --
 ALTER TABLE `cultivo`
-  MODIFY `id_cultivo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_cultivo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `detalle_producto_cultivo`
 --
 ALTER TABLE `detalle_producto_cultivo`
-  MODIFY `id_detalle` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_detalle` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `entrada_insumo`
@@ -1561,13 +1598,13 @@ ALTER TABLE `jobs`
 -- AUTO_INCREMENT de la tabla `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 
 --
 -- AUTO_INCREMENT de la tabla `producto`
 --
 ALTER TABLE `producto`
-  MODIFY `id_producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `proveedor`
@@ -1579,13 +1616,13 @@ ALTER TABLE `proveedor`
 -- AUTO_INCREMENT de la tabla `registro_trabajo`
 --
 ALTER TABLE `registro_trabajo`
-  MODIFY `id_registro_trabajo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+  MODIFY `id_registro_trabajo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- AUTO_INCREMENT de la tabla `riego`
 --
 ALTER TABLE `riego`
-  MODIFY `id_riego` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id_riego` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT de la tabla `salario`
@@ -1615,7 +1652,7 @@ ALTER TABLE `super_admin`
 -- AUTO_INCREMENT de la tabla `terreno`
 --
 ALTER TABLE `terreno`
-  MODIFY `id_terreno` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id_terreno` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT de la tabla `tipo_insumo`
@@ -1733,11 +1770,11 @@ ALTER TABLE `proveedor`
 -- Filtros para la tabla `registro_trabajo`
 --
 ALTER TABLE `registro_trabajo`
-  ADD CONSTRAINT `fk_registro_trabajo_insumo_cosecha` FOREIGN KEY (`id_insumo_cosecha`) REFERENCES `insumo_cosecha` (`id_insumo_cosecha`),
-  ADD CONSTRAINT `fk_registro_trabajo_usuario` FOREIGN KEY (`documento_trabajador`) REFERENCES `usuario` (`documento`),
-  ADD CONSTRAINT `registro_trabajo_ibfk_1` FOREIGN KEY (`id_fase`) REFERENCES `fases_programadas` (`id_fase`),
-  ADD CONSTRAINT `registro_trabajo_ibfk_2` FOREIGN KEY (`id_riego`) REFERENCES `riego` (`id_riego`),
-  ADD CONSTRAINT `registro_trabajo_ibfk_3` FOREIGN KEY (`id_estado`) REFERENCES `estado` (`id_estado`);
+  ADD CONSTRAINT `registro_trabajo_documento_trabajador_foreign` FOREIGN KEY (`documento_trabajador`) REFERENCES `usuario` (`documento`),
+  ADD CONSTRAINT `registro_trabajo_id_estado_foreign` FOREIGN KEY (`id_estado`) REFERENCES `estado` (`id_estado`),
+  ADD CONSTRAINT `registro_trabajo_id_fase_foreign` FOREIGN KEY (`id_fase`) REFERENCES `fases_programadas` (`id_fase`) ON DELETE SET NULL,
+  ADD CONSTRAINT `registro_trabajo_id_insumo_cosecha_foreign` FOREIGN KEY (`id_insumo_cosecha`) REFERENCES `insumo_cosecha` (`id_insumo_cosecha`) ON DELETE SET NULL,
+  ADD CONSTRAINT `registro_trabajo_id_riego_foreign` FOREIGN KEY (`id_riego`) REFERENCES `riego` (`id_riego`) ON DELETE SET NULL;
 
 --
 -- Filtros para la tabla `riego`
@@ -1747,37 +1784,40 @@ ALTER TABLE `riego`
   ADD CONSTRAINT `fk_riego_estado` FOREIGN KEY (`id_estado`) REFERENCES `estado` (`id_estado`),
   ADD CONSTRAINT `fk_riego_tipo_riego` FOREIGN KEY (`id_tipo_riego`) REFERENCES `tipo_riego` (`id_tipo_riego`),
   ADD CONSTRAINT `fk_riego_usuario` FOREIGN KEY (`documento_trabajador`) REFERENCES `usuario` (`documento`);
-
---
--- Filtros para la tabla `salario`
---
-ALTER TABLE `salario`
-  ADD CONSTRAINT `fk_salario_tipo_salario` FOREIGN KEY (`id_tipo_salario`) REFERENCES `tipo_salario` (`id_tipo_salario`),
-  ADD CONSTRAINT `salario_ibfk_1` FOREIGN KEY (`documento_trabajador`) REFERENCES `usuario` (`documento`);
-
 --
 -- Filtros para la tabla `solicitud_compra`
 --
 ALTER TABLE `solicitud_compra`
   ADD CONSTRAINT `fk_solicitud_compra_empresa` FOREIGN KEY (`id_empresa`) REFERENCES `empresa` (`id_empresa`),
-  ADD CONSTRAINT `fk_solicitud_compra_estado` FOREIGN KEY (`id_estado`) REFERENCES `estado` (`id_estado`),
   ADD CONSTRAINT `fk_solicitud_compra_tipo_licencia` FOREIGN KEY (`id_tipo_licencia`) REFERENCES `tipo_licencia` (`id_tipo_licencia`),
-  ADD CONSTRAINT `solicitud_compra_ibfk_1` FOREIGN KEY (`id_empresa`) REFERENCES `empresa` (`id_empresa`),
-  ADD CONSTRAINT `solicitud_compra_ibfk_2` FOREIGN KEY (`id_tipo_licencia`) REFERENCES `tipo_licencia` (`id_tipo_licencia`),
-  ADD CONSTRAINT `solicitud_compra_ibfk_3` FOREIGN KEY (`id_estado`) REFERENCES `estado` (`id_estado`);
+  ADD CONSTRAINT `fk_solicitud_compra_estado` FOREIGN KEY (`id_estado`) REFERENCES `estado` (`id_estado`);
 
 --
--- Filtros para la tabla `soporte`
+-- Filtros para la tabla `tipo_riego`
 --
-ALTER TABLE `soporte`
-  ADD CONSTRAINT `soporte_ibfk_1` FOREIGN KEY (`documento_trabajador`) REFERENCES `usuario` (`documento`),
-  ADD CONSTRAINT `soporte_ibfk_2` FOREIGN KEY (`id_empresa`) REFERENCES `empresa` (`id_empresa`);
+ALTER TABLE `tipo_riego`
+  ADD CONSTRAINT `fk_tipo_riego_empresa` FOREIGN KEY (`id_empresa`) REFERENCES `empresa` (`id_empresa`),
+  ADD CONSTRAINT `fk_tipo_riego_catalogo` FOREIGN KEY (`id_catalogo`) REFERENCES `catalogo_riegos` (`id`);
 
 --
--- Filtros para la tabla `super_admin`
+-- Filtros para la tabla `tipo_semilla`
 --
-ALTER TABLE `super_admin`
-  ADD CONSTRAINT `fk_super_admin_estado` FOREIGN KEY (`id_estado`) REFERENCES `estado` (`id_estado`);
+ALTER TABLE `tipo_semilla`
+  ADD CONSTRAINT `fk_tipo_semilla_empresa` FOREIGN KEY (`id_empresa`) REFERENCES `empresa` (`id_empresa`),
+  ADD CONSTRAINT `fk_tipo_semilla_catalogo` FOREIGN KEY (`id_catalogo`) REFERENCES `catalogo_semillas` (`id`);
+
+--
+-- Filtros para la tabla `tipo_suelo`
+--
+ALTER TABLE `tipo_suelo`
+  ADD CONSTRAINT `fk_tipo_suelo_empresa` FOREIGN KEY (`id_empresa`) REFERENCES `empresa` (`id_empresa`),
+  ADD CONSTRAINT `fk_tipo_suelo_catalogo` FOREIGN KEY (`id_catalogo`) REFERENCES `catalogo_suelos` (`id`);
+
+--
+-- Filtros para la tabla `tipo_insumo`
+--
+ALTER TABLE `tipo_insumo`
+  ADD CONSTRAINT `fk_tipo_insumo_empresa` FOREIGN KEY (`id_empresa`) REFERENCES `empresa` (`id_empresa`);
 
 --
 -- Filtros para la tabla `terreno`
@@ -1788,61 +1828,44 @@ ALTER TABLE `terreno`
   ADD CONSTRAINT `fk_terreno_tipo_suelo` FOREIGN KEY (`id_tipo_suelo`) REFERENCES `tipo_suelo` (`id_tipo_suelo`);
 
 --
--- Filtros para la tabla `tipo_insumo`
---
-ALTER TABLE `tipo_insumo`
-  ADD CONSTRAINT `tipo_insumo_ibfk_1` FOREIGN KEY (`id_empresa`) REFERENCES `empresa` (`id_empresa`);
-
---
--- Filtros para la tabla `tipo_licencia`
---
-ALTER TABLE `tipo_licencia`
-  ADD CONSTRAINT `fk_tipo_licencia_estado` FOREIGN KEY (`id_estado`) REFERENCES `estado` (`id_estado`);
-
---
--- Filtros para la tabla `tipo_riego`
---
-ALTER TABLE `tipo_riego`
-  ADD CONSTRAINT `fk_tipo_riego_catalogo_riegos` FOREIGN KEY (`id_catalogo`) REFERENCES `catalogo_riegos` (`id`),
-  ADD CONSTRAINT `fk_tipo_riego_empresa` FOREIGN KEY (`id_empresa`) REFERENCES `empresa` (`id_empresa`),
-  ADD CONSTRAINT `tipo_riego_ibfk_1` FOREIGN KEY (`id_catalogo`) REFERENCES `catalogo_riegos` (`id`),
-  ADD CONSTRAINT `tipo_riego_ibfk_2` FOREIGN KEY (`id_empresa`) REFERENCES `empresa` (`id_empresa`);
-
---
--- Filtros para la tabla `tipo_semilla`
---
-ALTER TABLE `tipo_semilla`
-  ADD CONSTRAINT `fk_tipo_semilla_catalogo_semillas` FOREIGN KEY (`id_catalogo`) REFERENCES `catalogo_semillas` (`id`),
-  ADD CONSTRAINT `fk_tipo_semilla_empresa` FOREIGN KEY (`id_empresa`) REFERENCES `empresa` (`id_empresa`),
-  ADD CONSTRAINT `tipo_semilla_ibfk_1` FOREIGN KEY (`id_catalogo`) REFERENCES `catalogo_semillas` (`id`),
-  ADD CONSTRAINT `tipo_semilla_ibfk_2` FOREIGN KEY (`id_empresa`) REFERENCES `empresa` (`id_empresa`);
-
---
--- Filtros para la tabla `tipo_suelo`
---
-ALTER TABLE `tipo_suelo`
-  ADD CONSTRAINT `fk_tipo_suelo_catalogo_suelos` FOREIGN KEY (`id_catalogo`) REFERENCES `catalogo_suelos` (`id`),
-  ADD CONSTRAINT `fk_tipo_suelo_empresa` FOREIGN KEY (`id_empresa`) REFERENCES `empresa` (`id_empresa`),
-  ADD CONSTRAINT `tipo_suelo_ibfk_1` FOREIGN KEY (`id_catalogo`) REFERENCES `catalogo_suelos` (`id`),
-  ADD CONSTRAINT `tipo_suelo_ibfk_2` FOREIGN KEY (`id_empresa`) REFERENCES `empresa` (`id_empresa`);
-
---
 -- Filtros para la tabla `usuario`
 --
 ALTER TABLE `usuario`
-  ADD CONSTRAINT `fk_usuario_empresa` FOREIGN KEY (`id_empresa`) REFERENCES `empresa` (`id_empresa`),
+  ADD CONSTRAINT `fk_usuario_tipo_usuario` FOREIGN KEY (`id_tipo_usuario`) REFERENCES `tipo_usuario` (`id_tipo_usuario`),
   ADD CONSTRAINT `fk_usuario_estado` FOREIGN KEY (`id_estado`) REFERENCES `estado` (`id_estado`),
-  ADD CONSTRAINT `fk_usuario_estado_trabajador` FOREIGN KEY (`id_estado_trabajador`) REFERENCES `estado_trabajador` (`id_estado_trabajador`),
-  ADD CONSTRAINT `fk_usuario_tipo_usuario` FOREIGN KEY (`id_tipo_usuario`) REFERENCES `tipo_usuario` (`id_tipo_usuario`);
+  ADD CONSTRAINT `fk_usuario_empresa` FOREIGN KEY (`id_empresa`) REFERENCES `empresa` (`id_empresa`),
+  ADD CONSTRAINT `fk_usuario_estado_trabajador` FOREIGN KEY (`id_estado_trabajador`) REFERENCES `estado_trabajador` (`id_estado_trabajador`);
+
+--
+-- Filtros para la tabla `soporte`
+--
+ALTER TABLE `soporte`
+  ADD CONSTRAINT `fk_soporte_empresa` FOREIGN KEY (`id_empresa`) REFERENCES `empresa` (`id_empresa`),
+  ADD CONSTRAINT `fk_soporte_usuario` FOREIGN KEY (`documento_trabajador`) REFERENCES `usuario` (`documento`);
 
 --
 -- Filtros para la tabla `venta_licencias`
 --
 ALTER TABLE `venta_licencias`
+  ADD CONSTRAINT `fk_venta_licencias_tipo_licencia` FOREIGN KEY (`id_tipo_licencia`) REFERENCES `tipo_licencia` (`id_tipo_licencia`),
   ADD CONSTRAINT `fk_venta_licencias_empresa` FOREIGN KEY (`id_empresa`) REFERENCES `empresa` (`id_empresa`),
-  ADD CONSTRAINT `fk_venta_licencias_estado` FOREIGN KEY (`id_estado`) REFERENCES `estado` (`id_estado`),
-  ADD CONSTRAINT `fk_venta_licencias_tipo_licencia` FOREIGN KEY (`id_tipo_licencia`) REFERENCES `tipo_licencia` (`id_tipo_licencia`);
+  ADD CONSTRAINT `fk_venta_licencias_estado` FOREIGN KEY (`id_estado`) REFERENCES `estado` (`id_estado`);
+
+--
+-- Filtros para la tabla `salario`
+--
+ALTER TABLE `salario`
+  ADD CONSTRAINT `fk_salario_usuario` FOREIGN KEY (`documento_trabajador`) REFERENCES `usuario` (`documento`),
+  ADD CONSTRAINT `fk_salario_tipo_salario` FOREIGN KEY (`id_tipo_salario`) REFERENCES `tipo_salario` (`id_tipo_salario`);
+
+--
+-- Filtros para la tabla `super_admin`
+--
+ALTER TABLE `super_admin`
+  ADD CONSTRAINT `fk_super_admin_estado` FOREIGN KEY (`id_estado`) REFERENCES `estado` (`id_estado`);
+
 COMMIT;
+
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

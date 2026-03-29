@@ -28,7 +28,7 @@
                     <div class="relative">
                         <input type="text" id="riegoSearch" autocomplete="off"
                             placeholder="Ej. Goteo, Aspersión..."
-                            class="w-full pl-11 pr-4 py-3 rounded-2xl border-2 border-blue-50 focus:border-blue-500 focus:ring-0 bg-blue-50/20 text-sm transition-all focus:bg-white disabled:opacity-50 disabled:cursor-not-allowed">
+                            class="w-full pl-11 pr-4 py-3 rounded-2xl border-2 border-blue-50 focus:border-blue-500 focus:ring-0 bg-blue-50/20 text-sm transition-all focus:bg-white">
                         <div class="absolute left-4 top-1/2 -translate-y-1/2 text-blue-400 group-focus-within:text-blue-600 transition-colors">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -40,42 +40,60 @@
                     </div>
                 </div>
 
-                <form id="riegoForm" action="{{ route('tipo_riegos.store') }}" method="POST" class="space-y-3 hidden animate-in zoom-in-95 duration-200">
+                <!-- Draft Chips Container -->
+                <div id="chipsContainer" class="flex flex-wrap gap-2 mb-4 animate-in fade-in duration-300">
+                    <!-- Chips will be injected here -->
+                </div>
+
+                <!-- Batch Save Form -->
+                <form id="batchSaveForm" action="{{ route('tipo_riegos.store') }}" method="POST" class="hidden mb-4">
                     @csrf
+                    <div id="batchItemsData"></div>
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-4 rounded-3xl shadow-xl shadow-blue-100 transition-all transform hover:-translate-y-1 flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        Habilitar Seleccionados
+                    </button>
+                    <button type="button" onclick="clearDrafts()" class="w-full mt-3 text-[10px] font-black text-gray-400 uppercase tracking-widest hover:text-red-500 transition-colors">
+                        Descartar Todo
+                    </button>
+                </form>
+
+                <!-- Manual Form with New Card Layout -->
+                <form id="riegoForm" action="{{ route('tipo_riegos.store') }}" method="POST" class="space-y-4 hidden animate-in zoom-in-95 duration-200">
+                    @csrf
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-[10px] font-black text-blue-500 uppercase tracking-widest">Registrando Manualmente</span>
+                        <button type="button" onclick="resetRiegoForm()" class="text-gray-400 hover:text-red-500">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                        </button>
+                    </div>
+
                     <input type="hidden" name="id_catalogo" id="input_id_catalogo">
 
-                    <div>
-                        <label class="block text-xs font-bold text-emerald-700 uppercase tracking-wider mb-1.5">Nombre Personalizado</label>
-                        <input type="text" name="tipo_riego" id="tipo_riego_name" required
-                            class="w-full px-4 py-2.5 rounded-2xl border-emerald-100 focus:border-blue-500 focus:ring-0 bg-gray-50/50 text-sm font-medium">
-                    </div>
-
-                    <!-- Impact Card -->
-                    <div class="bg-blue-50 p-4 rounded-2xl border border-blue-100 relative overflow-hidden">
-                        <div class="absolute -right-4 -bottom-4 text-blue-100/50">
-                            <svg class="w-16 h-16" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
-                            </svg>
+                    <!-- Custom Card Inputs (Following user screenshot design) -->
+                    <div class="space-y-3">
+                        <!-- Input for Name -->
+                        <div class="bg-gray-50 p-4 rounded-2xl border border-gray-100 flex flex-col items-start gap-1">
+                            <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">Nombre del Sistema</label>
+                            <input type="text" name="tipo_riego" id="tipo_riego_name" required
+                                class="w-full text-xl font-black bg-transparent border-none focus:ring-0 p-0 text-gray-900 placeholder:text-gray-200"
+                                placeholder="Ej. Goteo Personalizado">
                         </div>
-                        <span class="text-[9px] font-black text-blue-400 uppercase tracking-widest block mb-1">Impacto en Cosecha (Días)</span>
-                        <div class="flex items-center gap-3 relative z-10">
-                            <input type="number" name="impacto_dias" id="riego_impacto" class="text-2xl font-black bg-transparent w-20 border-b-2 border-blue-200 focus:ring-0 focus:border-blue-500 text-blue-600 placeholder:text-gray-300" placeholder="0" value="0">
-                            <span class="text-[10px] text-blue-600 font-medium leading-tight">Días sumados<br>técnica</span>
+
+                        <!-- Input for Impact (Orange themed) -->
+                        <div class="bg-amber-50/50 p-4 rounded-2xl border border-amber-100 flex flex-col items-start gap-1">
+                            <label class="text-[10px] font-black text-amber-600 uppercase tracking-widest leading-none">Impacto (Días)</label>
+                            <input type="number" name="impacto_dias" id="riego_impacto" required
+                                class="w-full text-2xl font-black bg-transparent border-none focus:ring-0 p-0 text-amber-900 placeholder:text-amber-200"
+                                placeholder="0">
                         </div>
                     </div>
 
-
-
-                    <div class="flex gap-2.5">
-                        <button type="button" onclick="resetRiegoForm()" class="px-5 py-3 bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold rounded-2xl transition-all">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                        </button>
-                        <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-black py-3 rounded-2xl shadow-xl shadow-blue-100 transition-all transform hover:-translate-y-1">
-                            Habilitar Sistema
-                        </button>
-                    </div>
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-4 rounded-3xl shadow-xl shadow-blue-100 transition-all mt-2">
+                        Registrar Ahora
+                    </button>
                 </form>
 
                 <div id="riegoPlaceholder" class="py-12 flex flex-col items-center justify-center text-center space-y-4 opacity-40">
@@ -84,64 +102,63 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547" />
                         </svg>
                     </div>
-                    <p class="text-sm font-medium text-blue-900">Busque un sistema para ver su impacto en días.</p>
+                    <p class="text-xs font-bold text-blue-900/60 uppercase tracking-[0.1em]">Busque sistemas para registrarlos</p>
                 </div>
             </div>
         </div>
 
         <!-- List Column -->
         <div class="xl:col-span-2">
-            <div class="bg-white rounded-3xl shadow-xl border border-emerald-50 overflow-hidden flex flex-col">
-                <div class="p-4 border-b border-emerald-50 bg-gray-50/50 flex justify-between items-center">
+            <div class="bg-white rounded-[2.5rem] shadow-xl border border-blue-50/50 overflow-hidden flex flex-col">
+                <div class="px-6 py-5 border-b border-blue-50 bg-gray-50/30 flex justify-between items-center">
                     <div>
-                        <h3 class="text-lg font-black text-emerald-950">Sistemas de Riego</h3>
-                        <p class="text-[10px] font-medium text-emerald-600 mt-1">Configuración técnica activa</p>
+                        <h3 class="text-lg font-black text-slate-800">Sistemas de Riego</h3>
+                        <p class="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-widest italic">Configuración Técnica de Empresa</p>
                     </div>
                 </div>
 
                 <div class="flex-1 overflow-x-auto">
                     <table class="w-full text-left">
                         <thead>
-                            <tr class="bg-white text-[9px] font-black text-emerald-400 uppercase tracking-[0.2em] border-b border-emerald-50">
-                                <th class="px-4 py-2">Tipo de Riego</th>
-                                <th class="px-4 py-2 text-center">Impacto</th>
-                                <th class="px-4 py-2 text-right">Acciones</th>
+                            <tr class="bg-white text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] border-b border-blue-50">
+                                <th class="px-6 py-4">Tipo de Riego</th>
+                                <th class="px-6 py-4 text-center">Impacto</th>
+                                <th class="px-6 py-4 text-right">Acciones</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-emerald-50/50">
+                        <tbody class="divide-y divide-blue-50/50">
                             @forelse($tipoRiegos as $riego)
-                            <tr class="hover:bg-blue-50/20 transition-all group">
-                                <td class="px-4 py-2">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-8 h-8 bg-blue-600 text-white rounded-xl flex items-center justify-center font-black">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <tr class="hover:bg-blue-50/10 transition-all group">
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-10 h-10 bg-blue-600 text-white rounded-2xl flex items-center justify-center font-black shadow-lg shadow-blue-100 group-hover:scale-110 transition-transform">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517" />
                                             </svg>
                                         </div>
                                         <div>
-                                            <span class="font-black text-emerald-950 block text-sm">{{ $riego->tipo_riego }}</span>
-                                            <span class="text-[9px] font-bold text-blue-400 uppercase italic">Base: {{ $riego->catalogo->nombre ?? 'Manual' }}</span>
+                                            <span class="font-black text-slate-700 block text-sm">{{ $riego->tipo_riego }}</span>
+                                            <span class="text-[9px] font-black text-blue-500 uppercase italic opacity-60 tracking-wider">Base: {{ $riego->catalogo->nombre ?? 'Manual' }}</span>
                                         </div>
                                     </div>
                                 </td>
-                                <td class="px-4 py-2 text-center">
-                                    <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl {{ $riego->impacto_dias >= 0 ? 'bg-red-50 text-red-600 border-red-100' : 'bg-green-50 text-green-600 border-green-100' }} border font-black text-xs">
-                                        {{ $riego->impacto_dias > 0 ? '+' : '' }}{{ $riego->impacto_dias }}
-                                        <span class="text-[9px] font-bold uppercase opacity-60">días</span>
+                                <td class="px-6 py-4 text-center">
+                                    <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-2xl {{ $riego->impacto_dias >= 0 ? 'bg-red-50 text-red-600 border-red-100' : 'bg-green-50 text-green-600 border-green-100' }} border font-black text-[10px]">
+                                        {{ $riego->impacto_dias > 0 ? '+' : '' }}{{ $riego->impacto_dias }} días
                                     </div>
                                 </td>
 
-                                <td class="px-4 py-2 text-right">
+                                <td class="px-6 py-4 text-right">
                                     <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all">
-                                        <button onclick='editRiego(@json($riego))' class="p-2 bg-amber-50 text-amber-600 rounded-xl hover:bg-amber-100 shadow-sm transition-all">
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <button onclick='editRiego(@json($riego))' class="p-2.5 bg-amber-50 text-amber-600 rounded-xl hover:bg-amber-100 shadow-sm transition-all">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                             </svg>
                                         </button>
                                         <form action="{{ route('tipo_riegos.destroy', $riego->id_tipo_riego) }}" method="POST" class="inline">
                                             @csrf @method('DELETE')
-                                            <button type="submit" onclick="return confirm('¿Eliminar este sistema?')" class="p-2 bg-red-50 text-red-600 rounded-xl hover:bg-red-100 shadow-sm transition-all">
-                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <button type="submit" onclick="return confirm('¿Eliminar este sistema?')" class="p-2.5 bg-red-50 text-red-600 rounded-xl hover:bg-red-100 shadow-sm transition-all">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                                 </svg>
                                             </button>
@@ -151,14 +168,21 @@
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="4" class="px-8 py-12 text-center text-emerald-300 font-bold italic">No hay sistemas registrados.</td>
+                                <td colspan="3" class="px-8 py-20 text-center">
+                                    <div class="flex flex-col items-center opacity-30">
+                                        <svg class="w-16 h-16 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                        </svg>
+                                        <p class="text-sm font-black text-slate-400 mt-4 uppercase tracking-[0.2em]">Sin sistemas registrados</p>
+                                    </div>
+                                </td>
                             </tr>
                             @endforelse
                         </tbody>
                     </table>
                 </div>
 
-                <div class="p-4 bg-gray-50/50 border-t border-emerald-50">
+                <div class="px-6 py-4 bg-gray-50/30 border-t border-blue-50">
                     {{ $tipoRiegos->links() }}
                 </div>
             </div>
@@ -171,8 +195,15 @@
     const searchInput = document.getElementById('riegoSearch');
     const searchResults = document.getElementById('riegoResults');
     const form = document.getElementById('riegoForm');
+    const batchForm = document.getElementById('batchSaveForm');
     const placeholder = document.getElementById('riegoPlaceholder');
+    const chipsContainer = document.getElementById('chipsContainer');
+    const batchItemsData = document.getElementById('batchItemsData');
 
+    // Load registered catalog IDs from the server to prevent duplicates
+    const registeredCatalogIds = @json($registeredIds);
+
+    let selectedItems = [];
     let timer;
 
     searchInput.addEventListener('input', function() {
@@ -190,41 +221,50 @@
                     searchResults.innerHTML = '';
                     if (data.length > 0) {
                         data.forEach(item => {
+                            const isAlreadyRegistered = registeredCatalogIds.includes(parseInt(item.id));
                             const div = document.createElement('div');
-                            div.className = 'px-4 py-3 hover:bg-blue-50 cursor-pointer border-b border-blue-50 last:border-0 transition-colors';
+                            div.className = `px-4 py-3 border-b border-blue-50 last:border-0 transition-colors ${isAlreadyRegistered ? 'opacity-50 cursor-not-allowed bg-gray-50/50' : 'hover:bg-blue-50 cursor-pointer'}`;
                             div.innerHTML = `
                                 <div class="flex justify-between items-center">
-                                    <p class="font-black text-blue-950 text-sm">${item.nombre}</p>
-                                    <span class="text-[10px] font-bold ${item.impacto_dias >= 0 ? 'text-red-500' : 'text-green-500'}">${item.impacto_dias > 0 ? '+' : ''}${item.impacto_dias} días</span>
+                                    <div>
+                                        <p class="font-black text-blue-950 text-sm">${item.nombre}</p>
+                                        <p class="text-[9px] text-gray-400 font-bold uppercase tracking-widest">${isAlreadyRegistered ? 'Ya configurado en la empresa' : 'Sugerido por catálogo'}</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <span class="block text-[10px] font-black ${item.impacto_dias >= 0 ? 'text-red-500' : 'text-green-500'}">${item.impacto_dias > 0 ? '+' : ''}${item.impacto_dias} días</span>
+                                    </div>
                                 </div>
                             `;
-                            div.onclick = () => selectItem(item);
+                            if (!isAlreadyRegistered) {
+                                div.onclick = () => addChip(item);
+                            }
                             searchResults.appendChild(div);
                         });
+                        
                         // Add "Custom" option
                         const customDiv = document.createElement('div');
                         customDiv.className = 'px-4 py-3 hover:bg-blue-50 cursor-pointer border-t border-blue-100 bg-blue-50/50 transition-colors';
                         customDiv.innerHTML = `
-                            <div class="flex space-x-3 items-center text-blue-700">
-                                <div class="bg-blue-200 text-blue-800 p-1.5 rounded-lg">
+                            <div class="flex space-x-3 items-center text-blue-600">
+                                <div class="bg-blue-100 p-1.5 rounded-lg">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
                                 </div>
-                                <span class="font-bold text-sm">Crear "${q}" como nuevo sistema</span>
+                                <span class="font-black text-xs uppercase tracking-widest">Registrar "${q}" manualmente</span>
                             </div>
                         `;
-                        customDiv.onclick = () => selectCustomRiego(q);
+                        customDiv.onclick = () => showManualForm(q);
                         searchResults.appendChild(customDiv);
                         
                         searchResults.classList.remove('hidden');
                     } else {
                         searchResults.innerHTML = `
-                            <div class="px-4 py-3 hover:bg-blue-50 cursor-pointer transition-colors" onclick="selectCustomRiego('${q}')">
-                                <p class="text-xs text-gray-500 mb-2 italic">No se encontró en el catálogo global...</p>
-                                <div class="flex space-x-3 items-center text-blue-700">
-                                    <div class="bg-blue-200 text-blue-800 p-1.5 rounded-lg">
+                            <div class="px-4 py-3 hover:bg-blue-50 cursor-pointer transition-colors" onclick="showManualForm('${q}')">
+                                <p class="text-[9px] text-gray-400 mb-2 italic uppercase font-bold tracking-widest">Técnica no encontrada...</p>
+                                <div class="flex space-x-3 items-center text-blue-600">
+                                    <div class="bg-blue-100 p-1.5 rounded-lg">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
                                     </div>
-                                    <span class="font-bold text-sm">Registrar "${q}" manualmente</span>
+                                    <span class="font-black text-xs uppercase tracking-widest">Registrar "${q}" manualmente</span>
                                 </div>
                             </div>
                         `;
@@ -234,9 +274,86 @@
         }, 300);
     });
 
-    function selectCustomRiego(nombre) {
+    function addChip(item) {
         searchResults.classList.add('hidden');
-        searchInput.value = nombre;
+        searchInput.value = '';
+
+        // Prevent duplicates in current draft
+        if (selectedItems.find(i => i.id_catalogo === item.id)) return;
+
+        selectedItems.push({
+            id_catalogo: item.id,
+            tipo_riego: item.nombre,
+            impacto_dias: item.impacto_dias
+        });
+
+        renderChips();
+        updateBatchForm();
+    }
+
+    function renderChips() {
+        chipsContainer.innerHTML = '';
+        placeholder.classList.add('hidden');
+        form.classList.add('hidden');
+        
+        if (selectedItems.length === 0) {
+            placeholder.classList.remove('hidden');
+            batchForm.classList.add('hidden');
+            return;
+        }
+
+        batchForm.classList.remove('hidden');
+
+        selectedItems.forEach((item, index) => {
+            const chip = document.createElement('div');
+            // Change color to Blue as requested by user
+            chip.className = 'flex items-center gap-4 bg-blue-600 text-white pl-4 pr-3 py-3 rounded-[1.2rem] shadow-xl shadow-blue-100 animate-in zoom-in-90 duration-200';
+            chip.innerHTML = `
+                <div class="bg-blue-500/50 p-2 rounded-xl">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517" /></svg>
+                </div>
+                <div>
+                    <p class="text-xs font-black uppercase tracking-wider leading-none mb-1">${item.tipo_riego}</p>
+                    <p class="text-[9px] font-bold text-blue-100 uppercase tracking-widest leading-none">Base: ${item.id_catalogo ? 'Catálogo' : 'Manual'} • ${item.impacto_dias}d</p>
+                </div>
+                <button onclick="removeChip(${index})" class="ml-2 w-6 h-6 flex items-center justify-center hover:bg-white/20 rounded-lg transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            `;
+            chipsContainer.appendChild(chip);
+        });
+    }
+
+    function removeChip(index) {
+        selectedItems.splice(index, 1);
+        renderChips();
+        updateBatchForm();
+    }
+
+    function clearDrafts() {
+        selectedItems = [];
+        renderChips();
+        updateBatchForm();
+    }
+
+    function updateBatchForm() {
+        batchItemsData.innerHTML = '';
+        selectedItems.forEach((item, index) => {
+            batchItemsData.innerHTML += `
+                <input type="hidden" name="items[${index}][id_catalogo]" value="${item.id_catalogo || ''}">
+                <input type="hidden" name="items[${index}][tipo_riego]" value="${item.tipo_riego}">
+                <input type="hidden" name="items[${index}][impacto_dias]" value="${item.impacto_dias}">
+            `;
+        });
+    }
+
+    function showManualForm(nombre) {
+        searchResults.classList.add('hidden');
+        searchInput.value = '';
+        
+        batchForm.classList.add('hidden');
+        chipsContainer.innerHTML = '';
+        selectedItems = [];
 
         document.getElementById('input_id_catalogo').value = '';
         document.getElementById('tipo_riego_name').value = nombre;
@@ -246,51 +363,27 @@
         form.classList.remove('hidden');
     }
 
-    function selectItem(item) {
-        searchResults.classList.add('hidden');
-        searchInput.value = item.nombre;
-
-        document.getElementById('input_id_catalogo').value = item.id;
-        document.getElementById('tipo_riego_name').value = item.nombre;
-
-        const impacto = parseInt(item.impacto_dias);
-        document.getElementById('riego_impacto').value = impacto;
-
-        placeholder.classList.add('hidden');
-        form.classList.remove('hidden');
-    }
-
     function resetRiegoForm() {
         form.classList.add('hidden');
-        placeholder.classList.remove('hidden');
+        renderChips();
         searchInput.value = '';
-        searchInput.disabled = false;
         form.reset();
-
-        // Restore to store mode
+        
         form.action = "{{ route('tipo_riegos.store') }}";
         const methodInput = form.querySelector('input[name="_method"]');
         if (methodInput) methodInput.remove();
-        form.querySelector('button[type="submit"]').innerText = 'Habilitar Sistema';
-        form.querySelector('button[type="submit"]').classList.replace('bg-amber-600', 'bg-blue-600');
+        form.querySelector('button[type="submit"]').innerText = 'Registrar Ahora';
     }
 
     function editRiego(riego) {
-        // Show form
+        clearDrafts();
         placeholder.classList.add('hidden');
         form.classList.remove('hidden');
 
-        // Populate Form
         document.getElementById('input_id_catalogo').value = riego.id_catalogo;
         document.getElementById('tipo_riego_name').value = riego.tipo_riego;
-
-        const impacto = parseInt(riego.impacto_dias);
-        document.getElementById('riego_impacto').value = impacto;
+        document.getElementById('riego_impacto').value = riego.impacto_dias;
         
-        searchInput.value = riego.tipo_riego;
-        searchInput.disabled = true;
-
-        // Adjust form for update mode
         form.action = `/tipo_riegos/${riego.id_tipo_riego}`;
         if (!form.querySelector('input[name="_method"]')) {
             const methodInput = document.createElement('input');
@@ -300,7 +393,6 @@
             form.appendChild(methodInput);
         }
         form.querySelector('button[type="submit"]').innerText = 'Actualizar Sistema';
-        form.querySelector('button[type="submit"]').classList.replace('bg-blue-600', 'bg-amber-600');
     }
 
     document.addEventListener('click', function(e) {

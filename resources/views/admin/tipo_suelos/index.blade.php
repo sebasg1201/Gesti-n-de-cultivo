@@ -4,87 +4,105 @@
 
 @section('content')
 <div class="space-y-4">
-
-
     <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
-        <!-- Professional Search & Suelo Config -->
+        <!-- Search & Config Column -->
         <div class="xl:col-span-1">
             <div class="bg-white rounded-3xl shadow-xl border border-amber-50 p-5 sticky top-6">
                 <div class="flex items-center gap-3 mb-4">
-                    <div class="bg-amber-500 p-2.5 rounded-2xl text-white shadow-lg shadow-amber-100">
+                    <div class="bg-amber-600 p-2.5 rounded-2xl text-white shadow-lg shadow-amber-100">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
                         </svg>
                     </div>
                     <div>
-                        <h3 class="text-lg font-bold text-amber-900">Configurar Suelo</h3>
-                        <p class="text-[10px] font-medium text-amber-500 uppercase tracking-widest mt-1">Algoritmo de Impacto v3.0</p>
+                        <h3 class="text-lg font-black text-amber-950">Configurar Suelo</h3>
+                        <p class="text-[10px] font-bold text-amber-500 uppercase tracking-widest mt-0.5">Control de Sustrato v3.1</p>
                     </div>
                 </div>
 
-                <!-- AJAX Search for Soils -->
+                <!-- AJAX Search -->
                 <div class="relative group mb-4">
                     <label class="block text-xs font-bold text-amber-700 uppercase tracking-wider mb-2">Buscar tipo de suelo técnico</label>
                     <div class="relative">
                         <input type="text" id="sueloSearch" autocomplete="off"
                             placeholder="Ej. Arcilloso, Arenoso, Limoso..."
-                            class="w-full pl-11 pr-4 py-3 rounded-2xl border-2 border-amber-50 focus:border-amber-500 focus:ring-0 bg-amber-50/20 text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                            class="w-full pl-11 pr-4 py-3 rounded-2xl border-2 border-amber-50 focus:border-amber-500 focus:ring-0 bg-amber-50/20 text-sm transition-all focus:bg-white">
                         <div class="absolute left-4 top-1/2 -translate-y-1/2 text-amber-400 group-focus-within:text-amber-600 transition-colors">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                             </svg>
                         </div>
                         <div id="sueloResults" class="hidden absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl border border-amber-50 z-50 max-h-64 overflow-y-auto">
-                            <!-- Results injected via AJAX -->
+                            <!-- Injected via JS -->
                         </div>
                     </div>
                 </div>
 
-                <form id="sueloForm" action="{{ route('tipo_suelos.store') }}" method="POST" class="space-y-3 hidden animate-in slide-in-from-bottom-4 duration-300">
+                <!-- Draft Chips Container -->
+                <div id="chipsContainer" class="flex flex-wrap gap-2 mb-4"></div>
+
+                <!-- Batch Save Form -->
+                <form id="batchSaveForm" action="{{ route('tipo_suelos.store') }}" method="POST" class="hidden mb-4">
                     @csrf
+                    <div id="batchItemsData"></div>
+                    <button type="submit" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-black py-4 rounded-3xl shadow-xl shadow-amber-100 transition-all flex items-center justify-center gap-2">
+                        Habilitar Seleccionados
+                    </button>
+                    <button type="button" onclick="clearDrafts()" class="w-full mt-3 text-[10px] font-black text-gray-400 uppercase tracking-widest hover:text-red-500 transition-colors">
+                        Descartar Todo
+                    </button>
+                </form>
+
+                <!-- Manual Card-Based Form -->
+                <form id="sueloForm" action="{{ route('tipo_suelos.store') }}" method="POST" class="space-y-3 hidden">
+                    @csrf
+                    <div class="flex items-center justify-between mb-1">
+                        <span class="text-[10px] font-black text-amber-600 uppercase tracking-widest leading-none">Registro Manual</span>
+                        <button type="button" onclick="resetSueloForm()" class="text-gray-400 hover:text-red-500">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                        </button>
+                    </div>
+
                     <input type="hidden" name="id_catalogo" id="sw_id_catalogo">
+                    
+                    <div class="space-y-3">
+                        <!-- Name Card -->
+                        <div class="bg-gray-50 p-4 rounded-2xl border border-gray-100 flex flex-col items-start gap-1">
+                            <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">Nombre del Suelo</label>
+                            <input type="text" name="nombre" id="sw_nombre" required
+                                class="w-full text-xl font-black bg-transparent border-none focus:ring-0 p-0 text-gray-900 placeholder:text-gray-200"
+                                placeholder="Ej. Tierra Negra Lote A">
+                        </div>
 
-                    <div>
-                        <label class="block text-xs font-bold text-amber-700 uppercase tracking-wider mb-1.5">Nombre Personalizado</label>
-                        <input type="text" name="nombre" id="sw_nombre" required
-                            class="w-full px-4 py-2.5 rounded-2xl border-amber-100 focus:border-amber-500 focus:ring-amber-500 bg-white text-sm"
-                            placeholder="Ej. Tierra Negra Lote 1">
-                    </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <!-- Impact Card (Amber) -->
+                            <div class="bg-amber-50/50 p-4 rounded-2xl border border-amber-100 flex flex-col items-start gap-1">
+                                <label class="text-[10px] font-black text-amber-600 uppercase tracking-widest leading-none">Impacto (Días)</label>
+                                <input type="number" name="impacto_dias" id="sw_impacto" required
+                                    class="w-full text-2xl font-black bg-transparent border-none focus:ring-0 p-0 text-amber-900 placeholder:text-amber-200"
+                                    placeholder="0">
+                            </div>
 
-                    <div>
-                        <label class="block text-xs font-bold text-amber-700 uppercase tracking-wider mb-1.5">Descripción (Opcional)</label>
-                        <textarea name="descripcion" id="sw_descripcion" rows="2"
-                            class="w-full px-4 py-2.5 rounded-2xl border-amber-100 focus:border-amber-500 focus:ring-amber-500 bg-white text-sm"
-                            placeholder="Especifique ubicación o calidad..."></textarea>
-                    </div>
+                            <!-- Water Requirement Card (Blue) -->
+                            <div class="bg-blue-50/50 p-4 rounded-2xl border border-blue-100 flex flex-col items-start gap-1">
+                                <label class="text-[10px] font-black text-blue-600 uppercase tracking-widest leading-none">Agua Necesaria (L/m²)</label>
+                                <input type="number" step="0.01" name="capacidad_retencion_litros_m2" id="sw_agua" required
+                                    class="w-full text-2xl font-black bg-transparent border-none focus:ring-0 p-0 text-blue-950 placeholder:text-blue-200"
+                                    placeholder="0.00">
+                            </div>
+                        </div>
 
-                    <div>
-                        <label class="block text-xs font-bold text-amber-700 uppercase tracking-wider mb-1.5">Consumo de Agua Ideal (L/m²)</label>
-                        <input type="number" name="consumo_agua_ideal" id="sw_consumo_agua_ideal" step="0.01" min="0" required
-                            class="w-full px-4 py-2.5 rounded-2xl border-amber-100 focus:border-amber-500 focus:ring-amber-500 bg-white text-sm"
-                            placeholder="Ej. 5.50">
-                        <p class="text-[9px] text-amber-600 mt-1 italic leading-tight">Este valor se usa para automatizar las tareas de riego.</p>
-                    </div>
-
-                    <!-- Impact Card -->
-                    <div class="bg-amber-50 p-4 rounded-xl border border-amber-100 relative overflow-hidden">
-                        <span class="text-[9px] font-bold text-amber-400 uppercase block mb-1.5">Impacto Técnico (Días)</span>
-                        <div class="flex items-center gap-3">
-                            <input type="number" name="impacto_dias" id="sw_impacto" class="text-2xl font-black bg-transparent w-20 border-b-2 border-amber-200 focus:ring-0 focus:border-amber-500 text-amber-700 placeholder:text-gray-300" placeholder="0" value="0">
-                            <span class="text-[10px] text-amber-600 font-medium leading-tight">Días sumados<br>al ciclo</span>
+                        <div>
+                            <label class="block text-[10px] font-black text-amber-700 uppercase tracking-widest mb-1.5 ml-1">Notas (Opcional)</label>
+                            <textarea name="descripcion" id="sw_descripcion" rows="2"
+                                class="w-full px-4 py-3 rounded-2xl border-amber-100 focus:border-amber-500 focus:ring-amber-500 bg-gray-50/30 text-xs text-amber-900"
+                                placeholder="Especifique ubicación o calidad..."></textarea>
                         </div>
                     </div>
 
-                    <div class="flex gap-2.5 pt-1">
-                        <button type="button" onclick="resetSueloForm()" class="px-5 py-3 bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold rounded-2xl transition-all">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                        </button>
-                        <button type="submit" class="flex-1 bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 rounded-2xl shadow-lg shadow-amber-200 transition-all transform hover:-translate-y-1">
-                            Habilitar Suelo
-                        </button>
-                    </div>
+                    <button type="submit" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-black py-4 rounded-3xl shadow-xl shadow-amber-100 transition-all mt-2">
+                        Habilitar Suelo
+                    </button>
                 </form>
 
                 <div id="sueloPlaceholder" class="py-12 flex flex-col items-center justify-center text-center space-y-4 opacity-40">
@@ -93,66 +111,65 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                         </svg>
                     </div>
-                    <p class="text-sm font-medium text-amber-900">Busque un tipo de suelo técnico arriba para configurarlo.</p>
+                    <p class="text-xs font-bold text-amber-900/60 uppercase tracking-[0.1em]">Busque suelos para configurarlos</p>
                 </div>
             </div>
         </div>
 
-        <!-- Suelos Habilitados Column -->
+        <!-- Suelos List Column -->
         <div class="xl:col-span-2">
-            <div class="bg-white rounded-3xl shadow-xl border border-emerald-50 overflow-hidden">
-                <div class="p-4 border-b border-emerald-50 bg-gray-50/50 flex justify-between items-center">
+            <div class="bg-white rounded-[2.5rem] shadow-xl border border-amber-50/50 overflow-hidden flex flex-col">
+                <div class="px-6 py-5 border-b border-amber-50 bg-gray-50/30 flex justify-between items-center">
                     <div>
-                        <h3 class="text-lg font-black text-emerald-950">Suelos de la Empresa</h3>
-                        <p class="text-[10px] font-medium text-emerald-600 mt-1">Configuración técnica de terrenos</p>
+                        <h3 class="text-lg font-black text-slate-800">Suelos de la Empresa</h3>
+                        <p class="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-widest italic">Configuración técnica de terrenos</p>
                     </div>
                 </div>
 
-                <div class="overflow-x-auto">
+                <div class="flex-1 overflow-x-auto">
                     <table class="w-full text-left">
                         <thead>
-                            <tr class="bg-white text-[9px] font-black text-emerald-400 uppercase tracking-[0.2em] border-b border-emerald-50">
-                                <th class="px-4 py-2">Identificador</th>
-                                <th class="px-4 py-2">Compensación</th>
-                                <th class="px-4 py-2 text-right">Gestión</th>
+                            <tr class="bg-white text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] border-b border-amber-50">
+                                <th class="px-6 py-4">Tipo de Suelo</th>
+                                <th class="px-6 py-4 text-center">Impacto / Agua</th>
+                                <th class="px-6 py-4 text-right">Acciones</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-emerald-50/50">
+                        <tbody class="divide-y divide-amber-50/50">
                             @forelse($tipoSuelos as $suelo)
-                            <tr class="hover:bg-emerald-50/30 transition-all group">
-                                <td class="px-4 py-2">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center text-amber-600 font-black text-sm">
+                            <tr class="hover:bg-amber-50/10 transition-all group">
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-10 h-10 bg-amber-600 text-white rounded-2xl flex items-center justify-center font-black shadow-lg shadow-amber-100 group-hover:scale-110 transition-transform">
                                             {{ substr($suelo->nombre, 0, 1) }}
                                         </div>
                                         <div>
-                                            <span class="font-bold text-emerald-950 block text-xs leading-tight">{{ $suelo->nombre }}</span>
-                                            <span class="text-[9px] font-bold text-amber-500 uppercase italic">Base: {{ $suelo->catalogo->nombre ?? 'Manual' }}</span>
+                                            <span class="font-black text-slate-700 block text-sm leading-tight">{{ $suelo->nombre }}</span>
+                                            <span class="text-[9px] font-black text-amber-500 uppercase italic opacity-60 tracking-wider">Base: {{ $suelo->catalogo->nombre ?? 'Manual' }}</span>
                                         </div>
                                     </div>
                                 </td>
-                                <td class="px-4 py-2">
-                                    <div class="flex flex-col gap-0.5">
-                                        <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl {{ $suelo->impacto_dias >= 0 ? 'bg-red-50 text-red-600 border-red-100' : 'bg-green-50 text-green-600 border-green-100' }} border font-black text-[10px] w-fit">
-                                            {{ $suelo->impacto_dias > 0 ? '+' : '' }}{{ $suelo->impacto_dias }}
-                                            <span class="text-[8px] font-bold uppercase opacity-60">días</span>
+                                <td class="px-6 py-4 text-center">
+                                    <div class="flex items-center justify-center gap-2">
+                                        <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-2xl {{ $suelo->impacto_dias >= 0 ? 'bg-red-50 text-red-600 border-red-100' : 'bg-green-50 text-green-600 border-green-100' }} border font-black text-[10px]">
+                                            {{ $suelo->impacto_dias > 0 ? '+' : '' }}{{ $suelo->impacto_dias }} días
                                         </div>
-                                        @if($suelo->descripcion)
-                                        <p class="text-[9px] text-emerald-400 italic max-w-[150px] truncate leading-tight">{{ $suelo->descripcion }}</p>
-                                        @endif
+                                        <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-2xl bg-blue-50 text-blue-600 border border-blue-100 font-black text-[10px]">
+                                            {{ number_format($suelo->capacidad_retencion_litros_m2, 2) }} L/m²
+                                        </div>
                                     </div>
                                 </td>
-                                <td class="px-4 py-2 text-right">
+                                <td class="px-6 py-4 text-right">
                                     <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all">
-                                        <button onclick='editSuelo(@json($suelo))' class="p-2 bg-amber-50 text-amber-600 rounded-lg hover:bg-amber-100 transition-colors shadow-sm">
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <button onclick='editSuelo(@json($suelo))' class="p-2.5 bg-amber-50 text-amber-600 rounded-xl hover:bg-amber-100 shadow-sm transition-all">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                             </svg>
                                         </button>
                                         <form action="{{ route('tipo_suelos.destroy', $suelo->id_tipo_suelo) }}" method="POST" class="inline">
                                             @csrf @method('DELETE')
-                                            <button type="submit" onclick="return confirm('¿Eliminar este suelo?')" class="p-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors shadow-sm">
-                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <button type="submit" onclick="return confirm('¿Eliminar este suelo?')" class="p-2.5 bg-red-50 text-red-600 rounded-xl hover:bg-red-100 shadow-sm transition-all">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                                 </svg>
                                             </button>
@@ -161,14 +178,16 @@
                                 </td>
                             </tr>
                             @empty
-                             <tr>
-                                 <td colspan="3" class="px-6 py-10 text-center">
-                                     <p class="text-emerald-300 text-xs font-bold italic">No hay suelos configurados. Utilice el buscador técnico.</p>
-                                 </td>
-                             </tr>
+                            <tr>
+                                <td colspan="3" class="px-8 py-20 text-center text-slate-300 italic font-bold">No hay suelos registrados.</td>
+                            </tr>
                             @endforelse
                         </tbody>
                     </table>
+                </div>
+
+                <div class="px-6 py-4 bg-gray-50/30 border-t border-amber-50">
+                    {{ $tipoSuelos->links() }}
                 </div>
             </div>
         </div>
@@ -177,19 +196,24 @@
 
 @push('scripts')
 <script>
-    const sueloSearch = document.getElementById('sueloSearch');
-    const sueloResults = document.getElementById('sueloResults');
-    const sueloForm = document.getElementById('sueloForm');
-    const sueloPlaceholder = document.getElementById('sueloPlaceholder');
+    const searchInput = document.getElementById('sueloSearch');
+    const searchResults = document.getElementById('sueloResults');
+    const form = document.getElementById('sueloForm');
+    const batchForm = document.getElementById('batchSaveForm');
+    const placeholder = document.getElementById('sueloPlaceholder');
+    const chipsContainer = document.getElementById('chipsContainer');
+    const batchItemsData = document.getElementById('batchItemsData');
 
+    const registeredIds = @json($registeredIds);
+
+    let selectedItems = [];
     let timer;
 
-    sueloSearch.addEventListener('input', function() {
+    searchInput.addEventListener('input', function() {
         clearTimeout(timer);
         const q = this.value.trim();
-
         if (q.length < 1) {
-            sueloResults.classList.add('hidden');
+            searchResults.classList.add('hidden');
             return;
         }
 
@@ -197,132 +221,187 @@
             fetch(`/tipo_suelos/catalog?q=${q}`)
                 .then(res => res.json())
                 .then(data => {
-                    sueloResults.innerHTML = '';
+                    searchResults.innerHTML = '';
                     if (data.length > 0) {
                         data.forEach(item => {
+                            const isAlreadyRegistered = registeredIds.includes(parseInt(item.id));
                             const div = document.createElement('div');
-                            div.className = 'px-4 py-3 hover:bg-amber-50 cursor-pointer border-b border-amber-50 last:border-0 transition-colors';
+                            div.className = `px-4 py-3 border-b border-amber-50 last:border-0 transition-colors ${isAlreadyRegistered ? 'opacity-50 cursor-not-allowed bg-gray-50/50' : 'hover:bg-amber-50 cursor-pointer'}`;
                             div.innerHTML = `
                                 <div class="flex justify-between items-center">
-                                    <p class="font-black text-amber-950 text-sm">${item.nombre}</p>
-                                    <span class="text-[10px] font-bold ${item.impacto_dias >= 0 ? 'text-red-500' : 'text-green-500'} uppercase">${item.impacto_dias > 0 ? '+' : ''}${item.impacto_dias} días</span>
+                                    <div>
+                                        <p class="font-black text-amber-950 text-sm">${item.nombre}</p>
+                                        <p class="text-[9px] text-gray-400 font-bold uppercase tracking-widest">${isAlreadyRegistered ? 'Ya configurado' : 'Sugerido por catálogo'}</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <span class="block text-[10px] font-black ${item.impacto_dias >= 0 ? 'text-red-500' : 'text-green-500'}">${item.impacto_dias > 0 ? '+' : ''}${item.impacto_dias} días</span>
+                                        <span class="block text-[10px] font-black text-blue-500">${item.capacidad_retencion_litros_m2 || '0.00'} L/m²</span>
+                                    </div>
                                 </div>
                             `;
-                            div.onclick = () => selectSuelo(item);
-                            sueloResults.appendChild(div);
+                            if (!isAlreadyRegistered) div.onclick = () => addChip(item);
+                            searchResults.appendChild(div);
                         });
                         
-                        // Add "Custom" option at the end
+                        // Add Manual Option
                         const customDiv = document.createElement('div');
-                        customDiv.className = 'px-4 py-3 hover:bg-amber-50 cursor-pointer border-t border-amber-100 bg-amber-50/50 transition-colors';
+                        customDiv.className = 'px-5 py-4 bg-blue-50/30 hover:bg-blue-50 cursor-pointer transition-colors border-t border-blue-50';
                         customDiv.innerHTML = `
-                            <div class="flex space-x-3 items-center text-amber-700">
-                                <div class="bg-amber-200 text-amber-800 p-1.5 rounded-lg">
+                            <p class="text-[9px] font-black text-blue-400 uppercase tracking-[0.2em] mb-3 leading-none tracking-widest">Suelo no en catálogo...</p>
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-100">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
                                 </div>
-                                <span class="font-bold text-sm">Crear "${q}" como nuevo suelo</span>
+                                <span class="text-xs font-black text-blue-600 uppercase tracking-widest leading-none">Registrar "${q}" manualmente</span>
                             </div>
                         `;
-                        customDiv.onclick = () => selectCustomSuelo(q);
-                        sueloResults.appendChild(customDiv);
+                        customDiv.onclick = () => showManualForm(q);
+                        searchResults.appendChild(customDiv);
                         
-                        sueloResults.classList.remove('hidden');
+                        searchResults.classList.remove('hidden');
                     } else {
-                        sueloResults.innerHTML = `
-                            <div class="px-4 py-3 hover:bg-amber-50 cursor-pointer transition-colors" onclick="selectCustomSuelo('${q}')">
-                                <p class="text-[10px] text-gray-400 mb-1.5 italic">No se encontró en el catálogo global...</p>
-                                <div class="flex space-x-3 items-center text-amber-700">
-                                    <div class="bg-amber-200 text-amber-800 p-1.5 rounded-lg">
+                        searchResults.innerHTML = `
+                            <div class="px-5 py-4 hover:bg-blue-50 cursor-pointer transition-colors bg-blue-50/20" onclick="showManualForm('${q}')">
+                                <p class="text-[9px] font-black text-blue-400 uppercase tracking-[0.2em] mb-3 leading-none tracking-widest">Técnica no encontrada...</p>
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-100">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
                                     </div>
-                                    <span class="font-bold text-sm">Registrar "${q}" manualmente</span>
+                                    <span class="text-xs font-black text-blue-600 uppercase tracking-widest">Crear "${q}" manualmente</span>
                                 </div>
                             </div>
                         `;
-                        sueloResults.classList.remove('hidden');
+                        searchResults.classList.remove('hidden');
                     }
                 });
         }, 300);
     });
 
-    function selectCustomSuelo(nombre) {
-        sueloResults.classList.add('hidden');
-        sueloSearch.value = nombre;
-        
-        document.getElementById('sw_id_catalogo').value = '';
-        document.getElementById('sw_nombre').value = nombre;
-        document.getElementById('sw_descripcion').value = '';
-        document.getElementById('sw_consumo_agua_ideal').value = '';
-        
-        document.getElementById('sw_impacto').value = '0';
-        
-        sueloPlaceholder.classList.add('hidden');
-        sueloForm.classList.remove('hidden');
+    function addChip(item) {
+        searchResults.classList.add('hidden');
+        searchInput.value = '';
+
+        if (selectedItems.find(i => i.id_catalogo === item.id)) return;
+
+        selectedItems.push({
+            id_catalogo: item.id,
+            nombre: item.nombre,
+            descripcion: item.descripcion || '',
+            impacto_dias: item.impacto_dias,
+            capacidad_retencion_litros_m2: item.capacidad_retencion_litros_m2 || 0
+        });
+
+        renderChips();
+        updateBatchForm();
     }
 
-    function selectSuelo(item) {
-        sueloResults.classList.add('hidden');
-        sueloSearch.value = item.nombre;
+    function renderChips() {
+        chipsContainer.innerHTML = '';
+        placeholder.classList.add('hidden');
+        form.classList.add('hidden');
+        
+        if (selectedItems.length === 0) {
+            placeholder.classList.remove('hidden');
+            batchForm.classList.add('hidden');
+            return;
+        }
 
-        document.getElementById('sw_id_catalogo').value = item.id;
-        document.getElementById('sw_nombre').value = item.nombre;
-        document.getElementById('sw_descripcion').value = item.descripcion || '';
-        document.getElementById('sw_consumo_agua_ideal').value = item.consumo_agua_ideal || '';
+        batchForm.classList.remove('hidden');
 
-        const impacto = parseInt(item.impacto_dias);
-        document.getElementById('sw_impacto').value = impacto;
+        selectedItems.forEach((item, index) => {
+            const chip = document.createElement('div');
+            chip.className = 'flex items-center gap-4 bg-amber-600 text-white pl-4 pr-3 py-3 rounded-[1.2rem] shadow-xl shadow-amber-100 animate-in zoom-in-90 duration-200';
+            chip.innerHTML = `
+                <div class="bg-amber-500/50 p-2 rounded-xl">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9" /></svg>
+                </div>
+                <div>
+                    <p class="text-xs font-black uppercase tracking-wider leading-none mb-1 text-white">${item.nombre}</p>
+                    <p class="text-[9px] font-bold text-amber-100 uppercase tracking-widest leading-none">Catalog • ${item.impacto_dias}d • ${item.capacidad_retencion_litros_m2}L</p>
+                </div>
+                <button onclick="removeChip(${index})" class="ml-2 w-6 h-6 flex items-center justify-center hover:bg-white/20 rounded-lg transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            `;
+            chipsContainer.appendChild(chip);
+        });
+    }
 
-        sueloPlaceholder.classList.add('hidden');
-        sueloForm.classList.remove('hidden');
+    function removeChip(index) {
+        selectedItems.splice(index, 1);
+        renderChips();
+        updateBatchForm();
+    }
+
+    function clearDrafts() {
+        selectedItems = [];
+        renderChips();
+        updateBatchForm();
+    }
+
+    function updateBatchForm() {
+        batchItemsData.innerHTML = '';
+        selectedItems.forEach((item, index) => {
+            batchItemsData.innerHTML += `
+                <input type="hidden" name="items[${index}][id_catalogo]" value="${item.id_catalogo || ''}">
+                <input type="hidden" name="items[${index}][nombre]" value="${item.nombre}">
+                <input type="hidden" name="items[${index}][descripcion]" value="${item.descripcion}">
+                <input type="hidden" name="items[${index}][impacto_dias]" value="${item.impacto_dias}">
+                <input type="hidden" name="items[${index}][capacidad_retencion_litros_m2]" value="${item.capacidad_retencion_litros_m2}">
+            `;
+        });
+    }
+
+    function showManualForm(nombre) {
+        searchResults.classList.add('hidden');
+        searchInput.value = '';
+        clearDrafts();
+
+        document.getElementById('sw_id_catalogo').value = '';
+        document.getElementById('sw_nombre').value = nombre;
+        document.getElementById('sw_impacto').value = '0';
+        document.getElementById('sw_agua').value = '0.00';
+        document.getElementById('sw_descripcion').value = '';
+
+        placeholder.classList.add('hidden');
+        form.classList.remove('hidden');
     }
 
     function resetSueloForm() {
-        sueloForm.classList.add('hidden');
-        sueloPlaceholder.classList.remove('hidden');
-        sueloSearch.value = '';
-        sueloSearch.disabled = false;
-        sueloForm.reset();
-
-        // Restore to store mode
-        sueloForm.action = "{{ route('tipo_suelos.store') }}";
-        const methodInput = sueloForm.querySelector('input[name="_method"]');
+        form.classList.add('hidden');
+        placeholder.classList.remove('hidden');
+        searchInput.value = '';
+        form.reset();
+        
+        form.action = "{{ route('tipo_suelos.store') }}";
+        const methodInput = form.querySelector('input[name="_method"]');
         if (methodInput) methodInput.remove();
-        document.getElementById('sw_consumo_agua_ideal').value = '';
-        sueloForm.querySelector('button[type="submit"]').innerText = 'Habilitar Suelo';
+        form.querySelector('button[type="submit"]').innerText = 'Habilitar Suelo';
     }
 
     function editSuelo(suelo) {
-        // Show form
-        sueloPlaceholder.classList.add('hidden');
-        sueloForm.classList.remove('hidden');
+        clearDrafts();
+        placeholder.classList.add('hidden');
+        form.classList.remove('hidden');
 
-        // Populate Form
         document.getElementById('sw_id_catalogo').value = suelo.id_catalogo;
         document.getElementById('sw_nombre').value = suelo.nombre;
+        document.getElementById('sw_impacto').value = suelo.impacto_dias;
+        document.getElementById('sw_agua').value = suelo.capacidad_retencion_litros_m2;
         document.getElementById('sw_descripcion').value = suelo.descripcion || '';
-        document.getElementById('sw_consumo_agua_ideal').value = suelo.consumo_agua_ideal || '';
 
-        const impacto = parseInt(suelo.impacto_dias);
-        document.getElementById('sw_impacto').value = impacto;
-        
-        sueloSearch.value = suelo.nombre;
-        sueloSearch.disabled = true;
-
-        // Adjust form for update mode
-        sueloForm.action = `/tipo_suelos/${suelo.id_tipo_suelo}`;
-        if (!sueloForm.querySelector('input[name="_method"]')) {
-            const methodInput = document.createElement('input');
-            methodInput.type = 'hidden';
-            methodInput.name = '_method';
-            methodInput.value = 'PUT';
-            sueloForm.appendChild(methodInput);
+        form.action = `/tipo_suelos/${suelo.id_tipo_suelo}`;
+        if (!form.querySelector('input[name="_method"]')) {
+            const mi = document.createElement('input');
+            mi.type = 'hidden'; mi.name = '_method'; mi.value = 'PUT';
+            form.appendChild(mi);
         }
-        sueloForm.querySelector('button[type="submit"]').innerText = 'Actualizar Suelo';
+        form.querySelector('button[type="submit"]').innerText = 'Actualizar Suelo';
     }
 
     document.addEventListener('click', function(e) {
-        if (!sueloSearch.contains(e.target) && !sueloResults.contains(e.target)) {
-            sueloResults.classList.add('hidden');
+        if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+            searchResults.classList.add('hidden');
         }
     });
 </script>

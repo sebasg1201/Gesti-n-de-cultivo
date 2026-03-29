@@ -21,7 +21,12 @@ class TipoRiegoController extends Controller
             ->where('id_empresa', $id_empresa)
             ->paginate(10);
 
-        return view('admin.tipo_riegos.index', compact('tipoRiegos'));
+        $registeredIds = TipoRiego::where('id_empresa', $id_empresa)
+            ->whereNotNull('id_catalogo')
+            ->pluck('id_catalogo')
+            ->toArray();
+
+        return view('admin.tipo_riegos.index', compact('tipoRiegos', 'registeredIds'));
     }
 
     public function catalog(Request $request)
@@ -35,6 +40,32 @@ class TipoRiegoController extends Controller
     {
         $idEmpresa = $this->getEmpresaId();
 
+        // Handle Batch Creation from Chips
+        if ($request->has('items') && is_array($request->items)) {
+            $createdCount = 0;
+            foreach ($request->items as $item) {
+                // Skip if already configured
+                if (isset($item['id_catalogo']) && $item['id_catalogo']) {
+                    $exists = TipoRiego::where('id_empresa', $idEmpresa)
+                        ->where('id_catalogo', $item['id_catalogo'])
+                        ->exists();
+                    if ($exists) continue;
+                }
+
+                TipoRiego::create([
+                    'id_empresa' => $idEmpresa,
+                    'id_catalogo' => $item['id_catalogo'] ?? null,
+                    'tipo_riego' => $item['tipo_riego'],
+                    'impacto_dias' => $item['impacto_dias'] ?? 0,
+                ]);
+                $createdCount++;
+            }
+
+            return redirect()->route('tipo_riegos.index')
+                ->with('success', "$createdCount sistemas de riego registrados correctamente.");
+        }
+
+        // Handle Single Creation (Manual)
         $request->validate([
             'id_catalogo' => 'nullable|exists:catalogo_riegos,id',
             'tipo_riego' => 'required|string|max:100',

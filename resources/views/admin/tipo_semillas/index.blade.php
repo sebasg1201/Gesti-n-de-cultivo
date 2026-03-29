@@ -4,8 +4,6 @@
 
 @section('content')
     <div class="space-y-4">
-
-
         <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
             <!-- Advanced Search & Config Column -->
             <div class="xl:col-span-1">
@@ -18,19 +16,17 @@
                             </svg>
                         </div>
                         <div>
-                            <h3 class="text-lg font-bold text-emerald-900">Configurar Semilla</h3>
-                            <p class="text-[10px] font-medium text-emerald-500 uppercase tracking-widest mt-1">Catálogo
-                                Global v3.0</p>
+                            <h3 class="text-lg font-black text-emerald-950">Configurar Semilla</h3>
+                            <p class="text-[10px] font-bold text-emerald-500 uppercase tracking-widest mt-1">Catálogo Global v3.1</p>
                         </div>
                     </div>
 
-                    <!-- Professional AJAX Search Input -->
+                    <!-- AJAX Search Input -->
                     <div class="relative group mb-4">
                         <div class="relative">
                             <input type="text" id="catalogSearch" autocomplete="off" placeholder="Buscar Variedad Técnica (Ej. Tomate, Café...)"
-                                class="w-full pl-11 pr-4 py-3 rounded-2xl border-2 border-emerald-50 focus:border-emerald-500 focus:ring-0 bg-emerald-50/30 text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed">
-                            <div
-                                class="absolute left-4 top-1/2 -translate-y-1/2 text-emerald-400 group-focus-within:text-emerald-600 transition-colors">
+                                class="w-full pl-11 pr-4 py-3 rounded-2xl border-2 border-emerald-50 focus:border-emerald-500 focus:ring-0 bg-emerald-50/30 text-sm transition-all focus:bg-white text-emerald-950 font-medium">
+                            <div class="absolute left-4 top-1/2 -translate-y-1/2 text-emerald-400 group-focus-within:text-emerald-600 transition-colors">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -39,77 +35,88 @@
                             <!-- Dropdown Results -->
                             <div id="searchResults"
                                 class="hidden absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl border border-emerald-50 z-50 max-h-64 overflow-y-auto overflow-x-hidden">
-                                <!-- Results inject here -->
                             </div>
                         </div>
                     </div>
 
-                    <form id="seedForm" action="{{ route('tipo_semillas.store') }}" method="POST"
-                        class="space-y-3 hidden animate-in zoom-in-95 duration-200">
+                    <!-- Chips Container -->
+                    <div id="chipsQueue" class="flex flex-wrap gap-2 mb-4"></div>
+
+                    <!-- Batch Action Form -->
+                    <form id="batchSaveForm" action="{{ route('tipo_semillas.store') }}" method="POST" class="hidden mb-4">
                         @csrf
-                        <input type="hidden" name="id_catalogo" id="input_id_catalogo">
-
-                        <!-- Basic Information -->
-                        <div class="space-y-3 mb-4">
-                            <div>
-                                <label class="block text-xs font-bold text-gray-700 mb-1">Nombre de la Variedad *</label>
-                                <input type="text" name="nombre_semilla" id="sw_nombre" required
-                                    class="w-full px-4 py-2.5 rounded-2xl border-emerald-100 focus:border-emerald-500 focus:ring-emerald-500 bg-white shadow-sm"
-                                    placeholder="Ej: Maíz Amarillo">
-                            </div>
-                            
-                            <div>
-                                <label class="block text-xs font-bold text-gray-700 mb-1">Descripción / Notas</label>
-                                <textarea name="descripcion" id="sw_descripcion" rows="2"
-                                    class="w-full px-4 py-2.5 rounded-2xl border-emerald-100 focus:border-emerald-500 focus:ring-emerald-500 bg-white shadow-sm"
-                                    placeholder="Detalles adicionales..."></textarea>
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-3 gap-3">
-                            <!-- Rendimiento -->
-                            <div class="bg-emerald-50 p-3 rounded-xl border border-emerald-100/50 group transition-all hover:shadow-md relative">
-                                <span class="absolute -top-2 -right-2 text-[8px] font-black text-white bg-emerald-600 px-1.5 py-0.5 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 transform scale-75 group-hover:scale-100 shadow-lg z-10">kg/m²</span>
-                                <label class="block text-[9px] font-black text-emerald-600 uppercase tracking-widest mb-1">Rendimiento</label>
-                                <div class="flex items-end gap-1">
-                                    <input type="number" step="0.01" name="rendimiento_promedio" id="sw_rendimiento" class="text-xl font-black text-emerald-950 bg-transparent border-0 p-0 w-full focus:ring-0" value="0.0">
-                                </div>
-                            </div>
-
-                            <!-- Tiempo Base -->
-                            <div class="bg-amber-50 p-3 rounded-xl border border-amber-100/50 group transition-all hover:shadow-md relative">
-                                <span class="absolute -top-2 -right-2 text-[8px] font-black text-white bg-amber-600 px-1.5 py-0.5 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 transform scale-75 group-hover:scale-100 shadow-lg z-10">días</span>
-                                <label class="block text-[9px] font-black text-amber-600 uppercase tracking-widest mb-1">Ciclo Base</label>
-                                <div class="flex items-end gap-1">
-                                    <input type="number" name="tiempo_base_dias" id="sw_tiempo_base" class="text-xl font-black text-amber-950 bg-transparent border-0 p-0 w-full focus:ring-0" value="0">
-                                </div>
-                            </div>
-
-                            <!-- Espacio por planta -->
-                            <div class="bg-blue-50 p-3 rounded-xl border border-blue-100/50 group transition-all hover:shadow-md relative">
-                                <span class="absolute -top-2 -right-2 text-[8px] font-black text-white bg-blue-600 px-1.5 py-0.5 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 transform scale-75 group-hover:scale-100 shadow-lg z-10">m²/planta</span>
-                                <label class="block text-[9px] font-black text-blue-600 uppercase tracking-widest mb-1">Densidad</label>
-                                <div class="flex items-end gap-1">
-                                    <input type="number" step="0.0001" name="espacio_por_planta_m2" id="sw_espacio" class="text-xl font-black text-blue-950 bg-transparent border-0 p-0 w-full focus:ring-0" value="0.5000">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="flex gap-2.5">
-                            <button type="button" onclick="resetForm()"
-                                class="px-5 py-3 bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold rounded-2xl transition-all">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                            </button>
-                            <button type="submit"
-                                class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-2xl shadow-lg shadow-emerald-200 transition-all transform hover:-translate-y-1">
-                                Guardar en Inventario
-                            </button>
-                        </div>
+                        <div id="batchItemsData"></div>
+                        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black py-4 rounded-[1.5rem] shadow-xl shadow-emerald-100 transition-all flex items-center justify-center gap-2 transform active:scale-95">
+                            Registrar Selección
+                        </button>
+                        <button type="button" onclick="clearQueue()" class="w-full mt-3 text-[10px] font-black text-gray-400 uppercase tracking-widest hover:text-red-500 transition-all">
+                            Limpiar Selección
+                        </button>
                     </form>
 
-                    <!-- Initial State Illustration -->
+                    <!-- Manual Form (Card Design) -->
+                    <form id="seedForm" action="{{ route('tipo_semillas.store') }}" method="POST"
+                        class="space-y-4 hidden animate-in zoom-in-95 duration-200">
+                        @csrf
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] font-black text-emerald-600 uppercase tracking-widest">Variedad Individual</span>
+                            <button type="button" onclick="resetForm()" class="text-gray-400 hover:text-red-500 transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                            </button>
+                        </div>
+                        
+                        <input type="hidden" name="id_catalogo" id="input_id_catalogo">
+
+                        <div class="space-y-3">
+                            <!-- Name Card -->
+                            <div class="bg-gray-50 p-4 rounded-2xl border border-gray-100 flex flex-col items-start gap-1">
+                                <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">Nombre de Variedad</label>
+                                <input type="text" name="nombre_semilla" id="sw_nombre" required
+                                    class="w-full text-lg font-black bg-transparent border-none focus:ring-0 p-0 text-gray-900 placeholder:text-gray-300"
+                                    placeholder="Ej. Maíz Amarillo">
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-3">
+                                <!-- Yield Card (Emerald) -->
+                                <div class="bg-emerald-50/50 p-4 rounded-2xl border border-emerald-100 flex flex-col items-start gap-1">
+                                    <label class="text-[10px] font-black text-emerald-600 uppercase tracking-widest leading-none">Rendimiento (kg/m²)</label>
+                                    <input type="number" step="0.01" name="rendimiento_promedio" id="sw_rendimiento" required
+                                        class="w-full text-2xl font-black bg-transparent border-none focus:ring-0 p-0 text-emerald-950 placeholder:text-emerald-200"
+                                        placeholder="0.00">
+                                </div>
+
+                                <!-- Cycle Card (Amber) -->
+                                <div class="bg-amber-50/50 p-4 rounded-2xl border border-amber-100 flex flex-col items-start gap-1">
+                                    <label class="text-[10px] font-black text-amber-600 uppercase tracking-widest leading-none">Ciclo (Días)</label>
+                                    <input type="number" name="tiempo_base_dias" id="sw_tiempo_base" required
+                                        class="w-full text-2xl font-black bg-transparent border-none focus:ring-0 p-0 text-amber-950 placeholder:text-amber-200"
+                                        placeholder="0">
+                                </div>
+                            </div>
+
+                            <!-- Density Card (Blue) -->
+                            <div class="bg-blue-50/50 p-4 rounded-2xl border border-blue-100 flex flex-col items-start gap-1">
+                                <label class="text-[10px] font-black text-blue-600 uppercase tracking-widest leading-none">Densidad (m²/planta)</label>
+                                <input type="number" step="0.0001" name="espacio_por_planta_m2" id="sw_espacio" required
+                                    class="w-full text-2xl font-black bg-transparent border-none focus:ring-0 p-0 text-blue-950 placeholder:text-blue-200"
+                                    placeholder="0.5000">
+                            </div>
+
+                            <div>
+                                <label class="text-[10px] font-black text-emerald-700 uppercase tracking-widest mb-1.5 ml-1 block">Notas de Variedad</label>
+                                <textarea name="descripcion" id="sw_descripcion" rows="2"
+                                    class="w-full px-4 py-3 rounded-2xl border-emerald-50 focus:border-emerald-500 focus:ring-emerald-500 bg-emerald-50/20 text-xs text-emerald-900"
+                                    placeholder="Detalle características de la semilla..."></textarea>
+                            </div>
+                        </div>
+
+                        <button type="submit"
+                            class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black py-4 rounded-[1.5rem] shadow-xl shadow-emerald-100 transition-all flex items-center justify-center gap-2">
+                            Añadir al Inventario
+                        </button>
+                    </form>
+
+                    <!-- Initial State -->
                     <div id="formPlaceholder"
                         class="py-12 flex flex-col items-center justify-center text-center space-y-4 opacity-40">
                         <div class="w-20 h-20 bg-emerald-50 rounded-full flex items-center justify-center text-emerald-300">
@@ -118,20 +125,18 @@
                                     d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                             </svg>
                         </div>
-                        <p class="text-sm font-medium text-emerald-900">Busque una semilla arriba para empezar a configurar
-                            su variedad.</p>
+                        <p class="text-[10px] font-black text-emerald-900 uppercase tracking-widest">Busque o proponga una variedad</p>
                     </div>
                 </div>
             </div>
 
             <!-- Inventory List Column -->
             <div class="xl:col-span-2">
-                <div
-                    class="bg-white rounded-3xl shadow-xl border border-emerald-50 overflow-hidden flex flex-col">
+                <div class="bg-white rounded-[2.5rem] shadow-xl border border-emerald-50 overflow-hidden flex flex-col">
                     <div class="p-4 border-b border-emerald-50 bg-gray-50/50 flex justify-between items-center">
                         <div>
                             <h3 class="text-base font-black text-emerald-950">Inventario de Semillas</h3>
-                            <p class="text-[9px] font-medium text-emerald-600 mt-1">Variedades adaptadas a su finca</p>
+                            <p class="text-[11px] font-bold text-emerald-600 mt-1">Variedades adaptadas a su finca</p>
                         </div>
                         <div class="bg-white border-2 border-emerald-100 px-4 py-1.5 rounded-2xl flex items-center gap-3">
                             <span class="text-xl font-black text-emerald-600">{{ $tipoSemillas->total() }}</span>
@@ -145,93 +150,65 @@
                             <thead>
                                 <tr
                                     class="bg-white text-[9px] font-black text-emerald-400 uppercase tracking-[0.2em] border-b border-emerald-50">
-                                    <th class="px-4 py-2">Especie y Variedad</th>
-                                    <th class="px-4 py-2">Parámetros</th>
-                                    <th class="px-4 py-2">Productividad</th>
-                                    <th class="px-4 py-2">Stock</th>
-                                    <th class="px-4 py-2 text-right">Acciones</th>
+                                    <th class="px-4 py-3">Especie y Variedad</th>
+                                    <th class="px-4 py-3">Parámetros</th>
+                                    <th class="px-4 py-3">Productividad</th>
+                                    <th class="px-4 py-3">Stock</th>
+                                    <th class="px-4 py-3 text-right">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-emerald-50/50">
                                 @forelse($tipoSemillas as $semilla)
                                     <tr class="hover:bg-emerald-50/30 transition-all group">
-                                        <td class="px-4 py-2">
-                                            <div class="flex items-center gap-2">
-                                                <div
-                                                    class="w-8 h-8 bg-emerald-600 rounded-xl flex items-center justify-center text-white font-black text-xs shadow-lg shadow-emerald-100 transform group-hover:rotate-12 transition-transform">
+                                        <td class="px-4 py-3">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-10 h-10 bg-emerald-600 rounded-2xl flex items-center justify-center text-white font-black text-sm shadow-lg shadow-emerald-100 group-hover:rotate-12 transition-transform">
                                                     {{ substr($semilla->nombre_semilla, 0, 1) }}
                                                 </div>
                                                 <div>
-                                                    <span
-                                                        class="font-black text-emerald-950 block text-xs">{{ $semilla->nombre_semilla }}</span>
-                                                    <span
-                                                        class="text-[9px] font-bold text-emerald-400 uppercase tracking-wider italic">Catálogo:
-                                                        {{ $semilla->catalogo->nombre ?? 'Custom' }}</span>
+                                                    <span class="font-black text-emerald-950 block text-xs">{{ $semilla->nombre_semilla }}</span>
+                                                    <span class="text-[9px] font-bold text-emerald-400 uppercase tracking-wider italic opacity-60">Catálogo: {{ $semilla->catalogo->nombre ?? 'Manual' }}</span>
                                                 </div>
                                             </div>
                                         </td>
-                                        <td class="px-4 py-2">
+                                        <td class="px-4 py-3">
                                             <div class="space-y-0.5">
                                                 <div class="flex items-center gap-1.5">
                                                     <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                                                    <span
-                                                        class="text-[11px] font-bold text-emerald-900">{{ $semilla->tiempo_base_dias }}
+                                                    <span class="text-[11px] font-bold text-emerald-900">{{ $semilla->tiempo_base_dias }}
                                                         <span class="text-[9px] font-normal text-emerald-500">días ciclo</span></span>
                                                 </div>
-                                                <p class="text-[10px] text-emerald-400 italic max-w-[140px] truncate">
-                                                    {{ $semilla->descripcion }}</p>
                                                 <p class="text-[9px] font-bold text-blue-500 flex flex-col gap-0.5">
-                                                    <span>Densidad: {{ number_format($semilla->espacio_por_planta_m2, 4) }} m² ({{ number_format(1 / ($semilla->espacio_por_planta_m2 ?: 1), 2) }} pl/m²)</span>
-                                                    <span class="text-emerald-600">Capacidad (8,610 m²): {{ number_format(8610 / ($semilla->espacio_por_planta_m2 ?: 1), 0) }} plantas</span>
+                                                    <span>{{ number_format($semilla->espacio_por_planta_m2, 4) }} m²/pl</span>
                                                 </p>
                                             </div>
                                         </td>
-                                        <td class="px-4 py-2">
-                                            <div
-                                                class="bg-emerald-50 rounded-lg px-2 py-0.5 border border-emerald-100 inline-block">
-                                                <span
-                                                    class="text-[10px] font-black text-emerald-700">{{ $semilla->rendimiento_promedio }}
+                                        <td class="px-4 py-3">
+                                            <div class="bg-emerald-50 rounded-lg px-2.5 py-1 border border-emerald-100 inline-block">
+                                                <span class="text-[10px] font-black text-emerald-700">{{ $semilla->rendimiento_promedio }}
                                                     <span class="text-[8px] font-bold">kg/m²</span></span>
                                             </div>
                                         </td>
-                                        <td class="px-4 py-2">
-                                            <div class="flex flex-col gap-0.5">
-
-                                                <div class="flex items-center gap-1.5">
-                                                    <span class="text-base font-black text-emerald-950">{{ number_format($semilla->stock_actual ?? 0, 0) }}</span>
-                                                    @if(($semilla->stock_actual ?? 0) <= 0)
-                                                        <div class="flex items-center gap-1 px-1.5 py-0.5 bg-red-50 border border-red-100 rounded-md animate-pulse">
-                                                            <svg class="w-2.5 h-2.5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-                                                            </svg>
-                                                            <span class="text-[8px] font-black text-red-600 uppercase tracking-tighter">Sin Stock</span>
-                                                        </div>
-                                                    @endif
-                                                </div>
+                                        <td class="px-4 py-3">
+                                            <div class="flex items-center gap-1.5">
+                                                <span class="text-sm font-black text-emerald-950">{{ number_format($semilla->stock_actual ?? 0, 0) }}</span>
+                                                @if(($semilla->stock_actual ?? 0) <= 0)
+                                                    <span class="px-1.5 py-0.5 bg-red-50 text-red-600 text-[8px] font-black rounded-md uppercase tracking-tighter">Sin Stock</span>
+                                                @endif
                                             </div>
                                         </td>
-                                        <td class="px-4 py-2 text-right">
-                                            <div
-                                                class="flex items-center justify-end gap-1.5 opacity-0 group-hover:opacity-100 transition-all">
-                                                <button
-                                                    data-semilla="{{ json_encode($semilla) }}"
-                                                    onclick="editSemilla(JSON.parse(this.dataset.semilla))"
-                                                    class="p-1.5 bg-amber-50 text-amber-600 rounded-xl hover:bg-amber-100 transition-colors shadow-sm">
-                                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                        <td class="px-4 py-3 text-right">
+                                            <div class="flex items-center justify-end gap-1.5 opacity-0 group-hover:opacity-100 transition-all">
+                                                <button onclick='editSemilla(@json($semilla))' class="p-2 bg-amber-50 text-amber-600 rounded-xl hover:bg-amber-100 transition-all">
+                                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                                     </svg>
                                                 </button>
-                                                <form action="{{ route('tipo_semillas.destroy', $semilla->id_semilla) }}"
-                                                    method="POST" class="inline">
+                                                <form action="{{ route('tipo_semillas.destroy', $semilla->id_semilla) }}" method="POST" class="inline">
                                                     @csrf @method('DELETE')
-                                                    <button type="submit" onclick="return confirm('¿Eliminar esta variedad?')"
-                                                        class="p-1.5 bg-red-50 text-red-600 rounded-xl hover:bg-red-100 transition-colors shadow-sm">
-                                                        <svg class="w-3 h-3" fill="none" stroke="currentColor"
-                                                            viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                                stroke-width="2"
-                                                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7M10 11v6M14 11v6M4 7h16M9 7V4a1 1 0 011-1h4a1 2 0 011 1v3" />
+                                                    <button type="submit" onclick="return confirm('¿Eliminar variedad?')" class="p-2 bg-red-50 text-red-600 rounded-xl hover:bg-red-100 transition-all">
+                                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                                         </svg>
                                                     </button>
                                                 </form>
@@ -240,17 +217,14 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="6" class="px-6 py-10 text-center">
-                                            <p class="text-emerald-400 text-sm font-bold italic">Su inventario está vacío.
-                                                Comience agregando variedades desde el buscador lateral.</p>
-                                        </td>
+                                        <td colspan="5" class="px-8 py-16 text-center text-emerald-300 italic font-black text-xs">Inventario vacío. Busque variedades por catálogo.</td>
                                     </tr>
                                 @endforelse
                             </tbody>
                         </table>
                     </div>
 
-                    <div class="p-5 bg-gray-50/50 border-t border-emerald-50">
+                    <div class="p-4 bg-gray-50/50 border-t border-emerald-50">
                         {{ $tipoSemillas->links() }}
                     </div>
                 </div>
@@ -263,14 +237,19 @@
             const searchInput = document.getElementById('catalogSearch');
             const searchResults = document.getElementById('searchResults');
             const seedForm = document.getElementById('seedForm');
-            const formPlaceholder = document.getElementById('formPlaceholder');
+            const batchForm = document.getElementById('batchSaveForm');
+            const placeholder = document.getElementById('formPlaceholder');
+            const chipsQueue = document.getElementById('chipsQueue');
+            const batchItemsData = document.getElementById('batchItemsData');
 
+            const registeredIds = @json($registeredIds);
+
+            let selectedSeeds = [];
             let debounceTimer;
 
             searchInput.addEventListener('input', function () {
                 clearTimeout(debounceTimer);
                 const query = this.value.trim();
-
                 if (query.length < 2) {
                     searchResults.classList.add('hidden');
                     return;
@@ -283,45 +262,48 @@
                             searchResults.innerHTML = '';
                             if (data.length > 0) {
                                 data.forEach(item => {
+                                    const isAlreadyRegistered = registeredIds.includes(parseInt(item.id));
                                     const div = document.createElement('div');
-                                    div.className = 'px-6 py-4 hover:bg-emerald-50 cursor-pointer border-b border-emerald-50 last:border-0 transition-colors';
+                                    div.className = `px-5 py-3 border-b border-emerald-50 last:border-0 transition-colors ${isAlreadyRegistered ? 'bg-gray-50 opacity-50 cursor-not-allowed' : 'hover:bg-emerald-50 cursor-pointer'}`;
                                     div.innerHTML = `
                                         <div class="flex justify-between items-center">
                                             <div>
-                                                <p class="font-black text-emerald-950 text-sm">${item.nombre}</p>
-                                                <p class="text-[10px] text-emerald-500 font-bold uppercase tracking-widest">${item.tiempo_base_dias} días base - ${parseFloat(item.espacio_por_planta_m2 || 0.5).toFixed(4)} m²</p>
+                                                <p class="font-black text-emerald-950 text-sm leading-tight">${item.nombre}</p>
+                                                <p class="text-[9px] font-bold text-emerald-500 uppercase tracking-widest leading-none mt-1">
+                                                    ${isAlreadyRegistered ? 'En Inventario' : `${item.tiempo_base_dias}d ciclo • ${parseFloat(item.rendimiento_promedio).toFixed(2)} kg/m²`}
+                                                </p>
                                             </div>
                                             <svg class="w-4 h-4 text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
                                         </div>
                                     `;
-                                    div.onclick = () => selectFromCatalog(item);
+                                    if (!isAlreadyRegistered) div.onclick = () => addToQueue(item);
                                     searchResults.appendChild(div);
                                 });
                                 
-                                // Add "Custom" option at the end
-                                const customDiv = document.createElement('div');
-                                customDiv.className = 'px-6 py-4 hover:bg-emerald-50 cursor-pointer border-t border-emerald-100 bg-emerald-50/50 transition-colors';
-                                customDiv.innerHTML = `
-                                    <div class="flex space-x-3 items-center text-emerald-700">
-                                        <div class="bg-emerald-200 text-emerald-800 p-1.5 rounded-lg">
+                                const manualDiv = document.createElement('div');
+                                manualDiv.className = 'px-5 py-4 bg-emerald-50/30 hover:bg-emerald-50 cursor-pointer transition-colors border-t border-emerald-50';
+                                manualDiv.innerHTML = `
+                                    <p class="text-[9px] font-black text-emerald-400 uppercase tracking-[0.2em] mb-3 leading-none tracking-widest">Variedad no en catálogo...</p>
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 bg-emerald-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-emerald-100">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
                                         </div>
-                                        <span class="font-bold text-sm">Crear "${query}" como nueva variedad</span>
+                                        <span class="text-xs font-black text-emerald-600 uppercase tracking-widest leading-none">Registrar "${query}" manualmente</span>
                                     </div>
                                 `;
-                                customDiv.onclick = () => selectCustom(query);
-                                searchResults.appendChild(customDiv);
+                                manualDiv.onclick = () => showManualForm(query);
+                                searchResults.appendChild(manualDiv);
                                 
                                 searchResults.classList.remove('hidden');
                             } else {
                                 searchResults.innerHTML = `
-                                    <div class="px-6 py-4 hover:bg-emerald-50 cursor-pointer transition-colors" onclick="selectCustom('${query}')">
-                                        <p class="text-xs text-gray-500 mb-2 italic">No se encontró en el catálogo global...</p>
-                                        <div class="flex space-x-3 items-center text-emerald-700">
-                                            <div class="bg-emerald-200 text-emerald-800 p-1.5 rounded-lg">
+                                    <div class="px-5 py-4 hover:bg-emerald-50 cursor-pointer transition-colors bg-emerald-50/20" onclick="showManualForm('${query}')">
+                                        <p class="text-[9px] font-black text-emerald-400 uppercase tracking-[0.2em] mb-3 leading-none tracking-widest">Variedad no encontrada...</p>
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-8 h-8 bg-emerald-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-emerald-100">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
                                             </div>
-                                            <span class="font-bold text-sm">Registrar "${query}" manualmente</span>
+                                            <span class="text-xs font-black text-emerald-600 uppercase tracking-widest">Crear "${query}" manualmente</span>
                                         </div>
                                     </div>
                                 `;
@@ -331,95 +313,114 @@
                 }, 300);
             });
 
-            function selectCustom(nombre) {
+            function addToQueue(item) {
                 searchResults.classList.add('hidden');
-                searchInput.value = nombre;
-                
-                document.getElementById('input_id_catalogo').value = '';
-                document.getElementById('sw_nombre').value = nombre;
-                document.getElementById('sw_tiempo_base').value = '0';
-                document.getElementById('sw_rendimiento').value = '0.00';
-                document.getElementById('sw_espacio').value = '0.5000';
-                document.getElementById('sw_descripcion').value = '';
-                
-                formPlaceholder.classList.add('hidden');
-                seedForm.classList.remove('hidden');
+                searchInput.value = '';
+                if (selectedSeeds.find(s => s.id_catalogo === item.id)) return;
+
+                selectedSeeds.push({
+                    id_catalogo: item.id,
+                    nombre_semilla: item.nombre,
+                    descripcion: item.descripcion || '',
+                    tiempo_base_dias: item.tiempo_base_dias,
+                    rendimiento_promedio: item.rendimiento_promedio,
+                    espacio_por_planta_m2: item.espacio_por_planta_m2 || 0.5
+                });
+                renderQueue();
             }
 
-            function selectFromCatalog(item) {
+            function renderQueue() {
+                chipsQueue.innerHTML = '';
+                placeholder.classList.add('hidden');
+                seedForm.classList.add('hidden');
+
+                if (selectedSeeds.length === 0) {
+                    placeholder.classList.remove('hidden');
+                    batchForm.classList.add('hidden');
+                    return;
+                }
+
+                batchForm.classList.remove('hidden');
+                batchItemsData.innerHTML = '';
+
+                selectedSeeds.forEach((seed, index) => {
+                    const chip = document.createElement('div');
+                    chip.className = 'flex items-center gap-2 bg-emerald-600 text-white pl-4 pr-3 py-3 rounded-2xl shadow-lg shadow-emerald-100 animate-in zoom-in-95 duration-200';
+                    chip.innerHTML = `
+                        <div class="mr-1">
+                            <p class="text-[10px] font-black uppercase text-white leading-none">${seed.nombre_semilla}</p>
+                            <p class="text-[8px] font-bold text-emerald-200 uppercase tracking-tighter mt-1">${seed.tiempo_base_dias}d • ${seed.rendimiento_promedio}kg</p>
+                        </div>
+                        <button onclick="removeFromQueue(${index})" class="p-1 hover:bg-white/20 rounded-lg"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg></button>
+                    `;
+                    chipsQueue.appendChild(chip);
+
+                    batchItemsData.innerHTML += `
+                        <input type="hidden" name="items[${index}][id_catalogo]" value="${seed.id_catalogo}">
+                        <input type="hidden" name="items[${index}][nombre_semilla]" value="${seed.nombre_semilla}">
+                        <input type="hidden" name="items[${index}][descripcion]" value="${seed.descripcion}">
+                        <input type="hidden" name="items[${index}][tiempo_base_dias]" value="${seed.tiempo_base_dias}">
+                        <input type="hidden" name="items[${index}][rendimiento_promedio]" value="${seed.rendimiento_promedio}">
+                        <input type="hidden" name="items[${index}][espacio_por_planta_m2]" value="${seed.espacio_por_planta_m2}">
+                    `;
+                });
+            }
+
+            function removeFromQueue(index) {
+                selectedSeeds.splice(index, 1);
+                renderQueue();
+            }
+
+            function clearQueue() {
+                selectedSeeds = [];
+                renderQueue();
+            }
+
+            function showManualForm(name) {
+                clearQueue();
                 searchResults.classList.add('hidden');
-                searchInput.value = item.nombre;
-
-                // Populate Form
-                document.getElementById('input_id_catalogo').value = item.id;
-                document.getElementById('sw_nombre').value = item.nombre;
-                document.getElementById('sw_tiempo_base').value = item.tiempo_base_dias;
-                document.getElementById('sw_rendimiento').value = item.rendimiento_promedio || '0.00';
-                document.getElementById('sw_espacio').value = parseFloat(item.espacio_por_planta_m2 || 0.5000).toFixed(4);
-                document.getElementById('sw_descripcion').value = item.descripcion || '';
-
-                // Toggle visibility
-                formPlaceholder.classList.add('hidden');
+                searchInput.value = '';
+                placeholder.classList.add('hidden');
                 seedForm.classList.remove('hidden');
+
+                document.getElementById('input_id_catalogo').value = '';
+                document.getElementById('sw_nombre').value = name;
+                document.getElementById('sw_rendimiento').value = '0.00';
+                document.getElementById('sw_tiempo_base').value = '0';
+                document.getElementById('sw_espacio').value = '0.5000';
+                document.getElementById('sw_descripcion').value = '';
             }
 
             function resetForm() {
                 seedForm.classList.add('hidden');
-                formPlaceholder.classList.remove('hidden');
-                searchInput.value = '';
-                searchInput.disabled = false;
+                placeholder.classList.remove('hidden');
                 seedForm.reset();
-                document.getElementById('sw_nombre').value = '';
-                document.getElementById('sw_descripcion').value = '';
-                document.getElementById('sw_tiempo_base').value = '0';
-                document.getElementById('sw_espacio').value = '0.5000';
-                document.getElementById('sw_rendimiento').value = '0.00';
-
-
-                // Reset form for create mode
                 seedForm.action = "{{ route('tipo_semillas.store') }}";
-                const methodInput = seedForm.querySelector('input[name="_method"]');
-                if (methodInput) {
-                    methodInput.remove();
-                }
-                seedForm.querySelector('button[type="submit"]').innerText = 'Guardar en Inventario';
+                const mi = seedForm.querySelector('input[name="_method"]');
+                if (mi) mi.remove();
             }
 
             function editSemilla(semilla) {
-                // Show form immediately
-                formPlaceholder.classList.add('hidden');
+                clearQueue();
+                placeholder.classList.add('hidden');
                 seedForm.classList.remove('hidden');
 
-                // Populate Form directly from record data
                 document.getElementById('input_id_catalogo').value = semilla.id_catalogo;
                 document.getElementById('sw_nombre').value = semilla.nombre_semilla;
+                document.getElementById('sw_rendimiento').value = semilla.rendimiento_promedio;
                 document.getElementById('sw_tiempo_base').value = semilla.tiempo_base_dias;
-                document.getElementById('sw_rendimiento').value = parseFloat(semilla.rendimiento_promedio || 0).toFixed(2);
-                document.getElementById('sw_espacio').value = parseFloat(semilla.espacio_por_planta_m2 || 0.5000).toFixed(4);
+                document.getElementById('sw_espacio').value = semilla.espacio_por_planta_m2;
                 document.getElementById('sw_descripcion').value = semilla.descripcion || '';
 
-                searchInput.value = semilla.nombre_semilla;
-
-                // Adjust form for update mode
                 seedForm.action = `/tipo_semillas/${semilla.id_semilla}`;
-
-                // Add PUT method if it doesn't exist
-                let methodInput = seedForm.querySelector('input[name="_method"]');
-                if (!methodInput) {
-                    methodInput = document.createElement('input');
-                    methodInput.type = 'hidden';
-                    methodInput.name = '_method';
-                    methodInput.value = 'PUT';
-                    seedForm.appendChild(methodInput);
-                } else {
-                    methodInput.value = 'PUT';
+                if (!seedForm.querySelector('input[name="_method"]')) {
+                    const mi = document.createElement('input');
+                    mi.type = 'hidden'; mi.name = '_method'; mi.value = 'PUT';
+                    seedForm.appendChild(mi);
                 }
-
-                seedForm.querySelector('button[type="submit"]').innerText = 'Actualizar Variedad';
             }
 
-            // Close results when clicking outside
-            document.addEventListener('click', function (e) {
+            document.addEventListener('click', (e) => {
                 if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
                     searchResults.classList.add('hidden');
                 }

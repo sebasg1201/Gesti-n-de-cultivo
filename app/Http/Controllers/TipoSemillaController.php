@@ -21,7 +21,12 @@ class TipoSemillaController extends Controller
             ->where('id_empresa', $id_empresa)
             ->paginate(10);
 
-        return view('admin.tipo_semillas.index', compact('tipoSemillas'));
+        $registeredIds = TipoSemilla::where('id_empresa', $id_empresa)
+            ->whereNotNull('id_catalogo')
+            ->pluck('id_catalogo')
+            ->toArray();
+
+        return view('admin.tipo_semillas.index', compact('tipoSemillas', 'registeredIds'));
     }
 
     public function catalog(Request $request)
@@ -35,11 +40,42 @@ class TipoSemillaController extends Controller
     {
         $idEmpresa = $this->getEmpresaId();
 
+        // Check if it's a batch store (from chips)
+        if ($request->has('items')) {
+            $items = $request->input('items');
+            $createdCount = 0;
+
+            foreach ($items as $item) {
+                // Skip if already registered
+                if (isset($item['id_catalogo']) && !empty($item['id_catalogo'])) {
+                    $exists = TipoSemilla::where('id_empresa', $idEmpresa)
+                        ->where('id_catalogo', $item['id_catalogo'])
+                        ->exists();
+                    if ($exists) continue;
+                }
+
+                TipoSemilla::create([
+                    'id_empresa' => $idEmpresa,
+                    'id_catalogo' => $item['id_catalogo'] ?: null,
+                    'nombre_semilla' => $item['nombre_semilla'],
+                    'tiempo_base_dias' => $item['tiempo_base_dias'],
+                    'descripcion' => $item['descripcion'] ?? null,
+                    'rendimiento_promedio' => $item['rendimiento_promedio'] ?? 0,
+                    'espacio_por_planta_m2' => $item['espacio_por_planta_m2'] ?? 0.5,
+                    'stock_actual' => 0,
+                ]);
+                $createdCount++;
+            }
+
+            return redirect()->route('tipo_semillas.index')
+                ->with('success', "$createdCount variedades añadidas correctamente.");
+        }
+
+        // Manual Single Store
         $request->validate([
             'id_catalogo' => 'nullable|exists:catalogo_semillas,id',
             'nombre_semilla' => 'required|string|max:100',
             'descripcion' => 'nullable|string|max:250',
-            'stock_actual' => 'nullable|numeric|min:0',
             'tiempo_base_dias' => 'required|integer|min:0',
             'rendimiento_promedio' => 'required|numeric|min:0',
             'espacio_por_planta_m2' => 'required|numeric|min:0.0001',
@@ -51,7 +87,7 @@ class TipoSemillaController extends Controller
                 ->exists();
 
             if ($exists) {
-                return redirect()->back()->with('error', 'Esta variedad de semilla ya está registrada en su inventario.');
+                return redirect()->back()->with('error', 'Esta variedad de semilla ya está registrada.');
             }
         }
 
@@ -67,7 +103,7 @@ class TipoSemillaController extends Controller
         ]);
 
         return redirect()->route('tipo_semillas.index')
-            ->with('success', 'Semilla configurada y añadida correctamente.');
+            ->with('success', 'Variedad registrada correctamente.');
     }
 
     public function update(Request $request, $id)

@@ -34,7 +34,12 @@ class InsumoController extends Controller
         $insumos = $query->orderBy('created_at', 'desc')->paginate(10);
         $tiposInsumo = \App\Models\TipoInsumo::all();
 
-        return view('admin.insumos.index', compact('insumos', 'tiposInsumo'));
+        $registeredCatalogoIds = Insumo::where('id_empresa', $id_empresa)
+            ->whereNotNull('id_catalogo_insumo')
+            ->pluck('id_catalogo_insumo')
+            ->toArray();
+
+        return view('admin.insumos.index', compact('insumos', 'tiposInsumo', 'registeredCatalogoIds'));
     }
 
     public function exportCSV(Request $request)
@@ -104,6 +109,34 @@ class InsumoController extends Controller
     {
         $idEmpresa = $this->getEmpresaId();
 
+        // Batch Store (from Tags/Chips)
+        if ($request->has('items') && is_array($request->items)) {
+            $createdCount = 0;
+            foreach ($request->items as $item) {
+                if (isset($item['id_catalogo_insumo']) && $item['id_catalogo_insumo']) {
+                    $exists = Insumo::where('id_empresa', $idEmpresa)
+                        ->where('id_catalogo_insumo', $item['id_catalogo_insumo'])
+                        ->exists();
+                    if ($exists) continue;
+                }
+
+                Insumo::create([
+                    'id_empresa' => $idEmpresa,
+                    'id_catalogo_insumo' => $item['id_catalogo_insumo'] ?: null,
+                    'Nombre' => $item['nombre'],
+                    'descripcion' => $item['descripcion'] ?? null,
+                    'impacto_dias' => $item['impacto_dias'] ?? 0,
+                    'stock_actual' => 0,
+                    'cantidad_stock' => 0,
+                ]);
+                $createdCount++;
+            }
+
+            return redirect()->route('insumos.index')
+                ->with('success', "$createdCount suministros añadidos correctamente.");
+        }
+
+        // Single Manual Store
         $request->validate([
             'id_catalogo_insumo' => 'nullable|exists:catalogo_insumos,id_catalogo_insumo',
             'nombre' => 'required|string|max:100',
