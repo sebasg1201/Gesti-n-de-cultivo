@@ -247,14 +247,14 @@
                         
                         // Add Manual Option
                         const customDiv = document.createElement('div');
-                        customDiv.className = 'px-5 py-4 bg-blue-50/30 hover:bg-blue-50 cursor-pointer transition-colors border-t border-blue-50';
+                        customDiv.className = 'px-5 py-4 bg-amber-50/30 hover:bg-amber-50 cursor-pointer transition-colors border-t border-amber-50';
                         customDiv.innerHTML = `
-                            <p class="text-[9px] font-black text-blue-400 uppercase tracking-[0.2em] mb-3 leading-none tracking-widest">Suelo no en catálogo...</p>
+                            <p class="text-[9px] font-black text-amber-500 uppercase tracking-[0.2em] mb-3 leading-none tracking-widest">Suelo no en catálogo...</p>
                             <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-100">
+                                <div class="w-8 h-8 bg-amber-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-amber-100">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
                                 </div>
-                                <span class="text-xs font-black text-blue-600 uppercase tracking-widest leading-none">Registrar "${q}" manualmente</span>
+                                <span class="text-xs font-black text-amber-600 uppercase tracking-widest leading-none text-amber-700">Registrar "${q}" manualmente</span>
                             </div>
                         `;
                         customDiv.onclick = () => showManualForm(q);
@@ -263,13 +263,13 @@
                         searchResults.classList.remove('hidden');
                     } else {
                         searchResults.innerHTML = `
-                            <div class="px-5 py-4 hover:bg-blue-50 cursor-pointer transition-colors bg-blue-50/20" onclick="showManualForm('${q}')">
-                                <p class="text-[9px] font-black text-blue-400 uppercase tracking-[0.2em] mb-3 leading-none tracking-widest">Técnica no encontrada...</p>
+                            <div class="px-5 py-4 hover:bg-amber-50 cursor-pointer transition-colors bg-amber-50/20" onclick="showManualForm('${q}')">
+                                <p class="text-[9px] font-black text-amber-500 uppercase tracking-[0.2em] mb-3 leading-none tracking-widest">Técnica no encontrada...</p>
                                 <div class="flex items-center gap-3">
-                                    <div class="w-8 h-8 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-100">
+                                    <div class="w-8 h-8 bg-amber-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-amber-100">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
                                     </div>
-                                    <span class="text-xs font-black text-blue-600 uppercase tracking-widest">Crear "${q}" manualmente</span>
+                                    <span class="text-xs font-black text-amber-600 uppercase tracking-widest text-amber-700">Crear "${q}" manualmente</span>
                                 </div>
                             </div>
                         `;
