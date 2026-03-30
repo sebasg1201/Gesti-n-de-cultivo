@@ -6,7 +6,10 @@
 
             {{-- LOGO --}}
             <a href="{{ route('index_welcome') }}" class="flex items-center gap-3 font-bold text-xl text-gray-900 cursor-pointer hover:scale-105 transition-transform duration-200">
-                AgriManager
+                <img src="{{ asset('img/agrotech/logo.jpeg') }}" class="w-9 h-9 object-contain rounded-xl shadow-sm" alt="AgroTech Logo">
+                <span class="font-extrabold tracking-tight">
+                    Agro<span class="text-green-600">Tech</span>
+                </span>
             </a>
 
 

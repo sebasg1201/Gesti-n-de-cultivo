@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>AgriManager</title>
+    <link rel="icon" type="image/jpeg" href="{{ asset('img/agrotech/logo.jpeg') }}">
+    <title>AgroTech</title>
     @vite('resources/css/app.css')
     <script>
         // Inmediatamente aplicar el tema para evitar destellos blancos
@@ -16,9 +17,10 @@
     </script>
     <style>
         /* Ocultar texto de resultados en paginación solo para el panel de SuperAdmin */
-        nav[role="navigation"] div.hidden.sm\:flex-1.sm\:flex.sm\:items-center.sm\:justify-between > div:first-child {
+        nav[role="navigation"] div.hidden.sm\:flex-1.sm\:flex.sm\:items-center.sm\:justify-between>div:first-child {
             display: none !important;
         }
+
         nav[role="navigation"] {
             justify-content: flex-end !important;
         }
@@ -35,10 +37,15 @@
 
             <!-- LOGO -->
             <div class="p-6 border-b border-emerald-700/40">
-                <h1 class="text-2xl font-black text-white tracking-widest leading-none">
-                    Agri<span class="text-emerald-300">Manager</span>
-                </h1>
-                <p class="text-xs text-emerald-300 mt-1 opacity-80 font-medium tracking-wider uppercase">Gestión de Cultivos</p>
+                <div class="flex items-center gap-3">
+                    <img src="{{ asset('img/agrotech/logo.jpeg') }}"
+                        class="w-10 h-10 object-contain rounded-xl shadow-sm" alt="AgroTech Logo">
+                    <h1 class="text-2xl font-black text-white tracking-widest leading-none">
+                        Agro<span class="text-emerald-300">Tech</span>
+                    </h1>
+                </div>
+                <p class="text-xs text-emerald-300 mt-1 opacity-80 font-medium tracking-wider uppercase">Plataforma
+                    Global</p>
             </div>
 
             <!-- NAV -->
@@ -159,9 +166,19 @@
                     <div class="flex items-center gap-6">
 
                         <!-- Theme Toggle Header -->
-                        <button id="theme-toggle-header" type="button" class="hidden md:flex p-2.5 lg:p-3 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-md transition-all duration-200 cursor-pointer focus:outline-none border border-white/20 shadow-lg" title="Cambiar Tema">
-                            <svg class="w-5 h-5 lg:w-6 lg:h-6 text-white hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-                            <svg class="w-5 h-5 lg:w-6 lg:h-6 text-white block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+                        <button id="theme-toggle-header" type="button"
+                            class="hidden md:flex p-2.5 lg:p-3 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-md transition-all duration-200 cursor-pointer focus:outline-none border border-white/20 shadow-lg"
+                            title="Cambiar Tema">
+                            <svg class="w-5 h-5 lg:w-6 lg:h-6 text-white hidden dark:block" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                            </svg>
+                            <svg class="w-5 h-5 lg:w-6 lg:h-6 text-white block dark:hidden" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                            </svg>
                         </button>
 
                         <!-- NOTIFICACIONES -->

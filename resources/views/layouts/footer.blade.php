@@ -5,7 +5,8 @@
         <!-- BRAND -->
         <div>
             <div class="flex items-center gap-3 font-bold text-xl text-white">
-                AgriManager
+                <img src="{{ asset('img/agrotech/logo.jpeg') }}" class="w-10 h-10 object-contain rounded-xl shadow-sm" alt="AgroTech Logo">
+                AgroTech
             </div>
 
             <p class="mt-4 text-sm text-gray-400 leading-relaxed">
@@ -88,7 +89,7 @@
     <!-- BOTTOM -->
     <div class="mt-16 border-t border-white/10">
         <div class="max-w-7xl mx-auto px-6 py-6 flex flex-col md:flex-row justify-between text-xs text-gray-400 gap-4">
-            <span>© 2026 AgriManager Inc. Todos los derechos reservados.</span>
+            <span>© 2026 AgroTech Inc. Todos los derechos reservados.</span>
             <div class="flex gap-6">
                 <a href="#" class="hover:text-green-400">Términos</a>
                 <a href="#" class="hover:text-green-400">Cookies</a>

@@ -10,7 +10,12 @@
             document.documentElement.classList.remove('dark');
         }
     </script>
-    <title>AgroTech - Admin</title>
+    @php
+        $isWorker = in_array(auth()->guard('usuario')->user()->id_tipo_usuario, [2, 3]);
+        $inicioRoute = $isWorker ? 'trabajador.dashboard' : 'admin.dashboard';
+    @endphp
+    <link rel="icon" type="image/jpeg" href="{{ asset('img/agrotech/logo.jpeg') }}">
+    <title>AgroTech</title>
     @inject('notificationService', 'App\Services\NotificationService')
     @php
         $adminNotifications = $notificationService->getNotifications();
@@ -118,9 +123,6 @@
 
         <!-- SIDEBAR -->
         @php
-            $isWorker = in_array(auth()->guard('usuario')->user()->id_tipo_usuario, [2, 3]);
-            $inicioRoute = $isWorker ? 'trabajador.dashboard' : 'admin.dashboard';
-            
             // Clases dinámicas para sincronizar colores
             $sidebarClass = $isWorker 
                 ? 'bg-gradient-to-b from-gray-900 via-emerald-950 to-gray-900 text-emerald-100 shadow-[20px_0_50px_rgba(0,0,0,0.3)]' 
@@ -387,13 +389,13 @@
                             </svg>
                         </button>
 
-                        <div>
-                            <h1 class="text-xl lg:text-3xl font-extrabold tracking-tight">
-                                {{ $isWorker ? 'Panel del Trabajador' : 'Panel de Administración' }}
-                            </h1>
-                            <p class="hidden sm:block text-emerald-100 text-xs lg:text-sm mt-1 opacity-90">
-                                {{ $isWorker ? 'Gestión de tus tareas asignadas' : 'Gestión del sistema' }}
-                            </p>
+                        <div class="flex items-center gap-3">
+                            <img src="{{ asset('img/agrotech/logo.jpeg') }}" class="w-10 h-10 object-contain rounded-xl shadow-sm" alt="AgroTech Logo">
+                            <div>
+                                <h1 class="text-xl lg:text-3xl font-extrabold tracking-tight leading-none text-white">
+                                    Agro<span class="text-emerald-300">Tech</span>
+                                </h1>
+                            </div>
                         </div>
 
                     </div>
