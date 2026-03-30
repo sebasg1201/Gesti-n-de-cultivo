@@ -105,6 +105,56 @@
         </div>
     </div>
 
+    {{-- FILTERS & REPORT BAR --}}
+    <div class="bg-white dark:bg-slate-800 p-8 rounded-[2.5rem] border border-emerald-100 dark:border-emerald-900/20 shadow-xl shadow-emerald-100/20 dark:shadow-none mb-10 transition-all duration-300">
+        <form action="{{ route('admin.tareas.index') }}" method="GET" class="flex flex-col lg:flex-row gap-6 items-end">
+            <div class="flex-1 w-full">
+                <label class="block text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-[0.2em] mb-3 ml-1">Filtrar por Mes</label>
+                <div class="relative group">
+                    <select name="month" class="w-full bg-emerald-50/50 dark:bg-emerald-900/20 border-2 border-transparent focus:border-emerald-500/30 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 dark:text-emerald-50 appearance-none transition-all outline-none cursor-pointer">
+                        <option value="">Todos los meses</option>
+                        @foreach(range(1, 12) as $m)
+                            <option value="{{ $m }}" {{ request('month') == $m ? 'selected' : '' }}>
+                                {{ ucfirst(\Carbon\Carbon::create()->month($m)->translatedFormat('F')) }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <div class="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-emerald-500">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </div>
+                </div>
+            </div>
+
+            <div class="w-full lg:w-40">
+                <label class="block text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-[0.2em] mb-3 ml-1">Año</label>
+                <input type="number" name="year" value="{{ request('year', date('Y')) }}" 
+                    class="w-full bg-emerald-50/50 dark:bg-emerald-900/20 border-2 border-transparent focus:border-emerald-500/30 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 dark:text-emerald-50 transition-all outline-none" placeholder="YYYY">
+            </div>
+
+            <div class="flex-[2] w-full">
+                <label class="block text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-[0.2em] mb-3 ml-1">Búsqueda rápida</label>
+                <div class="relative group">
+                    <input type="text" name="search" value="{{ request('search') }}" 
+                        class="w-full bg-emerald-50/50 dark:bg-emerald-900/20 border-2 border-transparent focus:border-emerald-500/30 rounded-2xl px-5 py-4 pl-12 text-sm font-bold text-gray-700 dark:text-emerald-50 transition-all outline-none" placeholder="Buscar trabajador o labor...">
+                    <div class="absolute left-5 top-1/2 -translate-y-1/2 text-emerald-500">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex gap-3 w-full lg:w-auto">
+                <button type="submit" class="flex-1 lg:flex-none justify-center bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all shadow-lg shadow-emerald-200/50 dark:shadow-none flex items-center gap-3 active:scale-95">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
+                    Filtrar
+                </button>
+                <a href="{{ route('admin.tareas.export', request()->all()) }}" class="flex-1 lg:flex-none justify-center bg-white dark:bg-slate-700 border-2 border-emerald-500 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all flex items-center gap-3 active:scale-95 shadow-sm">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    Excel
+                </a>
+            </div>
+        </form>
+    </div>
+
     {{-- CATEGORIES CONTENT --}}
     <div id="content-todas" class="category-content space-y-4">
         @include('admin.tareas.partials.task_list', [

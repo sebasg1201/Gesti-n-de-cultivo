@@ -118,6 +118,7 @@ Route::middleware(['auth:usuario', 'check.license'])->group(function () {
     Route::post('/admin/tareas/store-riego', [AdminController::class, 'storeRiego'])->name('admin.tareas.store.riego');
     Route::post('/admin/tareas/store-insumo', [AdminController::class, 'storeInsumo'])->name('admin.tareas.store.insumo');
     Route::post('/admin/tareas/store-general', [AdminController::class, 'storeGeneral'])->name('admin.tareas.store.general');
+    Route::get('/admin/tareas/export', [AdminController::class, 'exportTareas'])->name('admin.tareas.export');
 
     // Rutas para la gestión de licencias del usuario administrador
     Route::get('/admin/licencias', [App\Http\Controllers\Admin\TipoLicenciaController::class, 'index'])->name('admin.licencias.index');
@@ -148,6 +149,8 @@ Route::middleware(['auth:usuario', 'check.license'])->group(function () {
     
     // Cosechas y Cultivos
     Route::get('/admin/cosechas/export', [\App\Http\Controllers\Admin\CosechaController::class, 'exportCSV'])->name('admin.cosechas.export');
+    Route::get('/admin/cosechas/buscar-terrenos', [DashboardController::class, 'buscarEmpresa']); // Redundant?
+    Route::get('/admin/cosechas/{id}/export-history', [\App\Http\Controllers\Admin\CosechaController::class, 'exportHistory'])->name('admin.cosechas.export_history');
     Route::get('/admin/cosechas/buscar-terrenos', [\App\Http\Controllers\Admin\CosechaController::class, 'buscarTerrenos'])->name('admin.cosechas.buscar_terrenos');
     Route::get('/admin/cosechas/buscar-especies', [\App\Http\Controllers\Admin\CosechaController::class, 'buscarEspecies'])->name('admin.cosechas.buscar_especies');
     Route::resource('/admin/cosechas', \App\Http\Controllers\Admin\CosechaController::class, ['as' => 'admin']);

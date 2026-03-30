@@ -505,23 +505,82 @@ class AdminController extends Controller
 
 
 
-    public function tareasCategorizadas()
+    public function tareasCategorizadas(Request $request)
     {
         $usuario = auth()->guard('usuario')->user();
         $id_empresa = $usuario->id_empresa;
 
+        $month = $request->get('month');
+        $year = $request->get('year');
+        $search = $request->get('search');
+
+        // Helper to apply filters
+        $applyFilters = function ($query, $dateField, $searchField, $typeLabel, $hasCosecha = true) use ($month, $year, $search) {
+            if ($month) $query->whereMonth($dateField, $month);
+            if ($year) $query->whereYear($dateField, $year);
+            if ($search) {
+                $searchLower = strtolower($search);
+                $query->where(function ($q) use ($search, $typeLabel, $searchLower, $hasCosecha, $searchField) {
+                    $q->where($searchField, 'LIKE', "%{$search}%")
+                      ->orWhereHas('usuario', function($qu) use ($search) {
+                          $qu->where('nombre', 'LIKE', "%{$search}%");
+                      });
+
+                    if ($hasCosecha) {
+                        $q->orWhereHas('cosecha.semilla', function($qs) use ($search) {
+                            $qs->where('nombre_semilla', 'LIKE', "%{$search}%");
+                        });
+                    } else {
+                        // For general phases, search in terrain name
+                        $q->orWhereHas('terreno', function($qt) use ($search) {
+                            $qt->where('nombre', 'LIKE', "%{$search}%");
+                        });
+                    }
+                    
+                    // If search matches the task type label
+                    if (str_contains(strtolower($typeLabel), $searchLower)) {
+                        $q->orWhereRaw('1=1');
+                    }
+                });
+            }
+            return $query;
+        };
+
         // Fetch tasks linked to harvests of this company
-        $riego = \App\Models\Riego::whereHas('cosecha', function ($q) use ($id_empresa) {
+        $riegoQuery = \App\Models\Riego::whereHas('cosecha', function ($q) use ($id_empresa) {
             $q->where('id_empresa', $id_empresa);
-        })->with(['usuario', 'cosecha.semilla', 'tipoRiego'])->get();
+        })->with(['usuario', 'cosecha.semilla', 'tipoRiego']);
+        $riego = $applyFilters($riegoQuery, 'fecha_programada', 'observaciones', 'Riego', true)->get();
 
-        $insumoCosecha = \App\Models\InsumoCosecha::whereHas('cosecha', function ($q) use ($id_empresa) {
+        $insumoQuery = \App\Models\InsumoCosecha::whereHas('cosecha', function ($q) use ($id_empresa) {
             $q->where('id_empresa', $id_empresa);
-        })->with(['usuario', 'cosecha.semilla', 'insumo'])->get();
+        })->with(['usuario', 'cosecha.semilla', 'insumo']);
+        $insumoCosecha = $applyFilters($insumoQuery, 'fecha_programada', 'observaciones', 'Insumo', true)->get();
 
-        $recoleccion = \App\Models\Cultivo::whereHas('cosecha', function ($q) use ($id_empresa) {
+        $recoleccionQuery = \App\Models\Cultivo::whereHas('cosecha', function ($q) use ($id_empresa) {
             $q->where('id_empresa', $id_empresa);
-        })->with(['trabajador', 'cosecha.semilla'])->get();
+        })->with(['trabajador', 'cosecha.semilla']);
+        
+        // Recoleccion filter logic (different date field and relation)
+        if ($month) $recoleccionQuery->whereMonth('fecha_recoleccion', $month);
+        if ($year) $recoleccionQuery->whereYear('fecha_recoleccion', $year);
+        if ($search) {
+            $searchLower = strtolower($search);
+            $recoleccionQuery->where(function ($q) use ($search, $searchLower) {
+                $q->where('descripcion_recoleccion', 'LIKE', "%{$search}%")
+                  ->orWhereHas('trabajador', function($qu) use ($search) {
+                      $qu->where('nombre', 'LIKE', "%{$search}%");
+                  })
+                  ->orWhereHas('cosecha.semilla', function($qs) use ($search) {
+                      $qs->where('nombre_semilla', 'LIKE', "%{$search}%");
+                  });
+                
+                if (str_contains('recoleccion', $searchLower) || str_contains('recolección', $searchLower) || str_contains('cosecha', $searchLower)) {
+                    $q->orWhereRaw('1=1');
+                }
+            });
+        }
+        $recoleccion = $recoleccionQuery->get();
 
         // Standardize descripcion and type for the view
         foreach ($riego as $t) {
@@ -548,10 +607,27 @@ class AdminController extends Controller
         }
 
         // Fases general: fetch those linked to terrenos
-        $general = \App\Models\FaseProgramada::whereHas('terreno', function ($q) use ($id_empresa) {
+        $generalQuery = \App\Models\FaseProgramada::whereHas('terreno', function ($q) use ($id_empresa) {
             $q->where('id_empresa', $id_empresa);
-        })->with(['usuario', 'terreno'])
-            ->get()
+        })->with(['usuario', 'terreno']);
+        
+        if ($month) $generalQuery->whereMonth('fecha_programada', $month);
+        if ($year) $generalQuery->whereYear('fecha_programada', $year);
+        if ($search) {
+            $searchLower = strtolower($search);
+            $generalQuery->where(function ($q) use ($search, $searchLower) {
+                $q->where('descripcion', 'LIKE', "%{$search}%")
+                  ->orWhereHas('usuario', function($qu) use ($search) {
+                      $qu->where('nombre', 'LIKE', "%{$search}%");
+                  });
+                
+                if (str_contains('general', $searchLower) || str_contains('labor', $searchLower) || str_contains('programada', $searchLower)) {
+                    $q->orWhereRaw('1=1');
+                }
+            });
+        }
+
+        $general = $applyFilters($generalQuery, 'fecha_programada', 'descripcion', 'General', false)->get()
             ->map(function ($t) {
                 $t->tipo_referencia = 'general';
                 return $t;
@@ -581,6 +657,173 @@ class AdminController extends Controller
         $catalogoInsumos = \App\Models\Insumo::where('id_empresa', $id_empresa)->get();
 
         return view('admin.tareas.index', compact('riego', 'insumoCosecha', 'recoleccion', 'general', 'trabajadores', 'cosechas', 'terrenosLibres', 'tiposRiego', 'catalogoInsumos'));
+    }
+
+    public function exportTareas(Request $request)
+    {
+        $usuario = auth()->guard('usuario')->user();
+        $id_empresa = $usuario->id_empresa;
+
+        $month = $request->get('month');
+        $year = $request->get('year');
+        $search = $request->get('search');
+
+        // Helper to apply filters
+        $applyFilters = function ($query, $dateField, $searchField, $typeLabel, $hasCosecha = true) use ($month, $year, $search) {
+            if ($month) $query->whereMonth($dateField, $month);
+            if ($year) $query->whereYear($dateField, $year);
+            if ($search) {
+                $searchLower = strtolower($search);
+                $query->where(function ($q) use ($search, $typeLabel, $searchLower, $hasCosecha, $searchField) {
+                    $q->where($searchField, 'LIKE', "%{$search}%")
+                      ->orWhereHas('usuario', function($qu) use ($search) {
+                          $qu->where('nombre', 'LIKE', "%{$search}%");
+                      });
+
+                    if ($hasCosecha) {
+                        $q->orWhereHas('cosecha.semilla', function($qs) use ($search) {
+                            $qs->where('nombre_semilla', 'LIKE', "%{$search}%");
+                        });
+                    } else {
+                        // For general phases, search in terrain name
+                        $q->orWhereHas('terreno', function($qt) use ($search) {
+                            $qt->where('nombre', 'LIKE', "%{$search}%");
+                        });
+                    }
+                    
+                    if (str_contains(strtolower($typeLabel), $searchLower)) {
+                        $q->orWhereRaw('1=1');
+                    }
+                });
+            }
+            return $query;
+        };
+
+        // Fetch and unify
+        $riegoQuery = \App\Models\Riego::whereHas('cosecha', function ($q) use ($id_empresa) {
+            $q->where('id_empresa', $id_empresa);
+        })->with(['usuario', 'cosecha.terreno', 'cosecha.semilla', 'tipoRiego']);
+        $riego = $applyFilters($riegoQuery, 'fecha_programada', 'observaciones', 'Riego', true)->get();
+
+        $insumoQuery = \App\Models\InsumoCosecha::whereHas('cosecha', function ($q) use ($id_empresa) {
+            $q->where('id_empresa', $id_empresa);
+        })->with(['usuario', 'cosecha.terreno', 'cosecha.semilla', 'insumo']);
+        $insumos = $applyFilters($insumoQuery, 'fecha_programada', 'observaciones', 'Insumo', true)->get();
+
+        $faseQuery = \App\Models\FaseProgramada::whereHas('terreno', function ($q) use ($id_empresa) {
+            $q->where('id_empresa', $id_empresa);
+        })->with(['usuario', 'terreno']);
+        $fases = $applyFilters($faseQuery, 'fecha_programada', 'descripcion', 'General', false)->get();
+
+        $recoleccionesQuery = \App\Models\Cultivo::whereHas('cosecha', function ($q) use ($id_empresa) {
+            $q->where('id_empresa', $id_empresa);
+        })->with(['trabajador', 'cosecha.terreno', 'cosecha.semilla']);
+        
+        if ($month) $recoleccionesQuery->whereMonth('fecha_recoleccion', $month);
+        if ($year) $recoleccionesQuery->whereYear('fecha_recoleccion', $year);
+        if ($search) {
+            $searchLower = strtolower($search);
+            $recoleccionesQuery->where(function ($q) use ($search, $searchLower) {
+                $q->where('descripcion_recoleccion', 'LIKE', "%{$search}%")
+                  ->orWhereHas('trabajador', function($qu) use ($search) {
+                      $qu->where('nombre', 'LIKE', "%{$search}%");
+                  })
+                  ->orWhereHas('cosecha.semilla', function($qs) use ($search) {
+                      $qs->where('nombre_semilla', 'LIKE', "%{$search}%");
+                  });
+                
+                if (str_contains('recoleccion', $searchLower) || str_contains('recolección', $searchLower) || str_contains('cosecha', $searchLower)) {
+                    $q->orWhereRaw('1=1');
+                }
+            });
+        }
+        $recolecciones = $recoleccionesQuery->get();
+
+        $allTasks = collect();
+
+        foreach ($riego as $r) {
+            $allTasks->push([
+                'Fecha' => $r->fecha_programada,
+                'Tipo' => 'Riego',
+                'Labor' => $r->tipoRiego->tipo_riego ?? 'General',
+                'Terreno' => $r->cosecha->terreno->nombre ?? 'N/A',
+                'Trabajador' => $r->usuario->nombre ?? 'N/A',
+                'Estado' => $this->getEstadoNombre($r->id_estado),
+                'Observaciones' => $r->observaciones
+            ]);
+        }
+
+        foreach ($insumos as $i) {
+            $allTasks->push([
+                'Fecha' => $i->fecha_programada,
+                'Tipo' => 'Insumo',
+                'Labor' => $i->insumo->Nombre ?? 'Aplicación',
+                'Terreno' => $i->cosecha->terreno->nombre ?? 'N/A',
+                'Trabajador' => $i->usuario->nombre ?? 'N/A',
+                'Estado' => $this->getEstadoNombre($i->id_estado),
+                'Observaciones' => $i->observaciones
+            ]);
+        }
+
+        foreach ($fases as $f) {
+            $allTasks->push([
+                'Fecha' => $f->fecha_programada,
+                'Tipo' => 'General',
+                'Labor' => $f->descripcion,
+                'Terreno' => $f->terreno->nombre ?? 'N/A',
+                'Trabajador' => $f->usuario->nombre ?? 'N/A',
+                'Estado' => $this->getEstadoNombre($f->id_estado),
+                'Observaciones' => ''
+            ]);
+        }
+
+        foreach ($recolecciones as $rc) {
+            $allTasks->push([
+                'Fecha' => $rc->fecha_recoleccion,
+                'Tipo' => 'Cosecha',
+                'Labor' => 'Recolección',
+                'Terreno' => $rc->cosecha->terreno->nombre ?? 'N/A',
+                'Trabajador' => $rc->trabajador->nombre ?? 'N/A',
+                'Estado' => $this->getEstadoNombre($rc->id_estado),
+                'Observaciones' => $rc->descripcion_recoleccion
+            ]);
+        }
+
+        $allTasks = $allTasks->sortByDesc('Fecha');
+
+        $filename = "reporte_labores_" . date('Y-m-d_H-i') . ".csv";
+        $headers = [
+            "Content-type"        => "text/csv; charset=UTF-8",
+            "Content-Disposition" => "attachment; filename=$filename",
+            "Pragma"              => "no-cache",
+            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"             => "0"
+        ];
+
+        $columns = ['Fecha', 'Tipo', 'Labor/Insumo', 'Terreno', 'Trabajador', 'Estado', 'Observaciones/Detalle'];
+
+        $callback = function() use($allTasks, $columns) {
+            $file = fopen('php://output', 'w');
+            fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF)); // BOM
+            fputcsv($file, $columns, ';');
+            foreach ($allTasks as $row) {
+                fputcsv($file, array_values($row), ';');
+            }
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    private function getEstadoNombre($id)
+    {
+        switch ($id) {
+            case 1: return 'Pendiente';
+            case 15: return 'Completado';
+            case 17: return 'En Proceso';
+            case 16: case 18: return 'Perdida';
+            default: return 'Desconocido';
+        }
     }
 
     public function storeRiego(Request $request)
