@@ -5,14 +5,7 @@
         <!-- BRAND -->
         <div>
             <div class="flex items-center gap-3 font-bold text-xl text-white">
-                <div class="w-10 h-10 rounded-xl bg-green-500 flex items-center justify-center">
-                    <svg class="w-5 h-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M12 20V10M12 10c-4 0-7-3-7-7 4 0 7 3 7 7zm0 0c4 0 7-3 7-7-4 0-7 3-7 7z" />
-                    </svg>
-                </div>
-                AgroTech
+                AgriManager
             </div>
 
             <p class="mt-4 text-sm text-gray-400 leading-relaxed">
@@ -95,7 +88,7 @@
     <!-- BOTTOM -->
     <div class="mt-16 border-t border-white/10">
         <div class="max-w-7xl mx-auto px-6 py-6 flex flex-col md:flex-row justify-between text-xs text-gray-400 gap-4">
-            <span>© 2026 AgroTech Inc. Todos los derechos reservados.</span>
+            <span>© 2026 AgriManager Inc. Todos los derechos reservados.</span>
             <div class="flex gap-6">
                 <a href="#" class="hover:text-green-400">Términos</a>
                 <a href="#" class="hover:text-green-400">Cookies</a>

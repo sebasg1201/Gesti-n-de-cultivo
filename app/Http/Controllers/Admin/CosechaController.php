@@ -344,7 +344,7 @@ class CosechaController extends Controller
         elseif ($porcentaje >= 90)
             $faseActual = 'Cosecha';
 
-        $riegos = \App\Models\Riego::where('id_cosecha', $id)->get();
+        $riegos = \App\Models\Riego::with('registroTrabajo')->where('id_cosecha', $id)->get();
 
         // Calcular cumplimiento de hidratación (Barra Azul - Estado Tarea Actual)
         $ultimoRiego = \App\Models\Riego::where('id_cosecha', $id)
@@ -368,7 +368,7 @@ class CosechaController extends Controller
         $totalRiegosCiclo = $riegos->count();
         $riegosCompletados = $riegos->where('id_estado', 15)->count();
 
-        $insumos = \App\Models\InsumoCosecha::with('insumo')->where('id_cosecha', $id)->get();
+        $insumos = \App\Models\InsumoCosecha::with(['insumo', 'registroTrabajo'])->where('id_cosecha', $id)->get();
 
         $historial = collect();
 
@@ -377,6 +377,7 @@ class CosechaController extends Controller
             $r->fecha_historial = $r->fecha_programada;
             $r->titulo_historial = 'Riego';
             $r->descripcion_historial = $r->observaciones;
+            $r->observacion_trabajador = $r->registroTrabajo->observacion ?? null;
 
             if ($r->id_estado == 15) {
                 $r->estado_historial = 'Completado';
@@ -396,6 +397,7 @@ class CosechaController extends Controller
             $i->titulo_historial = 'Aplicación de Insumo';
             $cantidadLimpia = (float) $i->cantidad_usada;
             $i->descripcion_historial = ($i->insumo->Nombre ?? 'Insumo') . ' (Cant: ' . $cantidadLimpia . ')';
+            $i->observacion_trabajador = $i->registroTrabajo->observacion ?? null;
             $i->estado_historial = in_array($i->id_estado, [15]) ? 'Completado' : ($i->id_estado == 17 ? 'En Proceso' : (in_array($i->id_estado, [16, 18]) ? 'Perdida' : 'Pendiente'));
             $historial->push($i);
         }
@@ -406,6 +408,7 @@ class CosechaController extends Controller
             $c->fecha_historial = $c->fecha_recoleccion;
             $c->titulo_historial = 'RECOLECCIÓN';
             $c->descripcion_historial = $c->descripcion_recoleccion;
+            $c->observacion_trabajador = $c->registroTrabajo->observacion ?? null;
             
             if ($c->id_estado == 15) {
                 $c->estado_historial = 'Completado';

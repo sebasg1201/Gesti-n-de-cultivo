@@ -35,11 +35,10 @@
 
             <!-- LOGO -->
             <div class="p-6 border-b border-emerald-700/40">
-                <h1 class="text-2xl font-extrabold tracking-wide">
-                    <span class="text-white">Agri</span>
-                    <span class="text-emerald-300">Manager</span>
+                <h1 class="text-2xl font-black text-white tracking-widest leading-none">
+                    Agri<span class="text-emerald-300">Manager</span>
                 </h1>
-                <p class="text-xs text-emerald-300 mt-1 opacity-80">Sistema Administrativo</p>
+                <p class="text-xs text-emerald-300 mt-1 opacity-80 font-medium tracking-wider uppercase">Gestión de Cultivos</p>
             </div>
 
             <!-- NAV -->
@@ -109,7 +108,7 @@
 
             <!-- FOOTER SIDEBAR -->
             <div class="p-4 border-t border-emerald-700/40 text-xs text-emerald-300 opacity-70">
-                © {{ date('Y') }} AgriManager
+                © {{ date('Y') }} AgroTech
             </div>
         </aside>
 
@@ -150,7 +149,7 @@
                                 Panel de Administración
                             </h1>
                             <p class="text-emerald-100 text-sm mt-1 opacity-90">
-                                Gestión avanzada del sistema AgriManager
+                                Gestión avanzada del sistema AgroTech
                             </p>
                         </div>
 

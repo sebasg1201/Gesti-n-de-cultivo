@@ -179,6 +179,7 @@ Route::middleware(['auth:usuario', 'check.license'])->group(function () {
 
     Route::get('admin/terrenos/export', [\App\Http\Controllers\TerrenoController::class, 'exportCSV'])->name('admin.terrenos.export');
     Route::resource('admin/terrenos', \App\Http\Controllers\TerrenoController::class, ['as' => 'admin']);
+
 });
 
 Route::get('/', [HomeController::class, 'index'])->name('index_welcome');

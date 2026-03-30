@@ -106,7 +106,7 @@
                                     {{ $cosecha ? 'Gestión de Cultivo' : 'Área de Trabajo' }}</p>
                                 <span class="text-xl font-black text-gray-900 dark:text-emerald-50 leading-none">
                                     @if($cosecha)
-                                        Lote #{{ $cosecha->id_cosecha }} <span class="text-emerald-600">|</span> {{ $semillaNombre }}
+                                        {{ $parcelaNombre }} <span class="text-emerald-600">|</span> {{ $semillaNombre }}
                                     @else
                                         {{ $parcelaNombre }}
                                     @endif

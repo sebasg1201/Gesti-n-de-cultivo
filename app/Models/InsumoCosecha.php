@@ -43,4 +43,9 @@ class InsumoCosecha extends Model
     {
         return $this->belongsTo(Estado::class, 'id_estado', 'id_estado');
     }
+
+    public function registroTrabajo()
+    {
+        return $this->hasOne(RegistroTrabajo::class, 'id_insumo_cosecha', 'id_insumo_cosecha');
+    }
 }
