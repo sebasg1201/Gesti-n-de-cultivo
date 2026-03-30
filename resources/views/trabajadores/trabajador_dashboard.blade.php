@@ -58,7 +58,7 @@
                     <div
                         class="bg-white/10 backdrop-blur-md p-6 rounded-[2rem] border border-white/10 text-center flex-1 md:flex-none md:min-w-[140px]">
                         <p class="text-white/60 text-[10px] font-black uppercase mb-1">En Proceso</p>
-                        <p class="text-3xl font-black text-white">{{ $tareas->flatten()->where('id_estado', 8)->count() }}
+                        <p class="text-3xl font-black text-white">{{ $tareas->flatten()->where('id_estado', 17)->count() }}
                         </p>
                     </div>
                 </div>
@@ -66,21 +66,33 @@
         </div>
 
         <div class="space-y-16">
-            @forelse($tareas as $id_cosecha => $grupoTareas)
+            @forelse($tareas as $id_agrupador => $grupoTareas)
                 @php
                     $primeraTarea = $grupoTareas->first();
-                    $cosecha = $primeraTarea->cosecha;
-                    $semillaNombre = optional($cosecha->semilla)->nombre_semilla ?? 'General';
-                    $parcelaNombre = optional($cosecha->terreno)->nombre ?? 'Sin Parcela';
+                    $cosecha = $primeraTarea->tipo_tarea === 'fase' ? null : $primeraTarea->cosecha;
+                    $terreno = $primeraTarea->tipo_tarea === 'fase' ? $primeraTarea->terreno : ($cosecha ? $cosecha->terreno : null);
+                    
+                    // Si no hay cosecha en la primera tarea, buscamos si hay alguna en el grupo
+                    if (!$cosecha) {
+                        foreach($grupoTareas as $tg) {
+                            if ($tg->cosecha) {
+                                $cosecha = $tg->cosecha;
+                                break;
+                            }
+                        }
+                    }
+
+                    $semillaNombre = $cosecha ? (optional($cosecha->semilla)->nombre_semilla ?? 'Variedad') : 'Labores Generales';
+                    $parcelaNombre = $terreno ? $terreno->nombre : 'Sin Parcela';
                 @endphp
 
                 <div class="space-y-8">
                     {{-- Harvest Header --}}
                     <div class="flex items-center gap-6 px-4">
                         <h3
-                            class="flex-none flex items-center gap-4 bg-white px-6 py-3 rounded-2xl shadow-xl shadow-gray-100/50 border border-gray-50">
+                            class="flex-none flex items-center gap-4 bg-white dark:bg-slate-800 px-6 py-3 rounded-2xl shadow-xl shadow-gray-100/50 dark:shadow-none border border-gray-50 dark:border-emerald-900/20 transition-all duration-300">
                             <div
-                                class="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-emerald-200">
+                                class="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-emerald-200 dark:shadow-none">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                                     stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -88,24 +100,71 @@
                                 </svg>
                             </div>
                             <div>
-                                <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">
-                                    Cosecha Activa</p>
-                                <span class="text-xl font-black text-gray-900 leading-none">Lote #{{ $id_cosecha }} <span
-                                        class="text-emerald-600">|</span> {{ $semillaNombre }}</span>
+                                <p class="text-[10px] font-black text-gray-400 dark:text-emerald-500 uppercase tracking-widest leading-none mb-1">
+                                    {{ $cosecha ? 'Gestión de Cultivo' : 'Área de Trabajo' }}</p>
+                                <span class="text-xl font-black text-gray-900 dark:text-emerald-50 leading-none">
+                                    @if($cosecha)
+                                        Lote #{{ $cosecha->id_cosecha }} <span class="text-emerald-600">|</span> {{ $semillaNombre }}
+                                    @else
+                                        {{ $parcelaNombre }}
+                                    @endif
+                                </span>
                             </div>
                         </h3>
-                        <div class="h-px flex-1 bg-gradient-to-r from-gray-200 to-transparent"></div>
+                        <div class="h-px flex-1 bg-gradient-to-r from-gray-200 dark:from-emerald-900/40 to-transparent"></div>
                         <div
-                            class="flex-none px-4 py-2 bg-emerald-50 rounded-xl text-emerald-700 font-black text-[10px] uppercase tracking-widest border border-emerald-100">
+                            class="flex-none px-4 py-2 bg-emerald-50 dark:bg-emerald-950/40 rounded-xl text-emerald-700 dark:text-emerald-400 font-black text-[10px] uppercase tracking-widest border border-emerald-100 dark:border-emerald-900/20">
                             {{ $parcelaNombre }}
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         @foreach($grupoTareas as $fase)
+                            @php
+                                $tareaCosecha = $fase->tipo_tarea === 'fase' ? null : $fase->cosecha;
+                                $tareaTerreno = $fase->tipo_tarea === 'fase' ? $fase->terreno : ($tareaCosecha ? $tareaCosecha->terreno : null);
+                                
+                                $tipoEtiqueta = 'General';
+                                $barColor = 'bg-emerald-500';
+                                $shadowColor = 'shadow-emerald-200/40';
+                                $hoverText = 'group-hover/card:text-emerald-700';
+
+                                if ($fase->tipo_tarea == 'riego') {
+                                    $tipoEtiqueta = 'Riego';
+                                    $barColor = 'bg-blue-600';
+                                    $shadowColor = 'shadow-blue-200/40';
+                                    $hoverText = 'group-hover/card:text-blue-700';
+                                } elseif ($fase->tipo_tarea == 'insumo') {
+                                    $tipoEtiqueta = 'Insumo';
+                                    $barColor = 'bg-purple-600';
+                                    $shadowColor = 'shadow-purple-200/40';
+                                    $hoverText = 'group-hover/card:text-purple-700';
+                                }
+
+                                $details = [
+                                    'fase_id' => $fase->tipo_tarea == 'riego' ? $fase->id_riego : ($fase->tipo_tarea == 'insumo' ? $fase->id_insumo_cosecha : $fase->id_fase),
+                                    'tipo_tarea' => $fase->tipo_tarea,
+                                    'tipo_label' => $tipoEtiqueta,
+                                    'estado' => $fase->id_estado == 1 ? 'Pendiente' : ($fase->id_estado == 17 ? 'En Proceso' : ($fase->id_estado == 15 ? 'Realizado' : ($fase->id_estado == 16 ? 'Perdida' : 'Otro'))),
+                                    'descripcion' => $fase->descripcion ?? 'Sin descripción',
+                                    'obs_trabajador' => $fase->observacion_trabajador ?? '',
+                                    'fecha' => $fase->fecha_programada ? \Carbon\Carbon::parse($fase->fecha_programada)->format('d/m/Y H:i') : 'No definida',
+                                    'parcela' => optional($tareaTerreno)->nombre ?? 'Sin Parcela',
+                                    'ubicacion' => optional($tareaTerreno)->ubicacion ?? 'No especificada',
+                                    'dimensiones' => $tareaTerreno ? (($tareaTerreno->Ancho ?? '?') . 'm x ' . ($tareaTerreno->Alto ?? '?') . 'm') : 'No detallado',
+                                    'suelo' => optional(optional($tareaTerreno)->tipoSuelo)->nombre ?? 'General',
+                                    'cultivo' => $tareaCosecha ? (optional($tareaCosecha->semilla)->nombre_semilla ?? 'Variedad') : 'N/A (General)',
+                                    'siembra' => $tareaCosecha && $tareaCosecha->fecha_siembra ? \Carbon\Carbon::parse($tareaCosecha->fecha_siembra)->format('d/m/Y') : 'No registrada',
+                                    'estimada' => $tareaCosecha && $tareaCosecha->fecha_estimada ? \Carbon\Carbon::parse($tareaCosecha->fecha_estimada)->format('d/m/Y') : 'Pendiente',
+                                    'cantidad' => $tareaCosecha ? (($tareaCosecha->Cantidad ?? '0') . ' unidades') : 'N/A',
+                                    'produccion' => $tareaCosecha ? (($tareaCosecha->produccion_estimada ?? '0') . ' kg est.') : 'N/A'
+                                ];
+                            @endphp
                             <div
-                                class="group/card bg-white rounded-[2.5rem] p-1 border border-gray-100 shadow-xl shadow-gray-100/50 hover:shadow-2xl hover:shadow-emerald-200/40 hover:-translate-y-2 transition-all duration-500">
-                                <div class="bg-gray-50/50 rounded-[2.2rem] p-7 h-full flex flex-col relative overflow-hidden">
+                                class="group/card bg-white dark:bg-slate-800 rounded-[2.5rem] p-1 border border-gray-100 dark:border-emerald-900/20 shadow-xl shadow-gray-100/50 dark:shadow-none hover:shadow-2xl hover:{{ $shadowColor }} hover:-translate-y-2 transition-all duration-500">
+                                <div class="bg-gray-50/50 dark:bg-slate-900/50 rounded-[2.2rem] p-7 h-full flex flex-col relative overflow-hidden">
+                                    {{-- Left Accent Border --}}
+                                    <div class="absolute left-0 top-0 bottom-0 w-3 {{ $barColor }} opacity-80 group-hover/card:opacity-100 transition-opacity"></div>
                                     {{-- Background Pattern --}}
                                     <div
                                         class="absolute -right-4 -top-4 w-24 h-24 bg-emerald-500/5 rounded-full blur-2xl group-hover/card:bg-emerald-500/10 transition-colors">
@@ -114,53 +173,30 @@
                                     <div class="flex justify-between items-start mb-6">
                                         <span
                                             class="px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest shadow-sm
-                                                    {{ $fase->id_estado == 1 ? 'bg-amber-100 text-amber-700 border border-amber-200' : ($fase->id_estado == 17 ? 'bg-sky-100 text-sky-700 border border-sky-200' : ($fase->id_estado == 16 ? 'bg-red-100 text-red-700 border border-red-200' : 'bg-emerald-100 text-emerald-700 border border-emerald-200')) }}">
+                                                    {{ $fase->id_estado == 1 ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800/40' : ($fase->id_estado == 17 ? 'bg-sky-100 dark:bg-sky-900/30 text-sky-700 dark:text-sky-400 border border-sky-200 dark:border-sky-800/40' : ($fase->id_estado == 16 ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800/40' : 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/40')) }}">
                                             {{ $fase->id_estado == 1 ? 'Pendiente' : ($fase->id_estado == 17 ? 'En Proceso' : ($fase->id_estado == 16 ? 'Perdida' : 'Realizado')) }}
                                         </span>
 
                                         <div class="text-right">
                                             <p
-                                                class="text-[9px] text-gray-400 font-black uppercase tracking-widest leading-none mb-1">
+                                                class="text-[9px] text-gray-400 dark:text-emerald-600 font-black uppercase tracking-widest leading-none mb-1">
                                                 Entrega</p>
+                                            @php
+                                                $dateObj = \Carbon\Carbon::parse($fase->fecha_programada);
+                                                $statusText = $dateObj->isToday() ? 'Hoy, ' . $dateObj->format('H:i') : ($dateObj->isTomorrow() ? 'Mañana' : $dateObj->format('d/m/Y'));
+                                            @endphp
                                             <p
-                                                class="text-xs font-black text-gray-800 bg-white px-2 py-1 rounded-lg border border-gray-100 shadow-sm {{ $fase->id_estado == 16 ? 'text-red-600 line-through opacity-70' : '' }}">
-                                                {{ \Carbon\Carbon::parse($fase->fecha_programada)->format('d/m/Y') }}</p>
+                                                class="text-xs font-black text-gray-800 dark:text-emerald-100 bg-white dark:bg-slate-900 px-2 py-1 rounded-lg border border-gray-100 dark:border-emerald-950 shadow-sm {{ $fase->id_estado == 16 ? 'text-red-600 line-through opacity-70' : '' }}">
+                                                {{ $statusText }}</p>
                                         </div>
                                     </div>
 
                                     <h3
-                                        class="text-xl font-black text-gray-900 mb-6 leading-tight flex-grow {{ $fase->id_estado == 16 ? 'line-through opacity-70 group-hover/card:text-red-700' : 'group-hover/card:text-emerald-700' }} transition-colors">
+                                        class="text-xl font-black text-gray-900 dark:text-emerald-100 mb-6 leading-tight flex-grow {{ $fase->id_estado == 16 ? 'line-through opacity-70 group-hover/card:text-red-700' : $hoverText }} transition-colors">
                                         {{ $fase->descripcion }}
                                     </h3>
 
                                     <div class="mt-auto flex items-center justify-between gap-4">
-                                        @php
-                                            $terreno = optional($cosecha)->terreno ?? null;
-                                            $tipoEtiqueta = 'General';
-                                            if ($fase->tipo_tarea == 'riego')
-                                                $tipoEtiqueta = 'Riego';
-                                            elseif ($fase->tipo_tarea == 'insumo')
-                                                $tipoEtiqueta = 'Insumo';
-
-                                            $details = [
-                                                'fase_id' => $fase->tipo_tarea == 'riego' ? $fase->id_riego : ($fase->tipo_tarea == 'insumo' ? $fase->id_insumo_cosecha : $fase->id_fase),
-                                                'tipo_tarea' => $fase->tipo_tarea,
-                                                'tipo_label' => $tipoEtiqueta,
-                                                'estado' => $fase->id_estado == 1 ? 'Pendiente' : ($fase->id_estado == 17 ? 'En Proceso' : ($fase->id_estado == 15 ? 'Realizado' : ($fase->id_estado == 16 ? 'Perdida' : 'Otro'))),
-                                                'descripcion' => $fase->descripcion ?? 'Sin descripción',
-                                                'obs_trabajador' => $fase->observacion_trabajador ?? '',
-                                                'fecha' => $fase->fecha_programada ? \Carbon\Carbon::parse($fase->fecha_programada)->format('d/m/Y') : 'No definida',
-                                                'parcela' => optional($terreno)->nombre ?? 'Sin Parcela',
-                                                'ubicacion' => optional($terreno)->ubicacion ?? 'No especificada',
-                                                'dimensiones' => $terreno ? (($terreno->Ancho ?? '?') . 'm x ' . ($terreno->Alto ?? '?') . 'm') : 'No detallado',
-                                                'suelo' => optional(optional($terreno)->tipoSuelo)->nombre ?? 'General',
-                                                'cultivo' => $semillaNombre,
-                                                'siembra' => $cosecha && $cosecha->fecha_siembra ? \Carbon\Carbon::parse($cosecha->fecha_siembra)->format('d/m/Y') : 'No registrada',
-                                                'estimada' => $cosecha && $cosecha->fecha_estimada ? \Carbon\Carbon::parse($cosecha->fecha_estimada)->format('d/m/Y') : 'Pendiente',
-                                                'cantidad' => ($cosecha->Cantidad ?? '0') . ' unidades',
-                                                'produccion' => ($cosecha->produccion_estimada ?? '0') . ' kg est.'
-                                            ];
-                                        @endphp
 
                                         <button data-fase-id="{{ $details['fase_id'] }}"
                                             data-tipo-tarea="{{ $details['tipo_tarea'] }}"
@@ -173,15 +209,16 @@
                                             data-cultivo="{{ $details['cultivo'] }}" data-siembra="{{ $details['siembra'] }}"
                                             data-estimada="{{ $details['estimada'] }}" data-cantidad="{{ $details['cantidad'] }}"
                                             data-produccion="{{ $details['produccion'] }}" data-id-estado="{{ $fase->id_estado }}"
+                                            data-fecha-raw="{{ \Carbon\Carbon::parse($fase->fecha_programada)->format('Y-m-d') }}"
                                             data-update-url="{{ route('trabajador.tareas.estado', ['id' => $details['fase_id'], 'tipo' => $fase->tipo_tarea]) }}"
                                             onclick="showTaskDetails(this)"
-                                            class="flex-1 bg-white hover:bg-emerald-600 text-gray-900 hover:text-white font-black py-4 px-6 rounded-2xl transition-all duration-300 border border-gray-100 hover:border-emerald-600 text-xs uppercase tracking-widest shadow-sm hover:shadow-xl hover:shadow-emerald-200">
+                                            class="flex-1 bg-white dark:bg-slate-900 hover:bg-emerald-600 dark:hover:bg-emerald-600 text-gray-900 dark:text-emerald-100 hover:text-white font-black py-4 px-6 rounded-2xl transition-all duration-300 border border-gray-100 dark:border-emerald-900/40 hover:border-emerald-600 text-xs uppercase tracking-widest shadow-sm hover:shadow-xl hover:shadow-emerald-200">
                                             Detalles de Tarea
                                         </button>
 
                                         <a href="{{ route('trabajador.calendario', ['date' => \Carbon\Carbon::parse($fase->fecha_programada)->format('Y-m-d')]) }}"
                                             title="Ver en Mi Calendario"
-                                            class="w-12 h-12 rounded-2xl bg-white border border-gray-100 flex items-center justify-center text-emerald-600 shadow-sm hover:scale-110 hover:shadow-emerald-100 hover:border-emerald-200 transition-all">
+                                            class="w-12 h-12 rounded-2xl bg-white dark:bg-slate-900 border border-gray-100 dark:border-emerald-900/40 flex items-center justify-center text-emerald-600 shadow-sm hover:scale-110 hover:shadow-emerald-100 hover:border-emerald-200 transition-all">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                                                 stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -196,17 +233,17 @@
                 </div>
             @empty
                 <div
-                    class="bg-white border-2 border-dashed border-gray-200 rounded-[3rem] p-16 text-center max-w-2xl mx-auto shadow-2xl shadow-gray-100">
+                    class="bg-white dark:bg-slate-800 border-2 border-dashed border-gray-200 dark:border-emerald-900/40 rounded-[3rem] p-16 text-center max-w-2xl mx-auto shadow-2xl shadow-gray-100 dark:shadow-none">
                     <div
-                        class="w-32 h-32 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-8 animate-bounce">
+                        class="w-32 h-32 bg-emerald-50 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mx-auto mb-8 animate-bounce">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-emerald-400" fill="none"
                             viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
                         </svg>
                     </div>
-                    <h3 class="text-3xl font-black text-gray-900 mb-4">Todo al día</h3>
-                    <p class="text-gray-500 text-lg">No tienes fases o tareas programadas actualmente. ¡Buen trabajo!</p>
+                    <h3 class="text-3xl font-black text-gray-900 dark:text-emerald-50 mb-4">Todo al día</h3>
+                    <p class="text-gray-500 dark:text-emerald-500 text-lg">No tienes fases o tareas programadas actualmente. ¡Buen trabajo!</p>
                 </div>
             @endforelse
         </div>
@@ -223,8 +260,8 @@
                     {{-- Modal Header --}}
                     <div class="flex justify-between items-start mb-10">
                         <div class="flex items-center gap-6">
-                            <div class="bg-emerald-600 p-5 rounded-[1.5rem] text-white shadow-xl shadow-emerald-200">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24"
+                            <div id="modalIconContainer" class="bg-emerald-600 p-5 rounded-[1.5rem] text-white shadow-xl shadow-emerald-200">
+                                <svg id="modalIconSvg" xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24"
                                     stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
@@ -390,6 +427,21 @@
                 if (document.getElementById('modalCantidad')) document.getElementById('modalCantidad').innerText = ds.cantidad || 'N/A';
                 if (document.getElementById('modalProduccion')) document.getElementById('modalProduccion').innerText = ds.produccion || 'N/A';
 
+                // Actualizar Icono y Color según tipo
+                const iconContainer = document.getElementById('modalIconContainer');
+                const iconSvg = document.getElementById('modalIconSvg');
+                
+                if (ds.tipoTarea === 'riego') {
+                    iconContainer.className = 'bg-blue-600 p-5 rounded-[1.5rem] text-white shadow-xl shadow-blue-200';
+                    iconSvg.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 21.5c-3.5 0-6.5-3-6.5-6.5 0-2.5 1.5-5 6.5-11 5 6 6.5 8.5 6.5 11 0 3.5-3 6.5-6.5 6.5z" />';
+                } else if (ds.tipoTarea === 'insumo') {
+                    iconContainer.className = 'bg-purple-600 p-5 rounded-[1.5rem] text-white shadow-xl shadow-purple-200';
+                    iconSvg.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />';
+                } else {
+                    iconContainer.className = 'bg-emerald-600 p-5 rounded-[1.5rem] text-white shadow-xl shadow-emerald-200';
+                    iconSvg.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />';
+                }
+
                 // Mostrar/ocultar observación del trabajador ya guardada
                 const obsGuardadaWrap = document.getElementById('obsGuardadaWrap');
                 const obsGuardadaTexto = document.getElementById('obsGuardadaTexto');
@@ -413,6 +465,11 @@
                 const reqInput = document.getElementById('evidencia_foto');
                 const fotoWrap = document.getElementById('evidenciaFotoWrap');
 
+                const taskDateRaw = ds.fechaRaw;
+                const now = new Date();
+                const today = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+                const isTaskDay = (taskDateRaw === today);
+
                 if (currentStatus === 15 || currentStatus === 16) {
                     if (currentStatus === 15) {
                         btnFinalizar.disabled = true;
@@ -435,10 +492,19 @@
                         if(fotoWrap) fotoWrap.classList.add('hidden');
                         if(reqInput) reqInput.required = false;
                     }
+                } else if (!isTaskDay) {
+                    btnFinalizar.disabled = true;
+                    btnFinalizar.innerText = 'Tarea para el ' + ds.fecha;
+                    btnFinalizar.classList.remove('bg-emerald-600', 'hover:bg-emerald-700', 'shadow-emerald-200/50', 'bg-red-500', 'hover:bg-red-600', 'text-white');
+                    btnFinalizar.classList.add('bg-gray-200', 'text-gray-400', 'cursor-not-allowed', 'shadow-none', 'border-gray-200');
+                    
+                    obsInputWrap.classList.add('hidden');
+                    if(fotoWrap) fotoWrap.classList.add('hidden');
+                    if(reqInput) reqInput.required = false;
                 } else {
                     btnFinalizar.disabled = false;
                     btnFinalizar.innerText = 'Finalizar Trabajo';
-                    btnFinalizar.classList.remove('bg-gray-300', 'text-gray-500', 'cursor-not-allowed', 'shadow-none', 'bg-red-500', 'hover:bg-red-600');
+                    btnFinalizar.classList.remove('bg-gray-300', 'text-gray-500', 'cursor-not-allowed', 'shadow-none', 'bg-red-500', 'hover:bg-red-600', 'bg-gray-200', 'text-gray-400');
                     btnFinalizar.classList.add('bg-emerald-600', 'hover:bg-emerald-700', 'text-white', 'shadow-emerald-200/50');
                     
                     if(inputIdEstado) inputIdEstado.value = 15;
@@ -449,7 +515,7 @@
                     if(reqInput) reqInput.required = true;
                 }
 
-                if (currentStatus === 1) {
+                if (currentStatus === 1 && isTaskDay) {
                     // Bloquear el botón PRIMERO para evitar que el form se envíe durante la transición
                     btnFinalizar.disabled = true;
                     btnFinalizar.innerText = 'Procesando...';

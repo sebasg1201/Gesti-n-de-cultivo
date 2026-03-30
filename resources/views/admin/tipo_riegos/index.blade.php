@@ -9,7 +9,7 @@
     <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
         <!-- Search & Config Column -->
         <div class="xl:col-span-1">
-            <div class="bg-white rounded-3xl shadow-xl border border-blue-50 p-5 sticky top-6">
+            <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-xl border border-blue-50 dark:border-emerald-900/20 p-5 sticky top-6 transition-colors duration-300">
                 <div class="flex items-center gap-3 mb-4">
                     <div class="bg-blue-600 p-2.5 rounded-2xl text-white shadow-lg shadow-blue-100">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -17,8 +17,8 @@
                         </svg>
                     </div>
                     <div>
-                        <h3 class="text-lg font-black text-emerald-950">Configurar Riego</h3>
-                        <p class="text-[10px] font-bold text-blue-500 uppercase tracking-widest mt-0.5">Control de Impacto v5.0</p>
+                        <h3 class="text-lg font-black text-emerald-950 dark:text-emerald-50">Configurar Riego</h3>
+                        <p class="text-[10px] font-bold text-blue-500 dark:text-blue-400 uppercase tracking-widest mt-0.5">Control de Impacto v5.0</p>
                     </div>
                 </div>
 
@@ -28,13 +28,13 @@
                     <div class="relative">
                         <input type="text" id="riegoSearch" autocomplete="off"
                             placeholder="Ej. Goteo, Aspersión..."
-                            class="w-full pl-11 pr-4 py-3 rounded-2xl border-2 border-blue-50 focus:border-blue-500 focus:ring-0 bg-blue-50/20 text-sm transition-all focus:bg-white disabled:opacity-50 disabled:cursor-not-allowed">
+                            class="w-full pl-11 pr-4 py-3 rounded-2xl border-2 border-blue-50 dark:border-emerald-900/10 focus:border-blue-500 dark:focus:border-emerald-600 focus:ring-0 bg-blue-50/20 dark:bg-slate-900 text-sm transition-all focus:bg-white dark:focus:bg-slate-800 text-gray-700 dark:text-emerald-100 disabled:opacity-50 disabled:cursor-not-allowed">
                         <div class="absolute left-4 top-1/2 -translate-y-1/2 text-blue-400 group-focus-within:text-blue-600 transition-colors">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                             </svg>
                         </div>
-                        <div id="riegoResults" class="hidden absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl border border-blue-50 z-50 max-h-64 overflow-y-auto">
+                        <div id="riegoResults" class="hidden absolute top-full left-0 right-0 mt-2 bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-blue-50 dark:border-emerald-900/20 z-50 max-h-64 overflow-y-auto">
                             <!-- Injected Results -->
                         </div>
                     </div>
@@ -91,24 +91,24 @@
 
         <!-- List Column -->
         <div class="xl:col-span-2">
-            <div class="bg-white rounded-3xl shadow-xl border border-emerald-50 overflow-hidden flex flex-col">
-                <div class="p-4 border-b border-emerald-50 bg-gray-50/50 flex justify-between items-center">
+            <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-xl border border-emerald-50 dark:border-emerald-900/20 overflow-hidden flex flex-col transition-colors duration-300">
+                <div class="p-4 border-b border-emerald-50 dark:border-emerald-900/10 bg-gray-50/50 dark:bg-slate-900/50 flex justify-between items-center">
                     <div>
-                        <h3 class="text-lg font-black text-emerald-950">Sistemas de Riego</h3>
-                        <p class="text-[10px] font-medium text-emerald-600 mt-1">Configuración técnica activa</p>
+                        <h3 class="text-lg font-black text-emerald-950 dark:text-emerald-50">Sistemas de Riego</h3>
+                        <p class="text-[10px] font-medium text-emerald-600 dark:text-emerald-400 mt-1">Configuración técnica activa</p>
                     </div>
                 </div>
 
                 <div class="flex-1 overflow-x-auto">
                     <table class="w-full text-left">
                         <thead>
-                            <tr class="bg-white text-[9px] font-black text-emerald-400 uppercase tracking-[0.2em] border-b border-emerald-50">
+                            <tr class="bg-white dark:bg-slate-800 text-[9px] font-black text-emerald-400 uppercase tracking-[0.2em] border-b border-emerald-50 dark:border-emerald-900/10">
                                 <th class="px-4 py-2">Tipo de Riego</th>
                                 <th class="px-4 py-2 text-center">Impacto</th>
                                 <th class="px-4 py-2 text-right">Acciones</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-emerald-50/50">
+                        <tbody class="divide-y divide-emerald-50/50 dark:divide-emerald-900/10">
                             @forelse($tipoRiegos as $riego)
                             <tr class="hover:bg-blue-50/20 transition-all group">
                                 <td class="px-4 py-2">
@@ -119,8 +119,8 @@
                                             </svg>
                                         </div>
                                         <div>
-                                            <span class="font-black text-emerald-950 block text-sm">{{ $riego->tipo_riego }}</span>
-                                            <span class="text-[9px] font-bold text-blue-400 uppercase italic">Base: {{ $riego->catalogo->nombre ?? 'Manual' }}</span>
+                                            <span class="font-black text-emerald-950 dark:text-emerald-50 block text-sm">{{ $riego->tipo_riego }}</span>
+                                            <span class="text-[9px] font-bold text-blue-400 dark:text-blue-500 uppercase italic">Base: {{ $riego->catalogo->nombre ?? 'Manual' }}</span>
                                         </div>
                                     </div>
                                 </td>
@@ -158,7 +158,7 @@
                     </table>
                 </div>
 
-                <div class="p-4 bg-gray-50/50 border-t border-emerald-50">
+                <div class="p-4 bg-gray-50/50 dark:bg-slate-900/50 border-t border-emerald-50 dark:border-emerald-900/10">
                     {{ $tipoRiegos->links() }}
                 </div>
             </div>
@@ -191,10 +191,10 @@
                     if (data.length > 0) {
                         data.forEach(item => {
                             const div = document.createElement('div');
-                            div.className = 'px-4 py-3 hover:bg-blue-50 cursor-pointer border-b border-blue-50 last:border-0 transition-colors';
+                            div.className = 'px-4 py-3 hover:bg-blue-50 dark:hover:bg-slate-700/50 cursor-pointer border-b border-blue-50 dark:border-emerald-900/10 last:border-0 transition-colors focus:bg-blue-50 dark:focus:bg-slate-700/50';
                             div.innerHTML = `
                                 <div class="flex justify-between items-center">
-                                    <p class="font-black text-blue-950 text-sm">${item.nombre}</p>
+                                    <p class="font-black text-blue-950 dark:text-emerald-50 text-sm">${item.nombre}</p>
                                     <span class="text-[10px] font-bold ${item.impacto_dias >= 0 ? 'text-red-500' : 'text-green-500'}">${item.impacto_dias > 0 ? '+' : ''}${item.impacto_dias} días</span>
                                 </div>
                             `;
@@ -203,10 +203,10 @@
                         });
                         // Add "Custom" option
                         const customDiv = document.createElement('div');
-                        customDiv.className = 'px-4 py-3 hover:bg-blue-50 cursor-pointer border-t border-blue-100 bg-blue-50/50 transition-colors';
+                        customDiv.className = 'px-4 py-3 hover:bg-blue-50 dark:hover:bg-slate-700/50 cursor-pointer border-t border-blue-100 dark:border-emerald-900/20 bg-blue-50/50 dark:bg-slate-900/50 transition-colors';
                         customDiv.innerHTML = `
-                            <div class="flex space-x-3 items-center text-blue-700">
-                                <div class="bg-blue-200 text-blue-800 p-1.5 rounded-lg">
+                            <div class="flex space-x-3 items-center text-blue-700 dark:text-blue-400">
+                                <div class="bg-blue-200 dark:bg-blue-900/50 text-blue-800 dark:text-blue-200 p-1.5 rounded-lg">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
                                 </div>
                                 <span class="font-bold text-sm">Crear "${q}" como nuevo sistema</span>

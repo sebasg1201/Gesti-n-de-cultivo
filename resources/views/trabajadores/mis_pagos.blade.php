@@ -47,11 +47,11 @@
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
         {{-- Sidebar de Información --}}
         <div class="lg:col-span-4 space-y-8 animate-fade-in-up">
-            <div class="bg-white rounded-[2.5rem] p-10 border border-gray-100 shadow-xl shadow-gray-200/50 relative overflow-hidden group/info">
-                <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-50 rounded-full -mr-16 -mt-16 transition-all duration-500 group-hover/info:scale-110"></div>
+            <div class="bg-white dark:bg-slate-800 rounded-[2.5rem] p-10 border border-gray-100 dark:border-emerald-900/20 shadow-xl shadow-gray-200/50 dark:shadow-none relative overflow-hidden group/info transition-all duration-300">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-50 dark:bg-emerald-900/10 rounded-full -mr-16 -mt-16 transition-all duration-500 group-hover/info:scale-110"></div>
                 
-                <h3 class="text-xl font-black text-gray-900 mb-8 flex items-center gap-4 relative">
-                    <div class="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-emerald-200">
+                <h3 class="text-xl font-black text-gray-900 dark:text-emerald-50 mb-8 flex items-center gap-4 relative">
+                    <div class="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-emerald-200 dark:shadow-none">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
@@ -67,23 +67,23 @@
                     @endphp
 
                     <div class="space-y-3">
-                        <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Frecuencia / Tipo</p>
-                        <div class="bg-gray-50 border border-gray-100 p-6 rounded-[2rem]">
-                            <p id="detalle_tipo" class="text-2xl font-black text-gray-900 leading-none">{{ $tipoSalario }}</p>
+                        <p class="text-[10px] font-black text-gray-400 dark:text-emerald-700 uppercase tracking-widest ml-1">Frecuencia / Tipo</p>
+                        <div class="bg-gray-50 dark:bg-slate-900 border border-gray-100 dark:border-emerald-900/10 p-6 rounded-[2rem]">
+                            <p id="detalle_tipo" class="text-2xl font-black text-gray-900 dark:text-emerald-50 leading-none">{{ $tipoSalario }}</p>
                         </div>
                     </div>
 
                     <div class="space-y-3">
-                        <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Fecha de Reporte</p>
-                        <div class="bg-emerald-50 border border-emerald-100 p-6 rounded-[2rem]">
-                            <p id="detalle_fecha" class="text-2xl font-black text-emerald-900 leading-none">{{ $fechaUltimo }}</p>
+                        <p class="text-[10px] font-black text-gray-400 dark:text-emerald-700 uppercase tracking-widest ml-1">Fecha de Reporte</p>
+                        <div class="bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-100 dark:border-emerald-800 p-6 rounded-[2rem]">
+                            <p id="detalle_fecha" class="text-2xl font-black text-emerald-900 dark:text-emerald-400 leading-none">{{ $fechaUltimo }}</p>
                         </div>
                     </div>
 
                     <div id="container_monto" class="space-y-3 hidden">
-                        <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Monto Seleccionado</p>
-                        <div class="bg-blue-50 border border-blue-100 p-6 rounded-[2rem]">
-                            <p id="detalle_monto" class="text-2xl font-black text-blue-900 leading-none"></p>
+                        <p class="text-[10px] font-black text-gray-400 dark:text-emerald-700 uppercase tracking-widest ml-1">Monto Seleccionado</p>
+                        <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 p-6 rounded-[2rem]">
+                            <p id="detalle_monto" class="text-2xl font-black text-blue-900 dark:text-blue-300 leading-none"></p>
                         </div>
                     </div>
 
@@ -115,24 +115,24 @@
 
         {{-- Listado Detallado --}}
         <div class="lg:col-span-8 animate-fade-in-up delay-150">
-            <div class="bg-white rounded-[2.5rem] p-10 border border-gray-100 shadow-xl shadow-gray-200/50 h-full">
+            <div class="bg-white dark:bg-slate-800 rounded-[2.5rem] p-10 border border-gray-100 dark:border-emerald-900/20 shadow-xl shadow-gray-200/50 dark:shadow-none h-full transition-all duration-300">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-12">
                     <div class="flex items-center gap-5">
-                        <div class="w-14 h-14 bg-gray-900 rounded-[1.5rem] flex items-center justify-center text-white shadow-xl shadow-gray-300">
+                        <div class="w-14 h-14 bg-gray-900 dark:bg-slate-900 rounded-[1.5rem] flex items-center justify-center text-white border border-transparent dark:border-emerald-900/30 shadow-xl shadow-gray-300 dark:shadow-none">
                              <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                         </div>
                         <div>
-                            <h3 class="text-2xl font-black text-gray-900 tracking-tight">Historial de Transacciones</h3>
-                            <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Todos los pagos registrados por la empresa</p>
+                            <h3 class="text-2xl font-black text-gray-900 dark:text-emerald-50 tracking-tight">Historial de Transacciones</h3>
+                            <p class="text-[10px] font-black text-gray-400 dark:text-emerald-700 uppercase tracking-widest">Todos los pagos registrados por la empresa</p>
                         </div>
                     </div>
                 </div>
 
                 <div class="space-y-6">
                     @forelse($pagos as $pago)
-                        <div class="group/item relative bg-white p-7 rounded-[2.2rem] border border-gray-100 hover:border-emerald-300 transition-all duration-300 flex flex-col sm:flex-row sm:items-center justify-between gap-6 hover:shadow-2xl hover:shadow-emerald-100/30 cursor-pointer payment-history-card"
+                        <div class="group/item relative bg-white dark:bg-slate-900/40 p-7 rounded-[2.2rem] border border-gray-100 dark:border-emerald-900/10 hover:border-emerald-300 dark:hover:border-emerald-700 transition-all duration-300 flex flex-col sm:flex-row sm:items-center justify-between gap-6 hover:shadow-2xl hover:shadow-emerald-100/30 dark:hover:shadow-none cursor-pointer payment-history-card"
                              data-tipo="{{ $pago->tipoSalario ? $pago->tipoSalario->tipo_salario : 'Standard' }}"
                              data-fecha="{{ \Carbon\Carbon::parse($pago->fecha_pago)->translatedFormat('d \d\e F, Y') }}"
                              data-monto="${{ number_format($pago->cantidad_pago, 0, ',', '.') }} {{ $pago->unidad_pago }}">
@@ -140,27 +140,27 @@
                             <div class="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-12 bg-emerald-500 rounded-r-full opacity-0 group-hover/item:opacity-100 transition-opacity"></div>
                             
                             <div class="flex items-center gap-6">
-                                <div class="w-14 h-14 bg-gray-50 group-hover/item:bg-emerald-50 rounded-2xl flex items-center justify-center text-gray-400 group-hover/item:text-emerald-600 transition-all duration-300">
+                                <div class="w-14 h-14 bg-gray-50 dark:bg-slate-800 group-hover/item:bg-emerald-50 dark:group-hover/item:bg-emerald-900/30 rounded-2xl flex items-center justify-center text-gray-400 dark:text-emerald-700 group-hover/item:text-emerald-600 dark:group-hover/item:text-emerald-400 transition-all duration-300">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
                                     </svg>
                                 </div>
                                 <div>
-                                    <p class="text-lg font-black text-gray-900 group-hover/item:text-emerald-700 transition-colors">{{ $pago->descripcion_pago }}</p>
+                                    <p class="text-lg font-black text-gray-900 dark:text-emerald-50 group-hover/item:text-emerald-700 dark:group-hover/item:text-emerald-400 transition-colors">{{ $pago->descripcion_pago }}</p>
                                     <div class="flex items-center gap-3 mt-1">
-                                        <span class="text-[10px] font-black text-gray-400 uppercase tracking-[0.15em]">{{ \Carbon\Carbon::parse($pago->fecha_pago)->translatedFormat('l, d F Y') }}</span>
-                                        <span class="w-1 h-1 bg-gray-300 rounded-full"></span>
-                                        <span class="text-[10px] font-black text-emerald-600 uppercase tracking-widest">Confirmado</span>
+                                        <span class="text-[10px] font-black text-gray-400 dark:text-emerald-800 uppercase tracking-[0.15em]">{{ \Carbon\Carbon::parse($pago->fecha_pago)->translatedFormat('l, d F Y') }}</span>
+                                        <span class="w-1 h-1 bg-gray-300 dark:bg-emerald-900 rounded-full"></span>
+                                        <span class="text-[10px] font-black text-emerald-600 dark:text-emerald-500 uppercase tracking-widest">Confirmado</span>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="flex items-center gap-6 text-right border-t sm:border-t-0 pt-6 sm:pt-0">
-                                <div class="bg-emerald-50 px-6 py-4 rounded-[1.5rem] border border-emerald-100 group-hover/item:bg-emerald-500 group-hover/item:border-emerald-500 transition-all duration-300">
-                                    <p class="text-xl font-black text-emerald-800 group-hover/item:text-white transition-colors leading-none">
+                            <div class="flex items-center gap-6 text-right border-t dark:border-emerald-900/20 sm:border-t-0 pt-6 sm:pt-0">
+                                <div class="bg-emerald-50 dark:bg-emerald-900/30 px-6 py-4 rounded-[1.5rem] border border-emerald-100 dark:border-emerald-800 group-hover/item:bg-emerald-500 group-hover/item:border-emerald-500 transition-all duration-300">
+                                    <p class="text-xl font-black text-emerald-800 dark:text-emerald-300 group-hover/item:text-white transition-colors leading-none">
                                         ${{ number_format($pago->cantidad_pago, 0, ',', '.') }}
                                     </p>
-                                    <p class="text-[8px] font-black text-emerald-600 uppercase tracking-[0.2em] mt-1 group-hover/item:text-emerald-100 transition-colors">
+                                    <p class="text-[8px] font-black text-emerald-600 dark:text-emerald-500 uppercase tracking-[0.2em] mt-1 group-hover/item:text-emerald-100 transition-colors">
                                         {{ $pago->unidad_pago }} / {{ $pago->tipoSalario ? $pago->tipoSalario->tipo_salario : 'Standard' }}
                                     </p>
                                 </div>
@@ -168,13 +168,13 @@
                         </div>
                     @empty
                         <div class="py-24 text-center">
-                            <div class="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <div class="w-24 h-24 bg-gray-50 dark:bg-slate-900 rounded-full flex items-center justify-center mx-auto mb-6">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-300 dark:text-emerald-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
                             </div>
-                            <h4 class="text-xl font-black text-gray-900 mb-2">Sin actividad financiera</h4>
-                            <p class="text-gray-400 max-w-sm mx-auto">Aún no se han registrado pagos en tu cuenta. Se mostrarán aquí una vez que el administrador los asigne.</p>
+                            <h4 class="text-xl font-black text-gray-900 dark:text-emerald-50 mb-2">Sin actividad financiera</h4>
+                            <p class="text-gray-400 dark:text-emerald-700 max-w-sm mx-auto">Aún no se han registrado pagos en tu cuenta. Se mostrarán aquí una vez que el administrador los asigne.</p>
                         </div>
                     @endforelse
                 </div>

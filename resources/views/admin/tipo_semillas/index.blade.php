@@ -9,7 +9,7 @@
         <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
             <!-- Advanced Search & Config Column -->
             <div class="xl:col-span-1">
-                <div class="bg-white rounded-3xl shadow-xl border border-emerald-50 p-5 sticky top-6">
+                <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-xl border border-emerald-50 dark:border-emerald-900/20 p-5 sticky top-6 transition-colors duration-300">
                     <div class="flex items-center gap-3 mb-4">
                         <div class="bg-emerald-600 p-2.5 rounded-2xl text-white shadow-lg shadow-emerald-100">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -18,8 +18,8 @@
                             </svg>
                         </div>
                         <div>
-                            <h3 class="text-lg font-bold text-emerald-900">Configurar Semilla</h3>
-                            <p class="text-[10px] font-medium text-emerald-500 uppercase tracking-widest mt-1">Catálogo
+                            <h3 class="text-lg font-bold text-emerald-900 dark:text-emerald-50">Configurar Semilla</h3>
+                            <p class="text-[10px] font-medium text-emerald-500 dark:text-emerald-400 uppercase tracking-widest mt-1">Catálogo
                                 Global v3.0</p>
                         </div>
                     </div>
@@ -27,8 +27,8 @@
                     <!-- Professional AJAX Search Input -->
                     <div class="relative group mb-4">
                         <div class="relative">
-                            <input type="text" id="catalogSearch" autocomplete="off" placeholder="Buscar Variedad Técnica (Ej. Tomate, Café...)"
-                                class="w-full pl-11 pr-4 py-3 rounded-2xl border-2 border-emerald-50 focus:border-emerald-500 focus:ring-0 bg-emerald-50/30 text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                        <input type="text" id="catalogSearch" autocomplete="off" placeholder="Buscar Variedad Técnica (Ej. Tomate, Café...)"
+                            class="w-full pl-11 pr-4 py-3 rounded-2xl border-2 border-emerald-50 dark:border-emerald-900/10 focus:border-emerald-500 dark:focus:border-emerald-600 focus:ring-0 bg-emerald-50/30 dark:bg-slate-900 text-sm transition-all focus:bg-white dark:focus:bg-slate-800 text-gray-700 dark:text-emerald-100 disabled:opacity-50 disabled:cursor-not-allowed">
                             <div
                                 class="absolute left-4 top-1/2 -translate-y-1/2 text-emerald-400 group-focus-within:text-emerald-600 transition-colors">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -38,7 +38,7 @@
                             </div>
                             <!-- Dropdown Results -->
                             <div id="searchResults"
-                                class="hidden absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl border border-emerald-50 z-50 max-h-64 overflow-y-auto overflow-x-hidden">
+                                class="hidden absolute top-full left-0 right-0 mt-2 bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-emerald-50 dark:border-emerald-900/20 z-50 max-h-64 overflow-y-auto overflow-x-hidden">
                                 <!-- Results inject here -->
                             </div>
                         </div>
@@ -127,11 +127,11 @@
             <!-- Inventory List Column -->
             <div class="xl:col-span-2">
                 <div
-                    class="bg-white rounded-3xl shadow-xl border border-emerald-50 overflow-hidden flex flex-col">
-                    <div class="p-4 border-b border-emerald-50 bg-gray-50/50 flex justify-between items-center">
+                    class="bg-white dark:bg-slate-800 rounded-3xl shadow-xl border border-emerald-50 dark:border-emerald-900/20 overflow-hidden flex flex-col transition-colors duration-300">
+                    <div class="p-4 border-b border-emerald-50 dark:border-emerald-900/10 bg-gray-50/50 dark:bg-slate-900/50 flex justify-between items-center">
                         <div>
-                            <h3 class="text-base font-black text-emerald-950">Inventario de Semillas</h3>
-                            <p class="text-[9px] font-medium text-emerald-600 mt-1">Variedades adaptadas a su finca</p>
+                            <h3 class="text-base font-black text-emerald-950 dark:text-emerald-50">Inventario de Semillas</h3>
+                            <p class="text-[9px] font-medium text-emerald-600 dark:text-emerald-400 mt-1">Variedades adaptadas a su finca</p>
                         </div>
                         <div class="bg-white border-2 border-emerald-100 px-4 py-1.5 rounded-2xl flex items-center gap-3">
                             <span class="text-xl font-black text-emerald-600">{{ $tipoSemillas->total() }}</span>
@@ -144,7 +144,7 @@
                         <table class="w-full text-left">
                             <thead>
                                 <tr
-                                    class="bg-white text-[9px] font-black text-emerald-400 uppercase tracking-[0.2em] border-b border-emerald-50">
+                                    class="bg-white dark:bg-slate-800 text-[9px] font-black text-emerald-400 uppercase tracking-[0.2em] border-b border-emerald-50 dark:border-emerald-900/10">
                                     <th class="px-4 py-2">Especie y Variedad</th>
                                     <th class="px-4 py-2">Parámetros</th>
                                     <th class="px-4 py-2">Productividad</th>
@@ -152,7 +152,7 @@
                                     <th class="px-4 py-2 text-right">Acciones</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-emerald-50/50">
+                            <tbody class="divide-y divide-emerald-50/50 dark:divide-emerald-900/10">
                                 @forelse($tipoSemillas as $semilla)
                                     <tr class="hover:bg-emerald-50/30 transition-all group">
                                         <td class="px-4 py-2">
@@ -250,7 +250,7 @@
                         </table>
                     </div>
 
-                    <div class="p-5 bg-gray-50/50 border-t border-emerald-50">
+                    <div class="p-5 bg-gray-50/50 dark:bg-slate-900/50 border-t border-emerald-50 dark:border-emerald-900/10">
                         {{ $tipoSemillas->links() }}
                     </div>
                 </div>
@@ -284,14 +284,14 @@
                             if (data.length > 0) {
                                 data.forEach(item => {
                                     const div = document.createElement('div');
-                                    div.className = 'px-6 py-4 hover:bg-emerald-50 cursor-pointer border-b border-emerald-50 last:border-0 transition-colors';
+                                    div.className = 'px-6 py-4 hover:bg-emerald-50 dark:hover:bg-slate-700/50 cursor-pointer border-b border-emerald-50 dark:border-emerald-900/10 last:border-0 transition-colors focus:bg-emerald-50 dark:focus:bg-slate-700/50';
                                     div.innerHTML = `
-                                        <div class="flex justify-between items-center">
+                                        <div class="flex justify-between items-center transition-colors">
                                             <div>
-                                                <p class="font-black text-emerald-950 text-sm">${item.nombre}</p>
-                                                <p class="text-[10px] text-emerald-500 font-bold uppercase tracking-widest">${item.tiempo_base_dias} días base - ${parseFloat(item.espacio_por_planta_m2 || 0.25).toFixed(4)} m²</p>
+                                                <p class="font-black text-emerald-950 dark:text-emerald-50 text-sm italic group-hover:not-italic">${item.nombre}</p>
+                                                <p class="text-[10px] text-emerald-500 dark:text-emerald-400 font-bold uppercase tracking-widest">${item.tiempo_base_dias} días base - ${parseFloat(item.espacio_por_planta_m2 || 0.25).toFixed(4)} m²</p>
                                             </div>
-                                            <svg class="w-4 h-4 text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                                            <svg class="w-4 h-4 text-emerald-300 dark:text-emerald-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
                                         </div>
                                     `;
                                     div.onclick = () => selectFromCatalog(item);
@@ -300,10 +300,10 @@
                                 
                                 // Add "Custom" option at the end
                                 const customDiv = document.createElement('div');
-                                customDiv.className = 'px-6 py-4 hover:bg-emerald-50 cursor-pointer border-t border-emerald-100 bg-emerald-50/50 transition-colors';
+                                customDiv.className = 'px-6 py-4 hover:bg-emerald-50 dark:hover:bg-slate-700/50 cursor-pointer border-t border-emerald-100 dark:border-emerald-900/20 bg-emerald-50/50 dark:bg-slate-900/50 transition-colors';
                                 customDiv.innerHTML = `
-                                    <div class="flex space-x-3 items-center text-emerald-700">
-                                        <div class="bg-emerald-200 text-emerald-800 p-1.5 rounded-lg">
+                                    <div class="flex space-x-3 items-center text-emerald-700 dark:text-emerald-300">
+                                        <div class="bg-emerald-200 dark:bg-emerald-900/50 text-emerald-800 dark:text-emerald-200 p-1.5 rounded-lg">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
                                         </div>
                                         <span class="font-bold text-sm">Crear "${query}" como nueva variedad</span>

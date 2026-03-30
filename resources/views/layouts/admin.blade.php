@@ -1,8 +1,15 @@
 <!DOCTYPE html>
 <html lang="es" class="text-[85%]">
-
 <head>
     <meta charset="UTF-8">
+    <script>
+        // Inmediatamente aplicar el tema para evitar destellos blancos
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
     <title>AgriManager - Admin</title>
     @inject('notificationService', 'App\Services\NotificationService')
     @php
@@ -105,7 +112,7 @@
     </style>
 </head>
 
-<body class="bg-gradient-to-br from-emerald-50 via-white to-green-100 min-h-screen text-gray-800">
+<body class="bg-gradient-to-br from-emerald-50 via-white to-green-100 dark:from-slate-950 dark:via-slate-900 dark:to-emerald-950 min-h-screen text-gray-800 dark:text-emerald-50 transition-colors duration-300">
 
     <div class="flex min-h-screen">
 
@@ -121,12 +128,12 @@
                 
             $navbarClass = $isWorker
                 ? 'bg-gradient-to-r from-gray-900 via-emerald-950 to-gray-900'
-                : 'bg-gradient-to-r from-emerald-600 via-green-500 to-emerald-600 opacity-90';
+                : 'bg-gradient-to-r from-emerald-600 via-green-500 to-emerald-600 dark:from-emerald-900 dark:via-slate-900 dark:to-emerald-900 opacity-90';
         @endphp
-        <aside id="sidebar" class="z-50 {{ $sidebarClass }} flex flex-col overflow-hidden shrink-0 relative">
+        <aside id="sidebar" class="z-50 {{ $sidebarClass }} flex flex-col overflow-hidden shrink-0 relative transition-all duration-500">
             
             {{-- Elementos Decorativos de Fondo --}}
-            <div class="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-emerald-500/5 to-transparent pointer-events-none"></div>
+            <div class="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-emerald-500/10 to-transparent pointer-events-none"></div>
             <div class="absolute -left-20 top-40 w-40 h-40 bg-emerald-400/10 rounded-full blur-[80px] pointer-events-none"></div>
             <div class="absolute -right-20 bottom-40 w-40 h-40 bg-teal-400/5 rounded-full blur-[80px] pointer-events-none"></div>
 
@@ -179,7 +186,7 @@
                                 <div
                                     class="w-1.5 h-6 bg-emerald-300 rounded-full {{ $gestionActive ? 'opacity-100' : 'opacity-0' }} group-hover:opacity-100 transition-all">
                                 </div>
-                                <span class="font-medium whitespace-nowrap">Gestión y Control</span>
+                                <span class="font-medium whitespace-nowrap dark:text-emerald-50">Gestión y Control</span>
                             </div>
                             <svg id="arrow-gestion-menu" xmlns="http://www.w3.org/2000/svg"
                                 class="w-4 h-4 transition-transform duration-200 shrink-0 {{ $gestionActive ? 'rotate-180' : '' }}"
@@ -228,7 +235,7 @@
                             <a href="{{ route('estados.index') }}"
                                 class="group flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-200 {{ active('estados.*') }}">
                                 <div class="w-1 h-1 bg-emerald-400 rounded-full shrink-0"></div>
-                                <span class="whitespace-nowrap">Estados</span>
+                                <span class="whitespace-nowrap dark:text-emerald-100">Estados</span>
                             </a>
 
 
@@ -236,7 +243,7 @@
                             <a href="{{ route('admin.terrenos.index') }}"
                                 class="group flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-200 {{ active('admin.terrenos.*') }}">
                                 <div class="w-1 h-1 bg-emerald-400 rounded-full shrink-0"></div>
-                                <span class="whitespace-nowrap">Gestión de Terrenos</span>
+                                <span class="whitespace-nowrap dark:text-emerald-100">Gestión de Terrenos</span>
                             </a>
                         </div>
                     </div>
@@ -263,12 +270,12 @@
                             <a href="{{ route('admin.cosechas.index') }}"
                                 class="group flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-200 {{ active('admin.cosechas.*') }}">
                                 <div class="w-1 h-1 bg-emerald-400 rounded-full shrink-0"></div>
-                                <span class="whitespace-nowrap">Control de Cosechas</span>
+                                <span class="whitespace-nowrap dark:text-emerald-100">Control de Cosechas</span>
                             </a>
                             <a href="{{ route('admin.tareas.index') }}"
                                 class="group flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-200 {{ active('admin.tareas.index') }}">
                                 <div class="w-1 h-1 bg-emerald-400 rounded-full shrink-0"></div>
-                                <span class="whitespace-nowrap">Gestión de Tareas</span>
+                                <span class="whitespace-nowrap dark:text-emerald-100">Gestión de Tareas</span>
                             </a>
                         </div>
                     </div>
@@ -333,6 +340,13 @@
                     </a>
                 @endif
 
+                <a href="{{ route('admin.configuracion') }}"
+                    class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 relative {{ active('admin.configuracion') }}">
+                    <div class="w-1 h-5 bg-emerald-400 rounded-full {{ request()->routeIs('admin.configuracion') ? 'opacity-100' : 'opacity-0' }} group-hover:opacity-100 transition-all shadow-[0_0_10px_rgba(52,211,153,0.8)]">
+                    </div>
+                    <span class="font-bold whitespace-nowrap tracking-tight">Configuración</span>
+                </a>
+
             </nav>
 
             <!-- FOOTER -->
@@ -394,6 +408,12 @@
                             {{ now()->format('d M, Y') }}
                         </div>
 
+                        <!-- Theme Toggle Header -->
+                        <button id="theme-toggle-header" type="button" class="hidden md:flex p-2.5 lg:p-3 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-md transition-all duration-200 cursor-pointer focus:outline-none border border-white/20 shadow-lg" title="Cambiar Tema">
+                            <svg class="w-5 h-5 lg:w-6 lg:h-6 text-white hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                            <svg class="w-5 h-5 lg:w-6 lg:h-6 text-white block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+                        </button>
+
                         <!-- Notificaciones -->
                         <div class="relative" id="notif-wrapper">
                             <button onclick="toggleNotifPanel()" id="notif-btn"
@@ -413,7 +433,8 @@
 
                             <!-- PANEL DE NOTIFICACIONES -->
                             <div id="notif-panel"
-                                class="hidden absolute right-0 mt-3 w-80 bg-white rounded-2xl shadow-2xl border border-emerald-100 z-[100] overflow-hidden">
+                                class="hidden absolute right-0 mt-3 w-80 bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-emerald-100 dark:border-emerald-900/50 z-[100] overflow-hidden">
+
                                 
                                 <div class="px-5 py-4 bg-gradient-to-r from-emerald-600 to-green-500 flex items-center justify-between">
                                     <span class="text-white font-bold text-sm">Alertas del Sistema</span>
@@ -462,9 +483,8 @@
 
                         <!-- Usuario -->
                         <div class="relative group">
-
                             <div
-                                class="flex items-center gap-3 lg:gap-4 bg-white text-gray-800 px-3 lg:px-5 py-2 lg:py-3 rounded-xl lg:rounded-2xl shadow-xl hover:scale-[1.02] transition-all duration-300 cursor-pointer">
+                                class="flex items-center gap-3 lg:gap-4 bg-white dark:bg-slate-800 text-gray-800 dark:text-emerald-100 px-3 lg:px-5 py-2 lg:py-3 rounded-xl lg:rounded-2xl shadow-xl dark:shadow-slate-900/50 hover:scale-[1.02] transition-all duration-300 cursor-pointer border dark:border-emerald-900/30">
 
                                 <div
                                     class="w-8 h-8 lg:w-11 lg:h-11 rounded-lg lg:rounded-xl bg-gradient-to-tr from-emerald-500 to-green-600 text-white flex items-center justify-center font-bold shadow-md">
@@ -472,10 +492,10 @@
                                 </div>
 
                                 <div class="hidden sm:block text-left">
-                                    <p class="font-semibold text-xs lg:text-sm">
+                                    <p class="font-semibold text-xs lg:text-sm dark:text-emerald-50">
                                         {{ Auth::guard('usuario')->user()->nombre ?? 'Admin' }}
                                     </p>
-                                    <p class="text-[10px] lg:text-xs text-emerald-600 font-medium">
+                                    <p class="text-[10px] lg:text-xs text-emerald-600 dark:text-emerald-400 font-medium">
                                         {{ Auth::guard('usuario')->user()->tipoUsuario->tipo_usuario ?? 'Usuario' }}
                                     </p>
                                 </div>
@@ -485,16 +505,22 @@
                             <!-- Dropdown -->
                             <div
                                 class="absolute right-0 top-full pt-2 w-56 opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 transition-all duration-200 origin-top-right z-50 pointer-events-none group-hover:pointer-events-auto">
-                                <div class="bg-white rounded-2xl shadow-2xl border border-emerald-100">
+                                <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-emerald-100 dark:border-emerald-800/50">
 
-                                    <div class="p-4 border-b border-gray-100">
-                                        <p class="text-sm font-semibold text-gray-800">
+                                    <div class="p-4 border-b border-gray-100 dark:border-emerald-900/30">
+                                        <p class="text-sm font-semibold text-gray-800 dark:text-emerald-50">
                                             {{ Auth::guard('usuario')->user()->nombre ?? 'Admin' }}
                                         </p>
-                                        <p class="text-xs text-emerald-600">
+                                        <p class="text-xs text-emerald-600 dark:text-emerald-400">
                                             {{ Auth::guard('usuario')->user()->correo ?? '' }}
                                         </p>
                                     </div>
+
+                                    <a href="{{ route('admin.configuracion') }}"
+                                        class="w-full block text-left px-4 py-3 text-sm text-gray-700 dark:text-emerald-100 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 transition">
+                                        Configuración del Perfil
+                                    </a>
+
 
                                     <form action="{{ route('usuario.logout') }}" method="POST">
                                         @csrf
@@ -518,10 +544,10 @@
             <main class="p-4 lg:p-8 flex-1 min-w-0">
 
                 <div
-                    class="bg-white rounded-2xl lg:rounded-3xl shadow-2xl p-4 lg:p-8 border border-emerald-100 min-h-[70vh]">
+                    class="bg-white dark:bg-slate-800/50 dark:backdrop-blur-sm rounded-2xl lg:rounded-3xl shadow-2xl p-4 lg:p-8 border border-emerald-100 dark:border-emerald-900/30 min-h-[70vh]">
 
                     <div class="mb-8">
-                        <h3 class="text-xl lg:text-2xl font-bold text-emerald-800">
+                        <h3 class="text-xl lg:text-2xl font-bold text-emerald-800 dark:text-emerald-300">
                             @yield('title', 'Admin Dashboard')
                         </h3>
                         <div class="w-16 h-1 bg-gradient-to-r from-emerald-400 to-green-500 rounded-full mt-2"></div>
@@ -671,6 +697,22 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
+            // Sincronización del Tema
+            const toggleHeader = document.getElementById('theme-toggle-header');
+            if (toggleHeader) {
+                toggleHeader.addEventListener('click', () => {
+                    const html = document.documentElement;
+                    if (html.classList.contains('dark')) {
+                        html.classList.remove('dark');
+                        localStorage.setItem('theme', 'light');
+                    } else {
+                        html.classList.add('dark');
+                        localStorage.setItem('theme', 'dark');
+                    }
+                    window.dispatchEvent(new Event('themeChanged'));
+                });
+            }
+
             const notifications = {!! json_encode($adminNotifications) !!};
             const shownToasts = JSON.parse(sessionStorage.getItem('shownToasts') || '[]');
             

@@ -10,12 +10,12 @@
             <!-- List Column -->
             <div class="lg:col-span-8 space-y-6">
                 <div
-                    class="bg-white rounded-3xl shadow-xl border border-emerald-50 overflow-hidden min-h-[600px] flex flex-col">
+                    class="bg-white dark:bg-slate-800 rounded-3xl shadow-xl border border-emerald-50 dark:border-emerald-900/20 overflow-hidden min-h-[600px] flex flex-col transition-all duration-300">
                     <div
-                        class="p-8 border-b border-emerald-50 bg-gray-50/50 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                        class="p-8 border-b border-emerald-50 dark:border-emerald-900/20 bg-gray-50/50 dark:bg-slate-900/50 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                         <div>
-                            <h3 class="text-2xl font-black text-emerald-950">Director de Proveedores</h3>
-                            <p class="text-xs font-medium text-emerald-600 mt-1">Administre sus contactos de suministro y
+                            <h3 class="text-2xl font-black text-emerald-950 dark:text-emerald-50">Director de Proveedores</h3>
+                            <p class="text-xs font-medium text-emerald-600 dark:text-emerald-400 mt-1">Administre sus contactos de suministro y
                                 abastecimiento</p>
                         </div>
                         <button onclick="resetProvForm(); openModal('modalProveedor')"
@@ -29,16 +29,16 @@
                     </div>
 
                     <!-- Dashboard Button -->
-                    <div class="px-8 py-4 bg-emerald-50/30 border-b border-emerald-50 flex items-center justify-between">
+                    <div class="px-8 py-4 bg-emerald-50/30 dark:bg-slate-900/50 border-b border-emerald-50 dark:border-emerald-900/20 flex items-center justify-between">
                         <div class="flex items-center gap-3">
-                            <div class="p-2 bg-emerald-600 rounded-lg text-white">
+                            <div class="p-2 bg-emerald-600 rounded-lg text-white shadow-lg shadow-emerald-200 dark:shadow-none">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                                 </svg>
                             </div>
                             <div>
-                                <h4 class="text-xs font-black text-emerald-950 uppercase tracking-wider">Monitor de Entradas</h4>
-                                <p class="text-[9px] font-bold text-emerald-500 uppercase tracking-tighter">Resumen financiero y logístico</p>
+                                <h4 class="text-xs font-black text-emerald-950 dark:text-emerald-50 uppercase tracking-wider">Monitor de Entradas</h4>
+                                <p class="text-[9px] font-bold text-emerald-500 dark:text-emerald-400 uppercase tracking-tighter">Resumen financiero y logístico</p>
                             </div>
                         </div>
                         <a href="{{ route('admin.proveedores.entradas_dashboard') }}" 
@@ -51,11 +51,11 @@
                     </div>
 
                     <!-- Search Bar -->
-                    <div class="px-8 py-4 bg-white border-b border-emerald-50">
+                    <div class="px-8 py-4 bg-white dark:bg-slate-800 border-b border-emerald-50 dark:border-emerald-900/20">
                         <form action="{{ route('admin.proveedores.index') }}" method="GET" class="relative group">
                             <input type="text" name="search" value="{{ request('search') }}"
                                 placeholder="Buscar por nombre, producto o contacto..."
-                                class="w-full pl-12 pr-4 py-3 rounded-2xl border-2 border-emerald-50 focus:border-emerald-500 focus:ring-0 bg-emerald-50/30 text-sm transition-all text-emerald-950">
+                                class="w-full pl-12 pr-4 py-3 rounded-2xl border-2 border-emerald-50 dark:border-emerald-900/20 focus:border-emerald-500 focus:ring-0 bg-emerald-50/30 dark:bg-slate-900 text-sm transition-all text-emerald-950 dark:text-emerald-50">
                             <div
                                 class="absolute left-4 top-1/2 -translate-y-1/2 text-emerald-400 group-focus-within:text-emerald-600 transition-colors">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -70,37 +70,37 @@
                         <table class="w-full text-left">
                             <thead>
                                 <tr
-                                    class="bg-white text-[10px] font-black text-emerald-400 uppercase tracking-[0.2em] border-b border-emerald-50">
+                                    class="bg-white dark:bg-slate-900/50 text-[10px] font-black text-emerald-400 dark:text-emerald-500 uppercase tracking-[0.2em] border-b border-emerald-50 dark:border-emerald-900/20 transition-colors">
                                     <th class="px-8 py-6">Proveedor</th>
                                     <th class="px-8 py-6">Especialidad</th>
                                     <th class="px-8 py-6">Contacto</th>
                                     <th class="px-8 py-6 text-right">Acciones</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-emerald-50/50">
+                            <tbody class="divide-y divide-emerald-50/50 dark:divide-emerald-900/10">
                                 @forelse($proveedores as $prov)
-                                    <tr class="hover:bg-emerald-50/30 transition-all group cursor-pointer"
+                                    <tr class="hover:bg-emerald-50/30 dark:hover:bg-emerald-900/20 transition-all group cursor-pointer"
                                         onclick='showProveedorDetails({!! json_encode($prov) !!})'>
                                         <td class="px-8 py-6">
                                             <div class="flex items-center gap-4">
                                                 <div
-                                                    class="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center text-emerald-700 font-black">
+                                                    class="w-10 h-10 bg-emerald-100 dark:bg-emerald-900/30 rounded-xl flex items-center justify-center text-emerald-700 dark:text-emerald-400 font-black">
                                                     {{ strtoupper(substr($prov->nombre, 0, 1)) }}
                                                 </div>
-                                                <span class="font-bold text-emerald-950">{{ $prov->nombre }}</span>
+                                                <span class="font-bold text-emerald-950 dark:text-emerald-50 transition-colors">{{ $prov->nombre }}</span>
                                             </div>
                                         </td>
-                                        <td class="px-8 py-6 text-sm text-emerald-700 font-medium">
+                                        <td class="px-8 py-6 text-sm text-emerald-700 dark:text-emerald-400 font-medium transition-colors">
                                             {{ $prov->producto ?? 'General' }}
                                         </td>
-                                        <td class="px-8 py-6 text-sm text-emerald-600 italic">
+                                        <td class="px-8 py-6 text-sm text-emerald-600 dark:text-emerald-500 italic transition-colors">
                                             {{ $prov->contacto ?? 'Sin contacto' }}
                                         </td>
                                         <td class="px-8 py-6 text-right">
                                             <div class="flex items-center justify-end gap-2 ml-auto">
                                                 <button onclick='event.stopPropagation(); openEntradaModal({!! json_encode($prov) !!})'
                                                     title="Registrar Entrada"
-                                                    class="p-2.5 bg-emerald-50 text-emerald-600 rounded-xl hover:bg-emerald-100 transition-colors border border-emerald-100">
+                                                    class="p-2.5 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-xl hover:bg-emerald-100 dark:hover:bg-emerald-900/50 transition-colors border border-emerald-100 dark:border-emerald-800">
                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                             d="M12 4v16m8-8H4" />
@@ -108,7 +108,7 @@
                                                 </button>
                                                 <button onclick='event.stopPropagation(); editProveedor({!! json_encode($prov) !!})'
                                                     title="Editar"
-                                                    class="p-2.5 bg-amber-50 text-amber-600 rounded-xl hover:bg-amber-100 transition-colors border border-amber-100">
+                                                    class="p-2.5 bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 rounded-xl hover:bg-amber-100 dark:hover:bg-amber-900/50 transition-colors border border-amber-100 dark:border-amber-800">
                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                             d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -120,7 +120,7 @@
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" onclick="event.stopPropagation();" title="Eliminar"
-                                                        class="p-2.5 bg-red-50 text-red-600 rounded-xl hover:bg-red-100 transition-colors border border-red-100">
+                                                        class="p-2.5 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-xl hover:bg-red-100 dark:hover:bg-red-900/50 transition-colors border border-red-100 dark:border-red-800">
                                                         <svg class="w-4 h-4" fill="none" stroke="currentColor"
                                                             viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -151,21 +151,21 @@
             <!-- Detail Column (Image Style) -->
             <div class="lg:col-span-4">
                 <div id="noSelectionPanel"
-                    class="bg-white rounded-3xl shadow-xl border border-emerald-50 p-12 text-center flex flex-col items-center justify-center min-h-[600px] opacity-40">
+                    class="bg-white dark:bg-slate-800 rounded-3xl shadow-xl border border-emerald-50 dark:border-emerald-900/20 p-12 text-center flex flex-col items-center justify-center min-h-[600px] opacity-40 transition-all duration-300">
                     <div
-                        class="w-24 h-24 bg-emerald-50 rounded-full flex items-center justify-center text-emerald-200 mb-6">
+                        class="w-24 h-24 bg-emerald-50 dark:bg-emerald-900/30 rounded-full flex items-center justify-center text-emerald-200 dark:text-emerald-800 mb-6">
                         <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                         </svg>
                     </div>
-                    <h4 class="text-lg font-bold text-emerald-950">Seleccione un Proveedor</h4>
-                    <p class="text-sm text-emerald-600 mt-2">Haga clic en un registro para ver su historial y detalles de
+                    <h4 class="text-lg font-bold text-emerald-950 dark:text-emerald-50">Seleccione un Proveedor</h4>
+                    <p class="text-sm text-emerald-600 dark:text-emerald-400 mt-2">Haga clic en un registro para ver su historial y detalles de
                         contacto.</p>
                 </div>
 
                 <div id="detailPanel"
-                    class="hidden bg-white rounded-3xl shadow-2xl border border-emerald-100 overflow-hidden sticky top-8 flex flex-col min-h-[600px]">
+                    class="hidden bg-white dark:bg-slate-800 rounded-3xl shadow-2xl border border-emerald-100 dark:border-emerald-900/20 overflow-hidden sticky top-8 flex flex-col min-h-[600px] transition-all duration-500">
                     <!-- Header with Icon and Name -->
                     <div class="bg-gradient-to-br from-emerald-600 to-green-500 p-8 text-white relative">
                         <div class="absolute top-4 right-4 flex gap-2">
@@ -197,11 +197,11 @@
                     </div>
 
                     <!-- Tabs Navigation -->
-                    <div class="flex border-b border-emerald-50">
+                    <div class="flex border-b border-emerald-50 dark:border-emerald-900/20">
                         <button onclick="switchTab('detalles')" id="tab-detalles"
-                            class="flex-1 py-4 text-xs font-bold uppercase tracking-widest text-emerald-600 border-b-2 border-emerald-600 bg-emerald-50/30">Detalles</button>
+                            class="flex-1 py-4 text-xs font-bold uppercase tracking-widest text-emerald-600 border-b-2 border-emerald-600 bg-emerald-50/30 dark:bg-emerald-900/10">Detalles</button>
                         <button onclick="switchTab('historial')" id="tab-historial"
-                            class="flex-1 py-4 text-xs font-bold uppercase tracking-widest text-gray-400 border-b-2 border-transparent hover:bg-gray-50">Historial</button>
+                            class="flex-1 py-4 text-xs font-bold uppercase tracking-widest text-gray-400 border-b-2 border-transparent hover:bg-gray-50 dark:hover:bg-slate-900">Historial</button>
                     </div>
 
                     <!-- Tab: Details -->
@@ -211,8 +211,8 @@
                                 class="text-[10px] font-black text-emerald-400 uppercase tracking-widest block">Información
                                 de Contacto</label>
                             <div
-                                class="flex items-center gap-4 p-4 bg-emerald-50/50 rounded-2xl border border-emerald-100/50">
-                                <div class="p-3 bg-white rounded-xl text-emerald-600 shadow-sm">
+                                class="flex items-center gap-4 p-4 bg-emerald-50/50 dark:bg-slate-900 rounded-2xl border border-emerald-100/50 dark:border-emerald-900/30">
+                                <div class="p-3 bg-white dark:bg-slate-800 rounded-xl text-emerald-600 dark:text-emerald-400 shadow-sm">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
@@ -220,7 +220,7 @@
                                 </div>
                                 <div>
                                     <p class="text-[10px] text-emerald-400 font-bold uppercase">Contacto Directo</p>
-                                    <p class="text-sm font-bold text-emerald-950" id="detailContact">--</p>
+                                    <p class="text-sm font-bold text-emerald-950 dark:text-emerald-50" id="detailContact">--</p>
                                 </div>
                             </div>
                         </div>
@@ -253,7 +253,7 @@
     <!-- MODAL: CREAR/EDITAR PROVEEDOR -->
     <div id="modalProveedor"
         class="hidden fixed inset-0 bg-emerald-950/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-        <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-300">
+        <div class="bg-white dark:bg-slate-800 rounded-[2rem] shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-300 border border-emerald-900/20">
             <div class="bg-emerald-600 p-8 text-white">
                 <h3 class="text-2xl font-black tracking-tight" id="modalProvTitle">Nuevo Proveedor</h3>
                 <p class="text-emerald-100 text-xs mt-1">Ingrese los datos básicos del remitente.</p>
@@ -293,13 +293,13 @@
     <!-- MODAL: REGISTRAR ENTRADA -->
     <div id="modalEntrada"
         class="hidden fixed inset-0 bg-emerald-950/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-        <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-lg overflow-hidden animate-in zoom-in-95 duration-300">
+        <div class="bg-white dark:bg-slate-800 rounded-[2rem] shadow-2xl w-full max-w-lg overflow-hidden animate-in zoom-in-95 duration-300 border border-emerald-900/20">
             <div class="bg-gradient-to-r from-emerald-600 to-green-600 p-8 text-white flex justify-between items-center">
                 <div>
                     <h3 class="text-2xl font-black tracking-tight">Registrar Despacho</h3>
                     <p class="text-emerald-100 text-xs mt-1" id="entradaProvName">Proveedor seleccionado</p>
                 </div>
-                <div class="bg-white/20 p-3 rounded-2xl">
+                <div class="bg-white/20 p-3 rounded-2xl backdrop-blur-md">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />

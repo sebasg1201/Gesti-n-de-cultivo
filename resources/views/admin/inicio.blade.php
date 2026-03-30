@@ -7,14 +7,14 @@
     <!-- Header Section -->
     <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
         <div>
-<h1 class="text-3xl font-bold text-gray-900">
+<h1 class="text-3xl font-bold text-gray-900 dark:text-emerald-50">
     Hola, {{ auth()->user()->nombre }} {{ auth()->user()->apellido ?? '' }}
 </h1>
 
-<p class="text-sm text-gray-500 mt-1 flex items-center gap-2">
+<p class="text-sm text-gray-500 dark:text-emerald-100/60 mt-1 flex items-center gap-2">
         </div>
         <div class="flex items-center gap-3">
-            <button onclick="downloadReport()" class="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+            <button onclick="downloadReport()" class="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-emerald-900/30 rounded-lg shadow-sm text-sm font-medium text-gray-700 dark:text-emerald-100 hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                 Exportar
             </button>
@@ -28,75 +28,75 @@
     <!-- Stats Row -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <!-- Trabajadores Activos -->
-        <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex flex-col pt-6">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-emerald-900/20 flex flex-col pt-6">
             <div class="flex justify-between items-start mb-4">
-                <div class="p-2 bg-green-50 rounded-lg text-green-600">
+                <div class="p-2 bg-green-50 dark:bg-emerald-900/30 rounded-lg text-green-600 dark:text-emerald-400">
                     <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"></path></svg>
                 </div>
-                <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-800">
+                <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-green-100 dark:bg-emerald-900/50 text-green-800 dark:text-emerald-200">
                     Activos hoy
                 </span>
             </div>
             <div>
-                <p class="text-sm font-medium text-gray-500">Trabajadores Activos</p>
+                <p class="text-sm font-medium text-gray-500 dark:text-emerald-100/60">Trabajadores Activos</p>
                 <div class="flex items-baseline gap-2 mt-1">
-                    <p class="text-3xl font-bold text-gray-900">{{ $stats['trabajadores_activos'] }}</p>
-                    <p class="text-sm text-gray-400">/{{ $stats['total_trabajadores'] }}</p>
+                    <p class="text-3xl font-bold text-gray-900 dark:text-emerald-50">{{ $stats['trabajadores_activos'] }}</p>
+                    <p class="text-sm text-gray-400 dark:text-emerald-500/50">/{{ $stats['total_trabajadores'] }}</p>
                 </div>
             </div>
         </div>
 
         <!-- Alertas Urgentes -->
-        <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex flex-col pt-6">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-emerald-900/20 flex flex-col pt-6">
             <div class="flex justify-between items-start mb-4">
-                <div class="p-2 bg-red-50 rounded-lg text-red-600">
+                <div class="p-2 bg-red-50 dark:bg-red-900/30 rounded-lg text-red-600 dark:text-red-400">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
                 </div>
                 @if($stats['alertas_urgentes'] > 0)
-                <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-red-100 text-red-800">
+                <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-200">
                     Acción requerida
                 </span>
                 @endif
             </div>
             <div>
-                <p class="text-sm font-medium text-gray-500">Alertas Urgentes</p>
+                <p class="text-sm font-medium text-gray-500 dark:text-emerald-100/60">Alertas Urgentes</p>
                 <div class="flex items-baseline gap-2 mt-1">
-                    <p class="text-3xl font-bold text-gray-900">{{ $stats['alertas_urgentes'] }}</p>
+                    <p class="text-3xl font-bold text-gray-900 dark:text-emerald-50">{{ $stats['alertas_urgentes'] }}</p>
                 </div>
             </div>
         </div>
 
         <!-- Cosechas en Proceso -->
-        <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex flex-col pt-6">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-emerald-900/20 flex flex-col pt-6">
             <div class="flex justify-between items-start mb-4">
-                <div class="p-2 bg-blue-50 rounded-lg text-blue-600">
+                <div class="p-2 bg-blue-50 dark:bg-blue-900/30 rounded-lg text-blue-600 dark:text-blue-400">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
                 </div>
             </div>
             <div>
-                <p class="text-sm font-medium text-gray-500">Cosechas en Proceso</p>
+                <p class="text-sm font-medium text-gray-500 dark:text-emerald-100/60">Cosechas en Proceso</p>
                 <div class="flex items-baseline gap-2 mt-1">
-                    <p class="text-3xl font-bold text-gray-900">{{ $stats['cosechas_en_proceso'] }}</p>
-                    <p class="text-sm text-gray-400">terrenos</p>
+                    <p class="text-3xl font-bold text-gray-900 dark:text-emerald-50">{{ $stats['cosechas_en_proceso'] }}</p>
+                    <p class="text-sm text-gray-400 dark:text-emerald-500/50">terrenos</p>
                 </div>
             </div>
         </div>
 
         <!-- Progreso Tareas -->
-        <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex flex-col pt-6">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-emerald-900/20 flex flex-col pt-6">
             <div class="flex justify-between items-start mb-4">
-                <div class="p-2 bg-orange-50 rounded-lg text-orange-600">
+                <div class="p-2 bg-orange-50 dark:bg-orange-900/30 rounded-lg text-orange-600 dark:text-orange-400">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
                 </div>
-                <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-orange-100 text-orange-800">
+                <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-orange-100 dark:bg-orange-900/50 text-orange-800 dark:text-orange-200">
                     Progreso semanal
                 </span>
             </div>
             <div>
-                <p class="text-sm font-medium text-gray-500">Progreso Tareas</p>
+                <p class="text-sm font-medium text-gray-500 dark:text-emerald-100/60">Progreso Tareas</p>
                 <div class="flex items-center gap-4 mt-1">
-                    <p class="text-3xl font-bold text-gray-900">{{ $stats['progreso_tareas'] }}%</p>
-                    <div class="flex-1 max-w-[100px] h-2 bg-gray-100 rounded-full overflow-hidden">
+                    <p class="text-3xl font-bold text-gray-900 dark:text-emerald-50">{{ $stats['progreso_tareas'] }}%</p>
+                    <div class="flex-1 max-w-[100px] h-2 bg-gray-100 dark:bg-emerald-950 rounded-full overflow-hidden">
                         <div class="h-full bg-orange-500 rounded-full" style="width: {{ $stats['progreso_tareas'] }}%"></div>
                     </div>
                 </div>
@@ -113,47 +113,47 @@
             <!-- Estado de Cultivos -->
             <section>
                 <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-lg font-bold text-gray-900">Estado de Cultivos</h2>
+                    <h2 class="text-lg font-bold text-gray-900 dark:text-emerald-50">Estado de Cultivos</h2>
                     <a href="{{ route('admin.cosechas.index') }}" class="text-sm font-medium text-green-600 hover:text-green-700">Ver todos</a>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     @forelse($stats['cultivos'] as $cultivo)
-                    <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex flex-col">
+                    <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-emerald-900/20 flex flex-col">
                         <div class="flex items-center gap-4 mb-4">
-                            <div class="w-16 h-16 rounded-xl bg-gray-200 overflow-hidden flex-shrink-0">
+                            <div class="w-16 h-16 rounded-xl bg-gray-200 dark:bg-slate-900 overflow-hidden flex-shrink-0">
                                 @if(is_string($cultivo->imagenes) && json_decode($cultivo->imagenes))
                                     @php $imgs = json_decode($cultivo->imagenes); @endphp
                                     @if(count($imgs) > 0)
                                         <img src="{{ Storage::url($imgs[0]) }}" alt="Cultivo" class="w-full h-full object-cover">
                                     @else
-                                        <div class="w-full h-full bg-green-100 flex items-center justify-center">
-                                            <svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
+                                        <div class="w-full h-full bg-green-100 dark:bg-emerald-900/30 flex items-center justify-center">
+                                            <svg class="w-8 h-8 text-green-500 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
                                         </div>
                                     @endif
                                 @else
-                                    <div class="w-full h-full bg-green-100 flex items-center justify-center">
-                                        <svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
+                                    <div class="w-full h-full bg-green-100 dark:bg-emerald-900/30 flex items-center justify-center">
+                                        <svg class="w-8 h-8 text-green-500 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
                                     </div>
                                 @endif
                             </div>
                             <div>
-                                <h3 class="text-base font-bold text-gray-900">{{ $cultivo->semilla->nombre_semilla ?? 'Cultivo' }} - {{ $cultivo->terreno->nombre_terreno ?? 'Terreno' }}</h3>
-                                <p class="text-sm text-gray-500">Etapa: {{ $cultivo->fase_actual }}</p>
+                                <h3 class="text-base font-bold text-gray-900 dark:text-emerald-50">{{ $cultivo->semilla->nombre_semilla ?? 'Cultivo' }} - {{ $cultivo->terreno->nombre_terreno ?? 'Terreno' }}</h3>
+                                <p class="text-sm text-gray-500 dark:text-emerald-500">Etapa: {{ $cultivo->fase_actual }}</p>
                             </div>
                         </div>
                         
                         <div class="mb-4 flex-1">
                             <div class="flex justify-between items-center mb-1">
-                                <span class="text-xs font-medium text-gray-500">Progreso</span>
-                                <span class="text-xs font-bold text-gray-900">{{ number_format($cultivo->porcentaje_crecimiento, 0) }}%</span>
+                                <span class="text-xs font-medium text-gray-500 dark:text-emerald-100/60">Progreso</span>
+                                <span class="text-xs font-bold text-gray-900 dark:text-emerald-200">{{ number_format($cultivo->porcentaje_crecimiento, 0) }}%</span>
                             </div>
-                            <div class="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+                            <div class="w-full h-2 bg-gray-100 dark:bg-emerald-950 rounded-full overflow-hidden">
                                 <div class="h-full bg-green-500 rounded-full" style="width: {{ $cultivo->porcentaje_crecimiento }}%"></div>
                             </div>
                         </div>
                         
                         <div class="flex items-center justify-between">
-                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-blue-50 text-blue-700">
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300">
                                 <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
                                 @if($cultivo->progreso_hidratacion == 100)
                                 Húmedo
@@ -161,14 +161,14 @@
                                 Seco
                                 @endif
                             </span>
-                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-gray-50 text-gray-600 border border-gray-200">
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-gray-50 dark:bg-slate-900 text-gray-600 dark:text-emerald-400 border border-gray-200 dark:border-emerald-900/30">
                                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                                 Est. {{ $cultivo->fecha_estimada ? \Carbon\Carbon::parse($cultivo->fecha_estimada)->translatedFormat('d M') : 'N/A' }}
                             </span>
                         </div>
                     </div>
                     @empty
-                    <div class="col-span-2 border border-dashed border-gray-300 rounded-2xl p-6 text-center text-gray-500">
+                    <div class="col-span-2 border border-dashed border-gray-300 dark:border-emerald-900/30 rounded-2xl p-6 text-center text-gray-500 dark:text-emerald-700 bg-white dark:bg-slate-800/50">
                         No hay cultivos en proceso en este momento.
                     </div>
                     @endforelse
@@ -178,61 +178,58 @@
             <!-- Seguimiento de Equipo -->
             <section class="mb-4">
                 <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-lg font-bold text-gray-900">Seguimiento de Equipo</h2>
+                    <h2 class="text-lg font-bold text-gray-900 dark:text-emerald-50">Seguimiento de Equipo</h2>
                     <div class="flex items-center gap-2">
-                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium border border-gray-200 bg-white text-gray-700">
+                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium border border-gray-200 dark:border-emerald-800 bg-white dark:bg-slate-800 text-gray-700 dark:text-emerald-100">
                             <span class="w-2 h-2 rounded-full bg-green-500"></span> Activos
-                        </span>
-                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium border border-gray-200 bg-white text-gray-700">
-                            <span class="w-2 h-2 rounded-full bg-gray-400"></span> Pausa
                         </span>
                     </div>
                 </div>
                 
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                    <div class="grid grid-cols-12 gap-4 px-6 py-3 border-b border-gray-100 bg-gray-50 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-emerald-900/20 overflow-hidden">
+                    <div class="grid grid-cols-12 gap-4 px-6 py-3 border-b border-gray-100 dark:border-emerald-900/30 bg-gray-50 dark:bg-slate-900/50 text-xs font-semibold text-gray-500 dark:text-emerald-500 uppercase tracking-wider">
                         <div class="col-span-5 md:col-span-4">Trabajador</div>
                         <div class="col-span-3 md:col-span-3">Estado</div>
                         <div class="col-span-4 md:col-span-4">Actividad Reciente</div>
                         <div class="col-span-1 hidden md:block text-right">Acción</div>
                     </div>
                     
-                    <div class="divide-y divide-gray-100">
+                    <div class="divide-y divide-gray-100 dark:divide-emerald-900/10">
                         @forelse($stats['equipo'] as $miembro)
-                        <div class="grid grid-cols-12 gap-4 px-6 py-4 items-center hover:bg-gray-50 transition-colors">
+                        <div class="grid grid-cols-12 gap-4 px-6 py-4 items-center hover:bg-gray-50 dark:hover:bg-slate-700/30 transition-colors">
                             <div class="col-span-5 md:col-span-4 flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-full bg-gray-200 overflow-hidden flex-shrink-0">
+                                <div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-emerald-900/50 overflow-hidden flex-shrink-0">
                                     @if($miembro->imagen)
                                         <img src="{{ asset('uploads/' . $miembro->imagen) }}" alt="Avatar" class="w-full h-full object-cover">
                                     @else
-                                        <div class="w-full h-full flex justify-center items-center bg-blue-100 text-blue-600 font-bold uppercase">
+                                        <div class="w-full h-full flex justify-center items-center bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-300 font-bold uppercase">
                                             {{ substr($miembro->nombre, 0, 1) }}
                                         </div>
                                     @endif
                                 </div>
                                 <div class="overflow-hidden">
-                                    <p class="text-sm font-bold text-gray-900 truncate">{{ $miembro->nombre }}</p>
-                                    <p class="text-xs text-gray-500 truncate">{{ $miembro->telefono ?? 'Sin teléfono' }}</p>
+                                    <p class="text-sm font-bold text-gray-900 dark:text-emerald-50 truncate">{{ $miembro->nombre }}</p>
+                                    <p class="text-xs text-gray-500 dark:text-emerald-500 truncate">{{ $miembro->telefono ?? 'Sin teléfono' }}</p>
                                 </div>
                             </div>
                             <div class="col-span-3 md:col-span-3">
                                 @if($miembro->is_active)
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400">
                                         <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Activo
                                     </span>
                                 @else
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-emerald-400">
                                         <span class="w-1.5 h-1.5 rounded-full bg-gray-400"></span> Descanso
                                     </span>
                                 @endif
                             </div>
                             <div class="col-span-4 md:col-span-4 pb-1">
-                                <p class="text-sm font-medium text-gray-700 truncate" title="{{ $miembro->actividad_reciente }}">{{ $miembro->actividad_reciente }}</p>
-                                <p class="text-xs text-gray-400 mt-0.5">{{ $miembro->tiempo_actividad }}</p>
+                                <p class="text-sm font-medium text-gray-700 dark:text-emerald-100 truncate" title="{{ $miembro->actividad_reciente }}">{{ $miembro->actividad_reciente }}</p>
+                                <p class="text-xs text-gray-400 dark:text-emerald-600 mt-0.5">{{ $miembro->tiempo_actividad }}</p>
                             </div>
                             <div class="col-span-1 hidden md:flex justify-end pr-2">
                                 <a href="{{ route('admin.usuarios.index') }}" 
-                                   class="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-bold text-blue-600 bg-blue-50 border border-blue-200 rounded-xl hover:bg-blue-600 hover:text-white hover:shadow-md hover:shadow-blue-200/50 hover:-translate-y-0.5 transition-all duration-300">
+                                   class="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl hover:bg-blue-600 hover:text-white dark:hover:bg-blue-500 transition-all duration-300">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
                                     Personal
                                 </a>
@@ -245,8 +242,8 @@
                         @endforelse
                     </div>
                     
-                    <div class="p-3 border-t border-gray-50 bg-gray-50 text-center rounded-b-2xl">
-                        <a href="{{ route('admin.usuarios.index') }}" class="text-sm font-bold text-gray-600 hover:text-gray-900 transition-colors">Ver todos los trabajadores</a>
+                    <div class="p-3 border-t border-gray-50 dark:border-emerald-900/10 bg-gray-50 dark:bg-slate-900/50 text-center rounded-b-2xl">
+                        <a href="{{ route('admin.usuarios.index') }}" class="text-sm font-bold text-gray-600 dark:text-emerald-400 hover:text-gray-900 dark:hover:text-emerald-200 transition-colors">Ver todos los trabajadores</a>
                     </div>
                 </div>
             </section>
@@ -256,14 +253,14 @@
         <div class="xl:col-span-1 flex flex-col gap-6">
             
             <!-- Alertas -->
-            <section class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 hidden xl:block">
+            <section class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-emerald-900/20 p-5 hidden xl:block transition-all duration-300">
                 <div class="flex justify-between items-center mb-5">
-                    <h2 class="text-lg font-bold text-gray-900 flex items-center gap-2">
+                    <h2 class="text-lg font-bold text-gray-900 dark:text-emerald-50 flex items-center gap-2">
                         <svg class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"></path></svg>
                         Alertas
                     </h2>
                     @if(count($stats['lista_alertas']) > 0)
-                        <span class="px-2 py-0.5 rounded text-xs font-bold bg-red-100 text-red-700">{{ count($stats['lista_alertas']) }} nuevas</span>
+                        <span class="px-2 py-0.5 rounded text-xs font-bold bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800/50">{{ count($stats['lista_alertas']) }} nuevas</span>
                     @endif
                 </div>
                 
@@ -271,17 +268,17 @@
                     @forelse($stats['lista_alertas'] as $alerta)
                     <div class="border-l-4 border-red-500 pl-4 py-1 relative">
                         <div class="flex justify-between items-start mb-1">
-                            <h3 class="text-sm font-bold text-gray-900">{{ $alerta->asunto }}</h3>
-                            <span class="text-xs text-gray-400">{{ $alerta->created_at->diffForHumans(null, true, true) }}</span>
+                            <h3 class="text-sm font-bold text-gray-900 dark:text-emerald-100">{{ $alerta->asunto }}</h3>
+                            <span class="text-xs text-gray-400 dark:text-emerald-600">{{ $alerta->created_at->diffForHumans(null, true, true) }}</span>
                         </div>
-                        <p class="text-xs text-gray-600 mb-2 line-clamp-2" title="{{ $alerta->mensaje }}">{{ $alerta->mensaje }}</p>
-                        <a href="{{ route('admin.soporte.index') }}" class="text-xs font-bold text-red-600 hover:text-red-700 mt-1 inline-block">Ver y Responder</a>
+                        <p class="text-xs text-gray-600 dark:text-emerald-500 mb-2 line-clamp-2" title="{{ $alerta->mensaje }}">{{ $alerta->mensaje }}</p>
+                        <a href="{{ route('admin.soporte.index') }}" class="text-xs font-bold text-red-600 dark:text-red-400 hover:text-red-700 mt-1 inline-block">Ver y Responder</a>
                     </div>
                     @if(!$loop->last)
-                        <hr class="border-gray-100">
+                        <hr class="border-gray-100 dark:border-emerald-900/10">
                     @endif
                     @empty
-                    <div class="text-center text-sm text-gray-500 py-4">
+                    <div class="text-center text-sm text-gray-500 dark:text-emerald-600 py-4">
                         Todo está funcionando correctamente. No hay alertas.
                     </div>
                     @endforelse
@@ -289,38 +286,38 @@
             </section>
             
             <!-- Tareas de Hoy -->
-            <section class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 hidden xl:block">
+            <section class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-emerald-900/20 p-5 hidden xl:block transition-all duration-300">
                 <div class="flex justify-between items-center mb-5">
-                    <h2 class="text-lg font-bold text-gray-900">Tareas de Hoy</h2>
-                    <a href="{{ route('admin.tareas.index') }}" class="text-xs font-bold text-green-600 hover:text-green-700 uppercase tracking-wider">+ CREAR</a>
+                    <h2 class="text-lg font-bold text-gray-900 dark:text-emerald-50">Tareas de Hoy</h2>
+                    <a href="{{ route('admin.tareas.index') }}" class="text-xs font-bold text-green-600 dark:text-green-400 hover:text-green-700 uppercase tracking-wider">+ CREAR</a>
                 </div>
                 
                 <div class="space-y-3">
                     @forelse($stats['lista_tareas_hoy'] as $tarea)
-                    <div class="flex items-center gap-4 p-3 rounded-xl border border-gray-50 hover:border-green-100 hover:bg-green-50/30 transition-all duration-300 group">
+                    <div class="flex items-center gap-4 p-3 rounded-xl border border-gray-50 dark:border-emerald-900/30 hover:border-green-100 dark:hover:border-emerald-500 hover:bg-green-50/30 dark:hover:bg-emerald-900/20 transition-all duration-300 group">
                         <div class="flex-shrink-0">
                             @if($tarea->id_estado == 15 || $tarea->id_estado == 9)
-                                <div class="w-8 h-8 rounded-full flex items-center justify-center bg-green-100 text-green-600">
+                                <div class="w-8 h-8 rounded-full flex items-center justify-center bg-green-100 dark:bg-green-900/50 text-green-600 dark:text-green-400">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
                                 </div>
                             @elseif($tarea->id_estado == 17 || $tarea->id_estado == 8)
-                                <div class="w-8 h-8 rounded-full flex items-center justify-center bg-orange-100 text-orange-600 animate-pulse">
+                                <div class="w-8 h-8 rounded-full flex items-center justify-center bg-orange-100 dark:bg-orange-900/50 text-orange-600 dark:text-orange-400 animate-pulse">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                                 </div>
                             @else
-                                <div class="w-8 h-8 rounded-full border-2 border-gray-200 bg-white group-hover:border-green-400 transition-colors flex items-center justify-center">
-                                    <div class="w-2 h-2 rounded-full bg-gray-200 group-hover:bg-green-400"></div>
+                                <div class="w-8 h-8 rounded-full border-2 border-gray-200 dark:border-emerald-900/50 bg-white dark:bg-slate-900 group-hover:border-green-400 transition-colors flex items-center justify-center">
+                                    <div class="w-2 h-2 rounded-full bg-gray-200 dark:bg-emerald-800 group-hover:bg-green-400"></div>
                                 </div>
                             @endif
                         </div>
                         <div class="flex-1 min-w-0">
-                            <p class="text-sm font-bold truncate {{ ($tarea->id_estado == 15 || $tarea->id_estado == 9) ? 'text-gray-400 line-through font-medium' : 'text-gray-800' }}">
+                            <p class="text-sm font-bold truncate {{ ($tarea->id_estado == 15 || $tarea->id_estado == 9) ? 'text-gray-400 dark:text-emerald-800 line-through font-medium' : 'text-gray-800 dark:text-emerald-100' }}">
                                 {{ $tarea->descripcion }}
                             </p>
                             <div class="flex items-center gap-2 mt-0.5">
-                                <span class="text-[10px] text-gray-500 font-medium">{{ $tarea->usuario->nombre ?? 'Asignado' }}</span>
-                                <span class="w-1 h-1 rounded-full bg-gray-300"></span>
-                                <span class="px-1.5 py-0.5 rounded text-[9px] uppercase font-bold {{ $tarea->tipo_tarea == 'riego' ? 'bg-blue-100 text-blue-600' : ($tarea->tipo_tarea == 'insumo' ? 'bg-purple-100 text-purple-600' : 'bg-green-100 text-green-600') }}">
+                                <span class="text-[10px] text-gray-500 dark:text-emerald-500 font-medium">{{ $tarea->usuario->nombre ?? 'Asignado' }}</span>
+                                <span class="w-1 h-1 rounded-full bg-gray-300 dark:bg-emerald-900"></span>
+                                <span class="px-1.5 py-0.5 rounded text-[9px] uppercase font-bold {{ $tarea->tipo_tarea == 'riego' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400' : ($tarea->tipo_tarea == 'insumo' ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400' : 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400') }}">
                                     {{ $tarea->tipo_tarea }}
                                 </span>
                             </div>
@@ -328,17 +325,17 @@
                     </div>
                     @empty
                     <div class="text-center py-8">
-                        <div class="w-12 h-12 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-3">
-                            <svg class="w-6 h-6 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
+                        <div class="w-12 h-12 bg-gray-50 dark:bg-slate-900/50 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <svg class="w-6 h-6 text-gray-300 dark:text-emerald-900" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
                         </div>
-                        <p class="text-sm text-gray-500">No hay tareas programadas para hoy.</p>
+                        <p class="text-sm text-gray-500 dark:text-emerald-600">No hay tareas programadas para hoy.</p>
                     </div>
                     @endforelse
                 </div>
 
                 @if(count($stats['lista_tareas_hoy']) > 0)
-                <div class="mt-6 pt-4 border-t border-gray-50">
-                    <a href="{{ route('admin.tareas.index') }}" class="flex items-center justify-center w-full py-2 px-4 bg-gray-50 text-gray-700 text-sm font-bold rounded-xl hover:bg-gray-100 transition-colors group">
+                <div class="mt-6 pt-4 border-t border-gray-50 dark:border-emerald-900/10">
+                    <a href="{{ route('admin.tareas.index') }}" class="flex items-center justify-center w-full py-2 px-4 bg-gray-50 dark:bg-slate-900/50 text-gray-700 dark:text-emerald-300 text-sm font-bold rounded-xl hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors group">
                         Gestionar Tareas
                         <svg class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
                     </a>

@@ -91,7 +91,6 @@ Route::middleware(['auth:usuario', 'check.license'])->group(function () {
 
     // Dashboard original (Admin/Supervisor)
     Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
-    Route::get('/admin/configuracion', [AdminController::class, 'configuracion'])->name('admin.configuracion');
 
     // Rutas para trabajador
     Route::get('/trabajador/dashboard', [AdminController::class, 'trabajadorInicio'])->name('trabajador.dashboard');
@@ -141,6 +140,11 @@ Route::middleware(['auth:usuario', 'check.license'])->group(function () {
     Route::get('/admin/proveedores/buscar-items', [\App\Http\Controllers\ProveedorController::class, 'buscarItems'])->name('admin.proveedores.buscar_items');
     Route::resource('/admin/proveedores', \App\Http\Controllers\ProveedorController::class, ['as' => 'admin']);
     Route::resource('/admin/insumos', \App\Http\Controllers\InsumoController::class, ['as' => 'admin']);
+    
+    // Perfil y Configuración (Admin y Trabajador)
+    Route::get('/configuracion', [\App\Http\Controllers\Admin\ProfileController::class, 'index']); // Redundancia para evitar 404
+    Route::get('/admin/configuracion', [\App\Http\Controllers\Admin\ProfileController::class, 'index'])->name('admin.configuracion');
+    Route::post('/admin/configuracion', [\App\Http\Controllers\Admin\ProfileController::class, 'update'])->name('admin.configuracion.update');
     
     // Cosechas y Cultivos
     Route::get('/admin/cosechas/export', [\App\Http\Controllers\Admin\CosechaController::class, 'exportCSV'])->name('admin.cosechas.export');

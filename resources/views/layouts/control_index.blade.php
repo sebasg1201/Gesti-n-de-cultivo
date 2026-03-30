@@ -7,6 +7,14 @@
     <title>@yield('title', 'Proyecto Agrícola')</title>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <script>
+        // Inmediatamente aplicar el tema para evitar destellos blancos
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
 </head>
 
 <body>

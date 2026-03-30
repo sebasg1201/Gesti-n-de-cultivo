@@ -9,32 +9,32 @@
     <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
         <!-- Professional Search & Suelo Config -->
         <div class="xl:col-span-1">
-            <div class="bg-white rounded-3xl shadow-xl border border-amber-50 p-5 sticky top-6">
+            <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-xl border border-amber-50 dark:border-amber-900/10 p-5 sticky top-6 transition-all duration-300">
                 <div class="flex items-center gap-3 mb-4">
-                    <div class="bg-amber-500 p-2.5 rounded-2xl text-white shadow-lg shadow-amber-100">
+                    <div class="bg-amber-500 p-2.5 rounded-2xl text-white shadow-lg shadow-amber-100 dark:shadow-none">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
                         </svg>
                     </div>
                     <div>
-                        <h3 class="text-lg font-bold text-amber-900">Configurar Suelo</h3>
-                        <p class="text-[10px] font-medium text-amber-500 uppercase tracking-widest mt-1">Algoritmo de Impacto v3.0</p>
+                        <h3 class="text-lg font-bold text-amber-900 dark:text-amber-50">Configurar Suelo</h3>
+                        <p class="text-[10px] font-medium text-amber-500 dark:text-amber-400 uppercase tracking-widest mt-1">Algoritmo de Impacto v3.0</p>
                     </div>
                 </div>
 
                 <!-- AJAX Search for Soils -->
                 <div class="relative group mb-4">
-                    <label class="block text-xs font-bold text-amber-700 uppercase tracking-wider mb-2">Buscar tipo de suelo técnico</label>
+                    <label class="block text-xs font-bold text-amber-700 dark:text-amber-400 uppercase tracking-wider mb-2">Buscar tipo de suelo técnico</label>
                     <div class="relative">
                         <input type="text" id="sueloSearch" autocomplete="off"
                             placeholder="Ej. Arcilloso, Arenoso, Limoso..."
-                            class="w-full pl-11 pr-4 py-3 rounded-2xl border-2 border-amber-50 focus:border-amber-500 focus:ring-0 bg-amber-50/20 text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                            class="w-full pl-11 pr-4 py-3 rounded-2xl border-2 border-amber-50 dark:border-amber-900/20 focus:border-amber-500 focus:ring-0 bg-amber-50/20 dark:bg-slate-900/50 text-sm dark:text-emerald-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
                         <div class="absolute left-4 top-1/2 -translate-y-1/2 text-amber-400 group-focus-within:text-amber-600 transition-colors">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                             </svg>
                         </div>
-                        <div id="sueloResults" class="hidden absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl border border-amber-50 z-50 max-h-64 overflow-y-auto">
+                        <div id="sueloResults" class="hidden absolute top-full left-0 right-0 mt-2 bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-amber-50 dark:border-amber-900/20 z-50 max-h-64 overflow-y-auto">
                             <!-- Results injected via AJAX -->
                         </div>
                     </div>
@@ -45,33 +45,33 @@
                     <input type="hidden" name="id_catalogo" id="sw_id_catalogo">
 
                     <div>
-                        <label class="block text-xs font-bold text-amber-700 uppercase tracking-wider mb-1.5">Nombre Personalizado</label>
+                        <label class="block text-xs font-bold text-amber-700 dark:text-amber-400 uppercase tracking-wider mb-1.5">Nombre Personalizado</label>
                         <input type="text" name="nombre" id="sw_nombre" required
-                            class="w-full px-4 py-2.5 rounded-2xl border-amber-100 focus:border-amber-500 focus:ring-amber-500 bg-white text-sm"
+                            class="w-full px-4 py-2.5 rounded-2xl border-amber-100 dark:border-amber-900/20 focus:border-amber-500 focus:ring-amber-500 bg-white dark:bg-slate-900 text-sm dark:text-emerald-50"
                             placeholder="Ej. Tierra Negra Lote 1">
                     </div>
 
                     <div>
-                        <label class="block text-xs font-bold text-amber-700 uppercase tracking-wider mb-1.5">Descripción (Opcional)</label>
+                        <label class="block text-xs font-bold text-amber-700 dark:text-amber-400 uppercase tracking-wider mb-1.5">Descripción (Opcional)</label>
                         <textarea name="descripcion" id="sw_descripcion" rows="2"
-                            class="w-full px-4 py-2.5 rounded-2xl border-amber-100 focus:border-amber-500 focus:ring-amber-500 bg-white text-sm"
+                            class="w-full px-4 py-2.5 rounded-2xl border-amber-100 dark:border-amber-900/20 focus:border-amber-500 focus:ring-amber-500 bg-white dark:bg-slate-900 text-sm dark:text-emerald-50"
                             placeholder="Especifique ubicación o calidad..."></textarea>
                     </div>
 
                     <div>
-                        <label class="block text-xs font-bold text-amber-700 uppercase tracking-wider mb-1.5">Consumo de Agua Ideal (L/m²)</label>
+                        <label class="block text-xs font-bold text-amber-700 dark:text-amber-400 uppercase tracking-wider mb-1.5">Consumo de Agua Ideal (L/m²)</label>
                         <input type="number" name="consumo_agua_ideal" id="sw_consumo_agua_ideal" step="0.01" min="0" required
-                            class="w-full px-4 py-2.5 rounded-2xl border-amber-100 focus:border-amber-500 focus:ring-amber-500 bg-white text-sm"
+                            class="w-full px-4 py-2.5 rounded-2xl border-amber-100 dark:border-amber-900/20 focus:border-amber-500 focus:ring-amber-500 bg-white dark:bg-slate-900 text-sm dark:text-emerald-50"
                             placeholder="Ej. 5.50">
-                        <p class="text-[9px] text-amber-600 mt-1 italic leading-tight">Este valor se usa para automatizar las tareas de riego.</p>
+                        <p class="text-[9px] text-amber-600 dark:text-amber-400/60 mt-1 italic leading-tight">Este valor se usa para automatizar las tareas de riego.</p>
                     </div>
 
                     <!-- Impact Card -->
-                    <div class="bg-amber-50 p-4 rounded-xl border border-amber-100 relative overflow-hidden">
-                        <span class="text-[9px] font-bold text-amber-400 uppercase block mb-1.5">Impacto Técnico (Días)</span>
+                    <div class="bg-amber-50 dark:bg-amber-900/10 p-4 rounded-xl border border-amber-100 dark:border-amber-900/20 relative overflow-hidden">
+                        <span class="text-[9px] font-bold text-amber-400 dark:text-amber-500 uppercase block mb-1.5">Impacto Técnico (Días)</span>
                         <div class="flex items-center gap-3">
-                            <input type="number" name="impacto_dias" id="sw_impacto" class="text-2xl font-black bg-transparent w-20 border-b-2 border-amber-200 focus:ring-0 focus:border-amber-500 text-amber-700 placeholder:text-gray-300" placeholder="0" value="0">
-                            <span class="text-[10px] text-amber-600 font-medium leading-tight">Días sumados<br>al ciclo</span>
+                            <input type="number" name="impacto_dias" id="sw_impacto" class="text-2xl font-black bg-transparent w-20 border-b-2 border-amber-200 dark:border-amber-800 focus:ring-0 focus:border-amber-500 text-amber-700 dark:text-emerald-50 placeholder:text-gray-300" placeholder="0" value="0">
+                            <span class="text-[10px] text-amber-600 dark:text-amber-400 font-medium leading-tight">Días sumados<br>al ciclo</span>
                         </div>
                     </div>
 
@@ -100,34 +100,34 @@
 
         <!-- Suelos Habilitados Column -->
         <div class="xl:col-span-2">
-            <div class="bg-white rounded-3xl shadow-xl border border-emerald-50 overflow-hidden">
-                <div class="p-4 border-b border-emerald-50 bg-gray-50/50 flex justify-between items-center">
+            <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-xl border border-emerald-50 dark:border-emerald-900/10 overflow-hidden transition-all duration-300">
+                <div class="p-4 border-b border-emerald-50 dark:border-emerald-900/10 bg-gray-50/50 dark:bg-slate-900/50 flex justify-between items-center">
                     <div>
-                        <h3 class="text-lg font-black text-emerald-950">Suelos de la Empresa</h3>
-                        <p class="text-[10px] font-medium text-emerald-600 mt-1">Configuración técnica de terrenos</p>
+                        <h3 class="text-lg font-black text-emerald-950 dark:text-emerald-50">Suelos de la Empresa</h3>
+                        <p class="text-[10px] font-medium text-emerald-600 dark:text-emerald-400 mt-1">Configuración técnica de terrenos</p>
                     </div>
                 </div>
 
                 <div class="overflow-x-auto">
                     <table class="w-full text-left">
                         <thead>
-                            <tr class="bg-white text-[9px] font-black text-emerald-400 uppercase tracking-[0.2em] border-b border-emerald-50">
+                            <tr class="bg-white dark:bg-slate-800 text-[9px] font-black text-emerald-400 uppercase tracking-[0.2em] border-b border-emerald-50 dark:border-emerald-900/10">
                                 <th class="px-4 py-2">Identificador</th>
                                 <th class="px-4 py-2">Compensación</th>
                                 <th class="px-4 py-2 text-right">Gestión</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-emerald-50/50">
+                        <tbody class="divide-y divide-emerald-50/50 dark:divide-emerald-900/10">
                             @forelse($tipoSuelos as $suelo)
                             <tr class="hover:bg-emerald-50/30 transition-all group">
                                 <td class="px-4 py-2">
                                     <div class="flex items-center gap-3">
-                                        <div class="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center text-amber-600 font-black text-sm">
+                                        <div class="w-8 h-8 bg-amber-100 dark:bg-amber-900/30 rounded-lg flex items-center justify-center text-amber-600 dark:text-amber-400 font-black text-sm">
                                             {{ substr($suelo->nombre, 0, 1) }}
                                         </div>
                                         <div>
-                                            <span class="font-bold text-emerald-950 block text-xs leading-tight">{{ $suelo->nombre }}</span>
-                                            <span class="text-[9px] font-bold text-amber-500 uppercase italic">Base: {{ $suelo->catalogo->nombre ?? 'Manual' }}</span>
+                                            <span class="font-bold text-emerald-950 dark:text-emerald-50 block text-xs leading-tight">{{ $suelo->nombre }}</span>
+                                            <span class="text-[9px] font-bold text-amber-500 dark:text-amber-400 uppercase italic">Base: {{ $suelo->catalogo->nombre ?? 'Manual' }}</span>
                                         </div>
                                     </div>
                                 </td>
@@ -201,10 +201,10 @@
                     if (data.length > 0) {
                         data.forEach(item => {
                             const div = document.createElement('div');
-                            div.className = 'px-4 py-3 hover:bg-amber-50 cursor-pointer border-b border-amber-50 last:border-0 transition-colors';
+                            div.className = 'px-4 py-3 hover:bg-amber-50 dark:hover:bg-slate-700/50 cursor-pointer border-b border-amber-50 dark:border-amber-900/10 last:border-0 transition-colors focus:bg-amber-50 dark:focus:bg-slate-700/50';
                             div.innerHTML = `
-                                <div class="flex justify-between items-center">
-                                    <p class="font-black text-amber-950 text-sm">${item.nombre}</p>
+                                <div class="flex justify-between items-center transition-colors">
+                                    <p class="font-black text-amber-950 dark:text-emerald-50 text-sm">${item.nombre}</p>
                                     <span class="text-[10px] font-bold ${item.impacto_dias >= 0 ? 'text-red-500' : 'text-green-500'} uppercase">${item.impacto_dias > 0 ? '+' : ''}${item.impacto_dias} días</span>
                                 </div>
                             `;
@@ -214,10 +214,10 @@
                         
                         // Add "Custom" option at the end
                         const customDiv = document.createElement('div');
-                        customDiv.className = 'px-4 py-3 hover:bg-amber-50 cursor-pointer border-t border-amber-100 bg-amber-50/50 transition-colors';
+                        customDiv.className = 'px-4 py-3 hover:bg-amber-50 dark:hover:bg-slate-700/50 cursor-pointer border-t border-amber-100 dark:border-amber-900/20 bg-amber-50/50 dark:bg-slate-900/50 transition-colors';
                         customDiv.innerHTML = `
-                            <div class="flex space-x-3 items-center text-amber-700">
-                                <div class="bg-amber-200 text-amber-800 p-1.5 rounded-lg">
+                            <div class="flex space-x-3 items-center text-amber-700 dark:text-amber-400">
+                                <div class="bg-amber-200 dark:bg-amber-900/50 text-amber-800 dark:text-amber-200 p-1.5 rounded-lg">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
                                 </div>
                                 <span class="font-bold text-sm">Crear "${q}" como nuevo suelo</span>

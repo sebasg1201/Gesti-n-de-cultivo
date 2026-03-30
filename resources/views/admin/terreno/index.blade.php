@@ -7,7 +7,7 @@
         {{-- Las alertas de success/error ahora se manejan en el layout principal --}}
 
         @if ($errors->any())
-            <div class="auto-dismiss bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-xl shadow-sm mb-6">
+            <div class="auto-dismiss bg-red-100 dark:bg-red-900/30 border-l-4 border-red-500 text-red-700 dark:text-red-400 p-4 rounded-xl shadow-sm mb-6">
                 <div class="flex items-center mb-2">
                     <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -26,17 +26,17 @@
         <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
             <!-- Add/Edit Form Column -->
             <div class="xl:col-span-1">
-                <div class="bg-white rounded-3xl shadow-xl border border-emerald-50 p-6 sticky top-6">
+                <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-xl border border-emerald-50 dark:border-emerald-900/20 p-6 sticky top-6 transition-all duration-300">
                     <div class="flex items-center gap-3 mb-6">
-                        <div class="bg-emerald-600 p-3 rounded-2xl text-white shadow-lg shadow-emerald-100">
+                        <div class="bg-emerald-600 p-3 rounded-2xl text-white shadow-lg shadow-emerald-100 dark:shadow-none transition-all">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
                             </svg>
                         </div>
                         <div>
-                            <h3 id="formTitle" class="text-lg font-bold text-emerald-900">Registrar Terreno</h3>
-                            <p class="text-[10px] font-medium text-emerald-500 uppercase tracking-widest mt-1">Gestor
+                            <h3 id="formTitle" class="text-lg font-bold text-emerald-900 dark:text-emerald-50">Registrar Terreno</h3>
+                            <p class="text-[10px] font-medium text-emerald-500 dark:text-emerald-400 uppercase tracking-widest mt-1">Gestor
                                 Espacial</p>
                         </div>
                     </div>
@@ -46,10 +46,10 @@
                         <div id="methodField"></div>
 
                         <div>
-                            <label class="block text-xs font-bold text-emerald-700 uppercase tracking-wider mb-2">Nombre del
+                            <label class="block text-xs font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider mb-2">Nombre del
                                 Terreno</label>
                             <input type="text" name="nombre" id="nombre" required placeholder="Ej. Lote 1, Parcela Norte"
-                                class="w-full px-4 py-3 rounded-2xl border-emerald-100 focus:border-emerald-500 focus:ring-emerald-500 bg-emerald-50/30 text-sm transition-all"
+                                class="w-full px-4 py-3 rounded-2xl border-emerald-100 dark:border-emerald-900/20 focus:border-emerald-500 focus:ring-emerald-500 bg-emerald-50/30 dark:bg-slate-900 text-sm dark:text-emerald-50 transition-all"
                                 value="{{ old('nombre') }}">
                         </div>
 
@@ -60,21 +60,21 @@
                                 Ubicación en el Mapa
                             </label>
                             
-                            <div class="relative group">
-                                <div id="map" class="w-full h-72 rounded-3xl border-2 border-emerald-100 shadow-inner overflow-hidden z-0">
+                             <div class="relative group">
+                                <div id="map" class="w-full h-72 rounded-3xl border-2 border-emerald-100 dark:border-emerald-900 shadow-inner overflow-hidden z-0 transition-colors">
                                 </div>
                                 
                                 <!-- Weather Overlay -->
-                                <div id="map-weather" class="absolute top-3 right-3 z-[1000] bg-white/95 backdrop-blur-md rounded-2xl p-3 shadow-xl border border-emerald-100 min-w-[120px] transition-all duration-500 pointer-events-none opacity-0 translate-y-2 translate-x-1">
+                                <div id="map-weather" class="absolute top-3 right-3 z-[1000] bg-white/95 dark:bg-slate-800/95 backdrop-blur-md rounded-2xl p-3 shadow-xl border border-emerald-100 dark:border-emerald-900/50 min-w-[120px] transition-all duration-500 pointer-events-none opacity-0 translate-y-2 translate-x-1">
                                     <div class="flex items-center gap-3">
-                                        <div id="map-weather-icon" class="w-8 h-8 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600">
+                                        <div id="map-weather-icon" class="w-8 h-8 rounded-xl bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
                                             </svg>
                                         </div>
                                         <div>
-                                            <span id="map-weather-temp" class="text-base font-black text-emerald-950 block leading-none">--°C</span>
-                                            <p id="map-weather-desc" class="text-[9px] font-bold text-emerald-500 uppercase tracking-widest mt-1">Sincronizando...</p>
+                                            <span id="map-weather-temp" class="text-base font-black text-emerald-950 dark:text-emerald-50 block leading-none">--°C</span>
+                                            <p id="map-weather-desc" class="text-[9px] font-bold text-emerald-500 dark:text-emerald-400 uppercase tracking-widest mt-1">Sincronizando...</p>
                                         </div>
                                     </div>
                                 </div>
@@ -82,80 +82,80 @@
 
                             <div class="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label class="block text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-1 ml-2">Latitud</label>
+                                    <label class="block text-[10px] font-black text-emerald-500 dark:text-emerald-400 uppercase tracking-widest mb-1 ml-2">Latitud</label>
                                     <input type="number" step="any" name="latitud" id="latitud" required
-                                        class="w-full px-4 py-3 rounded-2xl bg-emerald-50/30 border-emerald-100 focus:border-emerald-500 focus:ring-emerald-500 text-sm font-mono text-emerald-900 transition-all"
+                                        class="w-full px-4 py-3 rounded-2xl bg-emerald-50/30 dark:bg-slate-900 border-emerald-100 dark:border-emerald-900/20 focus:border-emerald-500 focus:ring-emerald-500 text-sm font-mono text-emerald-900 dark:text-emerald-50 transition-all"
                                         placeholder="0.000000">
                                 </div>
                                 <div>
-                                    <label class="block text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-1 ml-2">Longitud</label>
+                                    <label class="block text-[10px] font-black text-emerald-500 dark:text-emerald-400 uppercase tracking-widest mb-1 ml-2">Longitud</label>
                                     <input type="number" step="any" name="longitud" id="longitud" required
-                                        class="w-full px-4 py-3 rounded-2xl bg-emerald-50/30 border-emerald-100 focus:border-emerald-500 focus:ring-emerald-500 text-sm font-mono text-emerald-900 transition-all"
+                                        class="w-full px-4 py-3 rounded-2xl bg-emerald-50/30 dark:bg-slate-900 border-emerald-100 dark:border-emerald-900/20 focus:border-emerald-500 focus:ring-emerald-500 text-sm font-mono text-emerald-900 dark:text-emerald-50 transition-all"
                                         placeholder="0.000000">
                                 </div>
                             </div>
                         </div>
 
                         <div>
-                            <label class="block text-xs font-bold text-emerald-700 uppercase tracking-wider mb-2">Ubicación Específica</label>
+                            <label class="block text-xs font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider mb-2">Ubicación Específica</label>
                             <input type="text" name="ubicacion" id="ubicacion" placeholder="Ej. Vereda La Cima, Finca San José..."
-                                class="w-full px-4 py-3 rounded-2xl border-emerald-100 focus:border-emerald-500 focus:ring-emerald-500 bg-emerald-50/30 text-sm transition-all"
+                                class="w-full px-4 py-3 rounded-2xl border-emerald-100 dark:border-emerald-900/20 focus:border-emerald-500 focus:ring-emerald-500 bg-emerald-50/30 dark:bg-slate-900 text-sm dark:text-emerald-50 transition-all font-medium"
                                 value="{{ old('ubicacion') }}">
                         </div>
 
                                 <div class="grid grid-cols-2 gap-4">
                                     <div>
                                         <label
-                                            class="block text-xs font-bold text-emerald-700 uppercase tracking-wider mb-2">Departamento</label>
+                                            class="block text-xs font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider mb-2">Departamento</label>
                                         <input type="text" name="departamento" id="departamento" placeholder="Ej. Tolima"
-                                            class="w-full px-4 py-3 rounded-2xl border-emerald-100 focus:border-emerald-500 focus:ring-emerald-500 bg-emerald-50/30 text-sm transition-all"
+                                            class="w-full px-4 py-3 rounded-2xl border-emerald-100 dark:border-emerald-900/20 focus:border-emerald-500 focus:ring-emerald-500 bg-emerald-50/30 dark:bg-slate-900 text-sm dark:text-emerald-50 transition-all font-medium"
                                             value="{{ old('departamento') }}">
                                     </div>
                                     <div>
                                         <label
-                                            class="block text-xs font-bold text-emerald-700 uppercase tracking-wider mb-2">Ciudad
+                                            class="block text-xs font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider mb-2">Ciudad
                                             / Municipio</label>
                                         <input type="text" name="ciudad" id="ciudad" placeholder="Ej. Ibagué"
-                                            class="w-full px-4 py-3 rounded-2xl border-emerald-100 focus:border-emerald-500 focus:ring-emerald-500 bg-emerald-50/30 text-sm transition-all"
+                                            class="w-full px-4 py-3 rounded-2xl border-emerald-100 dark:border-emerald-900/20 focus:border-emerald-500 focus:ring-emerald-500 bg-emerald-50/30 dark:bg-slate-900 text-sm dark:text-emerald-50 transition-all font-medium"
                                             value="{{ old('ciudad') }}">
                                     </div>
                                 </div>
 
                                 <div>
                                     <label
-                                        class="block text-xs font-bold text-emerald-700 uppercase tracking-wider mb-2">Código
+                                        class="block text-xs font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider mb-2">Código
                                         Postal</label>
                                     <input type="text" name="codigo_postal" id="codigo_postal" placeholder="Ej. 730001"
-                                        class="w-full px-4 py-3 rounded-2xl border-emerald-100 focus:border-emerald-500 focus:ring-emerald-500 bg-emerald-50/30 text-sm transition-all"
+                                        class="w-full px-4 py-3 rounded-2xl border-emerald-100 dark:border-emerald-900/20 focus:border-emerald-500 focus:ring-emerald-500 bg-emerald-50/30 dark:bg-slate-900 text-sm dark:text-emerald-50 transition-all font-medium"
                                         value="{{ old('codigo_postal') }}">
                                 </div>
 
                                 <div class="grid grid-cols-2 gap-4">
                                     <div>
                                         <label
-                                            class="block text-xs font-bold text-emerald-700 uppercase tracking-wider mb-2">Ancho
+                                            class="block text-xs font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider mb-2">Ancho
                                             (m)</label>
                                         <input type="number" step="0.01" name="Ancho" id="Ancho" required min="1"
-                                            class="w-full px-4 py-3 rounded-2xl border-emerald-100 focus:border-emerald-500 focus:ring-emerald-500 bg-emerald-50/30 text-sm transition-all"
+                                            class="w-full px-4 py-3 rounded-2xl border-emerald-100 dark:border-emerald-900/20 focus:border-emerald-500 focus:ring-emerald-500 bg-emerald-50/30 dark:bg-slate-900 text-sm dark:text-emerald-50 transition-all font-medium"
                                             value="{{ old('Ancho') }}">
                                     </div>
                                     <div>
                                         <label
-                                            class="block text-xs font-bold text-emerald-700 uppercase tracking-wider mb-2">Largo
+                                            class="block text-xs font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider mb-2">Largo
                                             (m)</label>
                                         <input type="number" step="0.01" name="Largo" id="Largo" required min="1"
-                                            class="w-full px-4 py-3 rounded-2xl border-emerald-100 focus:border-emerald-500 focus:ring-emerald-500 bg-emerald-50/30 text-sm transition-all"
+                                            class="w-full px-4 py-3 rounded-2xl border-emerald-100 dark:border-emerald-900/20 focus:border-emerald-500 focus:ring-emerald-500 bg-emerald-50/30 dark:bg-slate-900 text-sm dark:text-emerald-50 transition-all font-medium"
                                             value="{{ old('Largo') }}">
                                     </div>
                                 </div>
 
                                 <div>
                                     <label
-                                        class="block text-xs font-bold text-emerald-700 uppercase tracking-wider mb-2">Tipo
+                                        class="block text-xs font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider mb-2">Tipo
                                         de
                                         Suelo</label>
                                     <select name="id_tipo_suelo" id="id_tipo_suelo" required
-                                        class="w-full px-4 py-3 rounded-2xl border-emerald-100 focus:border-emerald-500 focus:ring-emerald-500 bg-emerald-50/30 text-sm transition-all">
+                                        class="w-full px-4 py-3 rounded-2xl border-emerald-100 dark:border-emerald-900/20 focus:border-emerald-500 focus:ring-emerald-500 bg-emerald-50/30 dark:bg-slate-900 text-sm dark:text-emerald-50 transition-all font-medium">
                                         <option value="">Seleccione un suelo...</option>
                                         @foreach($tipoSuelos as $suelo)
                                             <option value="{{ $suelo->id_tipo_suelo }}" {{ old('id_tipo_suelo') == $suelo->id_tipo_suelo ? 'selected' : '' }}>
@@ -167,11 +167,11 @@
 
                                 <div id="estadoContainer" class="hidden animate-in fade-in duration-300">
                                     <label
-                                        class="block text-xs font-bold text-emerald-700 uppercase tracking-wider mb-2">Estado
+                                        class="block text-xs font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider mb-2">Estado
                                         del
                                         Terreno</label>
                                     <select name="id_estado" id="id_estado"
-                                        class="w-full px-4 py-3 rounded-2xl border-emerald-100 focus:border-emerald-500 focus:ring-emerald-500 bg-emerald-50/30 text-sm transition-all">
+                                        class="w-full px-4 py-3 rounded-2xl border-emerald-100 dark:border-emerald-900/20 focus:border-emerald-500 focus:ring-emerald-500 bg-emerald-50/30 dark:bg-slate-900 text-sm dark:text-emerald-50 transition-all font-medium">
                                         @foreach($estados as $estado)
                                             <option value="{{ $estado->id_estado }}">
                                                 {{ $estado->nombre_estado }}
@@ -202,19 +202,19 @@
             <!-- Inventory List Column -->
             <div class="xl:col-span-2">
                 <div
-                    class="bg-white rounded-3xl shadow-xl border border-emerald-50 overflow-hidden min-h-[600px] flex flex-col">
+                    class="bg-white dark:bg-slate-800 rounded-3xl shadow-xl border border-emerald-50 dark:border-emerald-900/20 overflow-hidden min-h-[600px] flex flex-col transition-all duration-300">
                     <div
-                        class="p-6 border-b border-emerald-50 bg-gray-50/50 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                        class="p-6 border-b border-emerald-50 dark:border-emerald-900/10 bg-gray-50/50 dark:bg-slate-900/50 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                         <div>
-                            <h3 class="text-xl font-black text-emerald-950">Parcelas Registradas</h3>
-                            <p class="text-xs font-medium text-emerald-600 mt-1">Mapa general de su finca</p>
+                            <h3 class="text-xl font-black text-emerald-950 dark:text-emerald-50">Parcelas Registradas</h3>
+                            <p class="text-xs font-medium text-emerald-600 dark:text-emerald-400 mt-1">Mapa general de su finca</p>
                         </div>
 
                         <div class="flex flex-wrap items-center gap-3">
                             <form action="{{ route('admin.terrenos.index') }}" method="GET"
-                                class="flex items-center gap-2 bg-white p-1 rounded-2xl border border-emerald-100 shadow-sm shadow-emerald-100/50">
+                                class="flex items-center gap-2 bg-white dark:bg-slate-900 p-1 rounded-2xl border border-emerald-100 dark:border-emerald-900/30 shadow-sm shadow-emerald-100/50 dark:shadow-none">
                                 <select name="ciudad"
-                                    class="bg-transparent border-0 text-[10px] font-bold text-emerald-700 focus:ring-0 cursor-pointer pl-4">
+                                    class="bg-transparent border-0 text-[10px] font-bold text-emerald-700 dark:text-emerald-400 focus:ring-0 cursor-pointer pl-4">
                                     <option value="">Municipio...</option>
                                     @foreach($municipios as $muni)
                                         <option value="{{ $muni }}" {{ request('ciudad') == $muni ? 'selected' : '' }}>{{ $muni }}
@@ -222,7 +222,7 @@
                                     @endforeach
                                 </select>
                                 <select name="month"
-                                    class="bg-transparent border-0 text-[10px] font-bold text-emerald-700 focus:ring-0 cursor-pointer">
+                                    class="bg-transparent border-0 text-[10px] font-bold text-emerald-700 dark:text-emerald-400 focus:ring-0 cursor-pointer">
                                     <option value="">Mes...</option>
                                     @php
                                         $meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
@@ -233,14 +233,14 @@
                                     @endforeach
                                 </select>
                                 <select name="year"
-                                    class="bg-transparent border-0 text-[10px] font-bold text-emerald-700 focus:ring-0 cursor-pointer">
+                                    class="bg-transparent border-0 text-[10px] font-bold text-emerald-700 dark:text-emerald-400 focus:ring-0 cursor-pointer">
                                     <option value="">Año...</option>
                                     @for($y = date('Y'); $y >= 2024; $y--)
                                         <option value="{{ $y }}" {{ request('year') == $y ? 'selected' : '' }}>{{ $y }}</option>
                                     @endfor
                                 </select>
                                 <button type="submit"
-                                    class="p-1.5 bg-emerald-50 text-emerald-600 rounded-xl hover:bg-emerald-100 transition-colors mr-1">
+                                    class="p-1.5 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-xl hover:bg-emerald-100 dark:hover:bg-emerald-800 transition-colors mr-1">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -249,7 +249,7 @@
                             </form>
 
                             <a href="{{ route('admin.terrenos.export', request()->all()) }}"
-                                class="flex items-center gap-2 px-5 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-[1.5rem] text-[10px] font-black uppercase tracking-widest shadow-lg shadow-emerald-100 transition-all transform hover:-translate-y-0.5">
+                                class="flex items-center gap-2 px-5 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-[1.5rem] text-[10px] font-black uppercase tracking-widest shadow-lg shadow-emerald-100 dark:shadow-none transition-all transform hover:-translate-y-0.5">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -257,11 +257,11 @@
                                 Exportar CSV
                             </a>
 
-                            <div class="bg-white border-2 border-emerald-100 px-6 py-2 rounded-2xl flex items-center gap-3">
+                            <div class="bg-white dark:bg-slate-900 border-2 border-emerald-100 dark:border-emerald-900/20 px-6 py-2 rounded-2xl flex items-center gap-3 shadow-sm transition-colors">
                                 <span
-                                    class="text-2xl font-black text-emerald-600">{{ collect($terrenos->items())->count() }}</span>
+                                    class="text-2xl font-black text-emerald-600 dark:text-emerald-400">{{ collect($terrenos->items())->count() }}</span>
                                 <span
-                                    class="text-[10px] font-bold text-emerald-400 uppercase tracking-widest leading-none">Terrenos<br>Totales</span>
+                                    class="text-[10px] font-bold text-emerald-400 dark:text-emerald-600 uppercase tracking-widest leading-none">Terrenos<br>Totales</span>
                             </div>
                         </div>
                     </div>
@@ -270,7 +270,7 @@
                         <table class="w-full text-left">
                             <thead>
                                 <tr
-                                    class="bg-white text-[10px] font-black text-emerald-400 uppercase tracking-[0.2em] border-b border-emerald-50">
+                                    class="bg-white dark:bg-slate-900/50 text-[10px] font-black text-emerald-400 uppercase tracking-[0.2em] border-b border-emerald-50 dark:border-emerald-900/10">
                                     <th class="px-6 py-4">Terreno</th>
                                     <th class="px-6 py-4">Coordenadas</th>
                                     <th class="px-6 py-4">Dimensiones</th>
@@ -285,7 +285,7 @@
                                         <td class="px-6 py-4">
                                             <div class="flex items-center gap-4">
                                                 <div
-                                                    class="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center text-white font-black text-base shadow-lg shadow-emerald-100 transform group-hover:rotate-12 transition-transform">
+                                                    class="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center text-white font-black text-base shadow-lg shadow-emerald-100 dark:shadow-none transform group-hover:rotate-12 transition-transform">
                                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                             d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064" />
@@ -293,9 +293,9 @@
                                                 </div>
                                                 <div>
                                                     <span
-                                                        class="font-black text-emerald-950 block text-sm">{{ $terreno->nombre }}</span>
+                                                        class="font-black text-emerald-950 dark:text-emerald-50 block text-sm">{{ $terrenos_item->nombre ?? $terreno->nombre }}</span>
                                                     <span
-                                                        class="text-[9px] font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1 mt-1 font-mono">
+                                                        class="text-[9px] font-bold text-emerald-400 dark:text-emerald-500 uppercase tracking-wider flex items-center gap-1 mt-1 font-mono">
                                                         <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor"
                                                             viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -319,13 +319,13 @@
                                         <td class="px-6 py-4">
                                             <div class="flex flex-col gap-1">
                                                 <span
-                                                    class="text-[10px] font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-100 flex items-center gap-1.5">
-                                                    <span class="text-[8px] text-emerald-400 w-5">LAT:</span>
+                                                    class="text-[10px] font-mono font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 px-2 py-0.5 rounded-md border border-emerald-100 dark:border-emerald-800 flex items-center gap-1.5">
+                                                    <span class="text-[8px] text-emerald-400 dark:text-emerald-600 w-5">LAT:</span>
                                                     {{ number_format($terreno->latitud, 6) }}
                                                 </span>
                                                 <span
-                                                    class="text-[10px] font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-100 flex items-center gap-1.5">
-                                                    <span class="text-[8px] text-emerald-400 w-5">LNG:</span>
+                                                    class="text-[10px] font-mono font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 px-2 py-0.5 rounded-md border border-emerald-100 dark:border-emerald-800 flex items-center gap-1.5">
+                                                    <span class="text-[8px] text-emerald-400 dark:text-emerald-600 w-5">LNG:</span>
                                                     {{ number_format($terreno->longitud, 6) }}
                                                 </span>
                                             </div>
@@ -334,7 +334,7 @@
                                             <div class="space-y-1">
                                                 <div class="flex flex-col gap-1">
                                                     <span
-                                                        class="text-[10px] font-black text-emerald-900 border border-emerald-100 bg-white px-2 py-1 rounded-lg shadow-sm inline-flex items-center gap-1.5">
+                                                        class="text-[10px] font-black text-emerald-900 dark:text-emerald-50 border border-emerald-100 dark:border-emerald-900/40 bg-white dark:bg-slate-900 px-2 py-1 rounded-lg shadow-sm inline-flex items-center gap-1.5">
                                                         <svg class="w-3 h-3 text-emerald-500" fill="none" stroke="currentColor"
                                                             viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -344,7 +344,7 @@
                                                         {{ $terreno->Ancho }}m &times; {{ $terreno->Largo }}m
                                                     </span>
                                                     <span
-                                                        class="text-[9px] font-bold text-emerald-700 bg-emerald-50 px-2 py-1 rounded-lg mt-0.5 inline-block border border-emerald-100">
+                                                        class="text-[9px] font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 px-2 py-1 rounded-lg mt-0.5 inline-block border border-emerald-100 dark:border-emerald-800">
                                                         &approx; {{ number_format($terreno->area_m2 ?? ($terreno->Ancho * $terreno->Largo), 2) }}
                                                         m&sup2;
                                                     </span>
@@ -354,17 +354,17 @@
                                         <td class="px-6 py-4">
                                             @if(optional($terreno->estado)->id_estado == 7)
                                                 <div
-                                                    class="bg-emerald-50 rounded-xl px-2 py-1 border border-emerald-200 inline-flex items-center gap-1.5 shadow-sm">
+                                                    class="bg-emerald-50 dark:bg-emerald-900/30 rounded-xl px-2 py-1 border border-emerald-200 dark:border-emerald-800/40 inline-flex items-center gap-1.5 shadow-sm">
                                                     <div class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
                                                     <span
-                                                        class="text-xs font-black text-emerald-700">{{ optional($terreno->estado)->nombre_estado ?? 'Disponible' }}</span>
+                                                        class="text-xs font-black text-emerald-700 dark:text-emerald-400">{{ optional($terreno->estado)->nombre_estado ?? 'Disponible' }}</span>
                                                 </div>
                                             @else
                                                 <div
-                                                    class="bg-amber-50 rounded-xl px-2 py-1 border border-amber-200 inline-flex items-center gap-1.5 shadow-sm">
+                                                    class="bg-amber-50 dark:bg-amber-900/30 rounded-xl px-2 py-1 border border-amber-200 dark:border-amber-800/40 inline-flex items-center gap-1.5 shadow-sm">
                                                     <div class="w-1.5 h-1.5 rounded-full bg-amber-500"></div>
                                                     <span
-                                                        class="text-xs font-black text-amber-700">{{ optional($terreno->estado)->nombre_estado ?? 'Ocupado' }}</span>
+                                                        class="text-xs font-black text-amber-700 dark:text-amber-400">{{ optional($terreno->estado)->nombre_estado ?? 'Ocupado' }}</span>
                                                 </div>
                                             @endif
                                         </td>
@@ -417,7 +417,7 @@
                         </table>
                     </div>
 
-                    <div class="p-6 bg-gray-50/50 border-t border-emerald-50">
+                    <div class="p-6 bg-gray-50/50 dark:bg-slate-900/50 border-t border-emerald-50 dark:border-emerald-900/10">
                         {{ $terrenos->links() }}
                     </div>
                 </div>

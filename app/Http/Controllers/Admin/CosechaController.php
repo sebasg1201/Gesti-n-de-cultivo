@@ -369,7 +369,9 @@ class CosechaController extends Controller
         $riegosCompletados = $riegos->where('id_estado', 15)->count();
 
         $insumos = \App\Models\InsumoCosecha::with('insumo')->where('id_cosecha', $id)->get();
-        $fases = \App\Models\FaseProgramada::where('id_cosecha', $id)->get();
+        $fases = \App\Models\FaseProgramada::where('id_terreno', $cosecha->id_terreno)
+            ->whereBetween('fecha_programada', [$fechaSiembra, $fechaEstimada ?? \Carbon\Carbon::now()])
+            ->get();
 
         $historial = collect();
 
@@ -395,7 +397,8 @@ class CosechaController extends Controller
             $i->tipo_historial = 'insumo';
             $i->fecha_historial = $i->fecha_programada;
             $i->titulo_historial = 'Aplicación de Insumo';
-            $i->descripcion_historial = ($i->insumo->Nombre ?? 'Insumo') . ' (Cant: ' . $i->cantidad_usada . ')';
+            $cantidadLimpia = (float) $i->cantidad_usada;
+            $i->descripcion_historial = ($i->insumo->Nombre ?? 'Insumo') . ' (Cant: ' . $cantidadLimpia . ')';
             $i->estado_historial = in_array($i->id_estado, [15]) ? 'Completado' : ($i->id_estado == 17 ? 'En Proceso' : (in_array($i->id_estado, [16, 18]) ? 'Perdida' : 'Pendiente'));
             $historial->push($i);
         }

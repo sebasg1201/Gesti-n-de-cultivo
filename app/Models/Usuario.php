@@ -51,6 +51,11 @@ class Usuario extends Authenticatable implements CanResetPasswordContract
         return $this->belongsTo(TipoUsuario::class, 'id_tipo_usuario', 'id_tipo_usuario');
     }
 
+    public function estado()
+    {
+        return $this->belongsTo(Estado::class, 'id_estado', 'id_estado');
+    }
+
     public function estadoTrabajador()
     {
         return $this->belongsTo(EstadoTrabajador::class, 'id_estado_trabajador', 'id_estado_trabajador');

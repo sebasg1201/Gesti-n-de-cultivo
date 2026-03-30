@@ -6,6 +6,14 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>AgriManager</title>
     @vite('resources/css/app.css')
+    <script>
+        // Inmediatamente aplicar el tema para evitar destellos blancos
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
     <style>
         /* Ocultar texto de resultados en paginación solo para el panel de SuperAdmin */
         nav[role="navigation"] div.hidden.sm\:flex-1.sm\:flex.sm\:items-center.sm\:justify-between > div:first-child {
@@ -150,6 +158,12 @@
 
                     <!-- DERECHA -->
                     <div class="flex items-center gap-6">
+
+                        <!-- Theme Toggle Header -->
+                        <button id="theme-toggle-header" type="button" class="hidden md:flex p-2.5 lg:p-3 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-md transition-all duration-200 cursor-pointer focus:outline-none border border-white/20 shadow-lg" title="Cambiar Tema">
+                            <svg class="w-5 h-5 lg:w-6 lg:h-6 text-white hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                            <svg class="w-5 h-5 lg:w-6 lg:h-6 text-white block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+                        </button>
 
                         <!-- NOTIFICACIONES -->
                         <div class="relative" id="notif-wrapper">
@@ -571,6 +585,21 @@
                 setTimeout(closeWelcomePopup, 8600);
             } else if (popup) {
                 popup.remove();
+            }
+
+            // Sincronización del Tema
+            const toggleHeader = document.getElementById('theme-toggle-header');
+            if (toggleHeader) {
+                toggleHeader.addEventListener('click', () => {
+                    const html = document.documentElement;
+                    if (html.classList.contains('dark')) {
+                        html.classList.remove('dark');
+                        localStorage.setItem('theme', 'light');
+                    } else {
+                        html.classList.add('dark');
+                        localStorage.setItem('theme', 'dark');
+                    }
+                });
             }
         });
     </script>

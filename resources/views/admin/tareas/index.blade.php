@@ -6,32 +6,32 @@
 <div class="space-y-6">
 <div class="space-y-10 pb-20">
     {{-- Header Section --}}
-    <div class="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6 overflow-hidden relative">
-        <div class="absolute -right-10 -top-10 w-40 h-40 bg-emerald-50 rounded-full blur-3xl opacity-50"></div>
+    <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-gray-100 dark:border-emerald-900/20 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6 overflow-hidden relative transition-all duration-300">
+        <div class="absolute -right-10 -top-10 w-40 h-40 bg-emerald-50 dark:bg-emerald-900/20 rounded-full blur-3xl opacity-50"></div>
         <div class="relative z-10">
-            <h1 class="text-3xl font-black text-gray-900 tracking-tight">Gestión Operativa</h1>
-            <p class="text-gray-500 font-medium">Asigna y supervisa las labores de cultivo de tu empresa.</p>
+            <h1 class="text-3xl font-black text-gray-900 dark:text-emerald-50 tracking-tight">Gestión Operativa</h1>
+            <p class="text-gray-500 dark:text-emerald-400 font-medium">Asigna y supervisa las labores de cultivo de tu empresa.</p>
         </div>
         <div class="flex items-center gap-3 relative z-10">
             <span class="flex h-3 w-3">
                 <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                 <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
             </span>
-            <span class="bg-emerald-100 text-emerald-800 text-xs font-black px-3 py-1 rounded-full uppercase tracking-widest">En Vivo</span>
+            <span class="bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-400 text-xs font-black px-3 py-1 rounded-full uppercase tracking-widest">En Vivo</span>
         </div>
     </div>
 
     {{-- Creation Cards Section --}}
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         {{-- Card: Riego --}}
-        <div class="group bg-white p-1 rounded-[2.5rem] border border-gray-100 shadow-xl shadow-gray-200/50 hover:shadow-blue-200/40 transition-all duration-500 hover:-translate-y-2 relative overflow-hidden">
+        <div class="group bg-white dark:bg-slate-800 p-1 rounded-[2.5rem] border border-gray-100 dark:border-emerald-900/20 shadow-xl shadow-gray-200/50 dark:shadow-none hover:shadow-blue-200/40 transition-all duration-500 hover:-translate-y-2 relative overflow-hidden">
             <div class="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity">
-                <svg class="w-32 h-32 text-blue-600" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+                <svg class="w-32 h-32 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
             </div>
             <div class="p-8 space-y-6 relative z-10">
-                <div class="w-16 h-16 bg-blue-50 rounded-3xl flex items-center justify-center text-blue-600 shadow-inner group-hover:scale-110 transition-transform duration-500">
+                <div class="w-16 h-16 bg-blue-50 dark:bg-blue-900/30 rounded-3xl flex items-center justify-center text-blue-600 dark:text-blue-400 shadow-inner group-hover:scale-110 transition-transform duration-500">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 21.5c-3.5 0-6.5-3-6.5-6.5 0-2.5 1.5-5 6.5-11 5 6 6.5 8.5 6.5 11 0 3.5-3 6.5-6.5 6.5z" />
                     </svg>
                 </div>
                 <div>
@@ -51,14 +51,14 @@
         </div>
 
         {{-- Card: Insumo --}}
-        <div class="group bg-white p-1 rounded-[2.5rem] border border-gray-100 shadow-xl shadow-gray-200/50 hover:shadow-purple-200/40 transition-all duration-500 hover:-translate-y-2 relative overflow-hidden">
+        <div class="group bg-white dark:bg-slate-800 p-1 rounded-[2.5rem] border border-gray-100 dark:border-emerald-900/20 shadow-xl shadow-gray-200/50 dark:shadow-none hover:shadow-purple-200/40 transition-all duration-500 hover:-translate-y-2 relative overflow-hidden">
             <div class="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity">
-                <svg class="w-32 h-32 text-purple-600" fill="currentColor" viewBox="0 0 24 24"><path d="M19 13H5v-2h14v2z"/></svg>
+                <svg class="w-32 h-32 text-purple-600 dark:text-purple-400" fill="currentColor" viewBox="0 0 24 24"><path d="M19 13H5v-2h14v2z"/></svg>
             </div>
             <div class="p-8 space-y-6 relative z-10">
-                <div class="w-16 h-16 bg-purple-50 rounded-3xl flex items-center justify-center text-purple-600 shadow-inner group-hover:scale-110 transition-transform duration-500">
+                <div class="w-16 h-16 bg-purple-50 dark:bg-purple-900/30 rounded-3xl flex items-center justify-center text-purple-600 dark:text-purple-400 shadow-inner group-hover:scale-110 transition-transform duration-500">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 01-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
                     </svg>
                 </div>
                 <div>
@@ -78,12 +78,12 @@
         </div>
 
         {{-- Card: General --}}
-        <div class="group bg-white p-1 rounded-[2.5rem] border border-gray-100 shadow-xl shadow-gray-200/50 hover:shadow-emerald-200/40 transition-all duration-500 hover:-translate-y-2 relative overflow-hidden">
+        <div class="group bg-white dark:bg-slate-800 p-1 rounded-[2.5rem] border border-gray-100 dark:border-emerald-900/20 shadow-xl shadow-gray-200/50 dark:shadow-none hover:shadow-emerald-200/40 transition-all duration-500 hover:-translate-y-2 relative overflow-hidden">
             <div class="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity">
-                <svg class="w-32 h-32 text-emerald-600" fill="currentColor" viewBox="0 0 24 24"><path d="M4 6h16v12H4z"/></svg>
+                <svg class="w-32 h-32 text-emerald-600 dark:text-emerald-400" fill="currentColor" viewBox="0 0 24 24"><path d="M4 6h16v12H4z"/></svg>
             </div>
             <div class="p-8 space-y-6 relative z-10">
-                <div class="w-16 h-16 bg-emerald-50 rounded-3xl flex items-center justify-center text-emerald-600 shadow-inner group-hover:scale-110 transition-transform duration-500">
+                <div class="w-16 h-16 bg-emerald-50 dark:bg-emerald-900/30 rounded-3xl flex items-center justify-center text-emerald-600 dark:text-emerald-400 shadow-inner group-hover:scale-110 transition-transform duration-500">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
                     </svg>

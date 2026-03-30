@@ -15,6 +15,8 @@ class RegistroTrabajo extends Model
 
     protected $fillable = [
         'id_insumo_cosecha',
+        'id_fase',
+        'id_riego',
         'documento_trabajador',
         'fecha_trabajada',
         'foto_evidencia',
@@ -30,5 +32,15 @@ class RegistroTrabajo extends Model
     public function insumoCosecha()
     {
         return $this->belongsTo(InsumoCosecha::class, 'id_insumo_cosecha', 'id_insumo_cosecha');
+    }
+
+    public function fase()
+    {
+        return $this->belongsTo(FaseProgramada::class, 'id_fase', 'id_fase');
+    }
+
+    public function riego()
+    {
+        return $this->belongsTo(Riego::class, 'id_riego', 'id_riego');
     }
 }
