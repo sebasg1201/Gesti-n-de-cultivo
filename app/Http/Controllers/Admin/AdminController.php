@@ -61,15 +61,15 @@ class AdminController extends Controller
         // Completadas de la semana (9 = Realizado/Aplicado, 15 = Completado/Realizado)
         $fasesSemanaCompletas = \App\Models\FaseProgramada::whereHas('terreno', function ($q) use ($id_empresa) {
             $q->where('id_empresa', $id_empresa);
-        })->whereBetween('fecha_programada', [$inicioSemana, $finSemana])->whereIn('id_estado', [9, 15])->count();
+        })->whereBetween('fecha_programada', [$inicioSemana, $finSemana])->where('id_estado', 15)->count();
 
         $riegosSemanaCompletas = \App\Models\Riego::whereHas('cosecha', function ($q) use ($id_empresa) {
             $q->where('id_empresa', $id_empresa);
-        })->whereBetween('fecha_programada', [$inicioSemana, $finSemana])->whereIn('id_estado', [9, 15])->count();
+        })->whereBetween('fecha_programada', [$inicioSemana, $finSemana])->where('id_estado', 15)->count();
 
         $insumosSemanaCompletas = \App\Models\InsumoCosecha::whereHas('cosecha', function ($q) use ($id_empresa) {
             $q->where('id_empresa', $id_empresa);
-        })->whereBetween('fecha_programada', [$inicioSemana, $finSemana])->whereIn('id_estado', [9, 15])->count();
+        })->whereBetween('fecha_programada', [$inicioSemana, $finSemana])->where('id_estado', 15)->count();
 
         $totalCompletasSemana = $fasesSemanaCompletas + $riegosSemanaCompletas + $insumosSemanaCompletas;
 
@@ -180,7 +180,7 @@ class AdminController extends Controller
 
             // Simular impacto del ultimo riego
             $ultimoRiego = \App\Models\Riego::where('id_cosecha', $cosechaActiva->id_cosecha)
-                ->where('id_estado', 9)
+                ->where('id_estado', 15)
                 ->orderBy('fecha_programada', 'desc')->first();
             if ($ultimoRiego && isset($ultimoRiego->fecha_programada) && \Carbon\Carbon::parse($ultimoRiego->fecha_programada)->diffInDays(now()) < 2) {
                 $humedad = min(100, $humedad + 20); // Aumentar humedad temporalmente
@@ -228,17 +228,13 @@ class AdminController extends Controller
         $stats['trabajos_en_proceso'] = \App\Models\FaseProgramada::whereHas('usuario', function ($q) use ($id_empresa) {
             $q->where('id_empresa', $id_empresa);
         })->where('id_estado', 8)->count(); // 8 = En Proceso
+        $stats['alertas'] = \App\Models\Soporte::where('id_empresa', $id_empresa)->where('estado', 'Pendiente')->count();
 
         $stats['trabajos_realizados'] = \App\Models\FaseProgramada::whereHas('usuario', function ($q) use ($id_empresa) {
             $q->where('id_empresa', $id_empresa);
         })->where('id_estado', 15)->count(); // 15 = Realizado
 
         return view('admin.inicio', compact('stats'));
-    }
-
-    public function configuracion()
-    {
-        return view('admin.configuracion.index');
     }
 
     public function trabajadorInicio()

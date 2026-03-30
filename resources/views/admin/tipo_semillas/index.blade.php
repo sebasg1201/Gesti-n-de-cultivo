@@ -7,7 +7,7 @@
         <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
             <!-- Advanced Search & Config Column -->
             <div class="xl:col-span-1">
-                <div class="bg-white rounded-3xl shadow-xl border border-emerald-50 p-5 sticky top-6">
+                <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-xl border border-emerald-50 dark:border-emerald-900/20 p-5 sticky top-6 transition-colors duration-300">
                     <div class="flex items-center gap-3 mb-4">
                         <div class="bg-emerald-600 p-2.5 rounded-2xl text-white shadow-lg shadow-emerald-100">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -157,7 +157,7 @@
                                     <th class="px-4 py-3 text-right">Acciones</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-emerald-50/50">
+                            <tbody class="divide-y divide-emerald-50/50 dark:divide-emerald-900/10">
                                 @forelse($tipoSemillas as $semilla)
                                     <tr class="hover:bg-emerald-50/30 transition-all group">
                                         <td class="px-4 py-3">
@@ -268,7 +268,7 @@
                                     const div = document.createElement('div');
                                     div.className = `px-5 py-3 border-b border-emerald-50 last:border-0 transition-colors ${isAlreadyRegistered ? 'bg-gray-50 opacity-50 cursor-not-allowed' : 'hover:bg-emerald-50 cursor-pointer'}`;
                                     div.innerHTML = `
-                                        <div class="flex justify-between items-center">
+                                        <div class="flex justify-between items-center transition-colors">
                                             <div>
                                                 <p class="font-black text-emerald-950 text-sm leading-tight">${item.nombre}</p>
                                                 <p class="text-[9px] font-bold text-emerald-500 uppercase tracking-widest leading-none mt-1">
@@ -277,7 +277,7 @@
                                                     `}
                                                 </p>
                                             </div>
-                                            <svg class="w-4 h-4 text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                                            <svg class="w-4 h-4 text-emerald-300 dark:text-emerald-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
                                         </div>
                                     `;
                                     if (!isAlreadyRegistered) div.onclick = () => addToQueue(item);

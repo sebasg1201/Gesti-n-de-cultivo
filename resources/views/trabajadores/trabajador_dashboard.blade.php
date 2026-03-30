@@ -92,9 +92,9 @@
                     {{-- Harvest Header --}}
                     <div class="flex items-center gap-6 px-4">
                         <h3
-                            class="flex-none flex items-center gap-4 bg-white px-6 py-3 rounded-2xl shadow-xl shadow-gray-100/50 border border-gray-50">
+                            class="flex-none flex items-center gap-4 bg-white dark:bg-slate-800 px-6 py-3 rounded-2xl shadow-xl shadow-gray-100/50 dark:shadow-none border border-gray-50 dark:border-emerald-900/20 transition-all duration-300">
                             <div
-                                class="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-emerald-200">
+                                class="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-emerald-200 dark:shadow-none">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                                     stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -102,9 +102,9 @@
                                 </svg>
                             </div>
                             <div>
-                                <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">
+                                <p class="text-[10px] font-black text-gray-400 dark:text-emerald-500 uppercase tracking-widest leading-none mb-1">
                                     {{ $cosecha ? 'Gestión de Cultivo' : 'Área de Trabajo' }}</p>
-                                <span class="text-xl font-black text-gray-900 leading-none">
+                                <span class="text-xl font-black text-gray-900 dark:text-emerald-50 leading-none">
                                     @if($cosecha)
                                         Lote #{{ $cosecha->id_cosecha }} <span class="text-emerald-600">|</span> {{ $semillaNombre }}
                                     @else
@@ -113,9 +113,9 @@
                                 </span>
                             </div>
                         </h3>
-                        <div class="h-px flex-1 bg-gradient-to-r from-gray-200 to-transparent"></div>
+                        <div class="h-px flex-1 bg-gradient-to-r from-gray-200 dark:from-emerald-900/40 to-transparent"></div>
                         <div
-                            class="flex-none px-4 py-2 bg-emerald-50 rounded-xl text-emerald-700 font-black text-[10px] uppercase tracking-widest border border-emerald-100">
+                            class="flex-none px-4 py-2 bg-emerald-50 dark:bg-emerald-950/40 rounded-xl text-emerald-700 dark:text-emerald-400 font-black text-[10px] uppercase tracking-widest border border-emerald-100 dark:border-emerald-900/20">
                             {{ $parcelaNombre }}
                         </div>
                     </div>
@@ -169,8 +169,8 @@
                                 ];
                             @endphp
                             <div
-                                class="group/card bg-white rounded-[2.5rem] p-1 border border-gray-100 shadow-xl shadow-gray-100/50 hover:shadow-2xl hover:{{ $shadowColor }} hover:-translate-y-2 transition-all duration-500">
-                                <div class="bg-gray-50/50 rounded-[2.2rem] p-7 h-full flex flex-col relative overflow-hidden">
+                                class="group/card bg-white dark:bg-slate-800 rounded-[2.5rem] p-1 border border-gray-100 dark:border-emerald-900/20 shadow-xl shadow-gray-100/50 dark:shadow-none hover:shadow-2xl hover:{{ $shadowColor }} hover:-translate-y-2 transition-all duration-500">
+                                <div class="bg-gray-50/50 dark:bg-slate-900/50 rounded-[2.2rem] p-7 h-full flex flex-col relative overflow-hidden">
                                     {{-- Left Accent Border --}}
                                     <div class="absolute left-0 top-0 bottom-0 w-3 {{ $barColor }} opacity-80 group-hover/card:opacity-100 transition-opacity"></div>
                                     {{-- Background Pattern --}}
@@ -181,26 +181,26 @@
                                     <div class="flex justify-between items-start mb-6">
                                         <span
                                             class="px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest shadow-sm
-                                                    {{ $fase->id_estado == 1 ? 'bg-amber-100 text-amber-700 border border-amber-200' : ($fase->id_estado == 17 ? 'bg-sky-100 text-sky-700 border border-sky-200' : ($fase->id_estado == 16 ? 'bg-red-100 text-red-700 border border-red-200' : 'bg-emerald-100 text-emerald-700 border border-emerald-200')) }}">
+                                                    {{ $fase->id_estado == 1 ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800/40' : ($fase->id_estado == 17 ? 'bg-sky-100 dark:bg-sky-900/30 text-sky-700 dark:text-sky-400 border border-sky-200 dark:border-sky-800/40' : ($fase->id_estado == 16 ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800/40' : 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/40')) }}">
                                             {{ $fase->id_estado == 1 ? 'Pendiente' : ($fase->id_estado == 17 ? 'En Proceso' : ($fase->id_estado == 16 ? 'Perdida' : 'Realizado')) }}
                                         </span>
 
                                         <div class="text-right">
                                             <p
-                                                class="text-[9px] text-gray-400 font-black uppercase tracking-widest leading-none mb-1">
+                                                class="text-[9px] text-gray-400 dark:text-emerald-600 font-black uppercase tracking-widest leading-none mb-1">
                                                 Entrega</p>
                                             @php
                                                 $dateObj = \Carbon\Carbon::parse($fase->fecha_programada);
                                                 $statusText = $dateObj->isToday() ? 'Hoy, ' . $dateObj->format('H:i') : ($dateObj->isTomorrow() ? 'Mañana' : $dateObj->format('d/m/Y'));
                                             @endphp
                                             <p
-                                                class="text-xs font-black text-gray-800 bg-white px-2 py-1 rounded-lg border border-gray-100 shadow-sm {{ $fase->id_estado == 16 ? 'text-red-600 line-through opacity-70' : '' }}">
+                                                class="text-xs font-black text-gray-800 dark:text-emerald-100 bg-white dark:bg-slate-900 px-2 py-1 rounded-lg border border-gray-100 dark:border-emerald-950 shadow-sm {{ $fase->id_estado == 16 ? 'text-red-600 line-through opacity-70' : '' }}">
                                                 {{ $statusText }}</p>
                                         </div>
                                     </div>
 
                                     <h3
-                                        class="text-xl font-black text-gray-900 mb-6 leading-tight flex-grow {{ $fase->id_estado == 16 ? 'line-through opacity-70 group-hover/card:text-red-700' : $hoverText }} transition-colors">
+                                        class="text-xl font-black text-gray-900 dark:text-emerald-100 mb-6 leading-tight flex-grow {{ $fase->id_estado == 16 ? 'line-through opacity-70 group-hover/card:text-red-700' : $hoverText }} transition-colors">
                                         {{ $fase->descripcion }}
                                     </h3>
 
@@ -221,13 +221,13 @@
                                             data-fecha-raw="{{ \Carbon\Carbon::parse($fase->fecha_programada)->format('Y-m-d') }}"
                                             data-update-url="{{ route('trabajador.tareas.estado', ['id' => $details['fase_id'], 'tipo' => $fase->tipo_tarea]) }}"
                                             onclick="showTaskDetails(this)"
-                                            class="flex-1 bg-white hover:bg-emerald-600 text-gray-900 hover:text-white font-black py-4 px-6 rounded-2xl transition-all duration-300 border border-gray-100 hover:border-emerald-600 text-xs uppercase tracking-widest shadow-sm hover:shadow-xl hover:shadow-emerald-200">
+                                            class="flex-1 bg-white dark:bg-slate-900 hover:bg-emerald-600 dark:hover:bg-emerald-600 text-gray-900 dark:text-emerald-100 hover:text-white font-black py-4 px-6 rounded-2xl transition-all duration-300 border border-gray-100 dark:border-emerald-900/40 hover:border-emerald-600 text-xs uppercase tracking-widest shadow-sm hover:shadow-xl hover:shadow-emerald-200">
                                             Detalles de Tarea
                                         </button>
 
                                         <a href="{{ route('trabajador.calendario', ['date' => \Carbon\Carbon::parse($fase->fecha_programada)->format('Y-m-d')]) }}"
                                             title="Ver en Mi Calendario"
-                                            class="w-12 h-12 rounded-2xl bg-white border border-gray-100 flex items-center justify-center text-emerald-600 shadow-sm hover:scale-110 hover:shadow-emerald-100 hover:border-emerald-200 transition-all">
+                                            class="w-12 h-12 rounded-2xl bg-white dark:bg-slate-900 border border-gray-100 dark:border-emerald-900/40 flex items-center justify-center text-emerald-600 shadow-sm hover:scale-110 hover:shadow-emerald-100 hover:border-emerald-200 transition-all">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                                                 stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -242,17 +242,17 @@
                 </div>
             @empty
                 <div
-                    class="bg-white border-2 border-dashed border-gray-200 rounded-[3rem] p-16 text-center max-w-2xl mx-auto shadow-2xl shadow-gray-100">
+                    class="bg-white dark:bg-slate-800 border-2 border-dashed border-gray-200 dark:border-emerald-900/40 rounded-[3rem] p-16 text-center max-w-2xl mx-auto shadow-2xl shadow-gray-100 dark:shadow-none">
                     <div
-                        class="w-32 h-32 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-8 animate-bounce">
+                        class="w-32 h-32 bg-emerald-50 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mx-auto mb-8 animate-bounce">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-emerald-400" fill="none"
                             viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
                         </svg>
                     </div>
-                    <h3 class="text-3xl font-black text-gray-900 mb-4">Todo al día</h3>
-                    <p class="text-gray-500 text-lg">No tienes fases o tareas programadas actualmente. ¡Buen trabajo!</p>
+                    <h3 class="text-3xl font-black text-gray-900 dark:text-emerald-50 mb-4">Todo al día</h3>
+                    <p class="text-gray-500 dark:text-emerald-500 text-lg">No tienes fases o tareas programadas actualmente. ¡Buen trabajo!</p>
                 </div>
             @endforelse
         </div>

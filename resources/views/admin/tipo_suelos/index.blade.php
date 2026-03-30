@@ -7,7 +7,7 @@
     <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
         <!-- Search & Config Column -->
         <div class="xl:col-span-1">
-            <div class="bg-white rounded-3xl shadow-xl border border-amber-50 p-5 sticky top-6">
+            <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-xl border border-amber-50 dark:border-amber-900/10 p-5 sticky top-6 transition-all duration-300">
                 <div class="flex items-center gap-3 mb-4">
                     <div class="bg-amber-600 p-2.5 rounded-2xl text-white shadow-lg shadow-amber-100">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -22,7 +22,7 @@
 
                 <!-- AJAX Search -->
                 <div class="relative group mb-4">
-                    <label class="block text-xs font-bold text-amber-700 uppercase tracking-wider mb-2">Buscar tipo de suelo técnico</label>
+                    <label class="block text-xs font-bold text-amber-700 dark:text-amber-400 uppercase tracking-wider mb-2">Buscar tipo de suelo técnico</label>
                     <div class="relative">
                         <input type="text" id="sueloSearch" autocomplete="off"
                             placeholder="Ej. Arcilloso, Arenoso, Limoso..."

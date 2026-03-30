@@ -1,0 +1,173 @@
+{
+    "riego": [
+        {
+            "id": 1,
+            "nombre": "Goteo",
+            "impacto_dias": -3,
+            "descripcion_tecnica": "Suministro lento y directo a las ra\u00edces, ahorro m\u00e1ximo de agua.",
+            "created_at": null,
+            "updated_at": null
+        },
+        {
+            "id": 2,
+            "nombre": "Aspersi\u00f3n",
+            "impacto_dias": 0,
+            "descripcion_tecnica": "Simulaci\u00f3n de lluvia, ideal para grandes superficies.",
+            "created_at": null,
+            "updated_at": null
+        },
+        {
+            "id": 3,
+            "nombre": "Micro-aspersi\u00f3n",
+            "impacto_dias": -1,
+            "descripcion_tecnica": "Riego fino para cultivos delicados o invernaderos.",
+            "created_at": null,
+            "updated_at": null
+        },
+        {
+            "id": 4,
+            "nombre": "Gravedad (Surcos)",
+            "impacto_dias": 2,
+            "descripcion_tecnica": "Distribuci\u00f3n por canales, uso tradicional en terrenos planos.",
+            "created_at": null,
+            "updated_at": null
+        },
+        {
+            "id": 5,
+            "nombre": "Manual (Manguera\/Balde)",
+            "impacto_dias": 3,
+            "descripcion_tecnica": "Aplicaci\u00f3n directa controlada por el operario, menos eficiente.",
+            "created_at": null,
+            "updated_at": "2026-03-07T19:27:51.000000Z"
+        },
+        {
+            "id": 6,
+            "nombre": "Hidrop\u00f3nico",
+            "impacto_dias": -7,
+            "descripcion_tecnica": "Circulaci\u00f3n de soluci\u00f3n nutritiva en agua, crecimiento acelerado.",
+            "created_at": null,
+            "updated_at": "2026-03-07T19:27:51.000000Z"
+        }
+    ],
+    "insumo_tipo": [
+        {
+            "id_tipo_insumo": 1,
+            "nombre": "Fertilizante",
+            "id_empresa": null
+        },
+        {
+            "id_tipo_insumo": 2,
+            "nombre": "Abono",
+            "id_empresa": null
+        },
+        {
+            "id_tipo_insumo": 3,
+            "nombre": "Fungicida",
+            "id_empresa": null
+        },
+        {
+            "id_tipo_insumo": 4,
+            "nombre": "Herbicida",
+            "id_empresa": null
+        },
+        {
+            "id_tipo_insumo": 6,
+            "nombre": "Fertilizantes",
+            "id_empresa": null
+        },
+        {
+            "id_tipo_insumo": 7,
+            "nombre": "Agroqu\u00edmicos",
+            "id_empresa": null
+        },
+        {
+            "id_tipo_insumo": 8,
+            "nombre": "Herramientas",
+            "id_empresa": null
+        },
+        {
+            "id_tipo_insumo": 9,
+            "nombre": "Lubricantes",
+            "id_empresa": null
+        },
+        {
+            "id_tipo_insumo": 10,
+            "nombre": "Pesticida",
+            "id_empresa": "988091212"
+        }
+    ],
+    "suelo": [
+        {
+            "id": 1,
+            "nombre": "Arcilloso",
+            "impacto_dias": 5,
+            "descripcion": "Suelo pesado con alta retenci\u00f3n de humedad, pero drenaje lento.",
+            "created_at": null,
+            "updated_at": "2026-03-07T19:27:51.000000Z",
+            "capacidad_retencion_litros_m2": "5.00"
+        },
+        {
+            "id": 2,
+            "nombre": "Arenoso",
+            "impacto_dias": -3,
+            "descripcion": "Drenaje r\u00e1pido, requiere riego frecuente, acelera ciclo en algunos cultivos.",
+            "created_at": null,
+            "updated_at": "2026-03-07T19:27:51.000000Z",
+            "capacidad_retencion_litros_m2": "5.00"
+        },
+        {
+            "id": 3,
+            "nombre": "Franco-Arenoso",
+            "impacto_dias": 0,
+            "descripcion": null,
+            "created_at": null,
+            "updated_at": null,
+            "capacidad_retencion_litros_m2": "5.00"
+        },
+        {
+            "id": 4,
+            "nombre": "Limoso",
+            "impacto_dias": 0,
+            "descripcion": "Suelo f\u00e9rtil con buena retenci\u00f3n de nutrientes y humedad equilibrada.",
+            "created_at": null,
+            "updated_at": "2026-03-07T19:27:51.000000Z",
+            "capacidad_retencion_litros_m2": "5.00"
+        },
+        {
+            "id": 5,
+            "nombre": "Org\u00e1nico (H\u00famico)",
+            "impacto_dias": -10,
+            "descripcion": null,
+            "created_at": null,
+            "updated_at": null,
+            "capacidad_retencion_litros_m2": "5.00"
+        },
+        {
+            "id": 6,
+            "nombre": "Franco",
+            "impacto_dias": -1,
+            "descripcion": "Mezcla ideal de arena, limo y arcilla para la mayor\u00eda de cultivos.",
+            "created_at": "2026-03-07T19:27:51.000000Z",
+            "updated_at": "2026-03-07T19:27:51.000000Z",
+            "capacidad_retencion_litros_m2": "5.00"
+        },
+        {
+            "id": 7,
+            "nombre": "Salino",
+            "impacto_dias": 10,
+            "descripcion": "Alta concentraci\u00f3n de sales que retrasa el crecimiento vegetal.",
+            "created_at": "2026-03-07T19:27:51.000000Z",
+            "updated_at": "2026-03-07T19:27:51.000000Z",
+            "capacidad_retencion_litros_m2": "5.00"
+        },
+        {
+            "id": 8,
+            "nombre": "Turba \/ Org\u00e1nico",
+            "impacto_dias": -2,
+            "descripcion": "Extremadamente f\u00e9rtil y rico en materia org\u00e1nica.",
+            "created_at": "2026-03-07T19:27:51.000000Z",
+            "updated_at": "2026-03-07T19:27:51.000000Z",
+            "capacidad_retencion_litros_m2": "5.00"
+        }
+    ]
+}

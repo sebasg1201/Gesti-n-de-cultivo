@@ -9,7 +9,7 @@
     <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
         <!-- Search & Config Column -->
         <div class="xl:col-span-1">
-            <div class="bg-white rounded-3xl shadow-xl border border-blue-50 p-5 sticky top-6">
+            <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-xl border border-blue-50 dark:border-emerald-900/20 p-5 sticky top-6 transition-colors duration-300">
                 <div class="flex items-center gap-3 mb-4">
                     <div class="bg-blue-600 p-2.5 rounded-2xl text-white shadow-lg shadow-blue-100">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -17,8 +17,8 @@
                         </svg>
                     </div>
                     <div>
-                        <h3 class="text-lg font-black text-emerald-950">Configurar Riego</h3>
-                        <p class="text-[10px] font-bold text-blue-500 uppercase tracking-widest mt-0.5">Control de Impacto v5.0</p>
+                        <h3 class="text-lg font-black text-emerald-950 dark:text-emerald-50">Configurar Riego</h3>
+                        <p class="text-[10px] font-bold text-blue-500 dark:text-blue-400 uppercase tracking-widest mt-0.5">Control de Impacto v5.0</p>
                     </div>
                 </div>
 
@@ -34,7 +34,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                             </svg>
                         </div>
-                        <div id="riegoResults" class="hidden absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl border border-blue-50 z-50 max-h-64 overflow-y-auto">
+                        <div id="riegoResults" class="hidden absolute top-full left-0 right-0 mt-2 bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-blue-50 dark:border-emerald-900/20 z-50 max-h-64 overflow-y-auto">
                             <!-- Injected Results -->
                         </div>
                     </div>
@@ -243,7 +243,7 @@
                         
                         // Add "Custom" option
                         const customDiv = document.createElement('div');
-                        customDiv.className = 'px-4 py-3 hover:bg-blue-50 cursor-pointer border-t border-blue-100 bg-blue-50/50 transition-colors';
+                        customDiv.className = 'px-4 py-3 hover:bg-blue-50 dark:hover:bg-slate-700/50 cursor-pointer border-t border-blue-100 dark:border-emerald-900/20 bg-blue-50/50 dark:bg-slate-900/50 transition-colors';
                         customDiv.innerHTML = `
                             <div class="flex space-x-3 items-center text-blue-600">
                                 <div class="bg-blue-100 p-1.5 rounded-lg">

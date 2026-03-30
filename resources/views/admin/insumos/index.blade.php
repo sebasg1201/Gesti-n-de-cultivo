@@ -7,9 +7,9 @@
         <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
             <!-- Advanced Search & Config Column -->
             <div class="xl:col-span-1">
-                <div class="bg-white rounded-3xl shadow-xl border border-emerald-50 p-5 sticky top-6">
+                <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-xl border border-emerald-50 dark:border-emerald-900/20 p-5 sticky top-6 transition-all duration-300">
                     <div class="flex items-center gap-3 mb-4">
-                        <div class="bg-emerald-600 p-2.5 rounded-2xl text-white shadow-lg shadow-emerald-100">
+                        <div class="bg-emerald-600 p-2.5 rounded-2xl text-white shadow-lg shadow-emerald-100 dark:shadow-none">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
@@ -120,7 +120,7 @@
                     <!-- Initial State -->
                     <div id="formPlaceholder"
                         class="py-12 flex flex-col items-center justify-center text-center space-y-4 opacity-40">
-                        <div class="w-20 h-20 bg-emerald-50 rounded-full flex items-center justify-center text-emerald-300">
+                        <div class="w-20 h-20 bg-emerald-50 dark:bg-slate-900 rounded-full flex items-center justify-center text-emerald-300 dark:text-emerald-900 transition-colors">
                             <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
@@ -148,13 +148,13 @@
                                         <option value="{{ $index + 1 }}" {{ request('month') == ($index + 1) ? 'selected' : '' }}>{{ $mes }}</option>
                                     @endforeach
                                 </select>
-                                <select name="year" class="bg-transparent border-0 text-[10px] font-bold text-emerald-700 focus:ring-0 cursor-pointer">
+                                <select name="year" class="bg-transparent border-0 text-[10px] font-bold text-emerald-700 dark:text-emerald-400 focus:ring-0 cursor-pointer">
                                     <option value="">Año...</option>
                                     @for($y = date('Y'); $y >= 2024; $y--)
                                         <option value="{{ $y }}" {{ request('year') == $y ? 'selected' : '' }}>{{ $y }}</option>
                                     @endfor
                                 </select>
-                                <button type="submit" class="p-1.5 bg-emerald-50 text-emerald-600 rounded-xl hover:bg-emerald-100 transition-colors">
+                                <button type="submit" class="p-1.5 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-xl hover:bg-emerald-100 dark:hover:bg-emerald-800 transition-colors">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
                                 </button>
                             </form>
@@ -181,7 +181,7 @@
                                     <th class="px-6 py-4 text-right">Acciones</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-emerald-50/50">
+                            <tbody class="divide-y divide-emerald-50/50 dark:divide-emerald-900/10">
                                 @forelse($insumos as $insumo)
                                     <tr class="hover:bg-emerald-50/30 transition-all group">
                                         <td class="px-6 py-4">

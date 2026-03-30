@@ -1,0 +1,168 @@
+<?php
+
+namespace App\Services;
+
+use App\Models\Cosecha;
+use App\Models\Riego;
+use App\Models\Insumo;
+use App\Models\InsumoCosecha;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
+
+class NotificationService
+{
+    public function getNotifications()
+    {
+        $user = Auth::guard('usuario')->user();
+        if (!$user) return [];
+
+        $id_empresa = $user->id_empresa;
+        $isWorker = in_array($user->id_tipo_usuario, [2, 3]); // Supervisor o Trabajador
+        $workerDoc = $isWorker ? $user->documento : null;
+
+        $notifications = [];
+
+        // 1. Irrigation Alerts
+        $irrigationAlerts = $this->getIrrigationAlerts($id_empresa, $workerDoc);
+        foreach ($irrigationAlerts as $alert) {
+            $notifications[] = [
+                'type' => 'irrigation',
+                'title' => 'Necesita Riego',
+                'message' => "El cultivo de {$alert->semilla->nombre_semilla} en el terreno {$alert->terreno->nombre} necesita ser regado.",
+                'date' => Carbon::parse($alert->next_date),
+                'id' => $alert->id_cosecha,
+                'url' => route('admin.tareas.index')
+            ];
+        }
+
+        // 2. Stock Alerts (Only for Admin)
+        if (!$isWorker) {
+            $stockAlerts = Insumo::where('id_empresa', $id_empresa)
+                ->where('stock_actual', '<', 10)
+                ->get();
+            
+            foreach ($stockAlerts as $insumo) {
+                $notifications[] = [
+                    'type' => 'stock',
+                    'title' => 'Stock Bajo',
+                    'message' => "El insumo '{$insumo->Nombre}' tiene un stock crítico de {$insumo->stock_actual}.",
+                    'date' => $insumo->updated_at ?? ($insumo->created_at ?? Carbon::now()->subMinutes(5)),
+                    'id' => $insumo->ID_insumo,
+                    'url' => route('admin.proveedores.index')
+                ];
+
+            }
+        }
+
+        // 3. Insecticide Alerts
+        $insecticideAlerts = $this->getInsecticideAlerts($id_empresa, $workerDoc);
+        foreach ($insecticideAlerts as $alert) {
+            $notifications[] = [
+                'type' => 'insecticide',
+                'title' => 'Aplicación de Insecticida',
+                'message' => "Es necesario aplicar insecticida al cultivo de {$alert->semilla->nombre_semilla} ({$alert->terreno->nombre}).",
+                'date' => Carbon::parse($alert->next_date),
+                'id' => $alert->id_cosecha,
+                'url' => route('admin.tareas.index')
+            ];
+        }
+
+        // Sort by date desc
+        usort($notifications, function($a, $b) {
+            return $b['date'] <=> $a['date'];
+        });
+
+        return $notifications;
+    }
+
+    private function getIrrigationAlerts($id_empresa, $workerDoc = null)
+    {
+        $query = Cosecha::query()->with(['terreno.tipoSuelo', 'semilla'])
+            ->where('id_empresa', $id_empresa)
+            ->whereIn('id_estado', [1, 3]); // Pendiente o Activa
+        
+        if ($workerDoc) {
+            $query->where(function($q) use ($workerDoc) {
+                $q->whereIn('id_cosecha', function($sq) use ($workerDoc) {
+                    $sq->select('id_cosecha')->from('riego')->where('documento_trabajador', $workerDoc);
+                })->orWhereIn('id_cosecha', function($sq) use ($workerDoc) {
+                    $sq->select('id_cosecha')->from('insumo_cosecha')->where('documento_trabajador', $workerDoc);
+                });
+            });
+        }
+
+        $cosechas = $query->get();
+        $alerts = [];
+        $hoy = Carbon::now();
+
+        foreach ($cosechas as $cosecha) {
+            $ultimoRiego = Riego::where('id_cosecha', $cosecha->id_cosecha)
+                ->where('id_estado', 15) // Realizado
+                ->orderBy('fecha_programada', 'desc')
+                ->first();
+
+            $fechaBase = $ultimoRiego ? Carbon::parse($ultimoRiego->fecha_programada) : Carbon::parse($cosecha->fecha_siembra);
+            
+            $frecuencia = 2; // Default
+            $suelo = $cosecha->terreno->tipoSuelo->nombre ?? '';
+            
+            if (stripos($suelo, 'Arenoso') !== false) {
+                $frecuencia = 5;
+            } elseif (stripos($suelo, 'Arcilloso') !== false) {
+                $frecuencia = 10;
+            } else {
+                $frecuencia = $cosecha->frecuencia_riego_dias ?: 3;
+            }
+
+            $proximaFecha = $fechaBase->addDays($frecuencia);
+
+            if ($hoy->greaterThanOrEqualTo($proximaFecha)) {
+                $cosecha->next_date = $proximaFecha;
+                $alerts[] = $cosecha;
+            }
+        }
+
+        return $alerts;
+    }
+
+    private function getInsecticideAlerts($id_empresa, $workerDoc = null)
+    {
+        $query = Cosecha::query()->with(['terreno', 'semilla'])
+            ->where('id_empresa', $id_empresa)
+            ->whereIn('id_estado', [1, 3]); // Pendiente o Activa
+
+        if ($workerDoc) {
+            $query->where(function($q) use ($workerDoc) {
+                $q->whereIn('id_cosecha', function($sq) use ($workerDoc) {
+                    $sq->select('id_cosecha')->from('riego')->where('documento_trabajador', $workerDoc);
+                })->orWhereIn('id_cosecha', function($sq) use ($workerDoc) {
+                    $sq->select('id_cosecha')->from('insumo_cosecha')->where('documento_trabajador', $workerDoc);
+                });
+            });
+        }
+
+        $cosechas = $query->get();
+        $alerts = [];
+        $hoy = Carbon::now();
+
+        foreach ($cosechas as $cosecha) {
+            $ultimaAplicacion = InsumoCosecha::where('id_cosecha', $cosecha->id_cosecha)
+                ->whereHas('insumo.catalogo', function($q) {
+                    $q->where('id_tipo_insumo', 10); // Pesticida
+                })
+                ->where('id_estado', 15) // Realizado
+                ->orderBy('fecha_programada', 'desc')
+                ->first();
+
+            $fechaBase = $ultimaAplicacion ? Carbon::parse($ultimaAplicacion->fecha_programada) : Carbon::parse($cosecha->fecha_siembra);
+            $proximaFecha = $fechaBase->addDays(10);
+
+            if ($hoy->greaterThanOrEqualTo($proximaFecha)) {
+                $cosecha->next_date = $proximaFecha;
+                $alerts[] = $cosecha;
+            }
+        }
+
+        return $alerts;
+    }
+}

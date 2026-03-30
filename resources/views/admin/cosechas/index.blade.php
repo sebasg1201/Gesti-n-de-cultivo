@@ -99,14 +99,14 @@
             </div>
 
             <div
-                class="bg-white rounded-3xl p-8 border-2 border-emerald-50 shadow-xl shadow-emerald-50/50 flex flex-col justify-center">
-                <p class="text-emerald-400 text-xs font-black uppercase tracking-widest mb-1">Terrenos Disponibles</p>
-                <h3 class="text-3xl font-black text-emerald-950">{{ $terrenos->count() }}</h3>
+                class="bg-white dark:bg-slate-800 rounded-3xl p-8 border-2 border-emerald-50 dark:border-emerald-900/20 shadow-xl shadow-emerald-50/50 dark:shadow-none transition-all duration-300 flex flex-col justify-center">
+                <p class="text-emerald-400 dark:text-emerald-600 text-xs font-black uppercase tracking-widest mb-1">Terrenos Disponibles</p>
+                <h3 class="text-3xl font-black text-emerald-950 dark:text-emerald-50 transition-colors">{{ $terrenos->count() }}</h3>
             </div>
 
             <div class="flex items-center">
                 <button onclick="document.getElementById('modal-nueva-cosecha').classList.remove('hidden')"
-                    class="w-full bg-emerald-700 text-white rounded-3xl py-6 font-black uppercase tracking-tighter hover:bg-emerald-800 hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-emerald-200 flex items-center justify-center gap-4 group">
+                    class="w-full bg-emerald-700 text-white rounded-3xl py-6 font-black uppercase tracking-tighter hover:bg-emerald-800 hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-emerald-200 dark:shadow-none flex items-center justify-center gap-4 group">
                     <div
                         class="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center group-hover:rotate-90 transition-transform">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -119,23 +119,23 @@
         </div>
 
         <!-- Galería de Cosechas -->
-        <div class="bg-white rounded-[2.5rem] border border-emerald-50 shadow-2xl shadow-emerald-100/50 p-8">
+        <div class="bg-white dark:bg-slate-800 rounded-[2.5rem] border border-emerald-50 dark:border-emerald-900/20 shadow-2xl shadow-emerald-100/50 dark:shadow-none p-8 transition-all duration-300">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
                 <div>
-                    <h3 class="text-3xl font-black text-emerald-950">Galería de Cosechas</h3>
-                    <p class="text-sm font-medium text-emerald-600 mt-1">Gestión visual de cultivos, terrenos y ciclos de
+                    <h3 class="text-3xl font-black text-emerald-950 dark:text-emerald-50 transition-colors">Galería de Cosechas</h3>
+                    <p class="text-sm font-medium text-emerald-600 dark:text-emerald-400 mt-1">Gestión visual de cultivos, terrenos y ciclos de
                         producción.</p>
                 </div>
 
                 <div class="flex flex-col items-end gap-3">
                     <div class="flex flex-wrap justify-end gap-2">
                         <a href="{{ route('admin.cosechas.index') }}"
-                            class="px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest transition-all {{ !request('fase') ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-200 scale-105' : 'bg-white text-emerald-600 border border-emerald-100 hover:bg-emerald-50' }}">
+                            class="px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest transition-all {{ !request('fase') ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-200 dark:shadow-none scale-105' : 'bg-white dark:bg-slate-900 text-emerald-600 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-900/50 hover:bg-emerald-50 dark:hover:bg-slate-800' }}">
                             Todos
                         </a>
                         @foreach(['Siembra', 'Vegetativo', 'Floración', 'Llenado', 'Cosecha'] as $fase)
                             <a href="{{ route('admin.cosechas.index', array_merge(request()->query(), ['fase' => $fase])) }}"
-                                class="px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest transition-all flex items-center gap-2 {{ request('fase') == $fase ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-200 scale-105' : 'bg-white text-emerald-600 border border-emerald-100 hover:bg-emerald-50' }}">
+                                class="px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest transition-all flex items-center gap-2 {{ request('fase') == $fase ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-200 dark:shadow-none scale-105' : 'bg-white dark:bg-slate-900 text-emerald-600 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-900/50 hover:bg-emerald-50 dark:hover:bg-slate-800' }}">
                                 <span class="w-1.5 h-1.5 rounded-full {{ 
                                     $fase == 'Siembra' ? 'bg-blue-400' : (
                                     $fase == 'Vegetativo' ? 'bg-emerald-400' : (
@@ -148,11 +148,11 @@
                     </div>
 
                     <div class="flex flex-wrap items-center justify-end gap-3">
-                        <form action="{{ route('admin.cosechas.index') }}" method="GET" class="flex items-center gap-2 bg-white p-1 rounded-full border border-emerald-100 shadow-sm">
+                        <form action="{{ route('admin.cosechas.index') }}" method="GET" class="flex items-center gap-2 bg-white dark:bg-slate-900 p-1 rounded-full border border-emerald-100 dark:border-emerald-900/50 shadow-sm">
                             @if(request('fase'))
                                 <input type="hidden" name="fase" value="{{ request('fase') }}">
                             @endif
-                            <select name="month" class="bg-transparent border-0 text-[10px] font-bold text-emerald-700 focus:ring-0 cursor-pointer pl-4 pr-8">
+                            <select name="month" class="bg-transparent border-0 text-[10px] font-bold text-emerald-700 dark:text-emerald-400 focus:ring-0 cursor-pointer pl-4 pr-8">
                                 <option value="">Mes...</option>
                                 @php
                                     $meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
@@ -161,13 +161,13 @@
                                     <option value="{{ $index + 1 }}" {{ request('month') == ($index + 1) ? 'selected' : '' }}>{{ $mes }}</option>
                                 @endforeach
                             </select>
-                            <select name="year" class="bg-transparent border-0 text-[10px] font-bold text-emerald-700 focus:ring-0 cursor-pointer pr-8">
+                            <select name="year" class="bg-transparent border-0 text-[10px] font-bold text-emerald-700 dark:text-emerald-400 focus:ring-0 cursor-pointer pr-8">
                                 <option value="">Año...</option>
                                 @for($y = date('Y'); $y >= 2024; $y--)
                                     <option value="{{ $y }}" {{ request('year') == $y ? 'selected' : '' }}>{{ $y }}</option>
                                 @endfor
                             </select>
-                            <button type="submit" class="p-1.5 bg-emerald-50 text-emerald-600 rounded-full hover:bg-emerald-100 transition-colors mr-1">
+                            <button type="submit" class="p-1.5 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-full hover:bg-emerald-100 dark:hover:bg-emerald-800 transition-colors mr-1">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
                             </button>
                         </form>
@@ -183,13 +183,13 @@
             @if($cosechas->isEmpty())
                 <div class="py-20 text-center">
                     <div class="flex flex-col items-center gap-4 opacity-30">
-                        <div class="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center">
-                            <svg class="w-10 h-10 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="w-20 h-20 bg-emerald-100 dark:bg-emerald-950 rounded-full flex items-center justify-center">
+                            <svg class="w-10 h-10 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                             </svg>
                         </div>
-                        <p class="font-black text-emerald-950 uppercase tracking-widest text-xs">No hay cosechas activas
+                        <p class="font-black text-emerald-950 dark:text-emerald-50 uppercase tracking-widest text-xs">No hay cosechas activas
                             registradas</p>
                     </div>
                 </div>
@@ -197,15 +197,15 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     @foreach($cosechas as $cosecha)
                         <div
-                            class="bg-white rounded-3xl border border-emerald-100 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden group flex flex-col h-full">
+                            class="bg-white dark:bg-slate-900 rounded-3xl border border-emerald-100 dark:border-emerald-900/10 shadow-sm hover:shadow-xl dark:hover:shadow-none transition-all duration-300 overflow-hidden group flex flex-col h-full">
                             <!-- Imagen Header -->
-                            <div class="relative h-48 w-full overflow-hidden bg-emerald-50">
+                            <div class="relative h-48 w-full overflow-hidden bg-emerald-50 dark:bg-slate-800 transition-colors">
                                 @if($cosecha->imagenes)
                                     <img src="{{ asset('uploads/' . $cosecha->imagenes) }}"
                                         alt="{{ $cosecha->semilla->nombre_semilla ?? 'Cultivo' }}"
                                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                                 @else
-                                    <div class="w-full h-full flex items-center justify-center text-emerald-200">
+                                    <div class="w-full h-full flex items-center justify-center text-emerald-200 dark:text-emerald-950">
                                         <svg class="w-16 h-16 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                                                 d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -216,9 +216,9 @@
 
                                 <!-- Status Badge -->
                                 <div
-                                    class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full flex items-center gap-1.5 shadow-sm">
+                                    class="absolute top-4 right-4 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm px-3 py-1 rounded-full flex items-center gap-1.5 shadow-sm">
                                     <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                                    <span class="text-[10px] font-black text-emerald-900 uppercase tracking-wider">{{ $cosecha->fase_actual }}</span>
+                                    <span class="text-[10px] font-black text-emerald-900 dark:text-emerald-50 uppercase tracking-wider">{{ $cosecha->fase_actual }}</span>
                                 </div>
 
                                 <!-- Info Overlay -->
@@ -242,9 +242,9 @@
                             <div class="p-5 flex-grow flex flex-col justify-between space-y-4">
                                 <div class="grid grid-cols-2 gap-y-4 gap-x-2">
                                     <div>
-                                        <p class="text-[9px] font-bold text-emerald-400 uppercase tracking-widest mb-0.5">Siembra
+                                        <p class="text-[9px] font-bold text-emerald-400 dark:text-emerald-700 uppercase tracking-widest mb-0.5 transition-colors">Siembra
                                         </p>
-                                        <div class="flex items-center gap-1.5 text-emerald-900 font-semibold text-xs">
+                                        <div class="flex items-center gap-1.5 text-emerald-900 dark:text-emerald-100 font-semibold text-xs transition-colors">
                                             <svg class="w-3.5 h-3.5 text-emerald-500" fill="none" stroke="currentColor"
                                                 viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -255,9 +255,9 @@
                                     </div>
                                     <div>
                                         <p
-                                            class="text-[9px] font-bold text-emerald-400 uppercase tracking-widest mb-0.5 text-right">
+                                            class="text-[9px] font-bold text-emerald-400 dark:text-emerald-700 uppercase tracking-widest mb-0.5 text-right transition-colors">
                                             Cosecha Est.</p>
-                                        <div class="flex items-center justify-end gap-1.5 text-emerald-600 font-bold text-xs">
+                                        <div class="flex items-center justify-end gap-1.5 text-emerald-600 dark:text-emerald-400 font-bold text-xs transition-colors">
                                             @if($cosecha->fecha_estimada)
                                                 {{ \Carbon\Carbon::parse($cosecha->fecha_estimada)->format('d M Y') }}
                                             @else
@@ -266,31 +266,31 @@
                                         </div>
                                     </div>
                                     <div>
-                                        <p class="text-[9px] font-bold text-emerald-400 uppercase tracking-widest mb-0.5">Plantas
+                                        <p class="text-[9px] font-bold text-emerald-400 dark:text-emerald-700 uppercase tracking-widest mb-0.5 transition-colors">Plantas
                                         </p>
-                                        <div class="flex items-center gap-1.5 text-emerald-900 font-medium text-xs">
+                                        <div class="flex items-center gap-1.5 text-emerald-900 dark:text-emerald-100 font-medium text-xs transition-colors">
                                             {{ number_format($cosecha->Cantidad, 0) }} und
                                         </div>
                                     </div>
                                     <div>
                                         <p
-                                            class="text-[9px] font-bold text-emerald-400 uppercase tracking-widest mb-0.5 text-right">
+                                            class="text-[9px] font-bold text-emerald-400 dark:text-emerald-700 uppercase tracking-widest mb-0.5 text-right transition-colors">
                                             Rendimiento</p>
-                                        <div class="flex items-center justify-end gap-1.5 text-emerald-900 font-bold text-sm">
+                                        <div class="flex items-center justify-end gap-1.5 text-emerald-900 dark:text-emerald-50 font-bold text-sm transition-colors">
                                             {{ number_format($cosecha->produccion_estimada, 1) }} kg
                                         </div>
                                     </div>
                                 </div>
 
                                 <!-- Progress Bars -->
-                                <div class="space-y-3 mt-4 border-t border-emerald-50 pt-4">
+                                <div class="space-y-3 mt-4 border-t border-emerald-50 dark:border-emerald-900/10 pt-4 transition-colors">
                                     <!-- Growth Bar -->
                                     <div>
                                         <div class="flex justify-between items-center mb-1">
-                                            <span class="text-[9px] font-bold text-emerald-600 uppercase tracking-widest">Crecimiento (Tiempo)</span>
-                                            <span class="text-[9px] font-black text-emerald-900">{{ number_format($cosecha->porcentaje_crecimiento, 0) }}%</span>
+                                            <span class="text-[9px] font-bold text-emerald-600 dark:text-emerald-500 uppercase tracking-widest">Crecimiento (Tiempo)</span>
+                                            <span class="text-[9px] font-black text-emerald-900 dark:text-emerald-100">{{ number_format($cosecha->porcentaje_crecimiento, 0) }}%</span>
                                         </div>
-                                        <div class="w-full bg-emerald-50 rounded-full h-1.5 border border-emerald-100/50 overflow-hidden">
+                                        <div class="w-full bg-emerald-50 dark:bg-slate-950 rounded-full h-1.5 border border-emerald-100/50 dark:border-emerald-900/20 overflow-hidden">
                                             <div class="animate-growth-shimmer h-1.5 rounded-full transition-all duration-1000" style="width: {{ $cosecha->porcentaje_crecimiento }}%"></div>
                                         </div>
                                     </div>
@@ -298,15 +298,15 @@
                                     <!-- Hydration Bar -->
                                     <div>
                                         <div class="flex justify-between items-center mb-1">
-                                            <span class="text-[9px] font-bold text-blue-600 uppercase tracking-widest flex items-center gap-1">
+                                            <span class="text-[9px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest flex items-center gap-1">
                                                 Hidratación 
                                                 @if($cosecha->progreso_hidratacion < $cosecha->porcentaje_crecimiento - 10)
                                                     <svg class="w-3 h-3 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
                                                 @endif
                                             </span>
-                                            <span class="text-[9px] font-black text-blue-900">{{ number_format($cosecha->progreso_hidratacion, 0) }}%</span>
+                                            <span class="text-[9px] font-black text-blue-900 dark:text-blue-300">{{ number_format($cosecha->progreso_hidratacion, 0) }}%</span>
                                         </div>
-                                        <div class="w-full bg-blue-50 rounded-full h-1.5 border border-blue-100/50 overflow-hidden relative">
+                                        <div class="w-full bg-blue-50 dark:bg-blue-950/30 rounded-full h-1.5 border border-blue-100/50 dark:border-blue-900/20 overflow-hidden relative">
                                             <!-- The blue bar -->
                                             <div class="animate-water-flow h-1.5 rounded-full transition-all duration-1000" style="width: {{ $cosecha->progreso_hidratacion }}%"></div>
                                         </div>
@@ -314,7 +314,7 @@
                                 </div>
 
                                 <a href="{{ route('admin.cosechas.show', $cosecha->id_cosecha) }}"
-                                    class="w-full mt-4 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-sm py-2.5 rounded-xl transition-colors flex items-center justify-center gap-2">
+                                    class="w-full mt-4 bg-emerald-50 dark:bg-emerald-900/30 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 text-emerald-700 dark:text-emerald-400 font-bold text-sm py-2.5 rounded-xl transition-all flex items-center justify-center gap-2">
                                     Ver Detalles
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -341,7 +341,7 @@
             onclick="this.parentElement.classList.add('hidden')"></div>
 
         <div
-            class="relative mx-auto mt-10 max-w-2xl bg-white rounded-[3rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
+            class="relative mx-auto mt-10 max-w-2xl bg-white dark:bg-slate-800 rounded-[3rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300 border border-transparent dark:border-emerald-900/20">
             <!-- Header Modal -->
             <div class="p-10 bg-gradient-to-br from-emerald-900 to-emerald-950 text-white relative">
                 <h2 class="text-3xl font-black leading-none">Nueva Siembra</h2>
@@ -362,16 +362,16 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <!-- Terreno -->
                     <div class="space-y-3 relative">
-                        <label class="block text-xs font-black text-emerald-950 uppercase tracking-widest ml-4">Terreno Disponible</label>
+                        <label class="block text-xs font-black text-emerald-950 dark:text-emerald-50 uppercase tracking-widest ml-4 transition-colors">Terreno Disponible</label>
                         <div id="terrenoSearchContainer" class="relative group">
                             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                 <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
                             </div>
                             <input type="text" id="terrenoSearchInput" oninput="debounceTerrenoSearch(this.value)"
                                 placeholder="Buscar terreno..."
-                                class="w-full bg-emerald-50 border-2 border-emerald-50 rounded-2xl py-4 pl-10 pr-4 text-emerald-900 font-bold placeholder:text-emerald-200 focus:border-emerald-500 transition-all">
+                                class="w-full bg-emerald-50 dark:bg-slate-900 border-2 border-emerald-50 dark:border-emerald-900/20 rounded-2xl py-4 pl-10 pr-4 text-emerald-900 dark:text-emerald-50 font-bold placeholder:text-emerald-200 dark:placeholder:text-emerald-800 focus:border-emerald-500 transition-all">
                             
-                            <div id="terrenoResults" class="absolute z-[110] w-full mt-2 bg-white rounded-2xl shadow-2xl border border-emerald-50 hidden max-h-60 overflow-y-auto"></div>
+                            <div id="terrenoResults" class="absolute z-[110] w-full mt-2 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-emerald-50 dark:border-emerald-900/20 hidden max-h-60 overflow-y-auto"></div>
                         </div>
 
                         <!-- Feedback for selected terrain -->
@@ -394,7 +394,7 @@
 
                     <!-- Semilla (Hidden initially) -->
                     <div id="speciesSearchGroup" class="space-y-3 relative hidden animate-in fade-in slide-in-from-left-4 duration-500">
-                        <label class="block text-xs font-black text-emerald-950 uppercase tracking-widest ml-4">Especie a Sembrar</label>
+                        <label class="block text-xs font-black text-emerald-950 dark:text-emerald-50 uppercase tracking-widest ml-4 transition-colors">Especie a Sembrar</label>
                         <div id="speciesSearchContainer" class="relative group">
                             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                 <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
@@ -402,9 +402,9 @@
                             <input type="text" id="speciesSearchInput" oninput="debounceSpeciesSearch(this.value)"
                                 autocomplete="off"
                                 placeholder="Buscar variedad..."
-                                class="w-full bg-emerald-50 border-2 border-emerald-50 rounded-2xl py-4 pl-10 pr-4 text-emerald-900 font-bold placeholder:text-emerald-200 focus:border-emerald-500 transition-all">
+                                class="w-full bg-emerald-50 dark:bg-slate-900 border-2 border-emerald-50 dark:border-emerald-900/20 rounded-2xl py-4 pl-10 pr-4 text-emerald-900 dark:text-emerald-50 font-bold placeholder:text-emerald-200 dark:placeholder:text-emerald-800 focus:border-emerald-500 transition-all">
                             
-                            <div id="speciesResults" class="absolute z-[110] w-full mt-2 bg-white rounded-2xl shadow-2xl border border-emerald-50 hidden max-h-60 overflow-y-auto"></div>
+                            <div id="speciesResults" class="absolute z-[110] w-full mt-2 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-emerald-50 dark:border-emerald-900/20 hidden max-h-60 overflow-y-auto"></div>
                         </div>
 
                         <!-- Feedback for selected species -->
@@ -427,10 +427,10 @@
 
                     <!-- Riego -->
                     <div class="space-y-3">
-                        <label class="block text-xs font-black text-emerald-950 uppercase tracking-widest ml-4">Tipo de
+                        <label class="block text-xs font-black text-emerald-950 dark:text-emerald-50 uppercase tracking-widest ml-4 transition-colors">Tipo de
                             Riego Inicial</label>
                         <select name="id_tipo_riego" id="select-riego" required
-                            class="w-full bg-emerald-50 border-2 border-emerald-50 rounded-2xl p-4 text-emerald-900 font-bold focus:border-emerald-500 transition-all">
+                            class="w-full bg-emerald-50 dark:bg-slate-900 border-2 border-emerald-50 dark:border-emerald-900/20 rounded-2xl p-4 text-emerald-900 dark:text-emerald-50 font-bold focus:border-emerald-500 transition-all">
                             <option value="" disabled selected>Seleccione Riego</option>
                             @foreach($riegos as $riego)
                                 <option value="{{ $riego->id_tipo_riego }}" data-impacto="{{ $riego->impacto_dias ?? 0 }}">
@@ -442,56 +442,56 @@
 
                     <!-- Cantidad -->
                     <div class="space-y-3">
-                        <label class="block text-xs font-black text-emerald-950 uppercase tracking-widest ml-4">Cantidad
+                        <label class="block text-xs font-black text-emerald-950 dark:text-emerald-50 uppercase tracking-widest ml-4 transition-colors">Cantidad
                             (Semillas/Plantas)</label>
                         <input type="number" name="cantidad_sembrada" id="input-cantidad" step="0.01" required min="1"
                             placeholder="Ej: 1000"
-                            class="w-full bg-emerald-50 border-2 border-emerald-50 rounded-2xl p-4 text-emerald-900 font-bold placeholder:text-emerald-200 focus:border-emerald-500 transition-all">
+                            class="w-full bg-emerald-50 dark:bg-slate-900 border-2 border-emerald-50 dark:border-emerald-900/20 rounded-2xl p-4 text-emerald-900 dark:text-emerald-50 font-bold placeholder:text-emerald-200 dark:placeholder:text-emerald-800 focus:border-emerald-500 transition-all">
                     </div>
 
                     <!-- Fecha -->
                     <div class="space-y-3">
-                        <label class="block text-xs font-black text-emerald-950 uppercase tracking-widest ml-4">Fecha de
+                        <label class="block text-xs font-black text-emerald-950 dark:text-emerald-50 uppercase tracking-widest ml-4 transition-colors">Fecha de
                             Inicio</label>
                         <input type="date" name="fecha_siembra" id="input-fecha" required value="{{ date('Y-m-d') }}"
-                            class="w-full bg-emerald-50 border-2 border-emerald-50 rounded-2xl p-4 text-emerald-900 font-bold focus:border-emerald-500 transition-all">
+                            class="w-full bg-emerald-50 dark:bg-slate-900 border-2 border-emerald-50 dark:border-emerald-900/20 rounded-2xl p-4 text-emerald-900 dark:text-emerald-50 font-bold focus:border-emerald-500 transition-all">
                     </div>
 
                     <!-- Frecuencia de Riego -->
                     <div class="space-y-3">
-                        <label class="block text-xs font-black text-emerald-950 uppercase tracking-widest ml-4">Frecuencia de Riego (Días)</label>
+                        <label class="block text-xs font-black text-emerald-950 dark:text-emerald-50 uppercase tracking-widest ml-4 transition-colors">Frecuencia de Riego (Días)</label>
                         <input type="number" name="frecuencia_riego_dias" id="input-frecuencia" required min="1" max="30"
                             placeholder="Ej: 3" value="3"
-                            class="w-full bg-emerald-50 border-2 border-emerald-50 rounded-2xl p-4 text-emerald-900 font-bold placeholder:text-emerald-200 focus:border-emerald-500 transition-all">
+                            class="w-full bg-emerald-50 dark:bg-slate-900 border-2 border-emerald-50 dark:border-emerald-900/20 rounded-2xl p-4 text-emerald-900 dark:text-emerald-50 font-bold placeholder:text-emerald-200 dark:placeholder:text-emerald-800 focus:border-emerald-500 transition-all">
                     </div>
 
                     <!-- Litros por Riego -->
                     <div class="space-y-3">
-                        <label class="block text-xs font-black text-emerald-950 uppercase tracking-widest ml-4">Litros por Riego</label>
+                        <label class="block text-xs font-black text-emerald-950 dark:text-emerald-50 uppercase tracking-widest ml-4 transition-colors">Litros por Riego</label>
                         <input type="number" step="0.5" name="litros_por_riego" id="input-litros" required min="1"
                             placeholder="Ej: 500" value="500"
-                            class="w-full bg-emerald-50 border-2 border-emerald-50 rounded-2xl p-4 text-emerald-900 font-bold placeholder:text-emerald-200 focus:border-emerald-500 transition-all">
+                            class="w-full bg-emerald-50 dark:bg-slate-900 border-2 border-emerald-50 dark:border-emerald-900/20 rounded-2xl p-4 text-emerald-900 dark:text-emerald-50 font-bold placeholder:text-emerald-200 dark:placeholder:text-emerald-800 focus:border-emerald-500 transition-all">
                     </div>
                 </div>
 
                 <!-- Imagen -->
                 <div class="space-y-3">
-                    <label class="block text-xs font-black text-emerald-950 uppercase tracking-widest ml-4">Fotografía del
+                    <label class="block text-xs font-black text-emerald-950 dark:text-emerald-50 uppercase tracking-widest ml-4 transition-colors">Fotografía del
                         Cultivo (Opcional)</label>
                     <div class="relative group">
                         <input type="file" name="imagen" accept="image/*" id="input-imagen"
                             class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
                         <div
-                            class="w-full bg-emerald-50 border-2 border-dashed border-emerald-200 rounded-3xl p-8 text-center flex flex-col items-center justify-center gap-4 group-hover:bg-emerald-100/50 group-hover:border-emerald-400 transition-all duration-300">
+                            class="w-full bg-emerald-50 dark:bg-slate-900 border-2 border-dashed border-emerald-200 dark:border-emerald-900/20 rounded-3xl p-8 text-center flex flex-col items-center justify-center gap-4 group-hover:bg-emerald-100/50 dark:group-hover:bg-slate-950/50 group-hover:border-emerald-400 transition-all duration-300">
                             <div
-                                class="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-sm text-emerald-500 group-hover:scale-110 transition-transform duration-300">
+                                class="w-16 h-16 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center shadow-sm text-emerald-500 group-hover:scale-110 transition-transform duration-300">
                                 <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                 </svg>
                             </div>
                             <div>
-                                <p class="font-bold text-emerald-900">Haz clic o arrastra una imagen aquí</p>
+                                <p class="font-bold text-emerald-900 dark:text-emerald-50 transition-colors">Haz clic o arrastra una imagen aquí</p>
                                 <p class="text-xs font-medium text-emerald-500 mt-1" id="file-name-display">PNG, JPG hasta
                                     2MB</p>
                             </div>
@@ -501,10 +501,10 @@
 
                 <!-- Previsualización de Producción y Fecha -->
                 <div id="preview-produccion"
-                    class="hidden bg-emerald-50 rounded-3xl p-6 border-2 border-emerald-100 grid-cols-1 md:grid-cols-2 gap-4 items-center">
-                    <div class="flex items-center gap-4 md:border-r-2 md:border-emerald-100 pr-4">
+                    class="hidden bg-emerald-50 dark:bg-slate-900/50 rounded-3xl p-6 border-2 border-emerald-100 dark:border-emerald-900/20 grid-cols-1 md:grid-cols-2 gap-4 items-center transition-all duration-300">
+                    <div class="flex items-center gap-4 md:border-r-2 md:border-emerald-100 dark:md:border-emerald-900/20 pr-4">
                         <div
-                            class="w-12 h-12 bg-emerald-600 rounded-2xl flex items-center justify-center text-white shrink-0">
+                            class="w-12 h-12 bg-emerald-600 dark:bg-emerald-500 rounded-2xl flex items-center justify-center text-white shrink-0 shadow-lg shadow-emerald-200 dark:shadow-none">
                             <!-- Icono para produccion -->
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -512,15 +512,15 @@
                             </svg>
                         </div>
                         <div>
-                            <p class="text-[10px] font-black text-emerald-400 uppercase tracking-widest">Est. Producción
+                            <p class="text-[10px] font-black text-emerald-400 dark:text-emerald-700 uppercase tracking-widest transition-colors">Est. Producción
                             </p>
-                            <h4 id="valor-estimado" class="text-2xl font-black text-emerald-950 leading-none truncate">0 kg
+                            <h4 id="valor-estimado" class="text-2xl font-black text-emerald-950 dark:text-emerald-50 leading-none truncate transition-colors">0 kg
                             </h4>
                         </div>
                     </div>
                     <div class="flex items-center gap-4 md:pl-4">
                         <div
-                            class="w-12 h-12 bg-emerald-600 rounded-2xl flex items-center justify-center text-white shrink-0">
+                            class="w-12 h-12 bg-emerald-600 dark:bg-emerald-500 rounded-2xl flex items-center justify-center text-white shrink-0 shadow-lg shadow-emerald-200 dark:shadow-none">
                             <!-- Icono para calendario -->
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -528,10 +528,10 @@
                             </svg>
                         </div>
                         <div>
-                            <p class="text-[10px] font-black text-emerald-400 uppercase tracking-widest">Est. Cosecha
+                            <p class="text-[10px] font-black text-emerald-400 dark:text-emerald-700 uppercase tracking-widest transition-colors">Est. Cosecha
                             </p>
                             <h4 id="fecha-estimada-preview"
-                                class="text-xl font-black text-emerald-950 leading-none truncate w-full">N/A</h4>
+                                class="text-xl font-black text-emerald-950 dark:text-emerald-50 leading-none truncate w-full transition-colors">N/A</h4>
                         </div>
                     </div>
                 </div>
@@ -586,15 +586,15 @@
                         items.forEach(item => {
                             const btn = document.createElement('button');
                             btn.type = 'button';
-                            btn.className = "w-full text-left p-4 hover:bg-emerald-50 border-b border-gray-50 last:border-0 transition-colors flex items-center justify-between group";
+                            btn.className = "w-full text-left p-4 hover:bg-emerald-50 dark:hover:bg-slate-800 border-b border-gray-50 dark:border-emerald-900/10 last:border-0 transition-colors flex items-center justify-between group";
                             btn.innerHTML = `
                                 <div class="flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center group-hover:bg-white transition-colors">
+                                    <div class="w-8 h-8 rounded-lg bg-gray-50 dark:bg-slate-900 flex items-center justify-center group-hover:bg-white dark:group-hover:bg-slate-700 transition-colors">
                                         <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /></svg>
                                     </div>
                                     <div>
-                                        <p class="text-xs font-bold text-gray-900">${item.nombre}</p>
-                                        <p class="text-[9px] text-gray-400 uppercase font-black">${item.suelo} • ${item.area} m²</p>
+                                        <p class="text-xs font-bold text-gray-900 dark:text-emerald-50">${item.nombre}</p>
+                                        <p class="text-[9px] text-gray-400 dark:text-emerald-800 uppercase font-black">${item.suelo} • ${item.area} m²</p>
                                     </div>
                                 </div>
                             `;
@@ -667,19 +667,19 @@
                         items.forEach(item => {
                             const hasStock = parseFloat(item.stock) > 0;
                             const itemDiv = document.createElement('div');
-                            itemDiv.className = "w-full border-b border-gray-50 last:border-0 flex items-center justify-between group";
+                            itemDiv.className = "w-full border-b border-gray-50 dark:border-emerald-900/10 last:border-0 flex items-center justify-between group";
 
                             const btn = document.createElement('button');
                             btn.type = 'button';
                             btn.disabled = !hasStock;
-                            btn.className = `flex-1 text-left p-4 transition-colors flex items-center gap-3 ${hasStock ? 'hover:bg-emerald-50' : 'opacity-60 cursor-not-allowed bg-gray-50'}`;
+                            btn.className = `flex-1 text-left p-4 transition-colors flex items-center gap-3 ${hasStock ? 'hover:bg-emerald-50 dark:hover:bg-slate-800' : 'opacity-60 cursor-not-allowed bg-gray-50 dark:bg-slate-950/20'}`;
                             btn.innerHTML = `
-                                <div class="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center group-hover:bg-white transition-colors">
-                                    <svg class="w-4 h-4 ${hasStock ? 'text-emerald-600' : 'text-gray-400'}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                                <div class="w-8 h-8 rounded-lg bg-gray-50 dark:bg-slate-900 flex items-center justify-center group-hover:bg-white dark:group-hover:bg-slate-700 transition-colors">
+                                    <svg class="w-4 h-4 ${hasStock ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-400'}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
                                 </div>
                                 <div>
-                                    <p class="text-xs font-bold text-gray-900">${item.nombre}</p>
-                                    <p class="text-[9px] uppercase font-black ${hasStock ? 'text-gray-400' : 'text-red-500'}">
+                                    <p class="text-xs font-bold text-gray-900 dark:text-emerald-50">${item.nombre}</p>
+                                    <p class="text-[9px] uppercase font-black ${hasStock ? 'text-gray-400 dark:text-emerald-800' : 'text-red-500'}">
                                         ${hasStock ? `Stock: ${item.stock} • Ciclo: ${item.base_dias} días` : 'SIN STOCK (0 DISPONIBLE)'}
                                     </p>
                                 </div>
@@ -691,7 +691,7 @@
                             if (!hasStock) {
                                 const buyLink = document.createElement('a');
                                 buyLink.href = "{{ route('admin.proveedores.index') }}";
-                                buyLink.className = "mr-4 p-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors flex items-center gap-1 group/buy";
+                                buyLink.className = "mr-4 p-2 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/50 transition-colors flex items-center gap-1 group/buy";
                                 buyLink.title = "Comprar a Proveedor";
                                 buyLink.innerHTML = `
                                     <span class="text-[8px] font-black uppercase hidden lg:inline">Comprar</span>
