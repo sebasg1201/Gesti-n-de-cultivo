@@ -315,7 +315,7 @@
                             {{ number_format($porcentajeHidratacion, 0) }}%
                         </div>
                         <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">
-                            {{ $riegosCompletados }} de {{ $totalRiegosCiclo }} riego Realizado
+                            Monitoreo de frecuencia y aplicación
                         </p>
                     </div>
                 </div>
@@ -431,19 +431,19 @@
                                 <div class="mt-2 text-right">
                                     @if($item->estado_historial == 'Completado')
                                         <span class="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-md">
-                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg> Realizado
+                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg> Realizado el {{ \Carbon\Carbon::parse($item->fecha_historial)->format('d/m/Y H:i') }}
                                         </span>
                                     @elseif($item->estado_historial == 'En Proceso')
                                         <span class="inline-flex items-center gap-1 text-[10px] font-bold text-amber-600 bg-amber-50 px-2 py-1 rounded-md">
-                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> En Proceso
+                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> En Proceso (Iniciado: {{ \Carbon\Carbon::parse($item->fecha_historial)->format('d/m/Y H:i') }})
                                         </span>
                                     @elseif($item->estado_historial == 'Perdida')
                                         <span class="inline-flex items-center gap-1 text-[10px] font-bold text-rose-600 bg-rose-50 px-2 py-1 rounded-md">
-                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg> Perdida
+                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg> Perdida el {{ \Carbon\Carbon::parse($item->fecha_historial)->format('d/m/Y H:i') }}
                                         </span>
                                     @else
                                         <span class="inline-flex items-center gap-1 text-[10px] font-bold text-slate-500 bg-slate-50 px-2 py-1 rounded-md">
-                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> Programado
+                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> Programado para {{ \Carbon\Carbon::parse($item->fecha_historial)->format('d/m/Y H:i') }}
                                         </span>
                                     @endif
                                 </div>

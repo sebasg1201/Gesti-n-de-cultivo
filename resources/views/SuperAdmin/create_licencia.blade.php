@@ -88,9 +88,9 @@
                 Descripción Detallada
             </label>
             <div class="group relative">
-                <textarea name="description" rows="3"
+                <textarea name="descripcion" rows="3"
                     class="w-full bg-slate-50 border-2 border-slate-50 rounded-2xl p-5 text-slate-700 font-bold focus:bg-white focus:border-[#006b58] focus:ring-4 focus:ring-emerald-50 outline-none transition-all placeholder:text-slate-300 placeholder:font-medium resize-none"
-                    placeholder="Describe los beneficios y alcance de este plan...">{{ old('description') }}</textarea>
+                    placeholder="Describe los beneficios y alcance de este plan...">{{ old('descripcion') }}</textarea>
             </div>
         </div>
 

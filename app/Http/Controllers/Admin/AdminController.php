@@ -628,7 +628,15 @@ class AdminController extends Controller
                 'observaciones' => 'nullable|string'
             ]);
 
-            $insumo = \App\Models\Insumo::find($request->id_insumo);
+            $insumo = \App\Models\Insumo::findOrFail($request->id_insumo);
+
+            if ($insumo->stock_actual < $request->cantidad_usada) {
+                return redirect()->back()->with('error', 'No hay stock suficiente del insumo seleccionado (Disponible: ' . $insumo->stock_actual . ').')->withInput();
+            }
+
+            // Deduct stock
+            $insumo->stock_actual -= $request->cantidad_usada;
+            $insumo->save();
 
             \App\Models\InsumoCosecha::create([
                 'id_cosecha' => $request->id_cosecha,

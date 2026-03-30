@@ -1,1 +1,0 @@
-[{"Field":"departamento","Type":"text","Null":"NO","Key":"","Default":null,"Extra":""},{"Field":"codigo_postal","Type":"int(250)","Null":"NO","Key":"","Default":null,"Extra":""}]

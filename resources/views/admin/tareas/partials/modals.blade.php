@@ -100,7 +100,7 @@
                     </div>
                     <div class="space-y-2">
                         <label class="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Cantidad a Usar</label>
-                        <input type="number" step="0.01" name="cantidad_usada" required class="w-full bg-gray-50 border border-gray-100 rounded-2xl py-4 px-5 focus:outline-none focus:border-purple-500 transition-all font-bold text-gray-700">
+                        <input type="number" step="0.01" name="cantidad_usada" value="1" required class="w-full bg-gray-50 border border-gray-100 rounded-2xl py-4 px-5 focus:outline-none focus:border-purple-500 transition-all font-bold text-gray-700">
                     </div>
                 </div>
                 <div class="space-y-2">

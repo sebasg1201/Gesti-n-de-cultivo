@@ -1,1 +1,0 @@
-["id_terreno","id_empresa","nombre","ubicacion","latitud","longitud","Ancho","Alto","area_m2","departamento","ciudad","codigo_postal","id_estado","id_tipo_suelo"]

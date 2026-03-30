@@ -31,7 +31,7 @@ class TipoLicenciaController extends Controller
         $request->validate([
             'nombre_licencia' => 'required|string|max:100',
             'tiempo' => 'required|string|max:50',
-            'descripcion' => 'nullable|string|max:255',
+            'descripcion' => 'required|string|max:255',
             'precio' => 'required|numeric|min:0'
         ]);
 

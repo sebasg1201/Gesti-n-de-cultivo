@@ -12,6 +12,9 @@ use App\Models\TipoCosecha;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Mail;
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Mail\WelcomeWorker;
 
 class UsuarioEmpresaController extends Controller
 {
@@ -39,13 +42,21 @@ class UsuarioEmpresaController extends Controller
         $admin = Auth::guard('usuario')->user();
 
         $request->validate([
-            'documento' => 'required|numeric|digits_between:8,12|unique:usuario,documento',
+            'documento' => 'required|numeric|digits_between:6,10|unique:usuario,documento',
             'nombre' => 'required|string|max:150',
-            'correo' => 'required|email|unique:usuario,correo',
-            'telefono' => 'required|numeric|digits_between:10,15',
+            'correo' => [
+                'required',
+                'email',
+                'unique:usuario,correo',
+                'regex:/^[a-zA-Z0-9._%+-]+@gmail\.com$/'
+            ],
+            'telefono' => 'required|numeric|regex:/^3\d{9}$/',
             'contrasena' => 'required|string|min:8',
             'id_tipo_usuario' => 'required|in:2,3',
             'imagen' => 'nullable|image|max:2048'
+        ], [
+            'correo.regex' => 'El correo debe ser de dominio @gmail.com (sin errores tipo "gmial").',
+            'telefono.regex' => 'El teléfono debe tener 10 dígitos y empezar por 3.'
         ]);
 
         $imagePath = null;
@@ -53,7 +64,7 @@ class UsuarioEmpresaController extends Controller
             $imagePath = $request->file('imagen')->store('usuarios', 'public');
         }
 
-        Usuario::create([
+        $usuario = Usuario::create([
             'documento' => $request->documento,
             'nombre' => $request->nombre,
             'correo' => $request->correo,
@@ -64,6 +75,19 @@ class UsuarioEmpresaController extends Controller
             'id_estado' => 1, // Activo por defecto
             'imagen' => $imagePath
         ]);
+
+        // Enviar correo de bienvenida con PDF
+        try {
+            $pdf = Pdf::loadView('emails.welcome_worker_pdf', [
+                'usuario' => $usuario,
+                'password' => $request->contrasena
+            ]);
+            
+            Mail::to($usuario->correo)->send(new WelcomeWorker($usuario, $request->contrasena, $pdf->output()));
+        } catch (\Exception $e) {
+            // Log error or notify admin, but don't stop the user creation process
+            \Illuminate\Support\Facades\Log::error('Error enviando correo de bienvenida: ' . $e->getMessage());
+        }
 
         return redirect()->route('admin.usuarios.index')->with('success', 'Usuario creado correctamente.');
     }
@@ -93,11 +117,19 @@ class UsuarioEmpresaController extends Controller
 
         $request->validate([
             'nombre' => 'required|string|max:150',
-            'correo' => 'required|email|unique:usuario,correo,' . $usuario->documento . ',documento',
-            'telefono' => 'required|numeric|digits_between:10,15',
+            'correo' => [
+                'required',
+                'email',
+                'unique:usuario,correo,' . $usuario->documento . ',documento',
+                'regex:/^[a-zA-Z0-9._%+-]+@gmail\.com$/'
+            ],
+            'telefono' => 'required|numeric|regex:/^3\d{9}$/',
             'id_tipo_usuario' => 'required|in:2,3',
             'id_estado' => 'required|exists:estado,id_estado',
             'imagen' => 'nullable|image|max:2048'
+        ], [
+            'correo.regex' => 'El correo debe ser de dominio @gmail.com (sin errores tipo "gmial").',
+            'telefono.regex' => 'El teléfono debe tener 10 dígitos y empezar por 3.'
         ]);
 
         $data = $request->only(['nombre', 'correo', 'telefono', 'id_tipo_usuario', 'id_estado']);

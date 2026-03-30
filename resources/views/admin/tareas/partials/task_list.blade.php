@@ -179,13 +179,16 @@
                         $statusClass = 'bg-yellow-50 text-yellow-700 border-yellow-100'; // Default Pendiente
                         
                         if($task->id_estado == 15) { // Realizado
-                            $statusText = 'Completado';
+                            $statusText = 'Completado (' . $date->format('d/m H:i') . ')';
                             $statusClass = 'bg-emerald-50 text-emerald-700 border-emerald-100';
                         } elseif($task->id_estado == 17) { // En Proceso
                             $statusText = 'En Proceso';
                             $statusClass = 'bg-blue-50 text-blue-700 border-blue-100';
-                        } elseif(in_array($task->id_estado, [16, 18]) || $date->isPast()) { // Perdida u Oculta o Atrasada
-                            $statusText = in_array($task->id_estado, [16, 18]) ? 'Perdida' : $statusText;
+                        } elseif(in_array($task->id_estado, [16, 18])) { // Perdida u Oculta
+                            $statusText = 'Perdida (' . $date->format('d/m H:i') . ')';
+                            $statusClass = 'bg-red-50 text-red-700 border-red-100';
+                        } elseif($date->isPast()) { // Atrasada
+                            $statusText = 'Atrasada (' . $date->format('d/m H:i') . ')';
                             $statusClass = 'bg-red-50 text-red-700 border-red-100';
                         }
                     @endphp

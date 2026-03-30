@@ -50,10 +50,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Email check
         if (isValid && input.type === 'email' && value !== '') {
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const emailRegex = /^[^\s@]+@gmail\.com$/;
             if (!emailRegex.test(value)) {
                 isValid = false;
-                errorMessage = 'Ingresa un correo electrónico válido.';
+                errorMessage = 'Ingresa un correo @gmail.com válido (evita errores como "gmial").';
             }
         }
 
@@ -62,9 +62,14 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!/^\d+$/.test(value)) {
                 isValid = false;
                 errorMessage = 'Solo se permiten números.';
-            } else if (name.includes('telefono') && (value.length < 7 || value.length > 15)) {
-                isValid = false;
-                errorMessage = 'El teléfono debe tener entre 7 y 15 dígitos.';
+            } else if (name.includes('telefono')) {
+                if (value.length !== 10) {
+                    isValid = false;
+                    errorMessage = 'El teléfono debe tener exactamente 10 dígitos.';
+                } else if (!value.startsWith('3')) {
+                    isValid = false;
+                    errorMessage = 'El teléfono debe empezar por el número 3.';
+                }
             }
         }
 
