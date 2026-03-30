@@ -343,7 +343,7 @@
                                     </div>
                                     <div>
                                         <p class="text-[10px] font-black text-${colorClass}-600 uppercase tracking-widest leading-none mb-1">
-                                            ${isRealizado ? 'Tu Registro' : props.tipo} ${isPerdida ? '(Perdida)' : ''}
+                                            ${isRealizado ? 'Tu Registro' : (props.tipo === 'recoleccion' ? 'Recolección' : (props.tipo === 'riego' ? 'Riego' : 'Insumo'))} ${isPerdida ? '(Perdida)' : ''}
                                         </p>
                                         <p class="font-black text-${colorClass}-900 text-base leading-tight ${isPerdida ? 'line-through opacity-70' : ''}">
                                             ${isRealizado ? 'Labor Completada' : ev.title}
@@ -354,7 +354,9 @@
                             
                             ${isRealizado ? `
                                 <div class="px-4 py-3 bg-white/30 rounded-2xl border border-${colorClass}-100/20">
-                                    <p class="text-[9px] font-black text-${colorClass}-400 uppercase tracking-widest mb-1">${props.tipo === 'riego' ? 'Riego' : 'Insumo'}</p>
+                                    <p class="text-[9px] font-black text-${colorClass}-400 uppercase tracking-widest mb-1">
+                                        ${props.tipo === 'riego' ? 'Riego' : (props.tipo === 'recoleccion' ? 'Recolección' : 'Insumo')}
+                                    </p>
                                     <p class="text-[11px] font-bold text-${colorClass}-800 leading-tight">${props.descripcion || 'Labor programada'}</p>
                                 </div>
                             ` : ''}
