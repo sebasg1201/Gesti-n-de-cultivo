@@ -178,6 +178,17 @@ $shadowColor = 'shadow-purple-100';
                         </div>
                         {{ $task->usuario->nombre ?? 'Sin Asignar' }}
                     </div>
+
+                    {{-- Evidence Preview --}}
+                    @if($task->registroTrabajo && $task->registroTrabajo->foto_evidencia)
+                    <div class="flex items-center gap-2 group/evidence cursor-pointer bg-emerald-50 dark:bg-emerald-900/10 px-2 py-1 rounded-xl border border-emerald-100 dark:border-emerald-900/20 hover:bg-emerald-100 transition-all" 
+                         onclick="openPhotoModal('{{ asset('uploads/' . $task->registroTrabajo->foto_evidencia) }}')">
+                        <div class="w-6 h-6 rounded-lg overflow-hidden border border-emerald-200">
+                            <img src="{{ asset('uploads/' . $task->registroTrabajo->foto_evidencia) }}" class="w-full h-full object-cover">
+                        </div>
+                        <span class="text-[10px] font-black text-emerald-600 uppercase tracking-tight">Ver Evidencia</span>
+                    </div>
+                    @endif
                 </div>
             </div>
 

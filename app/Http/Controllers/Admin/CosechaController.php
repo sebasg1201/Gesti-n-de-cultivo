@@ -305,7 +305,7 @@ class CosechaController extends Controller
         $id_empresa = $this->getEmpresaId();
 
         $cosecha = Cosecha::where('id_empresa', $id_empresa)
-            ->with(['terreno', 'terreno.tipoSuelo', 'semilla', 'cultivos.detalles.producto', 'cultivos.trabajador'])
+            ->with(['terreno', 'terreno.tipoSuelo', 'semilla', 'cultivos.detalles.producto', 'cultivos.trabajador', 'cultivos.registroTrabajo'])
             ->findOrFail($id);
 
         $fechaSiembra = \Carbon\Carbon::parse($cosecha->fecha_siembra);
@@ -414,10 +414,15 @@ class CosechaController extends Controller
             $c->tipo_historial = 'recoleccion';
             $c->fecha_historial = $c->fecha_recoleccion;
             $c->titulo_historial = 'RECOLECCIÓN';
-            $c->descripcion_historial = $c->descripcion_recoleccion;
+            
+            // Recopilar cantidad y calidad de los detalles
+            $totalCant = $c->detalles->sum('cantidad');
+            $calidades = $c->detalles->pluck('calidad')->unique()->filter()->implode(', ');
+            $detallesStr = $totalCant > 0 ? " (Cant: {$totalCant}" . ($calidades ? " - Cali: {$calidades}" : "") . ")" : "";
+            
+            $c->descripcion_historial = $c->descripcion_recoleccion . $detallesStr;
             $c->observacion_trabajador = $c->registroTrabajo->observacion ?? null;
             $c->id_estado_real = $c->id_estado;
-
 
             if ($c->id_estado == 15) {
                 $c->estado_historial = 'Completado';

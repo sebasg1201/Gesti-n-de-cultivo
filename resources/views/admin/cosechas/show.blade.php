@@ -236,9 +236,13 @@
                     </div>
 
                     <div class="mt-4 pt-4 border-t border-emerald-800/50 flex items-center justify-between">
-                        <div class="text-[9px] font-medium text-emerald-500 uppercase tracking-wider">
-                            {{ $cosecha->terreno->nombre ?? 'Ubicación' }}
-                        </div>
+                        <a href="{{ route('admin.terrenos.index') }}" class="text-[9px] font-black text-emerald-500 hover:text-emerald-400 transition-all uppercase tracking-wider flex items-center gap-1 group/loc">
+                            <svg class="w-3 h-3 group-hover/loc:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                            {{ $cosecha->terreno->nombre ?? 'Región' }}
+                        </a>
                         <div id="weather-humidity" class="text-[10px] font-black text-white flex items-center gap-1">
                             <svg class="w-3 h-3 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
@@ -470,6 +474,13 @@
                             </svg>
                             Insumo
                         </a>
+                        <a href="{{ request()->fullUrlWithQuery(['type' => 'recoleccion']) }}"
+                            class="flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all {{ request('type') === 'recoleccion' ? 'bg-orange-500 text-white shadow-lg shadow-orange-200' : 'bg-orange-50 text-orange-600 hover:bg-orange-100 border border-orange-100' }}">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
+                            </svg>
+                            Recolección
+                        </a>
                     </div>
 
                     <div class="h-8 w-px bg-slate-200 hidden md:block mx-1"></div>
@@ -538,15 +549,34 @@
                         </div>
                         <p class="text-slate-700 font-medium text-sm">{{ $item->descripcion_historial ?: 'Sin detalles adicionales' }}</p>
 
-                        @if($item->observacion_trabajador)
-                        <div class="mt-3 p-3 bg-emerald-50 rounded-xl border border-emerald-100 flex gap-2">
-                            <svg class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-                            </svg>
-                            <div>
-                                <p class="text-[9px] font-black text-emerald-600 uppercase tracking-widest leading-none mb-1">Obs. {{ $item->usuario->nombre ?? 'Trabajador' }}</p>
-                                <p class="text-xs text-emerald-800 font-medium italic">"{{ $item->observacion_trabajador }}"</p>
+                        @if($item->observacion_trabajador || ($item->registroTrabajo && $item->registroTrabajo->foto_evidencia))
+                        <div class="mt-3 p-3 bg-emerald-50 rounded-xl border border-emerald-100 flex justify-between items-center gap-4">
+                            <div class="flex gap-2">
+                                <svg class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                                </svg>
+                                <div class="flex-1">
+                                    <p class="text-[9px] font-black text-emerald-600 uppercase tracking-widest leading-none mb-1">Obs. {{ $item->usuario->nombre ?? 'Trabajador' }}</p>
+                                    @if($item->observacion_trabajador)
+                                    <p class="text-xs text-emerald-800 font-medium italic">"{{ $item->observacion_trabajador }}"</p>
+                                    @else
+                                    <p class="text-[10px] text-emerald-600 font-bold italic">El trabajador registró la tarea sin observaciones de texto.</p>
+                                    @endif
+                                </div>
                             </div>
+                            
+    @if($item->registroTrabajo && $item->registroTrabajo->foto_evidencia)
+    <div class="relative group/img cursor-pointer shrink-0" onclick="openPhotoModal('{{ asset('uploads/' . $item->registroTrabajo->foto_evidencia) }}')">
+        <img src="{{ asset('uploads/' . $item->registroTrabajo->foto_evidencia) }}" 
+             class="rounded-lg object-cover w-16 h-12 border border-emerald-200 shadow-sm transition-transform group-hover/img:scale-110" 
+             alt="Evidencia">
+                                <div class="absolute inset-0 bg-black/20 opacity-0 group-hover/img:opacity-100 transition-opacity rounded-lg flex items-center justify-center text-white">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                    </svg>
+                                </div>
+                            </div>
+                            @endif
                         </div>
                         @endif
 
@@ -602,19 +632,48 @@
     </div>
 
 </div>
+
+{{-- Modal para Fotos de Evidencia --}}
+<div id="photoModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4 bg-slate-900/90 backdrop-blur-sm transition-all duration-300" onclick="closePhotoModal()">
+    <div class="relative max-w-4xl w-full flex flex-col items-center gap-4" onclick="event.stopPropagation()">
+        <!-- Close Button -->
+        <button onclick="closePhotoModal()" class="absolute -top-12 right-0 text-white hover:text-emerald-400 transition-colors p-2 bg-white/10 rounded-full">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+        <div class="bg-white p-2 rounded-[2rem] shadow-2xl overflow-hidden max-h-[80vh] w-full flex items-center justify-center">
+            <img id="modalFullImage" src="" class="max-h-full max-w-full object-contain rounded-xl" alt="Evidencia completa">
+        </div>
+        <p class="text-white/60 text-xs font-black uppercase tracking-[0.3em]">Evidencia de Trabajo</p>
+    </div>
+</div>
+
+<script>
+    function openPhotoModal(imageUrl) {
+        const modal = document.getElementById('photoModal');
+        const modalImg = document.getElementById('modalFullImage');
+        if (modal && modalImg) {
+            modalImg.src = imageUrl;
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+    }
+
+    function closePhotoModal() {
+        const modal = document.getElementById('photoModal');
+        if (modal) {
+            modal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+    }
+</script>
+
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const lat = {
-            {
-                $cosecha - > terreno && $cosecha - > terreno - > latitud ? number_format($cosecha - > terreno - > latitud, 8, '.', '') : '4.570868'
-            }
-        };
-        const lon = {
-            {
-                $cosecha - > terreno && $cosecha - > terreno - > longitud ? number_format($cosecha - > terreno - > longitud, 8, '.', '') : '-74.297333'
-            }
-        };
+        const lat = {{ $cosecha->terreno && $cosecha->terreno->latitud ? number_format($cosecha->terreno->latitud, 8, '.', '') : '4.570868' }};
+        const lon = {{ $cosecha->terreno && $cosecha->terreno->longitud ? number_format($cosecha->terreno->longitud, 8, '.', '') : '-74.297333' }};
         fetchWeather(lat, lon);
 
         function fetchWeather(la, lo) {

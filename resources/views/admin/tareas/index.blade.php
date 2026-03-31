@@ -257,6 +257,22 @@
         const itemsPerPage = 5;
         let paginationState = {};
 
+        function openPhotoModal(src) {
+            const modal = document.getElementById('photoModal');
+            const img = document.getElementById('modalFullImage');
+            img.src = src;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closePhotoModal() {
+            const modal = document.getElementById('photoModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.body.style.overflow = 'auto';
+        }
+
         function showCategory(id) {
             if (currentCategoryId === id && id !== 'todas') {
                 id = 'todas';

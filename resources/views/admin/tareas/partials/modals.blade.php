@@ -543,3 +543,19 @@
         </div>
     </div>
 </div>
+
+{{-- Modal para Fotos de Evidencia --}}
+<div id="photoModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4 bg-slate-900/90 backdrop-blur-sm transition-all duration-300" onclick="closePhotoModal()">
+    <div class="relative max-w-4xl w-full flex flex-col items-center gap-4" onclick="event.stopPropagation()">
+        <!-- Close Button -->
+        <button onclick="closePhotoModal()" class="absolute -top-12 right-0 text-white hover:text-emerald-400 transition-colors p-2 bg-white/10 rounded-full">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+        <div class="bg-white p-2 rounded-[2rem] shadow-2xl overflow-hidden max-h-[80vh] w-full flex items-center justify-center">
+            <img id="modalFullImage" src="" class="max-h-full max-w-full object-contain rounded-xl" alt="Evidencia completa">
+        </div>
+        <p class="text-white/60 text-xs font-black uppercase tracking-[0.3em]">Evidencia de Trabajo</p>
+    </div>
+</div>

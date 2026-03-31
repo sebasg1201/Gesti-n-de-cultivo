@@ -557,17 +557,17 @@ class AdminController extends Controller
         // Fetch tasks linked to harvests of this company
         $riegoQuery = \App\Models\Riego::whereHas('cosecha', function ($q) use ($id_empresa) {
             $q->where('id_empresa', $id_empresa);
-        })->with(['usuario', 'cosecha.semilla', 'cosecha.terreno', 'tipoRiego']);
+        })->with(['usuario', 'cosecha.semilla', 'cosecha.terreno', 'tipoRiego', 'registroTrabajo']);
         $riego = $applyFilters($riegoQuery, 'fecha_programada', 'observaciones', 'Riego', true)->get();
 
         $insumoQuery = \App\Models\InsumoCosecha::whereHas('cosecha', function ($q) use ($id_empresa) {
             $q->where('id_empresa', $id_empresa);
-        })->with(['usuario', 'cosecha.semilla', 'cosecha.terreno', 'insumo']);
+        })->with(['usuario', 'cosecha.semilla', 'cosecha.terreno', 'insumo', 'registroTrabajo']);
         $insumoCosecha = $applyFilters($insumoQuery, 'fecha_programada', 'observaciones', 'Insumo', true)->get();
 
         $recoleccionQuery = \App\Models\Cultivo::whereHas('cosecha', function ($q) use ($id_empresa) {
             $q->where('id_empresa', $id_empresa);
-        })->with(['trabajador', 'cosecha.semilla', 'cosecha.terreno']);
+        })->with(['trabajador', 'cosecha.semilla', 'cosecha.terreno', 'registroTrabajo', 'detalles.producto']);
 
         // Recoleccion filter logic (different date field and relation)
         if ($month) $recoleccionQuery->whereMonth('fecha_recoleccion', $month);
@@ -609,16 +609,29 @@ class AdminController extends Controller
         foreach ($recoleccion as $t) {
             $t->tipo_referencia = 'recoleccion';
             $t->descripcion = "RECOLECCIÓN"; // More consistent with the others
-            $t->sub_descripcion = $t->descripcion_recoleccion ?? null;
+            
+            // Build Quality and Quantity details from detalles
+            $details = [];
+            if ($t->detalles->count() > 0) {
+                foreach ($t->detalles as $detalle) {
+                    $prodName = $detalle->producto?->nombre_producto ?? 'Producto';
+                    $details[] = "{$prodName}: {$detalle->cantidad} (Calidad: {$detalle->calidad})";
+                }
+            }
+            
+            $baseDesc = $t->descripcion_recoleccion ?? 'Sin observaciones';
+            $t->sub_descripcion = count($details) > 0 
+                ? $baseDesc . " • " . implode(" | ", $details)
+                : $baseDesc;
+                
             $t->fecha_programada = $t->fecha_recoleccion; // Alias for sorting
-            // Map the relation 'trabajador' to 'usuario' to prevent errors in view
             $t->usuario = $t->trabajador;
         }
 
         // Fases general: fetch those linked to terrenos
         $generalQuery = \App\Models\FaseProgramada::whereHas('terreno', function ($q) use ($id_empresa) {
             $q->where('id_empresa', $id_empresa);
-        })->with(['usuario', 'terreno']);
+        })->with(['usuario', 'terreno', 'registroTrabajo']);
 
         if ($month) $generalQuery->whereMonth('fecha_programada', $month);
         if ($year) $generalQuery->whereYear('fecha_programada', $year);

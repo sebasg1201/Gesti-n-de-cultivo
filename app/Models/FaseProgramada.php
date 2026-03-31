@@ -35,4 +35,9 @@ class FaseProgramada extends Model
     {
         return $this->belongsTo(Estado::class, 'id_estado', 'id_estado');
     }
+
+    public function registroTrabajo()
+    {
+        return $this->hasOne(RegistroTrabajo::class, 'id_fase', 'id_fase');
+    }
 }
