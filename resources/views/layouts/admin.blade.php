@@ -507,7 +507,7 @@
                                 class="absolute right-0 top-full pt-2 w-56 opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 transition-all duration-200 origin-top-right z-50 pointer-events-none group-hover:pointer-events-auto">
                                 <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-emerald-100 dark:border-emerald-800/50">
 
-                                    <div class="p-4 border-b border-gray-100 dark:border-emerald-900/30">
+                                    <div class="p-4 border-b border-gray-500 dark:border-emerald-900/30">
                                         <p class="text-sm font-semibold text-gray-800 dark:text-emerald-50">
                                             {{ Auth::guard('usuario')->user()->nombre ?? 'Admin' }}
                                         </p>
