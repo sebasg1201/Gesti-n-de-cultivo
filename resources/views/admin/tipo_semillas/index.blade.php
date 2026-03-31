@@ -140,11 +140,9 @@
                         </div>
                         <div class="bg-white border-2 border-emerald-100 px-4 py-1.5 rounded-2xl flex items-center gap-3">
                             <span class="text-xl font-black text-emerald-600">{{ $tipoSemillas->total() }}</span>
-                            <span
-                                class="text-[9px] font-bold text-emerald-400 uppercase tracking-widest leading-none">Especies<br>Activas</span>
+                            <span class="text-[9px] font-bold text-emerald-400 uppercase tracking-widest leading-none">Especies<br>Activas</span>
                         </div>
                     </div>
-
                     <div class="flex-1 overflow-x-auto">
                         <table class="w-full text-left">
                             <thead>
@@ -154,7 +152,19 @@
                                     <th class="px-4 py-3">Parámetros</th>
                                     <th class="px-4 py-3">Productividad</th>
                                     <th class="px-4 py-3">Stock</th>
-                                    <th class="px-4 py-3 text-right">Acciones</th>
+                                    <th class="px-4 py-3 text-right">
+                                        <div class="flex items-center justify-end gap-3">
+                                            Acciones
+                                            <a href="{{ route('admin.proveedores.index') }}" 
+                                                class="p-1.5 bg-emerald-50 text-emerald-600 rounded-lg hover:bg-emerald-100 transition-all border border-emerald-100/50 group/prov" 
+                                                title="Ir a Proveedores">
+                                                <svg class="w-4 h-4 group-hover/prov:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
+                                                </svg>
+                                            </a>
+                                        </div>
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-emerald-50/50 dark:divide-emerald-900/10">

@@ -150,10 +150,15 @@
                                 </div>
 
                                 <div>
-                                    <label
-                                        class="block text-xs font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider mb-2">Tipo
-                                        de
-                                        Suelo</label>
+                                    <div class="flex items-center justify-between mb-2 mr-1">
+                                        <label
+                                            class="block text-xs font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider">Tipo de Suelo</label>
+                                        <a href="{{ route('tipo_suelos.index') }}" class="text-emerald-500 hover:text-emerald-600 transition-colors" title="Gestionar Tipos de Suelo">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                            </svg>
+                                        </a>
+                                    </div>
                                     <select name="id_tipo_suelo" id="id_tipo_suelo" required
                                         class="w-full px-4 py-3 rounded-2xl border-emerald-100 dark:border-emerald-900/20 focus:border-emerald-500 focus:ring-emerald-500 bg-emerald-50/30 dark:bg-slate-900 text-sm dark:text-emerald-50 transition-all font-medium">
                                         <option value="">Seleccione un suelo...</option>

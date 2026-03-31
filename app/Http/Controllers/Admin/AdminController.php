@@ -1215,4 +1215,115 @@ class AdminController extends Controller
 
         return redirect()->back()->with('success', 'Respuesta enviada correctamente.');
     }
+
+    public function buscarLotes(Request $request)
+    {
+        $usuario = auth()->guard('usuario')->user();
+        if (!$usuario) return response()->json([]);
+
+        $query = $request->get('q');
+        if (!$query) return response()->json([]);
+
+        $lotes = \App\Models\Cosecha::with(['terreno', 'semilla'])
+            ->where('id_empresa', $usuario->id_empresa)
+            ->where(function($q) use ($query) {
+                $q->whereHas('terreno', function($qt) use ($query) {
+                    $qt->where('nombre', 'LIKE', "%{$query}%");
+                })
+                ->orWhereHas('semilla', function($qs) use ($query) {
+                    $qs->where('nombre_semilla', 'LIKE', "%{$query}%");
+                })
+                ->orWhere('id_cosecha', 'LIKE', "%{$query}%");
+            })
+            // Solo lotes activos (asumiendo id_estado 1 es activo, basándome en el contexto previo)
+            ->where('id_estado', 1) 
+            ->get()
+            ->map(function($l) {
+                return [
+                    'id' => $l->id_cosecha,
+                    'nombre' => ($l->terreno?->nombre ?? 'Lote #'.$l->id_cosecha) . " (" . ($l->semilla?->nombre_semilla ?? 'N/A') . ")",
+                    'info' => "ID: #{$l->id_cosecha} • Siembra: " . \Carbon\Carbon::parse($l->fecha_siembra)->format('d/m/Y')
+                ];
+            });
+
+        return response()->json($lotes);
+    }
+
+    public function buscarTrabajadores(Request $request)
+    {
+        $usuario = auth()->guard('usuario')->user();
+        if (!$usuario) return response()->json([]);
+
+        $query = $request->get('q');
+        if (!$query) return response()->json([]);
+
+        $trabajadores = \App\Models\Usuario::where('id_empresa', $usuario->id_empresa)
+            ->where('id_tipo_usuario', 3) // Trabajador
+            ->where(function($q) use ($query) {
+                $q->where('nombre', 'LIKE', "%{$query}%")
+                  ->orWhere('documento', 'LIKE', "%{$query}%");
+            })
+            ->get()
+            ->map(function($t) {
+                return [
+                    'id' => $t->documento,
+                    'nombre' => $t->nombre,
+                    'info' => "CC: {$t->documento} • " . ($t->cargo ?? 'Operario')
+                ];
+            });
+
+        return response()->json($trabajadores);
+    }
+
+    public function buscarInsumos(Request $request)
+    {
+        $usuario = auth()->guard('usuario')->user();
+        if (!$usuario) return response()->json([]);
+
+        $query = $request->get('q');
+        if (!$query) return response()->json([]);
+
+        $insumos = \App\Models\Insumo::where('id_empresa', $usuario->id_empresa)
+            ->where(function($q) use ($query) {
+                $q->where('Nombre', 'LIKE', "%{$query}%")
+                  ->orWhere('ID_insumo', 'LIKE', "%{$query}%");
+            })
+            ->get()
+            ->map(function($i) {
+                return [
+                    'id' => $i->ID_insumo,
+                    'nombre' => $i->Nombre,
+                    'stock' => $i->stock_actual,
+                    'impacto' => $i->impacto_dias ?? 0,
+                    'info' => "ID: #{$i->ID_insumo} • Impacto: " . ($i->impacto_dias >= 0 ? '+' : '') . "{$i->impacto_dias} días"
+                ];
+            });
+
+        return response()->json($insumos);
+    }
+
+    public function buscarTerrenos(Request $request)
+    {
+        $usuario = auth()->guard('usuario')->user();
+        if (!$usuario) return response()->json([]);
+
+        $query = $request->get('q');
+        if (!$query) return response()->json([]);
+
+        $terrenos = \App\Models\Terreno::where('id_empresa', $usuario->id_empresa)
+            ->where('nombre', 'LIKE', "%{$query}%")
+            ->whereDoesntHave('cosechas', function($q) {
+                $q->where('id_estado', 1); // 1 = Activo (según la lógica de la vista principal)
+            })
+            ->get()
+            ->map(function($t) {
+                return [
+                    'id' => $t->id_terreno,
+                    'nombre' => $t->nombre,
+                    'info' => "Ubicación: " . ($t->ubicacion ?? 'No especificada')
+                ];
+            });
+
+        return response()->json($terrenos);
+    }
 }

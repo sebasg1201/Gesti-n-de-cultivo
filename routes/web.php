@@ -119,6 +119,10 @@ Route::middleware(['auth:usuario', 'check.license'])->group(function () {
     Route::post('/admin/tareas/store-insumo', [AdminController::class, 'storeInsumo'])->name('admin.tareas.store.insumo');
     Route::post('/admin/tareas/store-general', [AdminController::class, 'storeGeneral'])->name('admin.tareas.store.general');
     Route::get('/admin/tareas/export', [AdminController::class, 'exportTareas'])->name('admin.tareas.export');
+    Route::get('/admin/tareas/buscar-lotes', [AdminController::class, 'buscarLotes'])->name('admin.tareas.buscar_lotes');
+    Route::get('/admin/tareas/buscar-trabajadores', [AdminController::class, 'buscarTrabajadores'])->name('admin.tareas.buscar_trabajadores');
+    Route::get('/admin/tareas/buscar-insumos', [AdminController::class, 'buscarInsumos'])->name('admin.tareas.buscar_insumos');
+    Route::get('/admin/tareas/buscar-terrenos', [AdminController::class, 'buscarTerrenos'])->name('admin.tareas.buscar_terrenos');
 
     // Rutas para la gestión de licencias del usuario administrador
     Route::get('/admin/licencias', [App\Http\Controllers\Admin\TipoLicenciaController::class, 'index'])->name('admin.licencias.index');

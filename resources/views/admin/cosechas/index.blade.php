@@ -172,6 +172,14 @@
                             </button>
                         </form>
                         
+                        <a href="{{ route('admin.cultivos.index') }}" 
+                            class="p-2.5 bg-white dark:bg-slate-900 text-emerald-600 dark:text-emerald-400 rounded-full border border-emerald-100 dark:border-emerald-900/50 shadow-sm hover:bg-emerald-50 dark:hover:bg-slate-800 transition-all group/prod" 
+                            title="Ir a Control de Producción (Cultivos)">
+                            <svg class="w-4 h-4 group-hover/prod:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 114 0m-4 0a2 2 0 114 0" />
+                            </svg>
+                        </a>
+
                         <a href="{{ route('admin.cosechas.export', request()->all()) }}" class="flex items-center gap-2 px-5 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg shadow-emerald-100 transition-all transform hover:-translate-y-0.5">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                             Exportar CSV
@@ -427,8 +435,12 @@
 
                     <!-- Riego -->
                     <div class="space-y-3">
-                        <label class="block text-xs font-black text-emerald-950 dark:text-emerald-50 uppercase tracking-widest ml-4 transition-colors">Tipo de
-                            Riego Inicial</label>
+                        <div class="flex justify-between items-center ml-4 mr-2">
+                            <label class="block text-xs font-black text-emerald-950 dark:text-emerald-50 uppercase tracking-widest transition-colors">Tipo de Riego Inicial</label>
+                            <a href="{{ route('tipo_riegos.index') }}" class="text-emerald-500 hover:text-emerald-600 transition-colors p-1" title="Gestionar Riegos">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                            </a>
+                        </div>
                         <select name="id_tipo_riego" id="select-riego" required
                             class="w-full bg-emerald-50 dark:bg-slate-900 border-2 border-emerald-50 dark:border-emerald-900/20 rounded-2xl p-4 text-emerald-900 dark:text-emerald-50 font-bold focus:border-emerald-500 transition-all">
                             <option value="" disabled selected>Seleccione Riego</option>
@@ -442,8 +454,12 @@
 
                     <!-- Cantidad -->
                     <div class="space-y-3">
-                        <label class="block text-xs font-black text-emerald-950 dark:text-emerald-50 uppercase tracking-widest ml-4 transition-colors">Cantidad
-                            (Semillas/Plantas)</label>
+                        <div class="flex justify-between items-center ml-4 mr-2">
+                            <label class="block text-xs font-black text-emerald-950 dark:text-emerald-50 uppercase tracking-widest transition-colors">Cantidad (Semillas/Plantas)</label>
+                            <a href="{{ route('tipo_semillas.index') }}" class="text-emerald-500 hover:text-emerald-600 transition-colors p-1" title="Gestionar Semillas">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                            </a>
+                        </div>
                         <input type="number" name="cantidad_sembrada" id="input-cantidad" step="0.01" required min="1"
                             placeholder="Ej: 1000"
                             class="w-full bg-emerald-50 dark:bg-slate-900 border-2 border-emerald-50 dark:border-emerald-900/20 rounded-2xl p-4 text-emerald-900 dark:text-emerald-50 font-bold placeholder:text-emerald-200 dark:placeholder:text-emerald-800 focus:border-emerald-500 transition-all">
