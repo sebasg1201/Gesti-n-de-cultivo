@@ -109,55 +109,55 @@
 
         <!-- List Column -->
         <div class="xl:col-span-2">
-            <div class="bg-white rounded-[2.5rem] shadow-xl border border-blue-50/50 overflow-hidden flex flex-col">
-                <div class="px-6 py-5 border-b border-blue-50 bg-gray-50/30 flex justify-between items-center">
+            <div class="bg-white dark:bg-slate-800 rounded-[2.5rem] shadow-xl border border-blue-50/50 dark:border-emerald-900/20 overflow-hidden flex flex-col transition-colors duration-300">
+                <div class="px-6 py-5 border-b border-blue-50 dark:border-emerald-950/20 bg-gray-50/30 dark:bg-slate-900/30 flex justify-between items-center text-center">
                     <div>
-                        <h3 class="text-lg font-black text-slate-800">Sistemas de Riego</h3>
-                        <p class="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-widest italic">Configuración Técnica de Empresa</p>
+                        <h3 class="text-lg font-black text-slate-800 dark:text-slate-100">Sistemas de Riego</h3>
+                        <p class="text-[10px] font-bold text-slate-400 dark:text-emerald-500/50 mt-1 uppercase tracking-widest italic">Configuración Técnica de Empresa</p>
                     </div>
                 </div>
 
                 <div class="flex-1 overflow-x-auto">
                     <table class="w-full text-left">
                         <thead>
-                            <tr class="bg-white text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] border-b border-blue-50">
+                            <tr class="bg-white dark:bg-slate-800 text-[9px] font-black text-slate-400 dark:text-emerald-500/60 uppercase tracking-[0.2em] border-b border-blue-50 dark:border-emerald-950/30">
                                 <th class="px-6 py-4">Tipo de Riego</th>
                                 <th class="px-6 py-4 text-center">Impacto</th>
                                 <th class="px-6 py-4 text-right">Acciones</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-blue-50/50">
+                        <tbody class="divide-y divide-blue-50/50 dark:divide-emerald-950/20">
                             @forelse($tipoRiegos as $riego)
-                            <tr class="hover:bg-blue-50/10 transition-all group">
+                            <tr class="hover:bg-blue-50/10 dark:hover:bg-emerald-500/5 transition-all group">
                                 <td class="px-6 py-4">
                                     <div class="flex items-center gap-4">
-                                        <div class="w-10 h-10 bg-blue-600 text-white rounded-2xl flex items-center justify-center font-black shadow-lg shadow-blue-100 group-hover:scale-110 transition-transform">
+                                        <div class="w-10 h-10 bg-blue-600 dark:bg-emerald-600 text-white rounded-2xl flex items-center justify-center font-black shadow-lg shadow-blue-100 dark:shadow-emerald-950/50 group-hover:scale-110 transition-transform">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517" />
                                             </svg>
                                         </div>
                                         <div>
-                                            <span class="font-black text-slate-700 block text-sm">{{ $riego->tipo_riego }}</span>
-                                            <span class="text-[9px] font-black text-blue-500 uppercase italic opacity-60 tracking-wider">Base: {{ $riego->catalogo->nombre ?? 'Manual' }}</span>
+                                            <span class="font-black text-slate-700 dark:text-slate-200 block text-sm">{{ $riego->tipo_riego }}</span>
+                                            <span class="text-[9px] font-black text-blue-500 dark:text-emerald-500 uppercase italic opacity-60 dark:opacity-100 tracking-wider">Base: {{ $riego->catalogo->nombre ?? 'Manual' }}</span>
                                         </div>
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 text-center">
-                                    <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-2xl {{ $riego->impacto_dias >= 0 ? 'bg-red-50 text-red-600 border-red-100' : 'bg-green-50 text-green-600 border-green-100' }} border font-black text-[10px]">
+                                    <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-2xl {{ $riego->impacto_dias >= 0 ? 'bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-400 border-red-100 dark:border-red-900/20' : 'bg-green-50 dark:bg-emerald-950/20 text-green-600 dark:text-emerald-400 border-green-100 dark:border-emerald-900/20' }} border font-black text-[10px]">
                                         {{ $riego->impacto_dias > 0 ? '+' : '' }}{{ $riego->impacto_dias }} días
                                     </div>
                                 </td>
 
                                 <td class="px-6 py-4 text-right">
                                     <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all">
-                                        <button onclick='editRiego(@json($riego))' class="p-2.5 bg-amber-50 text-amber-600 rounded-xl hover:bg-amber-100 shadow-sm transition-all">
+                                        <button onclick='editRiego(@json($riego))' class="p-2.5 bg-amber-50 dark:bg-amber-950/20 text-amber-600 dark:text-amber-400 rounded-xl hover:bg-amber-100 dark:hover:bg-amber-900/30 shadow-sm transition-all">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                             </svg>
                                         </button>
                                         <form action="{{ route('tipo_riegos.destroy', $riego->id_tipo_riego) }}" method="POST" class="inline">
                                             @csrf @method('DELETE')
-                                            <button type="submit" onclick="return confirm('¿Eliminar este sistema?')" class="p-2.5 bg-red-50 text-red-600 rounded-xl hover:bg-red-100 shadow-sm transition-all">
+                                            <button type="submit" onclick="return confirm('¿Eliminar este sistema?')" class="p-2.5 bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-400 rounded-xl hover:bg-red-100 dark:hover:bg-red-900/30 shadow-sm transition-all">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                                 </svg>
@@ -182,7 +182,7 @@
                     </table>
                 </div>
 
-                <div class="px-6 py-4 bg-gray-50/30 border-t border-blue-50">
+                <div class="px-6 py-4 bg-gray-50/30 dark:bg-slate-900/30 border-t border-blue-50 dark:border-emerald-950/20">
                     {{ $tipoRiegos->links() }}
                 </div>
             </div>

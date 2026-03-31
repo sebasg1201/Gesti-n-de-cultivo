@@ -1,15 +1,15 @@
 @extends('layouts.barra_lateral')
 
 @section('content')
-    <div class="px-6 pb-6 pt-0 bg-slate-50/50">
+    <div class="px-6 pb-6 pt-0 bg-slate-50/50 dark:bg-slate-950/20 transition-colors duration-300">
 
         {{-- HEADER & ACTIONS INTEGRATED --}}
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
             <div>
-                <h2 class="text-3xl font-black text-green-800 tracking-tight">Solicitudes De <span
+                <h2 class="text-3xl font-black text-green-800 dark:text-emerald-500 tracking-tight">Solicitudes De <span
                         class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-green-500">Compra</span>
                 </h2>
-                <p class="text-slate-500 text-sm font-medium">Gestiona y supervisa las suscripciones entrantes.</p>
+                <p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Gestiona y supervisa las suscripciones entrantes.</p>
             </div>
 
             <div class="flex items-center gap-3">
@@ -23,7 +23,7 @@
                         </svg>
                     </div>
                     <input type="search" name="search" value="{{ request('search') }}"
-                        class="block w-full md:w-64 pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-bold text-slate-700 placeholder-slate-400 focus:ring-4 focus:ring-emerald-50 focus:border-emerald-500 focus:w-80 outline-none transition-all"
+                        class="block w-full md:w-64 pl-10 pr-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-emerald-900/20 rounded-xl text-sm font-bold text-slate-700 dark:text-emerald-50 placeholder-slate-400 focus:ring-4 focus:ring-emerald-50 dark:focus:ring-emerald-500/10 focus:border-emerald-500 focus:w-80 outline-none transition-all"
                         placeholder="Empresa o NIT...">
 
                     @if(request('search'))
@@ -59,40 +59,40 @@
         </div>
 
         {{-- TABLE CONTAINER --}}
-        <div class="bg-white rounded-[2rem] shadow-[0_10px_40px_rgba(0,0,0,0.03)] border border-slate-100 overflow-hidden">
+        <div class="bg-white dark:bg-slate-900 rounded-[2rem] shadow-[0_10px_40px_rgba(0,0,0,0.03)] dark:shadow-none border border-slate-100 dark:border-emerald-900/10 overflow-hidden transition-colors duration-300">
             <div class="overflow-x-auto text-left">
                 <table class="w-full border-collapse">
                     <thead>
-                        <tr class="bg-slate-50/50">
+                        <tr class="bg-slate-50/50 dark:bg-slate-950/50">
                             <th
-                                class="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] border-b border-slate-100">
+                                class="px-6 py-5 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] border-b border-slate-100 dark:border-emerald-950/20">
                                 Empresa</th>
                             <th
-                                class="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] border-b border-slate-100">
+                                class="px-6 py-5 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] border-b border-slate-100 dark:border-emerald-950/20">
                                 Contacto</th>
                             <th
-                                class="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] border-b border-slate-100 text-center">
+                                class="px-6 py-5 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] border-b border-slate-100 dark:border-emerald-950/20 text-center">
                                 Plan</th>
                             <th
-                                class="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] border-b border-slate-100">
+                                class="px-6 py-5 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] border-b border-slate-100 dark:border-emerald-950/20">
                                 Fecha Solicitud</th>
                             <th
-                                class="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] border-b border-slate-100 text-center">
+                                class="px-6 py-5 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] border-b border-slate-100 dark:border-emerald-950/20 text-center">
                                 Estado</th>
                             <th
-                                class="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] border-b border-slate-100 text-right">
+                                class="px-6 py-5 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] border-b border-slate-100 dark:border-emerald-950/20 text-right">
                                 Acción</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-50">
+                    <tbody class="divide-y divide-slate-50 dark:divide-emerald-950/10">
                         @forelse($solicitudes as $solicitud)
-                            <tr class="hover:bg-slate-50/80 transition-all group">
+                            <tr class="hover:bg-slate-50/80 dark:hover:bg-emerald-500/5 transition-all group">
                                 <td class="px-6 py-5 whitespace-nowrap">
                                     <div class="flex flex-col">
                                         <span
-                                            class="text-sm font-bold text-slate-800">{{ $solicitud->empresa->nombre_empresa ?? 'N/A' }}</span>
+                                            class="text-sm font-bold text-slate-800 dark:text-emerald-50 transition-colors">{{ $solicitud->empresa->nombre_empresa ?? 'N/A' }}</span>
                                         <div class="flex items-center gap-1.5 mt-0.5">
-                                            <span class="text-[11px] font-medium text-slate-400">NIT:
+                                            <span class="text-[11px] font-medium text-slate-400 dark:text-slate-500">NIT:
                                                 {{ $solicitud->id_empresa }}</span>
 
                                             {{-- BOTÓN DE COPIADO --}}
@@ -121,23 +121,23 @@
                                 <td class="px-6 py-5 whitespace-nowrap">
                                     <div class="flex flex-col">
                                         <span
-                                            class="text-sm font-bold text-slate-700 leading-none">{{ $solicitud->empresa->nombre_repre_legal ?? 'N/A' }}</span>
+                                            class="text-sm font-bold text-slate-700 dark:text-slate-200 leading-none transition-colors">{{ $solicitud->empresa->nombre_repre_legal ?? 'N/A' }}</span>
                                         <span
-                                            class="text-[11px] font-medium text-slate-400 mt-1 italic">{{ $solicitud->empresa->correo ?? 'N/A' }}</span>
+                                            class="text-[11px] font-medium text-slate-400 dark:text-slate-500 mt-1 italic">{{ $solicitud->empresa->correo ?? 'N/A' }}</span>
                                     </div>
                                 </td>
                                 <td class="px-6 py-5 whitespace-nowrap text-center">
                                     <span
-                                        class="inline-block px-3 py-1 text-[10px] font-black tracking-widest uppercase rounded-lg bg-indigo-50 text-indigo-600 border border-indigo-100">
+                                        class="inline-block px-3 py-1 text-[10px] font-black tracking-widest uppercase rounded-lg bg-indigo-50 dark:bg-indigo-950/30 text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-900/30">
                                         {{ $solicitud->tipoLicencia->nombre_licencia ?? 'N/A' }}
                                     </span>
                                 </td>
                                 <td class="px-6 py-5 whitespace-nowrap">
                                     <div class="flex flex-col">
-                                        <span class="text-sm font-bold text-slate-700 uppercase leading-none">
+                                        <span class="text-sm font-bold text-slate-700 dark:text-slate-300 uppercase leading-none transition-colors">
                                             {{ \Carbon\Carbon::parse($solicitud->fecha_solicitud)->format('d M, Y') }}
                                         </span>
-                                        <span class="text-[10px] font-medium text-slate-400 mt-1 uppercase tracking-tighter">
+                                        <span class="text-[10px] font-medium text-slate-400 dark:text-slate-500 mt-1 uppercase tracking-tighter">
                                             Hace
                                             {{ \Carbon\Carbon::parse($solicitud->fecha_solicitud)->diffForHumans(null, true) }}
                                         </span>
@@ -146,8 +146,8 @@
                                 <td class="px-6 py-5 whitespace-nowrap text-center">
                                     @php
                                         $statusClasses = $solicitud->id_estado == 1
-                                            ? 'bg-amber-50 text-amber-600 ring-amber-100'
-                                            : 'bg-emerald-50 text-emerald-600 ring-emerald-100';
+                                            ? 'bg-amber-50 dark:bg-amber-950/30 text-amber-600 dark:text-amber-400 ring-amber-100 dark:ring-amber-900/30'
+                                            : 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 ring-emerald-100 dark:ring-emerald-900/30';
                                     @endphp
                                     <span
                                         class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-black uppercase tracking-tighter ring-1 {{ $statusClasses }}">
@@ -170,14 +170,14 @@
                             <tr>
                                 <td colspan="6" class="px-6 py-20 text-center">
                                     <div class="flex flex-col items-center">
-                                        <div class="bg-slate-50 p-4 rounded-full mb-4">
-                                            <svg class="w-12 h-12 text-slate-300" fill="none" stroke="currentColor"
+                                        <div class="bg-slate-50 dark:bg-slate-800 p-4 rounded-full mb-4">
+                                            <svg class="w-12 h-12 text-slate-300 dark:text-slate-600" fill="none" stroke="currentColor"
                                                 viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
                                                     d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                             </svg>
                                         </div>
-                                        <span class="text-slate-400 font-bold uppercase tracking-widest text-xs">Sin registros
+                                        <span class="text-slate-400 dark:text-slate-500 font-bold uppercase tracking-widest text-xs">Sin registros
                                             encontrados</span>
                                     </div>
                                 </td>
@@ -199,7 +199,7 @@
     <div id="modalDetalle" class="fixed inset-0 z-[9999] hidden overflow-y-auto" aria-modal="true">
         <div class="flex items-center justify-center min-h-screen px-4 py-6">
             <div class="fixed inset-0 bg-black/40 backdrop-blur-sm" onclick="closeModal()"></div>
-            <div class="relative bg-white rounded-2xl text-left shadow-2xl transform transition-all w-full max-w-2xl">
+            <div class="relative bg-white dark:bg-slate-900 rounded-2xl text-left shadow-2xl transform transition-all w-full max-w-2xl border border-transparent dark:border-emerald-950/30 transition-colors duration-300">
 
                 {{-- HEADER --}}
                 <div class="bg-gradient-to-r from-green-500 to-emerald-400 px-6 py-5 rounded-t-2xl">
@@ -227,18 +227,18 @@
                 </div>
 
                 {{-- COMPANY BANNER --}}
-                <div class="px-6 py-5 flex items-center gap-4 border-b border-gray-100">
+                <div class="px-6 py-5 flex items-center gap-4 border-b border-gray-100 dark:border-emerald-950/20">
                     <div id="modal-sol-avatar"
                         class="w-14 h-14 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center text-white font-bold text-xl shadow-md flex-shrink-0">
                     </div>
                     <div class="min-w-0">
-                        <p class="text-base font-bold text-gray-900" id="modal-sol-empresa"></p>
-                        <div class="text-sm text-gray-500 flex items-center gap-2 mt-1">
-                            NIT: <span id="modal-sol-nit" class="font-medium text-gray-700"></span>
+                        <p class="text-base font-bold text-gray-900 dark:text-emerald-50" id="modal-sol-empresa"></p>
+                        <div class="text-sm text-gray-500 dark:text-gray-400 flex items-center gap-2 mt-1">
+                            NIT: <span id="modal-sol-nit" class="font-medium text-gray-700 dark:text-emerald-400"></span>
                             <button type="button"
                                 onclick="copyToClipboard(document.getElementById('modal-sol-nit').innerText, this)"
                                 title="Copiar NIT"
-                                class="text-gray-400 hover:text-green-600 transition-colors cursor-pointer focus:outline-none">
+                                class="text-gray-400 dark:text-slate-500 hover:text-green-600 dark:hover:text-emerald-400 transition-colors cursor-pointer focus:outline-none">
                                 <svg class="w-4 h-4 icon-copy" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
@@ -257,88 +257,88 @@
                 {{-- CONTENT GRID --}}
                 <div class="px-6 py-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
 
-                    <div class="bg-gray-50 rounded-xl p-4 flex items-start gap-3">
-                        <div class="mt-0.5 p-2 bg-green-100 rounded-lg flex-shrink-0">
-                            <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="bg-gray-50 dark:bg-slate-950 rounded-xl p-4 flex items-start gap-3">
+                        <div class="mt-0.5 p-2 bg-green-100 dark:bg-emerald-950 rounded-lg flex-shrink-0">
+                            <svg class="w-4 h-4 text-green-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                             </svg>
                         </div>
                         <div class="min-w-0">
-                            <p class="text-xs text-gray-400 font-medium">Representante</p>
-                            <p class="text-sm font-semibold text-gray-800" id="modal-sol-repre"></p>
+                            <p class="text-xs text-gray-400 dark:text-slate-500 font-medium">Representante</p>
+                            <p class="text-sm font-semibold text-gray-800 dark:text-emerald-50" id="modal-sol-repre"></p>
                         </div>
                     </div>
 
-                    <div class="bg-gray-50 rounded-xl p-4 flex items-start gap-3">
-                        <div class="mt-0.5 p-2 bg-green-100 rounded-lg flex-shrink-0">
-                            <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="bg-gray-50 dark:bg-slate-950 rounded-xl p-4 flex items-start gap-3">
+                        <div class="mt-0.5 p-2 bg-green-100 dark:bg-emerald-950 rounded-lg flex-shrink-0">
+                            <svg class="w-4 h-4 text-green-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                             </svg>
                         </div>
                         <div class="min-w-0">
-                            <p class="text-xs text-gray-400 font-medium">Correo</p>
-                            <p class="text-sm font-semibold text-gray-800 break-all" id="modal-sol-correo"></p>
+                            <p class="text-xs text-gray-400 dark:text-slate-500 font-medium">Correo</p>
+                            <p class="text-sm font-semibold text-gray-800 break-all dark:text-emerald-50" id="modal-sol-correo"></p>
                         </div>
                     </div>
 
-                    <div class="bg-gray-50 rounded-xl p-4 flex items-start gap-3 sm:col-span-2">
-                        <div class="mt-0.5 p-2 bg-green-100 rounded-lg flex-shrink-0">
-                            <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="bg-gray-50 dark:bg-slate-950 rounded-xl p-4 flex items-start gap-3 sm:col-span-2">
+                        <div class="mt-0.5 p-2 bg-green-100 dark:bg-emerald-950 rounded-lg flex-shrink-0">
+                            <svg class="w-4 h-4 text-green-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                             </svg>
                         </div>
                         <div class="min-w-0">
-                            <p class="text-xs text-gray-400 font-medium">Teléfono</p>
-                            <p class="text-sm font-semibold text-gray-800" id="modal-sol-telefono"></p>
+                            <p class="text-xs text-gray-400 dark:text-slate-500 font-medium">Teléfono</p>
+                            <p class="text-sm font-semibold text-gray-800 dark:text-emerald-50" id="modal-sol-telefono"></p>
                         </div>
                     </div>
 
-                    <div class="bg-gray-50 rounded-xl p-4 flex items-start gap-3">
-                        <div class="mt-0.5 p-2 bg-blue-100 rounded-lg flex-shrink-0">
-                            <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="bg-gray-50 dark:bg-slate-950 rounded-xl p-4 flex items-start gap-3">
+                        <div class="mt-0.5 p-2 bg-blue-100 dark:bg-blue-950 rounded-lg flex-shrink-0">
+                            <svg class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                             </svg>
                         </div>
                         <div class="min-w-0">
-                            <p class="text-xs text-gray-400 font-medium">Plan / Licencia</p>
-                            <p class="text-sm font-semibold text-gray-800" id="modal-sol-plan"></p>
-                            <p class="text-xs text-gray-500" id="modal-sol-precio"></p>
+                            <p class="text-xs text-gray-400 dark:text-slate-500 font-medium">Plan / Licencia</p>
+                            <p class="text-sm font-semibold text-gray-800 dark:text-emerald-50" id="modal-sol-plan"></p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400" id="modal-sol-precio"></p>
                         </div>
                     </div>
 
-                    <div class="bg-gray-50 rounded-xl p-4 flex items-start gap-3">
-                        <div class="mt-0.5 p-2 bg-green-100 rounded-lg flex-shrink-0">
-                            <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="bg-gray-50 dark:bg-slate-950 rounded-xl p-4 flex items-start gap-3">
+                        <div class="mt-0.5 p-2 bg-green-100 dark:bg-emerald-950 rounded-lg flex-shrink-0">
+                            <svg class="w-4 h-4 text-green-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                             </svg>
                         </div>
                         <div class="min-w-0">
-                            <p class="text-xs text-gray-400 font-medium">Fecha de Solicitud</p>
-                            <p class="text-sm font-semibold text-gray-800" id="modal-sol-fecha"></p>
+                            <p class="text-xs text-gray-400 dark:text-slate-500 font-medium">Fecha de Solicitud</p>
+                            <p class="text-sm font-semibold text-gray-800 dark:text-emerald-50" id="modal-sol-fecha"></p>
                         </div>
                     </div>
 
                     {{-- Comprobante de pago --}}
                     <div class="sm:col-span-2">
-                        <p class="text-xs text-gray-400 font-medium uppercase tracking-wide mb-2">Comprobante de Pago</p>
+                        <p class="text-xs text-gray-400 dark:text-slate-500 font-medium uppercase tracking-wide mb-2">Comprobante de Pago</p>
                         <div id="modal-sol-comprobante-wrap"
-                            class="border border-gray-200 rounded-xl overflow-hidden bg-gray-50 flex items-center justify-center h-56">
+                            class="border border-gray-200 dark:border-emerald-950/20 rounded-xl overflow-hidden bg-gray-50 dark:bg-slate-950 flex items-center justify-center h-56">
                             {{-- filled by JS --}}
                         </div>
                         <a id="modal-sol-comprobante-link" href="#" target="_blank"
-                            class="hidden mt-1.5 text-xs text-green-600 hover:underline">Ver imagen original</a>
+                            class="hidden mt-1.5 text-xs text-green-600 dark:text-emerald-400 hover:underline">Ver imagen original</a>
                     </div>
 
                 </div>
 
                 {{-- FOOTER --}}
                 <div
-                    class="bg-gray-50 border-t border-gray-100 px-6 py-4 rounded-b-2xl flex flex-wrap items-center justify-between gap-2">
+                    class="bg-gray-50 dark:bg-slate-950 border-t border-gray-100 dark:border-emerald-950/30 px-6 py-4 rounded-b-2xl flex flex-wrap items-center justify-between gap-2">
                     {{-- Botón Reportar (Eliminar) --}}
                     <form id="formReportar" action="" method="POST"
                         onsubmit="if(confirm('¿Estás seguro? Esta acción eliminará la solicitud y el registro de la empresa. No se puede deshacer.')) { sendWhatsApp('reject'); return true; } return false;">
@@ -372,7 +372,7 @@
 
                         {{-- Badge Aprobada: visible solo si ya fue aprobada --}}
                         <span id="badgeAprobada"
-                            class="hidden inline-flex items-center gap-1 bg-green-100 text-green-700 font-semibold py-2 px-4 rounded-xl text-sm border border-green-300">
+                            class="hidden inline-flex items-center gap-1 bg-green-100 dark:bg-emerald-950/30 text-green-700 dark:text-emerald-400 font-semibold py-2 px-4 rounded-xl text-sm border border-green-300 dark:border-emerald-900/30">
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
                                 stroke-width="2" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
@@ -450,8 +450,8 @@
             const estadoEl = document.getElementById('modal-sol-estado');
             const esPendiente = solicitud.id_estado == 1;
             estadoEl.innerHTML = esPendiente ?
-                '<span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">Pendiente</span>' :
-                '<span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Aprobada</span>';
+                '<span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-yellow-100 dark:bg-amber-950/30 text-yellow-800 dark:text-amber-400 border border-amber-200 dark:border-amber-900/30">Pendiente</span>' :
+                '<span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-green-100 dark:bg-emerald-950/30 text-green-800 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-900/30">Aprobada</span>';
 
             // Comprobante
             const comprobanteWrap = document.getElementById('modal-sol-comprobante-wrap');
@@ -537,38 +537,38 @@
                 </div>
                 <!-- Body -->
                 <form method="GET" action="{{ route('solicitudes.exportar') }}">
-                    <div class="px-6 py-5 space-y-4">
-                        <p class="text-sm text-gray-500">Selecciona el mes y año para filtrar el reporte de solicitudes de
-                            compra.</p>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Mes</label>
-                            <select name="month"
-                                class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-green-500 focus:border-green-500">
-                                <option value="">Todo el año</option>
-                                @foreach(range(1, 12) as $m)
-                                    <option value="{{ $m }}" {{ now()->month == $m ? 'selected' : '' }}>
-                                        {{ ucfirst(\Carbon\Carbon::createFromDate(2024, (int) $m, 1)->locale('es')->monthName) }}
-                                    </option>
-                                @endforeach
-                            </select>
+                        <div class="px-6 py-5 space-y-4 bg-white dark:bg-slate-900 transition-colors duration-300">
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Selecciona el mes y año para filtrar el reporte de solicitudes de
+                                compra.</p>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-slate-400 mb-1">Mes</label>
+                                <select name="month"
+                                    class="w-full border border-gray-300 dark:border-emerald-900/30 bg-white dark:bg-slate-950 text-gray-700 dark:text-emerald-50 rounded-lg px-3 py-2 text-sm focus:ring-green-500 focus:border-green-500">
+                                    <option value="">Todo el año</option>
+                                    @foreach(range(1, 12) as $m)
+                                        <option value="{{ $m }}" {{ now()->month == $m ? 'selected' : '' }}>
+                                            {{ ucfirst(\Carbon\Carbon::createFromDate(2024, (int) $m, 1)->locale('es')->monthName) }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-slate-400 mb-1">Año</label>
+                                <select name="year"
+                                    class="w-full border border-gray-300 dark:border-emerald-900/30 bg-white dark:bg-slate-950 text-gray-700 dark:text-emerald-50 rounded-lg px-3 py-2 text-sm focus:ring-green-500 focus:border-green-500">
+                                    @foreach(range(now()->year, 2024) as $y)
+                                        <option value="{{ $y }}" {{ now()->year == $y ? 'selected' : '' }}>{{ $y }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Año</label>
-                            <select name="year"
-                                class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-green-500 focus:border-green-500">
-                                @foreach(range(now()->year, 2024) as $y)
-                                    <option value="{{ $y }}" {{ now()->year == $y ? 'selected' : '' }}>{{ $y }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                    <!-- Footer -->
-                    <div class="px-6 py-4 bg-gray-50 rounded-b-xl flex justify-end gap-3 border-t border-gray-200">
-                        <button type="button"
-                            onclick="document.getElementById('exportSolicitudesModal').classList.add('hidden')"
-                            class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer">Cancelar</button>
-                        <button type="submit"
-                            class="flex items-center gap-2 px-4 py-2 text-sm font-bold text-white bg-green-600 hover:bg-green-700 rounded-lg transition cursor-pointer">
+                        <!-- Footer -->
+                        <div class="px-6 py-4 bg-gray-50 dark:bg-slate-950 rounded-b-xl flex justify-end gap-3 border-t border-gray-200 dark:border-emerald-950/30">
+                            <button type="button"
+                                onclick="document.getElementById('exportSolicitudesModal').classList.add('hidden')"
+                                class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-slate-400 bg-white dark:bg-slate-900 border border-gray-300 dark:border-emerald-900/30 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-800 cursor-pointer transition-colors">Cancelar</button>
+                            <button type="submit"
+                                class="flex items-center gap-2 px-4 py-2 text-sm font-bold text-white bg-green-600 hover:bg-green-700 rounded-lg transition cursor-pointer">
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
                                 stroke-width="1.5" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round"

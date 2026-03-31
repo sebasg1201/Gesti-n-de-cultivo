@@ -132,16 +132,16 @@
 
             <!-- Inventory List Column -->
             <div class="xl:col-span-2">
-                <div class="bg-white rounded-[2.5rem] shadow-xl border border-emerald-50 overflow-hidden flex flex-col">
-                    <div class="p-4 border-b border-emerald-50 bg-gray-50/50 flex justify-between items-center">
+                <div class="bg-white dark:bg-slate-800 rounded-[2.5rem] shadow-xl border border-emerald-50 dark:border-emerald-900/20 overflow-hidden flex flex-col transition-colors duration-300">
+                    <div class="p-4 border-b border-emerald-50 dark:border-emerald-950/20 bg-gray-50/50 dark:bg-slate-900/30 flex justify-between items-center text-center">
                         <div>
-                            <h3 class="text-base font-black text-emerald-950">Inventario de Semillas</h3>
-                            <p class="text-[11px] font-bold text-emerald-600 mt-1">Variedades adaptadas a su finca</p>
+                            <h3 class="text-base font-black text-emerald-950 dark:text-emerald-50">Inventario de Semillas</h3>
+                            <p class="text-[11px] font-bold text-emerald-600 dark:text-emerald-500/50 mt-1">Variedades adaptadas a su finca</p>
                         </div>
-                        <div class="bg-white border-2 border-emerald-100 px-4 py-1.5 rounded-2xl flex items-center gap-3">
-                            <span class="text-xl font-black text-emerald-600">{{ $tipoSemillas->total() }}</span>
+                        <div class="bg-white dark:bg-slate-900 border-2 border-emerald-100 dark:border-emerald-900/20 px-4 py-1.5 rounded-2xl flex items-center gap-3">
+                            <span class="text-xl font-black text-emerald-600 dark:text-emerald-400">{{ $tipoSemillas->total() }}</span>
                             <span
-                                class="text-[9px] font-bold text-emerald-400 uppercase tracking-widest leading-none">Especies<br>Activas</span>
+                                class="text-[9px] font-bold text-emerald-400 dark:text-emerald-600 uppercase tracking-widest leading-none">Especies<br>Activas</span>
                         </div>
                     </div>
 
@@ -149,7 +149,7 @@
                         <table class="w-full text-left">
                             <thead>
                                 <tr
-                                    class="bg-white text-[9px] font-black text-emerald-400 uppercase tracking-[0.2em] border-b border-emerald-50">
+                                    class="bg-white dark:bg-slate-800 text-[9px] font-black text-emerald-400 dark:text-emerald-600 uppercase tracking-[0.2em] border-b border-emerald-50 dark:border-emerald-950/30">
                                     <th class="px-4 py-3">Especie y Variedad</th>
                                     <th class="px-4 py-3">Parámetros</th>
                                     <th class="px-4 py-3">Productividad</th>
@@ -157,17 +157,17 @@
                                     <th class="px-4 py-3 text-right">Acciones</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-emerald-50/50 dark:divide-emerald-900/10">
+                            <tbody class="divide-y divide-emerald-50/50 dark:divide-emerald-950/20">
                                 @forelse($tipoSemillas as $semilla)
-                                    <tr class="hover:bg-emerald-50/30 transition-all group">
+                                    <tr class="hover:bg-emerald-50/30 dark:hover:bg-emerald-500/5 transition-all group">
                                         <td class="px-4 py-3">
                                             <div class="flex items-center gap-3">
-                                                <div class="w-10 h-10 bg-emerald-600 rounded-2xl flex items-center justify-center text-white font-black text-sm shadow-lg shadow-emerald-100 group-hover:rotate-12 transition-transform">
+                                                <div class="w-10 h-10 bg-emerald-600 rounded-2xl flex items-center justify-center text-white font-black text-sm shadow-lg shadow-emerald-100 dark:shadow-emerald-950/50 group-hover:rotate-12 transition-transform">
                                                     {{ substr($semilla->nombre_semilla, 0, 1) }}
                                                 </div>
                                                 <div>
-                                                    <span class="font-black text-emerald-950 block text-xs">{{ $semilla->nombre_semilla }}</span>
-                                                    <span class="text-[9px] font-bold text-emerald-400 uppercase tracking-wider italic opacity-60">Catálogo: {{ $semilla->catalogo->nombre ?? 'Manual' }}</span>
+                                                    <span class="font-black text-emerald-950 dark:text-slate-200 block text-xs">{{ $semilla->nombre_semilla }}</span>
+                                                    <span class="text-[9px] font-bold text-emerald-400 dark:text-emerald-500 uppercase tracking-wider italic opacity-60 dark:opacity-100 transition-all">Catálogo: {{ $semilla->catalogo->nombre ?? 'Manual' }}</span>
                                                 </div>
                                             </div>
                                         </td>
@@ -176,39 +176,39 @@
                                                 @if($semilla->tiempo_base_dias != 0)
                                                     <div class="flex items-center gap-1.5">
                                                         <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                                                        <span class="text-[11px] font-bold text-emerald-900">{{ $semilla->tiempo_base_dias }}
-                                                            <span class="text-[9px] font-normal text-emerald-500 uppercase tracking-tighter">días ciclo</span></span>
+                                                        <span class="text-[11px] font-bold text-emerald-900 dark:text-emerald-400">{{ $semilla->tiempo_base_dias }}
+                                                            <span class="text-[9px] font-normal text-emerald-500 dark:text-emerald-600 uppercase tracking-tighter">días ciclo</span></span>
                                                     </div>
                                                 @endif
-                                                <p class="text-[9px] font-bold text-blue-500 flex flex-col gap-0.5">
+                                                <p class="text-[9px] font-bold text-blue-500 dark:text-emerald-600 flex flex-col gap-0.5">
                                                     <span>{{ number_format($semilla->espacio_por_planta_m2, 4) }} m²/pl</span>
                                                 </p>
                                             </div>
                                         </td>
                                         <td class="px-4 py-3">
-                                            <div class="bg-emerald-50 rounded-lg px-2.5 py-1 border border-emerald-100 inline-block">
-                                                <span class="text-[10px] font-black text-emerald-700">{{ $semilla->rendimiento_promedio }}
+                                            <div class="bg-emerald-50 dark:bg-emerald-950/20 rounded-lg px-2.5 py-1 border border-emerald-100 dark:border-emerald-900/20 inline-block">
+                                                <span class="text-[10px] font-black text-emerald-700 dark:text-emerald-400">{{ $semilla->rendimiento_promedio }}
                                                     <span class="text-[8px] font-bold">kg/m²</span></span>
                                             </div>
                                         </td>
                                         <td class="px-4 py-3">
                                             <div class="flex items-center gap-1.5">
-                                                <span class="text-sm font-black text-emerald-950">{{ number_format($semilla->stock_actual ?? 0, 0) }}</span>
+                                                <span class="text-sm font-black text-emerald-950 dark:text-slate-100">{{ number_format($semilla->stock_actual ?? 0, 0) }}</span>
                                                 @if(($semilla->stock_actual ?? 0) <= 0)
-                                                    <span class="px-1.5 py-0.5 bg-red-50 text-red-600 text-[8px] font-black rounded-md uppercase tracking-tighter">Sin Stock</span>
+                                                    <span class="px-1.5 py-0.5 bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-400 text-[8px] font-black rounded-md uppercase tracking-tighter border border-red-100 dark:border-red-900/20">Sin Stock</span>
                                                 @endif
                                             </div>
                                         </td>
                                         <td class="px-4 py-3 text-right">
                                             <div class="flex items-center justify-end gap-1.5 opacity-0 group-hover:opacity-100 transition-all">
-                                                <button onclick='editSemilla(@json($semilla))' class="p-2 bg-amber-50 text-amber-600 rounded-xl hover:bg-amber-100 transition-all">
+                                                <button onclick='editSemilla(@json($semilla))' class="p-2 bg-amber-50 dark:bg-amber-950/20 text-amber-600 dark:text-amber-400 rounded-xl hover:bg-amber-100 dark:hover:bg-amber-900/30 transition-all">
                                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                                     </svg>
                                                 </button>
                                                 <form action="{{ route('tipo_semillas.destroy', $semilla->id_semilla) }}" method="POST" class="inline">
                                                     @csrf @method('DELETE')
-                                                    <button type="submit" onclick="return confirm('¿Eliminar variedad?')" class="p-2 bg-red-50 text-red-600 rounded-xl hover:bg-red-100 transition-all">
+                                                    <button type="submit" onclick="return confirm('¿Eliminar variedad?')" class="p-2 bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-400 rounded-xl hover:bg-red-100 dark:hover:bg-red-900/30 transition-all">
                                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                                         </svg>
@@ -226,7 +226,7 @@
                         </table>
                     </div>
 
-                    <div class="p-4 bg-gray-50/50 border-t border-emerald-50">
+                    <div class="p-4 bg-gray-50/50 dark:bg-slate-900/30 border-t border-emerald-50 dark:border-emerald-950/20">
                         {{ $tipoSemillas->links() }}
                     </div>
                 </div>

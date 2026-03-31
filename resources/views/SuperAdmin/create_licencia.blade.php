@@ -2,10 +2,10 @@
 
 @section('content')
 
-<div class="max-w-3xl mx-auto bg-white shadow-[0_20px_50px_rgba(0,0,0,0.05)] rounded-[2.5rem] p-10 border border-slate-50 relative overflow-hidden">
+<div class="max-w-3xl mx-auto bg-white dark:bg-slate-900 shadow-[0_20px_50px_rgba(0,0,0,0.05)] dark:shadow-none rounded-[2.5rem] p-10 border border-slate-50 dark:border-emerald-950/20 relative overflow-hidden transition-colors duration-300">
 
     {{-- Decoración sutil de fondo --}}
-    <div class="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-emerald-50 rounded-full opacity-50 blur-3xl"></div>
+    <div class="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-emerald-50 dark:bg-emerald-900/20 rounded-full opacity-50 blur-3xl transition-colors"></div>
 
     {{-- TITULO --}}
     <div class="relative mb-10">
@@ -16,8 +16,8 @@
                 </svg>
             </div>
             <div>
-                <h2 class="text-3xl font-black text-green-800 tracking-tighter">Crear Plan De <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-green-500">Licencias</span></h2>
-                <p class="text-slate-400 text-sm font-medium">Define los parámetros para el nuevo modelo de suscripción.</p>
+                <h2 class="text-3xl font-black text-green-800 dark:text-emerald-500 tracking-tighter transition-colors">Crear Plan De <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-green-500">Licencias</span></h2>
+                <p class="text-slate-400 dark:text-slate-500 text-sm font-medium transition-colors">Define los parámetros para el nuevo modelo de suscripción.</p>
             </div>
         </div>
         <div class="h-1 w-20 bg-emerald-500 rounded-full mt-4"></div>
@@ -59,7 +59,7 @@
                     </div>
                     <input type="text" pattern="[A-Za-zÁÉÍÓÚáéíóúñÑ ]+" name="nombre_licencia"
                         value="{{ old('nombre_licencia') }}"
-                        class="w-full bg-slate-50 border-2 border-slate-50 rounded-2xl pl-12 pr-4 py-4 text-slate-700 font-bold focus:bg-white focus:border-[#006b58] focus:ring-4 focus:ring-emerald-50 outline-none transition-all placeholder:text-slate-300 placeholder:font-medium"
+                        class="w-full bg-slate-50 dark:bg-slate-950 border-2 border-slate-50 dark:border-emerald-900/20 rounded-2xl pl-12 pr-4 py-4 text-slate-700 dark:text-emerald-50 font-bold focus:bg-white dark:focus:bg-slate-900 focus:border-[#006b58] focus:ring-4 focus:ring-emerald-50 dark:focus:ring-emerald-500/10 outline-none transition-all placeholder:text-slate-300 dark:placeholder:text-slate-700 placeholder:font-medium"
                         placeholder="Ej: Plan Premium" required>
                 </div>
             </div>
@@ -76,7 +76,7 @@
                         </svg>
                     </div>
                     <input type="text" name="tiempo" value="{{ old('tiempo') }}"
-                        class="w-full bg-slate-50 border-2 border-slate-50 rounded-2xl pl-12 pr-4 py-4 text-slate-700 font-bold focus:bg-white focus:border-[#006b58] focus:ring-4 focus:ring-emerald-50 outline-none transition-all placeholder:text-slate-300 placeholder:font-medium"
+                        class="w-full bg-slate-50 dark:bg-slate-950 border-2 border-slate-50 dark:border-emerald-900/20 rounded-2xl pl-12 pr-4 py-4 text-slate-700 dark:text-emerald-50 font-bold focus:bg-white dark:focus:bg-slate-900 focus:border-[#006b58] focus:ring-4 focus:ring-emerald-50 dark:focus:ring-emerald-500/10 outline-none transition-all placeholder:text-slate-300 dark:placeholder:text-slate-700 placeholder:font-medium"
                         placeholder="Ej: 1 año, 6 meses" required>
                 </div>
             </div>
@@ -89,7 +89,7 @@
             </label>
             <div class="group relative">
                 <textarea name="descripcion" rows="3"
-                    class="w-full bg-slate-50 border-2 border-slate-50 rounded-2xl p-5 text-slate-700 font-bold focus:bg-white focus:border-[#006b58] focus:ring-4 focus:ring-emerald-50 outline-none transition-all placeholder:text-slate-300 placeholder:font-medium resize-none"
+                    class="w-full bg-slate-50 dark:bg-slate-950 border-2 border-slate-50 dark:border-emerald-900/20 rounded-2xl p-5 text-slate-700 dark:text-emerald-50 font-bold focus:bg-white dark:focus:bg-slate-900 focus:border-[#006b58] focus:ring-4 focus:ring-emerald-50 dark:focus:ring-emerald-500/10 outline-none transition-all placeholder:text-slate-300 dark:placeholder:text-slate-700 placeholder:font-medium resize-none shadow-sm"
                     placeholder="Describe los beneficios y alcance de este plan...">{{ old('descripcion') }}</textarea>
             </div>
         </div>
@@ -104,7 +104,7 @@
                     $
                 </div>
                 <input type="number" name="precio" value="{{ old('precio') }}"
-                    class="w-full bg-slate-50 border-2 border-slate-50 rounded-2xl pl-12 pr-4 py-5 text-2xl font-black text-slate-800 focus:bg-white focus:border-[#006b58] focus:ring-4 focus:ring-emerald-50 outline-none transition-all placeholder:text-slate-200"
+                    class="w-full bg-slate-50 dark:bg-slate-950 border-2 border-slate-50 dark:border-emerald-900/20 rounded-2xl pl-12 pr-4 py-5 text-2xl font-black text-slate-800 dark:text-emerald-50 focus:bg-white dark:focus:bg-slate-900 focus:border-[#006b58] focus:ring-4 focus:ring-emerald-50 dark:focus:ring-emerald-500/10 outline-none transition-all placeholder:text-slate-200 dark:placeholder:text-slate-800"
                     placeholder="0.00" required>
             </div>
             @error('precio') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
@@ -113,7 +113,7 @@
         {{-- BOTONES --}}
         <div class="flex flex-col sm:flex-row gap-4 pt-6">
             <a href="{{ route('licencias.index') }}"
-                class="flex-1 flex justify-center items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-500 font-black py-4 rounded-2xl transition-all active:scale-95 uppercase tracking-widest text-xs">
+                class="flex-1 flex justify-center items-center gap-2 bg-slate-100 dark:bg-slate-950 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 font-black py-4 rounded-2xl transition-all active:scale-95 uppercase tracking-widest text-xs">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7" />
                 </svg>

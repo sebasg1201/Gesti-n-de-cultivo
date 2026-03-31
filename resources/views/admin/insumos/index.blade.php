@@ -126,22 +126,22 @@
                                     d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                             </svg>
                         </div>
-                        <p class="text-[10px] font-bold text-emerald-950 uppercase tracking-widest">Catálogo Pro de Suministros</p>
+                        <p class="text-[10px] font-bold text-emerald-950 dark:text-emerald-500 uppercase tracking-widest">Catálogo Pro de Suministros</p>
                     </div>
                 </div>
             </div>
 
             <!-- Inventory List Column -->
             <div class="xl:col-span-2">
-                <div class="bg-white rounded-[2.5rem] shadow-xl border border-emerald-50 overflow-hidden flex flex-col">
-                    <div class="p-6 border-b border-emerald-50 bg-gray-50/30 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div class="bg-white dark:bg-slate-800 rounded-[2.5rem] shadow-xl border border-emerald-50 dark:border-emerald-900/20 overflow-hidden flex flex-col transition-colors duration-300">
+                    <div class="p-6 border-b border-emerald-50 dark:border-emerald-950/20 bg-gray-50/30 dark:bg-slate-900/30 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                         <div>
-                            <h3 class="text-lg font-black text-emerald-950">Inventario de Suministros</h3>
-                            <p class="text-[11px] font-bold text-emerald-600 mt-1 uppercase tracking-tighter">Gestión integral de stock y rendimientos</p>
+                            <h3 class="text-lg font-black text-emerald-950 dark:text-emerald-50">Inventario de Suministros</h3>
+                            <p class="text-[11px] font-bold text-emerald-600 dark:text-emerald-500/50 mt-1 uppercase tracking-tighter">Gestión integral de stock y rendimientos</p>
                         </div>
                         <div class="flex flex-wrap items-center gap-3">
-                            <form action="{{ route('insumos.index') }}" method="GET" class="flex items-center gap-2 bg-white p-1 rounded-2xl border border-emerald-100 shadow-sm">
-                                <select name="month" class="bg-transparent border-0 text-[10px] font-bold text-emerald-700 focus:ring-0 cursor-pointer">
+                            <form action="{{ route('insumos.index') }}" method="GET" class="flex items-center gap-2 bg-white dark:bg-slate-900 p-1 rounded-2xl border border-emerald-100 dark:border-emerald-900/20 shadow-sm">
+                                <select name="month" class="bg-transparent border-0 text-[10px] font-bold text-emerald-700 dark:text-emerald-400 focus:ring-0 cursor-pointer">
                                     <option value="">Mes...</option>
                                     @php $meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']; @endphp
                                     @foreach($meses as $index => $mes)
@@ -159,14 +159,14 @@
                                 </button>
                             </form>
                             
-                            <a href="{{ route('admin.insumos.export', request()->all()) }}" class="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl text-[10px] font-black shadow-lg shadow-emerald-100 transition-all mb-0.5">
+                            <a href="{{ route('admin.insumos.export', request()->all()) }}" class="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl text-[10px] font-black shadow-lg shadow-emerald-100 dark:shadow-none transition-all mb-0.5">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                                 EXPORTAR
                             </a>
 
-                            <div class="bg-white border-2 border-emerald-100 px-4 py-1.5 rounded-2xl flex items-center gap-3">
-                                <span class="text-xl font-black text-emerald-600">{{ $insumos->total() }}</span>
-                                <span class="text-[9px] font-bold text-emerald-400 uppercase tracking-widest leading-none">Global<br>Items</span>
+                            <div class="bg-white dark:bg-slate-900 border-2 border-emerald-100 dark:border-emerald-900/20 px-4 py-1.5 rounded-2xl flex items-center gap-3">
+                                <span class="text-xl font-black text-emerald-600 dark:text-emerald-400">{{ $insumos->total() }}</span>
+                                <span class="text-[9px] font-bold text-emerald-400 dark:text-emerald-600 uppercase tracking-widest leading-none">Global<br>Items</span>
                             </div>
                         </div>
                     </div>
@@ -174,7 +174,7 @@
                     <div class="flex-1 overflow-x-auto">
                         <table class="w-full text-left">
                             <thead>
-                                <tr class="bg-white text-[9px] font-black text-emerald-400 uppercase tracking-[0.2em] border-b border-emerald-50">
+                                <tr class="bg-white dark:bg-slate-800 text-[9px] font-black text-emerald-400 dark:text-emerald-600 uppercase tracking-[0.2em] border-b border-emerald-50 dark:border-emerald-950/30">
                                     <th class="px-6 py-4">Suministro / Catálogo</th>
                                     <th class="px-6 py-4 text-center">Categoría</th>
                                     <th class="px-6 py-4 text-center">Stock Disponible</th>
@@ -186,15 +186,15 @@
                                     <tr class="hover:bg-emerald-50/30 transition-all group">
                                         <td class="px-6 py-4">
                                             <div class="flex items-center gap-4">
-                                                <div class="w-10 h-10 bg-emerald-600 rounded-2xl flex items-center justify-center text-white font-black text-sm shadow-lg shadow-emerald-100 group-hover:rotate-12 transition-transform">
+                                                <div class="w-10 h-10 bg-emerald-600 rounded-2xl flex items-center justify-center text-white font-black text-sm shadow-lg shadow-emerald-100 dark:shadow-emerald-950/50 group-hover:rotate-12 transition-transform">
                                                     {{ substr($insumo->Nombre, 0, 1) }}
                                                 </div>
                                                 <div>
-                                                    <span class="font-black text-emerald-950 block text-xs leading-tight">{{ $insumo->Nombre }}</span>
-                                                    <span class="text-[9px] font-bold text-emerald-400 uppercase tracking-wider italic opacity-60">CAT: {{ $insumo->catalogo->nombre_comercial ?? 'PROPIO' }}</span>
+                                                    <span class="font-black text-emerald-950 dark:text-slate-100 block text-xs leading-tight">{{ $insumo->Nombre }}</span>
+                                                    <span class="text-[9px] font-bold text-emerald-400 dark:text-emerald-500 uppercase tracking-wider italic opacity-60 dark:opacity-100 transition-all">CAT: {{ $insumo->catalogo->nombre_comercial ?? 'PROPIO' }}</span>
                                                     @if($insumo->impacto_dias != 0)
                                                         @php $isNeg = $insumo->impacto_dias < 0; @endphp
-                                                        <div class="mt-1.5 flex items-center gap-1.5 px-2 py-0.5 {{ $isNeg ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-amber-50 text-amber-700 border-amber-100' }} border rounded-lg w-fit transition-colors shadow-sm">
+                                                        <div class="mt-1.5 flex items-center gap-1.5 px-2 py-0.5 {{ $isNeg ? 'bg-emerald-50 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-400 border-emerald-100 dark:border-emerald-900/20' : 'bg-amber-50 dark:bg-amber-950/20 text-amber-700 dark:text-amber-400 border-amber-100 dark:border-amber-900/20' }} border rounded-lg w-fit transition-colors shadow-sm">
                                                             <span class="w-1.5 h-1.5 rounded-full {{ $isNeg ? 'bg-emerald-500' : 'bg-amber-500' }} animate-pulse"></span>
                                                             <span class="text-[8px] font-black uppercase tracking-widest">{{ $insumo->impacto_dias > 0 ? '+' : '' }}{{ $insumo->impacto_dias }} DÍAS IMPACTO</span>
                                                         </div>
@@ -203,32 +203,32 @@
                                             </div>
                                         </td>
                                         <td class="px-6 py-4 text-center">
-                                            <span class="bg-white text-emerald-600 text-[10px] font-black px-3 py-1 rounded-xl border-2 border-emerald-50 shadow-sm uppercase tracking-tighter">
+                                            <span class="bg-white dark:bg-slate-900 text-emerald-600 dark:text-emerald-400 text-[10px] font-black px-3 py-1 rounded-xl border-2 border-emerald-50 dark:border-emerald-900/20 shadow-sm uppercase tracking-tighter">
                                                 {{ $insumo->catalogo->tipoInsumo->nombre ?? ($tiposInsumo->find($insumo->id_tipo_insumo)->nombre ?? 'GENERAL') }}
                                             </span>
                                         </td>
                                         <td class="px-6 py-4 text-center">
                                             <div class="flex flex-col gap-0.5 items-center">
                                                 <div class="flex items-center gap-2">
-                                                    <span class="text-xl font-black text-emerald-950">{{ number_format($insumo->stock_actual ?? 0, 0) }}</span>
+                                                    <span class="text-xl font-black text-emerald-950 dark:text-slate-100">{{ number_format($insumo->stock_actual ?? 0, 0) }}</span>
                                                     @if(($insumo->stock_actual ?? 0) <= 0)
-                                                        <span class="px-2 py-0.5 bg-red-50 text-red-600 text-[8px] font-black rounded-md uppercase border border-red-100 animate-pulse tracking-widest">SIN STOCK</span>
+                                                        <span class="px-2 py-0.5 bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-400 text-[8px] font-black rounded-md uppercase border border-red-100 dark:border-red-900/20 animate-pulse tracking-widest">SIN STOCK</span>
                                                     @else
-                                                        <span class="text-[9px] font-black text-emerald-400 uppercase">Unid</span>
+                                                        <span class="text-[9px] font-black text-emerald-400 dark:text-emerald-600 uppercase">Unid</span>
                                                     @endif
                                                 </div>
                                             </div>
                                         </td>
                                         <td class="px-6 py-4 text-right">
                                             <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all">
-                                                <button onclick='editInsumo(@json($insumo))' class="p-2.5 bg-amber-50 text-amber-600 rounded-xl hover:bg-amber-100 transition-all">
+                                                <button onclick='editInsumo(@json($insumo))' class="p-2.5 bg-amber-50 dark:bg-amber-950/20 text-amber-600 dark:text-amber-400 rounded-xl hover:bg-amber-100 dark:hover:bg-amber-900/30 transition-all">
                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                                     </svg>
                                                 </button>
                                                 <form action="{{ route('insumos.destroy', $insumo->ID_insumo) }}" method="POST" class="inline">
                                                     @csrf @method('DELETE')
-                                                    <button type="submit" onclick="return confirm('¿Eliminar del inventario?')" class="p-2.5 bg-red-50 text-red-600 rounded-xl hover:bg-red-100 transition-all">
+                                                    <button type="submit" onclick="return confirm('¿Eliminar del inventario?')" class="p-2.5 bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-400 rounded-xl hover:bg-red-100 dark:hover:bg-red-900/30 transition-all">
                                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                                         </svg>
@@ -246,7 +246,7 @@
                         </table>
                     </div>
 
-                    <div class="px-6 py-5 bg-gray-50/30 border-t border-emerald-50">
+                    <div class="px-6 py-5 bg-gray-50/30 dark:bg-slate-900/30 border-t border-emerald-50 dark:border-emerald-950/20">
                         {{ $insumos->links() }}
                     </div>
                 </div>

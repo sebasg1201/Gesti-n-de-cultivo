@@ -3,25 +3,25 @@
 @section('content')
 
     <div
-        class="max-w-6xl mx-auto bg-white shadow-2xl shadow-slate-200/50 rounded-[2.5rem] border border-slate-100 overflow-hidden">
+        class="max-w-6xl mx-auto bg-white dark:bg-slate-900 shadow-2xl shadow-slate-200/50 dark:shadow-none rounded-[2.5rem] border border-slate-100 dark:border-emerald-900/10 overflow-hidden transition-colors duration-300">
 
         {{-- HEADER DE LA SECCIÓN --}}
         <div
-            class="p-8 sm:p-10 border-b border-slate-50 bg-gradient-to-r from-slate-50/50 to-white flex flex-col sm:flex-row justify-between items-center gap-6">
+            class="p-8 sm:p-10 border-b border-slate-50 dark:border-emerald-950/20 bg-gradient-to-r from-slate-50/50 to-white dark:from-slate-900 dark:to-slate-950 flex flex-col sm:flex-row justify-between items-center gap-6">
             <div>
                 <div class="flex items-center gap-3 mb-2">
-                    <div class="p-2 bg-emerald-100 rounded-lg text-[#006b58]">
+                    <div class="p-2 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg text-[#006b58] dark:text-emerald-400">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24"
                             stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                                 d="M9 5h12M9 12h12M9 19h12M5 5h.01M5 12h.01M5 19h.01" />
                         </svg>
                     </div>
-                    <h2 class="text-3xl font-black text-green-800 tracking-tighter">Gestión De <span
+                    <h2 class="text-3xl font-black text-green-800 dark:text-emerald-500 tracking-tighter transition-colors">Gestión De <span
                             class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-green-500">Planes</span>
                     </h2>
                 </div>
-                <p class="text-slate-400 text-sm font-medium ml-11">Configuración de niveles de suscripción y precios.</p>
+                <p class="text-slate-400 dark:text-slate-500 text-sm font-medium ml-11 transition-colors">Configuración de niveles de suscripción y precios.</p>
             </div>
 
             <a href="{{ route('licencias.create') }}"
@@ -65,7 +65,7 @@
         <div class="overflow-x-auto">
             <table class="w-full text-left">
                 <thead
-                    class="bg-slate-50/80 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] border-b border-slate-100">
+                    class="bg-slate-50/80 dark:bg-slate-950/50 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] border-b border-slate-100 dark:border-emerald-950/20">
                     <tr>
                         <th class="px-10 py-6">Nombre del Plan</th>
                         <th class="px-10 py-6">Duración</th>
@@ -74,21 +74,21 @@
                     </tr>
                 </thead>
 
-                <tbody class="divide-y divide-slate-50">
+                <tbody class="divide-y divide-slate-50 dark:divide-emerald-950/20">
                     @foreach($licencias as $licencia)
                         @php $enUso = $idsEnUso->contains($licencia->id_tipo_licencia); @endphp
-                        <tr class="hover:bg-emerald-50/30 transition-all group">
+                        <tr class="hover:bg-emerald-50/30 dark:hover:bg-emerald-500/5 transition-all group">
 
                             {{-- Nombre --}}
                             <td class="px-10 py-6">
                                 <div class="flex items-center gap-3">
                                     <span
-                                        class="text-base font-black text-slate-700 group-hover:text-[#006b58] transition-colors">
+                                        class="text-base font-black text-slate-700 dark:text-emerald-50 group-hover:text-[#006b58] dark:group-hover:text-emerald-400 transition-all">
                                         {{ $licencia->nombre_licencia }}
                                     </span>
                                     @if($enUso)
                                         <span
-                                            class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase bg-emerald-100 text-emerald-700 border border-emerald-200">
+                                            class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase bg-emerald-100 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-900/30">
                                             <span class="w-1 h-1 bg-emerald-600 rounded-full animate-pulse"></span>
                                             En uso
                                         </span>
@@ -97,14 +97,14 @@
                             </td>
 
                             {{-- Tiempo --}}
-                            <td class="px-10 py-6 text-sm font-bold text-slate-500 italic">
+                            <td class="px-10 py-6 text-sm font-bold text-slate-500 dark:text-slate-400 italic">
                                 {{ $licencia->tiempo }}
                             </td>
 
                             {{-- Precio --}}
                             <td class="px-10 py-6">
-                                <span class="text-lg font-black text-slate-800">
-                                    <span class="text-[#006b58] mr-0.5">$</span>{{ number_format($licencia->precio) }}
+                                <span class="text-lg font-black text-slate-800 dark:text-emerald-50 transition-colors">
+                                    <span class="text-[#006b58] dark:text-emerald-500 mr-0.5">$</span>{{ number_format($licencia->precio) }}
                                 </span>
                             </td>
 
@@ -115,7 +115,7 @@
                                     {{-- EDITAR --}}
                                     @if($enUso)
                                         <div class="relative group/tooltip">
-                                            <button disabled class="p-3 bg-slate-100 text-slate-300 rounded-xl cursor-not-allowed">
+                                            <button disabled class="p-3 bg-slate-100 dark:bg-slate-950 text-slate-300 dark:text-slate-700 rounded-xl cursor-not-allowed">
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
                                                     viewBox="0 0 24 24" stroke="currentColor">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -136,7 +136,7 @@
                                         </div>
                                     @else
                                         <a href="{{ route('licencias.edit', $licencia->id_tipo_licencia) }}"
-                                            class="p-3 bg-white border border-slate-200 text-slate-400 hover:text-emerald-600 hover:border-emerald-200 hover:bg-emerald-50 rounded-xl shadow-sm transition-all active:scale-90">
+                                            class="p-3 bg-white dark:bg-slate-950 border border-slate-200 dark:border-emerald-900/30 text-slate-400 dark:text-slate-500 hover:text-emerald-600 dark:hover:text-emerald-400 hover:border-emerald-200 dark:hover:border-emerald-900/50 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 rounded-xl shadow-sm transition-all active:scale-90">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
                                                 stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -148,7 +148,7 @@
                                     {{-- ELIMINAR --}}
                                     @if($enUso)
                                         <div class="relative group/tooltip">
-                                            <button disabled class="p-3 bg-slate-100 text-slate-300 rounded-xl cursor-not-allowed">
+                                            <button disabled class="p-3 bg-slate-100 dark:bg-slate-950 text-slate-300 dark:text-slate-700 rounded-xl cursor-not-allowed">
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
                                                     viewBox="0 0 24 24" stroke="currentColor">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -162,7 +162,7 @@
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit"
-                                                class="p-3 bg-white border border-slate-200 text-slate-400 hover:text-rose-600 hover:border-rose-200 hover:bg-rose-50 rounded-xl shadow-sm transition-all active:scale-90">
+                                                class="p-3 bg-white dark:bg-slate-950 border border-slate-200 dark:border-emerald-900/30 text-slate-400 dark:text-slate-500 hover:text-rose-600 dark:hover:text-rose-400 hover:border-rose-200 dark:hover:border-rose-900/50 hover:bg-rose-50 dark:hover:bg-rose-900/20 rounded-xl shadow-sm transition-all active:scale-90">
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
                                                     viewBox="0 0 24 24" stroke="currentColor">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

@@ -35,8 +35,8 @@
                     </svg>
                 </div>
                 <div>
-                    <h3 class="text-xl font-black text-gray-900 mb-1">Control de Riego</h3>
-                    <p class="text-gray-500 text-sm leading-relaxed">Programa el suministro de agua para tus lotes activos.</p>
+                    <h3 class="text-xl font-black text-gray-900 dark:text-emerald-50 mb-1">Control de Riego</h3>
+                    <p class="text-gray-500 dark:text-emerald-500/70 text-sm leading-relaxed">Programa el suministro de agua para tus lotes activos.</p>
                 </div>
                 <div class="pt-4 flex items-center justify-between">
                     <span class="text-2xl font-black text-blue-600">{{ $riego->count() }} <span class="text-xs text-gray-400 font-bold uppercase tracking-widest">Activos</span></span>
@@ -45,7 +45,7 @@
                     </button>
                 </div>
             </div>
-            <button onclick="showCategory('riego')" class="w-full py-4 text-xs font-black uppercase tracking-widest text-blue-600 hover:bg-blue-50 transition-colors border-t border-gray-50">
+            <button onclick="showCategory('riego')" class="w-full py-4 text-xs font-black uppercase tracking-widest text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors border-t border-gray-50 dark:border-emerald-950/20">
                 Ver Listado Completo
             </button>
         </div>
@@ -62,8 +62,8 @@
                     </svg>
                 </div>
                 <div>
-                    <h3 class="text-xl font-black text-gray-900 mb-1">Insumos y Nutrición</h3>
-                    <p class="text-gray-500 text-sm leading-relaxed">Asigna fertilizantes y agroquímicos a tus cosechas.</p>
+                    <h3 class="text-xl font-black text-gray-900 dark:text-emerald-50 mb-1">Insumos y Nutrición</h3>
+                    <p class="text-gray-500 dark:text-emerald-500/70 text-sm leading-relaxed">Asigna fertilizantes y agroquímicos a tus cosechas.</p>
                 </div>
                 <div class="pt-4 flex items-center justify-between">
                     <span class="text-2xl font-black text-purple-600">{{ $insumoCosecha->count() }} <span class="text-xs text-gray-400 font-bold uppercase tracking-widest">Asignados</span></span>
@@ -72,7 +72,7 @@
                     </button>
                 </div>
             </div>
-            <button onclick="showCategory('insumo')" class="w-full py-4 text-xs font-black uppercase tracking-widest text-purple-600 hover:bg-purple-50 transition-colors border-t border-gray-50">
+            <button onclick="showCategory('insumo')" class="w-full py-4 text-xs font-black uppercase tracking-widest text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors border-t border-gray-50 dark:border-emerald-950/20">
                 Ver Inventario y Uso
             </button>
         </div>
@@ -89,8 +89,8 @@
                     </svg>
                 </div>
                 <div>
-                    <h3 class="text-xl font-black text-gray-900 mb-1">Fases Labores</h3>
-                    <p class="text-gray-500 text-sm leading-relaxed">Tareas generales de mantenimiento, poda o monitoreo.</p>
+                    <h3 class="text-xl font-black text-gray-900 dark:text-emerald-50 mb-1">Fases Labores</h3>
+                    <p class="text-gray-500 dark:text-emerald-500/70 text-sm leading-relaxed">Tareas generales de mantenimiento, poda o monitoreo.</p>
                 </div>
                 <div class="pt-4 flex items-center justify-between">
                     <span class="text-2xl font-black text-emerald-600">{{ $general->count() }} <span class="text-xs text-gray-400 font-bold uppercase tracking-widest">Listadas</span></span>
@@ -99,7 +99,7 @@
                     </button>
                 </div>
             </div>
-            <button onclick="showCategory('general')" class="w-full py-4 text-xs font-black uppercase tracking-widest text-emerald-600 hover:bg-emerald-50 transition-colors border-t border-gray-50">
+            <button onclick="showCategory('general')" class="w-full py-4 text-xs font-black uppercase tracking-widest text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-colors border-t border-gray-50 dark:border-emerald-950/20">
                 Ver Cronograma General
             </button>
         </div>
@@ -246,6 +246,57 @@
     function closeModal(id) {
         document.getElementById(id).classList.add('hidden');
         document.body.style.overflow = 'auto';
+    }
+
+    function editTask(task, type) {
+        console.log("Editing task:", task, "Type:", type);
+        
+        if (type === 'riego') {
+            const form = document.getElementById('formEditRiego');
+            form.action = `{{ url('/admin/tareas/update-riego') }}/${task.id_riego}`;
+            document.getElementById('edit_riego_cosecha').value = task.id_cosecha;
+            document.getElementById('edit_riego_trabajador').value = task.documento_trabajador;
+            document.getElementById('edit_riego_tipo').value = task.id_tipo_riego;
+            document.getElementById('edit_riego_cantidad').value = task.cant_agua_apl;
+            document.getElementById('edit_riego_fecha').value = task.fecha_programada.split(' ' )[0];
+            document.getElementById('edit_riego_obs').value = task.observaciones || '';
+            openModal('modalEditRiego');
+        } else if (type === 'insumo') {
+            const form = document.getElementById('formEditInsumo');
+            form.action = `{{ url('/admin/tareas/update-insumo') }}/${task.id_insumo_cosecha}`;
+            document.getElementById('edit_insumo_cosecha').value = task.id_cosecha;
+            document.getElementById('edit_insumo_trabajador').value = task.documento_trabajador;
+            document.getElementById('edit_insumo_producto').value = task.id_insumo;
+            document.getElementById('edit_insumo_cantidad').value = task.cantidad_usada;
+            document.getElementById('edit_insumo_fecha').value = task.fecha_programada.split(' ' )[0];
+            document.getElementById('edit_insumo_obs').value = task.observaciones || '';
+            openModal('modalEditInsumo');
+        } else if (type === 'general') {
+            const form = document.getElementById('formEditGeneral');
+            form.action = `{{ url('/admin/tareas/update-general') }}/${task.id_fase}`;
+            document.getElementById('edit_general_desc').value = task.descripcion;
+            
+            const selectTerreno = document.getElementById('edit_general_terreno');
+            // Si el terreno no está en la lista (porque no es "libre"), lo agregamos temporalmente
+            if (!Array.from(selectTerreno.options).some(opt => opt.value == task.id_terreno)) {
+                const opt = document.createElement('option');
+                opt.value = task.id_terreno;
+                opt.text = task.terreno ? task.terreno.nombre : 'Terreno Actual';
+                selectTerreno.add(opt);
+            }
+            selectTerreno.value = task.id_terreno;
+            
+            document.getElementById('edit_general_trabajador').value = task.documento_trabajador;
+            document.getElementById('edit_general_fecha').value = task.fecha_programada.split(' ' )[0];
+            openModal('modalEditGeneral');
+        } else if (type === 'recoleccion') {
+            const form = document.getElementById('formEditRecoleccion');
+            form.action = `{{ url('/admin/tareas/update-recoleccion') }}/${task.id_cultivo}`;
+            document.getElementById('edit_recoleccion_trabajador').value = task.documento_trabajador;
+            document.getElementById('edit_recoleccion_fecha').value = (task.fecha_recoleccion || task.fecha_programada).split(' ' )[0];
+            document.getElementById('edit_recoleccion_desc').value = task.descripcion_recoleccion || task.sub_descripcion || '';
+            openModal('modalEditRecoleccion');
+        }
     }
 </script>
 @endpush

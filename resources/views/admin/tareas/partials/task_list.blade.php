@@ -19,15 +19,15 @@
 
 <div class="space-y-6">
     <div class="flex items-center justify-between px-2">
-        <h4 class="text-xl font-black text-gray-800 tracking-tight">{{ $title }}</h4>
+        <h4 class="text-xl font-black text-gray-800 dark:text-emerald-50 tracking-tight">{{ $title }}</h4>
         <div class="flex items-center gap-2">
             @if($type !== 'all')
-                <button onclick="showCategory('todas')" class="px-3 py-1 bg-gray-50 hover:bg-gray-100 text-gray-500 text-[10px] font-black uppercase tracking-widest rounded-lg border border-gray-100 transition-all flex items-center gap-1.5 shadow-sm">
+                <button onclick="showCategory('todas')" class="px-3 py-1 bg-gray-50 dark:bg-slate-900 hover:bg-gray-100 dark:hover:bg-slate-800 text-gray-500 dark:text-emerald-500 text-[10px] font-black uppercase tracking-widest rounded-lg border border-gray-100 dark:border-emerald-900/20 transition-all flex items-center gap-1.5 shadow-sm">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
                     Ver Todas
                 </button>
             @endif
-            <span class="px-3 py-1 bg-white border border-gray-100 rounded-full text-[10px] font-black uppercase tracking-widest text-gray-400 shadow-sm">
+            <span class="px-3 py-1 bg-white dark:bg-slate-800 border border-gray-100 dark:border-emerald-950/30 rounded-full text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-emerald-500/50 shadow-sm">
                 {{ $tasks->count() }} Registros
             </span>
         </div>
@@ -78,7 +78,7 @@
                     $bgIconSvg = '<path d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />';
                 }
 @endphp
-            <div class="task-card group bg-white rounded-[2rem] p-5 border border-gray-100 shadow-sm hover:shadow-xl hover:{{ $shadowColor }} transition-all duration-500 relative overflow-hidden flex flex-col md:flex-row md:items-center gap-5">
+            <div class="task-card group bg-white dark:bg-slate-800 rounded-[2rem] p-5 border border-gray-100 dark:border-emerald-900/20 shadow-sm hover:shadow-xl hover:{{ $shadowColor }} transition-all duration-500 relative overflow-hidden flex flex-col md:flex-row md:items-center gap-5">
 
                 {{-- decorative top right icon --}}
                 <div class="absolute -top-3 -right-3 w-14 h-14 bg-{{ $borderColor }}/5 rounded-full flex items-center justify-center group-hover:bg-{{ $borderColor }}/10 transition-colors pointer-events-none">
@@ -116,7 +116,7 @@
                             </svg>
                         </div>
                     @else
-                        <div class="w-10 h-10 rounded-2xl border-2 border-gray-100 bg-white group-hover:border-{{ $borderColor }} transition-all duration-300 flex items-center justify-center text-gray-300 group-hover:text-{{ $borderColor }}">
+                        <div class="w-10 h-10 rounded-2xl border-2 border-gray-100 dark:border-emerald-900/20 bg-white dark:bg-slate-900 group-hover:border-{{ $borderColor }} transition-all duration-300 flex items-center justify-center text-gray-300 group-hover:text-{{ $borderColor }}">
                             {!! $iconSvg !!}
                         </div>
                     @endif
@@ -125,7 +125,7 @@
                 {{-- Core Task Info --}}
                 <div class="flex-grow space-y-3">
                     <div class="flex flex-col gap-0.5">
-                        <h5 class="text-lg font-black {{ $task->id_estado == 15 ? 'text-gray-400 line-through decoration-2' : (in_array($task->id_estado, [16, 18]) ? 'text-red-400 line-through decoration-2' : 'text-gray-900 group-hover:text-' . $borderColor) }} transition-colors">
+                        <h5 class="text-lg font-black {{ $task->id_estado == 15 ? 'text-gray-400 line-through decoration-2' : (in_array($task->id_estado, [16, 18]) ? 'text-red-400 line-through decoration-2' : 'text-gray-900 dark:text-emerald-50 group-hover:text-' . $borderColor) }} transition-colors">
                             {{ $task->descripcion }}
                         </h5>
                         @if(!empty($task->sub_descripcion))
@@ -137,8 +137,8 @@
                     
                     <div class="flex flex-wrap items-center gap-2">
                         {{-- Lote / Location Badge --}}
-                        <div class="flex items-center gap-1.5 px-3 py-1.5 bg-gray-50 rounded-xl text-gray-600 text-[11px] font-bold border border-gray-100 group-hover:bg-white transition-colors">
-                            <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="flex items-center gap-1.5 px-3 py-1.5 bg-gray-50 dark:bg-slate-900 rounded-xl text-gray-600 dark:text-emerald-500/70 text-[11px] font-bold border border-gray-100 dark:border-emerald-900/20 group-hover:bg-white dark:group-hover:bg-slate-700 transition-colors">
+                            <svg class="w-3.5 h-3.5 text-gray-400 dark:text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
                             </svg>
                             @if($itemType === 'general')
@@ -149,7 +149,7 @@
                         </div>
 
                         {{-- Crop / Variety / Location Badge --}}
-                        <div class="flex items-center gap-1.5 px-3 py-1.5 bg-{{ $bgLight }} rounded-xl text-{{ $textColor }} text-[11px] font-black border border-{{ $borderColor }}/20 uppercase tracking-tight group-hover:bg-white transition-colors">
+                        <div class="flex items-center gap-1.5 px-3 py-1.5 bg-{{ $bgLight }} dark:bg-{{ $borderColor }}/10 rounded-xl text-{{ $textColor }} dark:text-{{ $borderColor }} text-[11px] font-black border border-{{ $borderColor }}/20 uppercase tracking-tight group-hover:bg-white dark:group-hover:bg-slate-700 transition-colors">
                             <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71z"/>
                             </svg>
@@ -161,7 +161,7 @@
                         </div>
 
                         {{-- Worker Badge (Mini) --}}
-                        <div class="flex items-center gap-1.5 px-3 py-1.5 bg-blue-50/50 rounded-xl text-blue-700 text-[11px] font-bold border border-blue-100 group-hover:bg-blue-50 transition-colors">
+                        <div class="flex items-center gap-1.5 px-3 py-1.5 bg-blue-50/50 dark:bg-blue-900/10 rounded-xl text-blue-700 dark:text-blue-400 text-[11px] font-bold border border-blue-100 dark:border-blue-900/20 group-hover:bg-blue-50 dark:group-hover:bg-slate-700 transition-colors">
                             <div class="w-4 h-4 bg-blue-600 rounded-full flex items-center justify-center text-white text-[8px]">
                                 {{ strtoupper(substr($task->usuario->nombre ?? 'U', 0, 1)) }}
                             </div>
@@ -180,16 +180,16 @@
                         
                         if($task->id_estado == 15) { // Realizado
                             $statusText = 'Completado (' . $date->format('d/m H:i') . ')';
-                            $statusClass = 'bg-emerald-50 text-emerald-700 border-emerald-100';
+                            $statusClass = 'bg-emerald-50 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-400 border-emerald-100 dark:border-emerald-900/20';
                         } elseif($task->id_estado == 17) { // En Proceso
                             $statusText = 'En Proceso';
-                            $statusClass = 'bg-blue-50 text-blue-700 border-blue-100';
+                            $statusClass = 'bg-blue-50 dark:bg-blue-950/20 text-blue-700 dark:text-blue-400 border-blue-100 dark:border-blue-900/20';
                         } elseif(in_array($task->id_estado, [16, 18])) { // Perdida u Oculta
                             $statusText = 'Perdida (' . $date->format('d/m H:i') . ')';
-                            $statusClass = 'bg-red-50 text-red-700 border-red-100';
+                            $statusClass = 'bg-red-50 dark:bg-red-950/20 text-red-700 dark:text-red-400 border-red-100 dark:border-red-900/20';
                         } elseif($date->isPast()) { // Atrasada
                             $statusText = 'Atrasada (' . $date->format('d/m H:i') . ')';
-                            $statusClass = 'bg-red-50 text-red-700 border-red-100';
+                            $statusClass = 'bg-red-50 dark:bg-red-950/20 text-red-700 dark:text-red-400 border-red-100 dark:border-red-900/20';
                         }
                     @endphp
 
@@ -206,6 +206,17 @@
                     <div class="text-[10px] font-bold text-gray-400 italic">
                         Asignado por: <span class="text-gray-600 not-italic uppercase tracking-tighter">Administrador</span>
                     </div>
+
+                    @if($task->id_estado != 15) {{-- Solo permitir editar si no está completada --}}
+                    <div class="flex items-center gap-2 mt-1">
+                        <button onclick='editTask({!! json_encode($task) !!}, "{{ $itemType }}")' class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white dark:bg-slate-900 text-gray-400 dark:text-emerald-500/50 hover:text-{{ $borderColor }} dark:hover:text-{{ $borderColor }} hover:border-{{ $borderColor }} transition-all border border-gray-100 dark:border-emerald-900/20 shadow-sm group/edit">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-5M16.242 3.242a1.5 1.5 0 112.121 2.121L12.121 12l-4.242 1.061L8.939 8.939l7.303-7.303z"/>
+                            </svg>
+                            <span class="text-[10px] font-black uppercase tracking-widest">Editar</span>
+                        </button>
+                    </div>
+                    @endif
                 </div>
 
                 {{-- Hover Decoration --}}
@@ -228,16 +239,16 @@
 
     {{-- Pagination Footer --}}
     @if($tasks->count() > 5)
-        <div class="mt-8 flex items-center justify-between bg-gray-50/50 p-4 rounded-3xl border border-gray-100" id="pagination-{{ $type }}">
-            <span class="text-[11px] font-bold text-gray-400 uppercase tracking-widest pl-4">Página <span class="current-page text-gray-700">1</span> de <span class="total-pages text-gray-700">1</span></span>
+        <div class="mt-8 flex items-center justify-between bg-gray-50/50 dark:bg-slate-900/30 p-4 rounded-3xl border border-gray-100 dark:border-emerald-950/20" id="pagination-{{ $type }}">
+            <span class="text-[11px] font-bold text-gray-400 dark:text-emerald-600 uppercase tracking-widest pl-4">Página <span class="current-page text-gray-700 dark:text-emerald-400">1</span> de <span class="total-pages text-gray-700 dark:text-emerald-400">1</span></span>
             <div class="flex gap-2">
-                <button onclick="changePage('{{ $type }}', -1)" class="p-2 rounded-xl bg-white border border-gray-100 text-gray-400 hover:text-gray-700 hover:shadow-sm transition-all disabled:opacity-30 btn-prev">
+                <button onclick="changePage('{{ $type }}', -1)" class="p-2 rounded-xl bg-white dark:bg-slate-800 border border-gray-100 dark:border-emerald-900/20 text-gray-400 hover:text-gray-700 dark:hover:text-emerald-400 hover:shadow-sm transition-all disabled:opacity-30 btn-prev">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
                 </button>
                 <div class="flex gap-1 page-numbers">
                     {{-- JS injected buttons --}}
                 </div>
-                <button onclick="changePage('{{ $type }}', 1)" class="p-2 rounded-xl bg-white border border-gray-100 text-gray-400 hover:text-gray-700 hover:shadow-sm transition-all disabled:opacity-30 btn-next">
+                <button onclick="changePage('{{ $type }}', 1)" class="p-2 rounded-xl bg-white dark:bg-slate-800 border border-gray-100 dark:border-emerald-900/20 text-gray-400 hover:text-gray-700 dark:hover:text-emerald-400 hover:shadow-sm transition-all disabled:opacity-30 btn-next">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                 </button>
             </div>

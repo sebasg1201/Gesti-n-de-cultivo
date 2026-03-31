@@ -972,4 +972,135 @@ class AdminController extends Controller
 
         return redirect()->back()->with('success', 'Respuesta enviada correctamente.');
     }
+
+    public function updateRiego(Request $request, $id)
+    {
+        try {
+            $request->validate([
+                'id_cosecha' => 'required|exists:cosecha,id_cosecha',
+                'documento_trabajador' => 'required|exists:usuario,documento',
+                'id_tipo_riego' => 'required|exists:tipo_riego,id_tipo_riego',
+                'cant_agua_apl' => 'required|numeric',
+                'fecha_programada' => 'required|date',
+                'observaciones' => 'nullable|string'
+            ]);
+
+            $riego = \App\Models\Riego::findOrFail($id);
+            $riego->update([
+                'id_cosecha' => $request->id_cosecha,
+                'documento_trabajador' => $request->documento_trabajador,
+                'id_tipo_riego' => $request->id_tipo_riego,
+                'cant_agua_apl' => $request->cant_agua_apl,
+                'fecha_programada' => $request->fecha_programada . ' ' . date('H:i:s'),
+                'observaciones' => $request->observaciones ?? ''
+            ]);
+
+            return redirect()->back()->with('success', 'Tarea de riego actualizada correctamente.');
+        } catch (\Exception $e) {
+            Log::error("Error en updateRiego: " . $e->getMessage());
+            return redirect()->back()->with('error', 'Error al actualizar riego: ' . $e->getMessage());
+        }
+    }
+
+    public function updateInsumo(Request $request, $id)
+    {
+        try {
+            $request->validate([
+                'id_cosecha' => 'required|exists:cosecha,id_cosecha',
+                'documento_trabajador' => 'required|exists:usuario,documento',
+                'id_insumo' => 'required|exists:insumo,ID_insumo',
+                'cantidad_usada' => 'required|numeric',
+                'fecha_programada' => 'required|date',
+                'observaciones' => 'nullable|string'
+            ]);
+
+            $insumoCosecha = \App\Models\InsumoCosecha::findOrFail($id);
+            $insumo = \App\Models\Insumo::findOrFail($request->id_insumo);
+            
+            // Ajuste de stock
+            if ($insumoCosecha->id_insumo == $request->id_insumo) {
+                $diff = $request->cantidad_usada - $insumoCosecha->cantidad_usada;
+                if ($insumo->stock_actual < $diff) {
+                    return redirect()->back()->with('error', 'No hay stock suficiente para el ajuste (Disponible: ' . $insumo->stock_actual . ').')->withInput();
+                }
+                $insumo->stock_actual -= $diff;
+            } else {
+                // Insumo diferente
+                $oldInsumo = \App\Models\Insumo::findOrFail($insumoCosecha->id_insumo);
+                $oldInsumo->stock_actual += $insumoCosecha->cantidad_usada;
+                $oldInsumo->save();
+
+                if ($insumo->stock_actual < $request->cantidad_usada) {
+                    return redirect()->back()->with('error', 'No hay stock suficiente del nuevo insumo (Disponible: ' . $insumo->stock_actual . ').')->withInput();
+                }
+                $insumo->stock_actual -= $request->cantidad_usada;
+            }
+            $insumo->save();
+
+            $insumoCosecha->update([
+                'id_cosecha' => $request->id_cosecha,
+                'documento_trabajador' => $request->documento_trabajador,
+                'id_insumo' => $request->id_insumo,
+                'cantidad_usada' => $request->cantidad_usada,
+                'fecha_programada' => $request->fecha_programada . ' ' . date('H:i:s'),
+                'observaciones' => $request->observaciones ?? '',
+                'impacto_dias' => $insumo->impacto_dias ?? 0
+            ]);
+
+            return redirect()->back()->with('success', 'Tarea de insumo actualizada correctamente.');
+        } catch (\Exception $e) {
+            Log::error("Error en updateInsumo: " . $e->getMessage());
+            return redirect()->back()->with('error', 'Error al actualizar insumo: ' . $e->getMessage());
+        }
+    }
+
+    public function updateGeneral(Request $request, $id)
+    {
+        try {
+            $request->validate([
+                'descripcion' => 'required|string|max:255',
+                'id_terreno' => 'required|exists:terreno,id_terreno',
+                'documento_trabajador' => 'required|exists:usuario,documento',
+                'fecha_programada' => 'required|date'
+            ]);
+
+            $fase = \App\Models\FaseProgramada::findOrFail($id);
+            $fase->update([
+                'descripcion' => $request->descripcion,
+                'id_terreno' => $request->id_terreno,
+                'documento_trabajador' => $request->documento_trabajador,
+                'fecha_programada' => $request->fecha_programada . ' ' . date('H:i:s')
+            ]);
+
+            return redirect()->back()->with('success', 'Labor general actualizada correctamente.');
+        } catch (\Exception $e) {
+            Log::error("Error en updateGeneral: " . $e->getMessage());
+            return redirect()->back()->with('error', 'Error al actualizar labor general: ' . $e->getMessage());
+        }
+    }
+
+    public function updateRecoleccion(Request $request, $id)
+    {
+        try {
+            $request->validate([
+                'documento_trabajador' => 'required|exists:usuario,documento',
+                'fecha_recoleccion' => 'required|date',
+                'descripcion_recoleccion' => 'nullable|string'
+            ]);
+
+            $idField = $this->getTaskIdField('recoleccion');
+            $cultivo = \App\Models\Cultivo::where($idField, $id)->firstOrFail();
+            
+            $cultivo->update([
+                'documento_trabajador' => $request->documento_trabajador,
+                'fecha_recoleccion' => $request->fecha_recoleccion,
+                'descripcion_recoleccion' => $request->descripcion_recoleccion ?? ''
+            ]);
+
+            return redirect()->back()->with('success', 'Tarea de recolección actualizada correctamente.');
+        } catch (\Exception $e) {
+            Log::error("Error en updateRecoleccion: " . $e->getMessage());
+            return redirect()->back()->with('error', 'Error al actualizar recolección: ' . $e->getMessage());
+        }
+    }
 }

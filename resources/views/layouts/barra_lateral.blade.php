@@ -25,7 +25,7 @@
     </style>
 </head>
 
-<body class="bg-gradient-to-br from-emerald-50 via-white to-green-100 min-h-screen text-gray-800">
+<body class="bg-gradient-to-br from-emerald-50 via-white to-green-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 min-h-screen text-gray-800 dark:text-slate-200 transition-colors duration-500">
 
     <div class="flex min-h-screen">
 
@@ -160,9 +160,9 @@
                     <div class="flex items-center gap-6">
 
                         <!-- Theme Toggle Header -->
-                        <button id="theme-toggle-header" type="button" class="hidden md:flex p-2.5 lg:p-3 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-md transition-all duration-200 cursor-pointer focus:outline-none border border-white/20 shadow-lg" title="Cambiar Tema">
-                            <svg class="w-5 h-5 lg:w-6 lg:h-6 text-white hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-                            <svg class="w-5 h-5 lg:w-6 lg:h-6 text-white block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+                        <button id="theme-toggle-header" type="button" class="hidden md:flex p-2.5 lg:p-3 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-md transition-all duration-200 cursor-pointer focus:outline-none border border-white/20 shadow-lg group" title="Cambiar Tema">
+                            <svg class="w-5 h-5 lg:w-6 lg:h-6 text-white hidden dark:block group-hover:rotate-12 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                            <svg class="w-5 h-5 lg:w-6 lg:h-6 text-white block dark:hidden group-hover:-rotate-12 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
                         </button>
 
                         <!-- NOTIFICACIONES -->
@@ -187,7 +187,7 @@
 
                             <!-- PANEL DE NOTIFICACIONES -->
                             <div id="notif-panel"
-                                class="hidden absolute right-0 mt-3 w-80 bg-white rounded-2xl shadow-2xl border border-emerald-100 z-50 overflow-hidden">
+                                class="hidden absolute right-0 mt-3 w-80 bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-emerald-100 dark:border-emerald-900/20 z-50 overflow-hidden">
 
                                 <!-- Cabecera del panel -->
                                 <div
@@ -207,9 +207,9 @@
                                 </div>
 
                                 <!-- Lista de notificaciones -->
-                                <div id="notif-list" class="max-h-80 overflow-y-auto divide-y divide-gray-100">
+                                <div id="notif-list" class="max-h-80 overflow-y-auto divide-y divide-gray-100 dark:divide-emerald-950/20">
                                     @forelse($notificacionesPendientes as $notif)
-                                        <div class="notif-item flex items-start gap-3 px-4 py-3.5 hover:bg-emerald-50 transition-colors duration-150 group"
+                                        <div class="notif-item flex items-start gap-3 px-4 py-3.5 hover:bg-emerald-50 dark:hover:bg-emerald-500/5 transition-colors duration-150 group"
                                             data-notif-id="{{ $notif->id_solicitud ?? $loop->index }}">
                                             <!-- Icono empresa -->
                                             <div
@@ -219,7 +219,7 @@
 
                                             <!-- Info -->
                                             <div class="flex-1 min-w-0">
-                                                <p class="text-sm font-semibold text-gray-800 truncate">
+                                                <p class="text-sm font-semibold text-gray-800 dark:text-emerald-50 truncate">
                                                     {{ $notif->empresa->nombre_empresa ?? 'Empresa desconocida' }}
                                                 </p>
                                                 <p class="text-xs text-emerald-600 font-medium mt-0.5">
@@ -242,8 +242,8 @@
                                         </div>
                                     @empty
                                         <div id="notif-empty"
-                                            class="flex flex-col items-center justify-center py-10 text-gray-400">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 mb-3 text-gray-200"
+                                            class="flex flex-col items-center justify-center py-10 text-gray-400 dark:text-gray-600">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 mb-3 text-gray-200 dark:text-emerald-900/30"
                                                 fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                                                 <path stroke-linecap="round" stroke-linejoin="round"
                                                     d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
@@ -255,7 +255,7 @@
 
                                 <!-- Footer del panel -->
                                 @if($nuevasSolicitudes > 0)
-                                    <div class="px-4 py-3 bg-gray-50 border-t border-gray-100">
+                                    <div class="px-4 py-3 bg-gray-50 dark:bg-slate-900 border-t border-gray-100 dark:border-emerald-950/30">
                                         <a href="{{ route('solicitudes.index') }}"
                                             class="flex items-center justify-center gap-2 w-full text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition-colors py-1">
                                             Ver todas las solicitudes
@@ -272,7 +272,7 @@
                         <!-- Fecha -->
                         <div class="hidden md:flex items-center gap-2 
                         bg-white/10 backdrop-blur-md 
-                        px-4 py-2 rounded-xl text-sm">
+                        px-4 py-2 rounded-xl text-sm dark:text-emerald-100">
 
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -286,7 +286,7 @@
                         <div class="relative group">
 
                             <div class="flex items-center gap-4 
-                            bg-white text-gray-800
+                            bg-white dark:bg-slate-800 text-gray-800 dark:text-slate-100
                             px-5 py-3 rounded-2xl
                             shadow-2xl hover:scale-[1.03]
                             transition-all duration-300 cursor-pointer">
@@ -301,7 +301,7 @@
                                     <p class="font-semibold text-sm">
                                         {{ Auth::guard('superadmin')->user()->nombre ?? 'Super Admin' }}
                                     </p>
-                                    <p class="text-xs text-emerald-600 font-medium">
+                                    <p class="text-xs text-emerald-600 dark:text-emerald-500 font-medium italic opacity-70">
                                         SuperAdmin
                                     </p>
                                 </div>
@@ -317,17 +317,17 @@
 
                             <!-- Dropdown -->
                             <div class="absolute right-0 mt-4 w-56 
-                            bg-white rounded-2xl shadow-2xl 
-                            border border-emerald-100
+                            bg-white dark:bg-slate-800 rounded-2xl shadow-2xl 
+                            border border-emerald-100 dark:border-emerald-950/30
                             opacity-0 scale-95 
                             group-hover:opacity-100 group-hover:scale-100
                             transition-all duration-200 origin-top-right z-50">
 
-                                <div class="p-4 border-b border-gray-100">
-                                    <p class="text-sm font-semibold text-gray-800">
+                                <div class="p-4 border-b border-gray-100 dark:border-emerald-950/20">
+                                    <p class="text-sm font-semibold text-gray-800 dark:text-emerald-50">
                                         {{ Auth::guard('superadmin')->user()->nombre ?? 'Super Admin' }}
                                     </p>
-                                    <p class="text-xs text-emerald-600">
+                                    <p class="text-xs text-emerald-600 dark:text-emerald-500 italic opacity-70">
                                         Administrador del sistema
                                     </p>
                                 </div>
@@ -335,7 +335,7 @@
                                 <form action="{{ route('logout') }}" method="POST">
                                     @csrf
                                     <button type="submit"
-                                        class="w-full text-left px-4 py-3 text-sm text-red-500 hover:bg-red-50 hover:text-red-600 rounded-b-2xl transition cursor-pointer">
+                                        class="w-full text-left px-4 py-3 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 hover:text-red-600 rounded-b-2xl transition cursor-pointer">
                                         Cerrar Sesión
                                     </button>
                                 </form>
@@ -383,11 +383,11 @@
             <!-- MAIN -->
             <main class="p-10 flex-1">
 
-                <div class="bg-white rounded-3xl shadow-2xl p-10 border border-emerald-100 min-h-[70vh]">
+                <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-2xl p-10 border border-emerald-100 dark:border-emerald-900/20 min-h-[70vh] transition-colors duration-300">
 
                     <!-- Título decorativo -->
                     <div class="mb-8">
-                        <h3 class="text-2xl font-bold text-emerald-800">
+                        <h3 class="text-2xl font-bold text-emerald-800 dark:text-emerald-100">
                             @yield('title', 'AgroTech')
                         </h3>
                         <div class="w-16 h-1 bg-gradient-to-r from-emerald-400 to-green-500 rounded-full mt-2"></div>
@@ -407,7 +407,7 @@
     <!-- POPUP DE BIENVENIDA -->
     @if($nuevasSolicitudes > 0)
         <div id="welcome-notif-popup"
-            class="fixed bottom-6 right-6 z-[9999] max-w-sm w-full bg-white rounded-2xl shadow-2xl border border-emerald-100 overflow-hidden"
+            class="fixed bottom-6 right-6 z-[9999] max-w-sm w-full bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-emerald-100 dark:border-emerald-900/30 overflow-hidden"
             style="transform: translateY(120%); transition: transform 0.5s cubic-bezier(0.34,1.56,0.64,1);">
 
             <!-- Barra de progreso animada -->
@@ -429,9 +429,9 @@
 
                     <!-- Texto -->
                     <div class="flex-1">
-                        <p class="font-bold text-gray-800 text-sm">¡Solicitudes pendientes!</p>
-                        <p class="text-gray-500 text-xs mt-1">
-                            Tienes <span class="font-semibold text-emerald-600">{{ $nuevasSolicitudes }}
+                        <p class="font-bold text-gray-800 dark:text-emerald-50 text-sm">¡Solicitudes pendientes!</p>
+                        <p class="text-gray-500 dark:text-gray-400 text-xs mt-1">
+                            Tienes <span class="font-semibold text-emerald-600 dark:text-emerald-500">{{ $nuevasSolicitudes }}
                                 {{ $nuevasSolicitudes == 1 ? 'solicitud' : 'solicitudes' }} de compra</span>
                             {{ $nuevasSolicitudes == 1 ? 'pendiente' : 'pendientes' }} por revisar.
                         </p>
@@ -442,7 +442,7 @@
                                 Ver solicitudes
                             </a>
                             <button onclick="closeWelcomePopup()"
-                                class="px-3 py-1.5 bg-gray-100 text-gray-600 text-xs font-semibold rounded-lg hover:bg-gray-200 transition-colors cursor-pointer">
+                                class="px-3 py-1.5 bg-gray-100 dark:bg-slate-900 text-gray-600 dark:text-gray-400 text-xs font-semibold rounded-lg hover:bg-gray-200 dark:hover:bg-slate-700 transition-colors cursor-pointer">
                                 Ahora no
                             </button>
                         </div>
