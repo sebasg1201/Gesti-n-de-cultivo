@@ -234,7 +234,7 @@ $shadowColor = 'shadow-purple-100';
     </div>
 
     {{-- Pagination Footer --}}
-    @if($tasks->count() > 5)
+    @if($tasks->count() > 7)
     <div class="mt-8 flex items-center justify-between bg-gray-50/50 dark:bg-slate-900/30 p-4 rounded-3xl border border-gray-100 dark:border-emerald-950/20" id="pagination-{{ $type }}">
         <span class="text-[11px] font-bold text-gray-400 dark:text-emerald-600 uppercase tracking-widest pl-4">Página <span class="current-page text-gray-700 dark:text-emerald-400">1</span> de <span class="total-pages text-gray-700 dark:text-emerald-400">1</span></span>
         <div class="flex gap-2">

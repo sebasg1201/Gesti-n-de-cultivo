@@ -133,9 +133,9 @@ class CosechaController extends Controller
 
         $columns = ['ID', 'Semilla', 'Terreno', 'Cantidad', 'F. Siembra', 'F. Estimada'];
 
-        $callback = function() use($cosechas, $columns) {
+        $callback = function () use ($cosechas, $columns) {
             $file = fopen('php://output', 'w');
-            fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF)); // BOM for UTF-8
+            fprintf($file, chr(0xEF) . chr(0xBB) . chr(0xBF)); // BOM for UTF-8
             fputcsv($file, $columns, ';');
 
             foreach ($cosechas as $cosecha) {
@@ -382,6 +382,7 @@ class CosechaController extends Controller
             $r->observacion_trabajador = $r->registroTrabajo->observacion ?? null;
             $r->id_estado_real = $r->id_estado;
 
+
             if ($r->id_estado == 15) {
                 $r->estado_historial = 'Completado';
             } elseif ($r->id_estado == 16 || $r->id_estado == 18) {
@@ -404,6 +405,7 @@ class CosechaController extends Controller
             $i->descripcion_historial = ($i->insumo->Nombre ?? 'Insumo') . ' (Cant: ' . $cantidadLimpia . ')';
             $i->observacion_trabajador = $i->registroTrabajo->observacion ?? null;
             $i->id_estado_real = $i->id_estado;
+
             $i->estado_historial = in_array($i->id_estado, [15]) ? 'Completado' : ($i->id_estado == 19 ? 'Retraso' : ($i->id_estado == 17 ? 'En Proceso' : (in_array($i->id_estado, [16, 18]) ? 'Perdida' : 'Pendiente')));
             $historial->push($i);
         }
@@ -415,7 +417,8 @@ class CosechaController extends Controller
             $c->descripcion_historial = $c->descripcion_recoleccion;
             $c->observacion_trabajador = $c->registroTrabajo->observacion ?? null;
             $c->id_estado_real = $c->id_estado;
-            
+
+
             if ($c->id_estado == 15) {
                 $c->estado_historial = 'Completado';
             } elseif ($c->id_estado == 19) {
@@ -430,17 +433,27 @@ class CosechaController extends Controller
             $historial->push($c);
         }
 
+        // Aplicar Filtro de Tipo (Riego / Insumo)
+        $typeFilter = $request->get('type');
+        if ($typeFilter) {
+            $historial = $historial->filter(function ($item) use ($typeFilter) {
+                return $item->tipo_historial === $typeFilter;
+            });
+        }
+
         // Aplicar Filtro de Estado
         $statusFilter = $request->get('status');
         if ($statusFilter) {
-            $historial = $historial->filter(function($item) use ($statusFilter) {
+            $historial = $historial->filter(function ($item) use ($statusFilter) {
                 if ($statusFilter === 'Completado') return $item->id_estado_real == 15;
                 if ($statusFilter === 'Pendiente') return $item->id_estado_real == 1;
                 if ($statusFilter === 'En Proceso') return $item->id_estado_real == 17;
                 if ($statusFilter === 'Perdida') return in_array($item->id_estado_real, [16, 18]);
+                if ($statusFilter === 'Retraso') return $item->id_estado_real == 19;
                 return true;
             });
         }
+
 
         $historial = $historial->sortByDesc('fecha_historial');
 
@@ -521,9 +534,9 @@ class CosechaController extends Controller
 
         $columns = ['Fecha', 'Actividad', 'Detalle', 'Estado', 'Observación Trabajador'];
 
-        $callback = function() use($rows, $columns) {
+        $callback = function () use ($rows, $columns) {
             $file = fopen('php://output', 'w');
-            fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF)); // BOM
+            fprintf($file, chr(0xEF) . chr(0xBB) . chr(0xBF)); // BOM
             fputcsv($file, $columns, ';');
             foreach ($rows as $row) {
                 fputcsv($file, array_values($row), ';');

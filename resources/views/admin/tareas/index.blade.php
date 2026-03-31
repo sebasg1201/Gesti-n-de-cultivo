@@ -63,7 +63,7 @@
                 </div>
             </div>
 
-{{-- Card: Insumo --}}
+            {{-- Card: Insumo --}}
             <div class="group bg-white dark:bg-slate-800 p-1 rounded-[3rem] border border-gray-100 dark:border-emerald-900/20 shadow-xl shadow-gray-200/50 dark:shadow-none hover:shadow-purple-200/40 transition-all duration-500 hover:-translate-y-2 relative overflow-hidden flex flex-col">
                 <div class="p-10 pb-6 flex-grow relative">
                     <div class="absolute -right-6 -top-6 w-40 h-40 bg-purple-50 dark:bg-purple-900/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
@@ -176,11 +176,11 @@
                     <div class="relative group">
                         <select name="id_estado" class="w-full bg-emerald-50/50 dark:bg-emerald-900/20 border-2 border-transparent focus:border-emerald-500/30 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 dark:text-emerald-50 appearance-none transition-all outline-none cursor-pointer">
                             <option value="">Todos los estados</option>
-                        <option value="1" {{ request('id_estado') == '1' ? 'selected' : '' }}>Pendiente</option>
-                        <option value="17" {{ request('id_estado') == '17' ? 'selected' : '' }}>En Proceso</option>
-                        <option value="15" {{ request('id_estado') == '15' ? 'selected' : '' }}>Realizado</option>
-                        <option value="18" {{ request('id_estado') == '18' ? 'selected' : '' }}>Perdida</option>
-                        <option value="19" {{ request('id_estado') == '19' ? 'selected' : '' }}>Realizada con Retraso</option>
+                            <option value="1" {{ request('id_estado') == '1' ? 'selected' : '' }}>Pendiente</option>
+                            <option value="17" {{ request('id_estado') == '17' ? 'selected' : '' }}>En Proceso</option>
+                            <option value="15" {{ request('id_estado') == '15' ? 'selected' : '' }}>Realizado</option>
+                            <option value="18" {{ request('id_estado') == '18' ? 'selected' : '' }}>Perdida</option>
+                            <option value="19" {{ request('id_estado') == '19' ? 'selected' : '' }}>Realizada con Retraso</option>
                         </select>
                         <div class="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-emerald-500">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -231,7 +231,7 @@
             @include('admin.tareas.partials.task_list', [
             'tasks' => $riego->concat($insumoCosecha)->concat($general)->concat($recoleccion)->sortByDesc('fecha_programada'),
             'title' => 'Todas las Labores',
-            'type' => 'all'
+            'type' => 'todas'
             ])
         </div>
 
@@ -254,7 +254,7 @@
     @push('scripts')
     <script>
         let currentCategoryId = 'todas';
-        const itemsPerPage = 6;
+        const itemsPerPage = 5;
         let paginationState = {};
 
         function showCategory(id) {

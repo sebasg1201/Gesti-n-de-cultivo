@@ -448,37 +448,34 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
                         </svg>
                     </a>
-                    <a href="{{ route('admin.cosechas.export_history', $cosecha->id_cosecha) }}" class="flex items-center gap-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                        </svg>
-                        Excel
-                    </a>
-                    <div class="w-12 h-12 rounded-full bg-slate-50 flex items-center justify-center text-slate-400">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </div>
-
                     <div class="h-8 w-px bg-slate-200 hidden md:block mx-1"></div>
 
-                    @if($cosecha->id_estado != 14)
+                    <!-- Filtros por Tipo -->
                     <div class="flex items-center gap-2">
-                        <button onclick="openModal('modalRiego')" class="inline-flex items-center gap-2 px-4 py-2.5 bg-cyan-50 text-cyan-700 font-bold rounded-xl text-[10px] uppercase tracking-widest border border-cyan-100 hover:bg-cyan-100 transition-all">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        <a href="{{ request()->fullUrlWithQuery(['type' => null]) }}"
+                            class="px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all {{ !request('type') ? 'bg-slate-800 text-white shadow-lg shadow-slate-200' : 'bg-slate-50 text-slate-400 hover:bg-slate-100' }}">
+                            Todos
+                        </a>
+                        <a href="{{ request()->fullUrlWithQuery(['type' => 'riego']) }}"
+                            class="flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all {{ request('type') === 'riego' ? 'bg-cyan-500 text-white shadow-lg shadow-cyan-200' : 'bg-cyan-50 text-cyan-600 hover:bg-cyan-100 border border-cyan-100' }}">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
                             </svg>
                             Riego
-                        </button>
-                        <button onclick="openModal('modalInsumo')" class="inline-flex items-center gap-2 px-4 py-2.5 bg-purple-50 text-purple-700 font-bold rounded-xl text-[10px] uppercase tracking-widest border border-purple-100 hover:bg-purple-100 transition-all">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </a>
+                        <a href="{{ request()->fullUrlWithQuery(['type' => 'insumo']) }}"
+                            class="flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all {{ request('type') === 'insumo' ? 'bg-purple-500 text-white shadow-lg shadow-purple-200' : 'bg-purple-50 text-purple-600 hover:bg-purple-100 border border-purple-100' }}">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
                             </svg>
                             Insumo
-                        </button>
+                        </a>
                     </div>
+
                     <div class="h-8 w-px bg-slate-200 hidden md:block mx-1"></div>
-                    @endif
+
+
+
 
                     <a href="{{ route('admin.cosechas.export_history', $cosecha->id_cosecha) }}" class="flex items-center gap-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all border border-emerald-100">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -498,10 +495,11 @@
                     </svg>
                 </div>
                 <p class="text-slate-500 font-bold">No se encontraron actividades con los filtros seleccionados.</p>
-                @if(request('status'))
-                <a href="{{ request()->fullUrlWithQuery(['status' => null]) }}" class="text-emerald-600 text-xs font-black uppercase mt-2 inline-block">Limpiar filtros</a>
+                @if(request('status') || request('type'))
+                <a href="{{ request()->fullUrlWithQuery(['status' => null, 'type' => null]) }}" class="text-emerald-600 text-xs font-black uppercase mt-2 inline-block">Limpiar filtros</a>
                 @endif
             </div>
+
             @else
             <div class="space-y-6 relative mb-8 before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-slate-200 before:to-transparent">
                 @foreach($historial as $item)
