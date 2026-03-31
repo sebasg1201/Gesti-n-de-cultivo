@@ -169,7 +169,13 @@ Route::middleware(['auth:usuario', 'check.license'])->group(function () {
     Route::get('/admin/cosechas/{id}/export-history', [\App\Http\Controllers\Admin\CosechaController::class, 'exportHistory'])->name('admin.cosechas.export_history');
     Route::get('/admin/cosechas/buscar-terrenos', [\App\Http\Controllers\Admin\CosechaController::class, 'buscarTerrenos'])->name('admin.cosechas.buscar_terrenos');
     Route::get('/admin/cosechas/buscar-especies', [\App\Http\Controllers\Admin\CosechaController::class, 'buscarEspecies'])->name('admin.cosechas.buscar_especies');
+    
+    // Rutas para Resumen de Finalización y PDF
+    Route::get('/admin/cosechas/{id}/resumen', [\App\Http\Controllers\Admin\CultivoController::class, 'finalizationSummary'])->name('admin.cosechas.resumen');
+    Route::get('/admin/cosechas/{id}/pdf', [\App\Http\Controllers\Admin\CultivoController::class, 'downloadFinalizationPDF'])->name('admin.cosechas.pdf');
+
     Route::resource('/admin/cosechas', \App\Http\Controllers\Admin\CosechaController::class, ['as' => 'admin']);
+
 
     Route::get('/admin/cultivos/export', [\App\Http\Controllers\Admin\CultivoController::class, 'exportCSV'])->name('admin.cultivos.export');
     Route::get('/admin/cultivos/cosecha/{id}', [\App\Http\Controllers\Admin\CultivoController::class, 'cosechaDetail'])->name('admin.cultivos.cosechaDetail');

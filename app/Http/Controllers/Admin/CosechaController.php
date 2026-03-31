@@ -10,6 +10,8 @@ use App\Models\Estado;
 use App\Models\TipoRiego;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
 
 class CosechaController extends Controller
 {
@@ -298,7 +300,7 @@ class CosechaController extends Controller
         return redirect()->route('admin.cosechas.index')->with('success', 'Siembra iniciada y tareas de riego automáticas generadas.');
     }
 
-    public function show($id)
+    public function show(Request $request, $id)
     {
         $id_empresa = $this->getEmpresaId();
 
@@ -318,7 +320,7 @@ class CosechaController extends Controller
 
         if ($fechaEstimada) {
             $diasTotales = $fechaSiembra->diffInDays($fechaEstimada);
-            $diasTranscurridos = $fechaSiembra->diffInDays($now, false); // false para permitir negativos si la siembra es futura
+            $diasTranscurridos = $fechaSiembra->diffInDays($now, false);
 
             if ($diasTranscurridos < 0) {
                 $diasTranscurridos = 0;
@@ -333,7 +335,7 @@ class CosechaController extends Controller
             $diasRestantes = $now->diffInDays($fechaEstimada, false);
         }
 
-        // Determinar fase actual basada en porcentaje (Aproximación general)
+        // Determinar fase actual basada en porcentaje
         $faseActual = 'Siembra';
         if ($porcentaje >= 20 && $porcentaje < 50)
             $faseActual = 'Vegetativo';
@@ -344,9 +346,9 @@ class CosechaController extends Controller
         elseif ($porcentaje >= 90)
             $faseActual = 'Cosecha';
 
-        $riegos = \App\Models\Riego::with('registroTrabajo')->where('id_cosecha', $id)->get();
+        $riegos = \App\Models\Riego::with(['registroTrabajo', 'usuario'])->where('id_cosecha', $id)->get();
 
-        // Calcular cumplimiento de hidratación (Barra Azul - Estado Tarea Actual)
+        // Calcular cumplimiento de hidratación
         $ultimoRiego = \App\Models\Riego::where('id_cosecha', $id)
             ->whereDate('fecha_programada', '<=', \Carbon\Carbon::now()->format('Y-m-d'))
             ->orderBy('fecha_programada', 'desc')
@@ -354,13 +356,13 @@ class CosechaController extends Controller
 
         $porcentajeHidratacion = 0;
         if (!$ultimoRiego) {
-            $porcentajeHidratacion = 100; // Sin riego programado = ciclo limpio
+            $porcentajeHidratacion = 100;
         } else {
-            if ($ultimoRiego->id_estado == 15) {        // Realizado
+            if ($ultimoRiego->id_estado == 15) {
                 $porcentajeHidratacion = 100;
-            } elseif ($ultimoRiego->id_estado == 17) {  // En Proceso
+            } elseif ($ultimoRiego->id_estado == 17) {
                 $porcentajeHidratacion = 50;
-            } else {                                     // Pendiente / Perdida
+            } else {
                 $porcentajeHidratacion = 0;
             }
         }
@@ -368,7 +370,7 @@ class CosechaController extends Controller
         $totalRiegosCiclo = $riegos->count();
         $riegosCompletados = $riegos->where('id_estado', 15)->count();
 
-        $insumos = \App\Models\InsumoCosecha::with(['insumo', 'registroTrabajo'])->where('id_cosecha', $id)->get();
+        $insumos = \App\Models\InsumoCosecha::with(['insumo', 'registroTrabajo', 'usuario'])->where('id_cosecha', $id)->get();
 
         $historial = collect();
 
@@ -378,13 +380,16 @@ class CosechaController extends Controller
             $r->titulo_historial = 'Riego';
             $r->descripcion_historial = $r->observaciones;
             $r->observacion_trabajador = $r->registroTrabajo->observacion ?? null;
+            $r->id_estado_real = $r->id_estado;
 
             if ($r->id_estado == 15) {
                 $r->estado_historial = 'Completado';
             } elseif ($r->id_estado == 16 || $r->id_estado == 18) {
                 $r->estado_historial = 'Perdida';
-            } elseif ($r->id_estado == 17) {   // En Proceso
+            } elseif ($r->id_estado == 17) {
                 $r->estado_historial = 'En Proceso';
+            } elseif ($r->id_estado == 19) {
+                $r->estado_historial = 'Retraso';
             } else {
                 $r->estado_historial = 'Pendiente';
             }
@@ -398,10 +403,10 @@ class CosechaController extends Controller
             $cantidadLimpia = (float) $i->cantidad_usada;
             $i->descripcion_historial = ($i->insumo->Nombre ?? 'Insumo') . ' (Cant: ' . $cantidadLimpia . ')';
             $i->observacion_trabajador = $i->registroTrabajo->observacion ?? null;
-            $i->estado_historial = in_array($i->id_estado, [15]) ? 'Completado' : ($i->id_estado == 17 ? 'En Proceso' : (in_array($i->id_estado, [16, 18]) ? 'Perdida' : 'Pendiente'));
+            $i->id_estado_real = $i->id_estado;
+            $i->estado_historial = in_array($i->id_estado, [15]) ? 'Completado' : ($i->id_estado == 19 ? 'Retraso' : ($i->id_estado == 17 ? 'En Proceso' : (in_array($i->id_estado, [16, 18]) ? 'Perdida' : 'Pendiente')));
             $historial->push($i);
         }
-
 
         foreach ($cosecha->cultivos as $c) {
             $c->tipo_historial = 'recoleccion';
@@ -409,9 +414,12 @@ class CosechaController extends Controller
             $c->titulo_historial = 'RECOLECCIÓN';
             $c->descripcion_historial = $c->descripcion_recoleccion;
             $c->observacion_trabajador = $c->registroTrabajo->observacion ?? null;
+            $c->id_estado_real = $c->id_estado;
             
             if ($c->id_estado == 15) {
                 $c->estado_historial = 'Completado';
+            } elseif ($c->id_estado == 19) {
+                $c->estado_historial = 'Retraso';
             } elseif ($c->id_estado == 16 || $c->id_estado == 18) {
                 $c->estado_historial = 'Perdida';
             } elseif ($c->id_estado == 17) {
@@ -422,10 +430,43 @@ class CosechaController extends Controller
             $historial->push($c);
         }
 
+        // Aplicar Filtro de Estado
+        $statusFilter = $request->get('status');
+        if ($statusFilter) {
+            $historial = $historial->filter(function($item) use ($statusFilter) {
+                if ($statusFilter === 'Completado') return $item->id_estado_real == 15;
+                if ($statusFilter === 'Pendiente') return $item->id_estado_real == 1;
+                if ($statusFilter === 'En Proceso') return $item->id_estado_real == 17;
+                if ($statusFilter === 'Perdida') return in_array($item->id_estado_real, [16, 18]);
+                return true;
+            });
+        }
+
         $historial = $historial->sortByDesc('fecha_historial');
 
-        return view('admin.cosechas.show', compact('cosecha', 'diasTotales', 'diasTranscurridos', 'porcentaje', 'diasRestantes', 'faseActual', 'porcentajeHidratacion', 'riegosCompletados', 'totalRiegosCiclo', 'historial'));
+        // Paginación manual de la colección
+        $currentPage = Paginator::resolveCurrentPage() ?: 1;
+        $perPage = 5;
+        $currentItems = $historial->slice(($currentPage - 1) * $perPage, $perPage)->all();
+        $paginatedHistorial = new LengthAwarePaginator($currentItems, $historial->count(), $perPage, $currentPage, [
+            'path' => Paginator::resolveCurrentPath(),
+            'query' => $request->query(),
+        ]);
+
+        return view('admin.cosechas.show', [
+            'cosecha' => $cosecha,
+            'diasTotales' => $diasTotales,
+            'diasTranscurridos' => $diasTranscurridos,
+            'porcentaje' => $porcentaje,
+            'diasRestantes' => $diasRestantes,
+            'faseActual' => $faseActual,
+            'porcentajeHidratacion' => $porcentajeHidratacion,
+            'riegosCompletados' => $riegosCompletados,
+            'totalRiegosCiclo' => $totalRiegosCiclo,
+            'historial' => $paginatedHistorial
+        ]);
     }
+
 
     public function exportHistory($id)
     {

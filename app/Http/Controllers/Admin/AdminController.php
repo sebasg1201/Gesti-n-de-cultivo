@@ -519,11 +519,13 @@ class AdminController extends Controller
         $month = $request->get('month');
         $year = $request->get('year');
         $search = $request->get('search');
+        $id_estado = $request->get('id_estado');
 
         // Helper to apply filters
-        $applyFilters = function ($query, $dateField, $searchField, $typeLabel, $hasCosecha = true) use ($month, $year, $search) {
+        $applyFilters = function ($query, $dateField, $searchField, $typeLabel, $hasCosecha = true) use ($month, $year, $search, $id_estado) {
             if ($month) $query->whereMonth($dateField, $month);
             if ($year) $query->whereYear($dateField, $year);
+            if ($id_estado) $query->where('id_estado', $id_estado);
             if ($search) {
                 $searchLower = strtolower($search);
                 $query->where(function ($q) use ($search, $typeLabel, $searchLower, $hasCosecha, $searchField) {
@@ -555,21 +557,22 @@ class AdminController extends Controller
         // Fetch tasks linked to harvests of this company
         $riegoQuery = \App\Models\Riego::whereHas('cosecha', function ($q) use ($id_empresa) {
             $q->where('id_empresa', $id_empresa);
-        })->with(['usuario', 'cosecha.semilla', 'tipoRiego']);
+        })->with(['usuario', 'cosecha.semilla', 'cosecha.terreno', 'tipoRiego']);
         $riego = $applyFilters($riegoQuery, 'fecha_programada', 'observaciones', 'Riego', true)->get();
 
         $insumoQuery = \App\Models\InsumoCosecha::whereHas('cosecha', function ($q) use ($id_empresa) {
             $q->where('id_empresa', $id_empresa);
-        })->with(['usuario', 'cosecha.semilla', 'insumo']);
+        })->with(['usuario', 'cosecha.semilla', 'cosecha.terreno', 'insumo']);
         $insumoCosecha = $applyFilters($insumoQuery, 'fecha_programada', 'observaciones', 'Insumo', true)->get();
 
         $recoleccionQuery = \App\Models\Cultivo::whereHas('cosecha', function ($q) use ($id_empresa) {
             $q->where('id_empresa', $id_empresa);
-        })->with(['trabajador', 'cosecha.semilla']);
+        })->with(['trabajador', 'cosecha.semilla', 'cosecha.terreno']);
 
         // Recoleccion filter logic (different date field and relation)
         if ($month) $recoleccionQuery->whereMonth('fecha_recoleccion', $month);
         if ($year) $recoleccionQuery->whereYear('fecha_recoleccion', $year);
+        if ($id_estado) $recoleccionQuery->where('id_estado', $id_estado);
         if ($search) {
             $searchLower = strtolower($search);
             $recoleccionQuery->where(function ($q) use ($search, $searchLower) {
@@ -655,8 +658,10 @@ class AdminController extends Controller
             ->get();
 
         $cosechas = \App\Models\Cosecha::where('id_empresa', $id_empresa)
+            ->where('id_estado', '!=', 14) // Excluir finalizadas
             ->with(['semilla', 'terreno'])
             ->get();
+
 
         $tiposRiego = \App\Models\TipoRiego::all();
 
@@ -673,11 +678,13 @@ class AdminController extends Controller
         $month = $request->get('month');
         $year = $request->get('year');
         $search = $request->get('search');
+        $id_estado = $request->get('id_estado');
 
         // Helper to apply filters
-        $applyFilters = function ($query, $dateField, $searchField, $typeLabel, $hasCosecha = true) use ($month, $year, $search) {
+        $applyFilters = function ($query, $dateField, $searchField, $typeLabel, $hasCosecha = true) use ($month, $year, $search, $id_estado) {
             if ($month) $query->whereMonth($dateField, $month);
             if ($year) $query->whereYear($dateField, $year);
+            if ($id_estado) $query->where('id_estado', $id_estado);
             if ($search) {
                 $searchLower = strtolower($search);
                 $query->where(function ($q) use ($search, $typeLabel, $searchLower, $hasCosecha, $searchField) {
@@ -727,6 +734,7 @@ class AdminController extends Controller
 
         if ($month) $recoleccionesQuery->whereMonth('fecha_recoleccion', $month);
         if ($year) $recoleccionesQuery->whereYear('fecha_recoleccion', $year);
+        if ($id_estado) $recoleccionesQuery->where('id_estado', $id_estado);
         if ($search) {
             $searchLower = strtolower($search);
             $recoleccionesQuery->where(function ($q) use ($search, $searchLower) {
@@ -744,6 +752,7 @@ class AdminController extends Controller
             });
         }
         $recolecciones = $recoleccionesQuery->get();
+
 
         $allTasks = collect();
 
