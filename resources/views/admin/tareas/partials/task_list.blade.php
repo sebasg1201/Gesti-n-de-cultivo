@@ -40,6 +40,12 @@ $shadowColor = 'shadow-purple-100';
         @php
         // Determine task type and colors
         $itemType = $task->tipo_referencia ?? $type;
+        $labelText = match($itemType) {
+            'riego' => 'Riego',
+            'insumo' => 'Insumo',
+            'recoleccion' => 'Cosecha',
+            default => 'General'
+        };
         $borderColor = 'emerald-500';
         $bgLight = 'emerald-50';
         $textColor = 'emerald-700';
@@ -47,10 +53,10 @@ $shadowColor = 'shadow-purple-100';
         $accentColor = 'emerald-600';
         $barColor = 'bg-emerald-500';
         $iconSvg = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
         </svg>';
         $bgIconSvg = '
-        <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />';
+        <path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />';
 
         if($itemType === 'riego') {
         $borderColor = 'blue-500'; $bgLight = 'blue-50'; $textColor = 'blue-700'; $shadowColor = 'shadow-blue-200/40'; $accentColor = 'blue-600'; $barColor = 'bg-blue-600';
@@ -150,6 +156,12 @@ $shadowColor = 'shadow-purple-100';
                 </div>
 
                 <div class="flex flex-wrap items-center gap-2">
+                    {{-- Task Type Badge --}}
+                    <div class="flex items-center gap-1.5 px-3 py-1.5 bg-gray-50 dark:bg-slate-900 rounded-xl text-gray-500 dark:text-emerald-500/50 text-[11px] font-black border border-gray-100 dark:border-emerald-900/20 uppercase tracking-widest group-hover:bg-white dark:group-hover:bg-slate-700 transition-colors">
+                        <i class="fas fa-tag mr-1 text-[10px] opacity-70"></i>
+                        {{ $labelText }}
+                    </div>
+
                     {{-- Terrain / Location Badge --}}
                     <div class="flex items-center gap-1.5 px-3 py-1.5 bg-gray-50 dark:bg-slate-900 rounded-xl text-gray-600 dark:text-emerald-500/70 text-[11px] font-bold border border-gray-100 dark:border-emerald-900/20 group-hover:bg-white dark:group-hover:bg-slate-700 transition-colors">
                         @if($itemType === 'general')
