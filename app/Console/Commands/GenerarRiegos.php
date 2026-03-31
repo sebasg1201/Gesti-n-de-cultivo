@@ -29,9 +29,9 @@ class GenerarRiegos extends Command
             DB::table('riego')->where('id_riego', $riego->id_riego)->update(['id_estado' => 16]);
             $cosecha = Cosecha::find($riego->id_cosecha);
             if ($cosecha && $cosecha->fecha_estimada) {
-                $nuevaFecha = Carbon::parse($cosecha->fecha_estimada)->addDays(2);
+                $nuevaFecha = Carbon::parse($cosecha->fecha_estimada)->addDay();
                 DB::table('cosecha')->where('id_cosecha', $cosecha->id_cosecha)->update(['fecha_estimada' => $nuevaFecha->format('Y-m-d')]);
-                Log::info("Riego #{$riego->id_riego} marcado como Perdida. Cosecha #{$cosecha->id_cosecha} extendida 2 días.");
+                Log::info("Riego #{$riego->id_riego} marcado como Perdida. Cosecha #{$cosecha->id_cosecha} extendida 1 día.");
             }
         }
 
@@ -166,7 +166,7 @@ class GenerarRiegos extends Command
         ]);
 
         if ($id_estado == 16 && $cosecha->fecha_estimada) {
-            $nuevaFecha = Carbon::parse($cosecha->fecha_estimada)->addDays(2);
+            $nuevaFecha = Carbon::parse($cosecha->fecha_estimada)->addDay();
             $cosecha->update(['fecha_estimada' => $nuevaFecha->format('Y-m-d')]);
         }
 

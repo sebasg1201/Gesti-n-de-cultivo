@@ -457,13 +457,19 @@ class AdminController extends Controller
         }
 
         if ($cosecha) {
-            // 1. Si la tarea se perdió (16) u ocultó (18), se suma 1 día al ciclo base
-            if (in_array($nuevoEstado, [16, 18])) {
+            // 1. Reversión de penalización: si la tarea pasa de Perdida (16/18) a Retrasó (19), restamos el día añadido
+            if ($nuevoEstado == 19 && in_array($estadoActual, [16, 18])) {
+                $fechaEstimada = \Carbon\Carbon::parse($cosecha->fecha_estimada)->subDay();
+                $cosecha->update(['fecha_estimada' => $fechaEstimada->format('Y-m-d')]);
+            }
+            // 2. Si la tarea se perdió (16) u ocultó (18) desde un estado pendiente/activo, se suma 1 día
+            elseif (in_array($nuevoEstado, [16, 18]) && !in_array($estadoActual, [16, 18])) {
                 $fechaEstimada = \Carbon\Carbon::parse($cosecha->fecha_estimada)->addDay();
                 $cosecha->update(['fecha_estimada' => $fechaEstimada->format('Y-m-d')]);
             }
-            // 2. Si es un insumo y se realizó (15), aplicamos su impacto específico
-            elseif ($tipo === 'insumo' && $nuevoEstado == 15) {
+            
+            // 3. Si es un insumo y se realizó (15 o 19), aplicamos su impacto específico
+            if ($tipo === 'insumo' && in_array($nuevoEstado, [15, 19])) {
                 $impacto = (int) ($tarea->impacto_dias ?? 0);
                 if ($impacto != 0) {
                     $fechaEstimada = \Carbon\Carbon::parse($cosecha->fecha_estimada)->addDays($impacto);
