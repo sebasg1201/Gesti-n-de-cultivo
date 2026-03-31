@@ -239,17 +239,17 @@
                         </p>
                     </div>
                     <div class="flex items-center gap-4">
-                        @if($porcentaje >= 75)
-                            <div class="flex flex-col md:flex-row gap-3">
-                                <a href="{{ route('admin.cultivos.create', ['id_cosecha' => $cosecha->id_cosecha]) }}" 
-                                   class="inline-flex items-center gap-2 px-6 py-2 bg-emerald-600 text-white font-black rounded-xl shadow-lg shadow-emerald-200 hover:bg-emerald-700 hover:-translate-y-0.5 transition-all text-sm uppercase tracking-wider">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                                    </svg>
-                                    Cosechar Ahora
-                                </a>
+                        @if($cosecha->id_estado != 14)
+                            @if($porcentaje >= 1)
+                                <div class="flex flex-col md:flex-row gap-3">
+                                    <a href="{{ route('admin.cultivos.create', ['id_cosecha' => $cosecha->id_cosecha]) }}" 
+                                       class="inline-flex items-center gap-2 px-6 py-2 bg-emerald-600 text-white font-black rounded-xl shadow-lg shadow-emerald-200 hover:bg-emerald-700 hover:-translate-y-0.5 transition-all text-sm uppercase tracking-wider">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                        </svg>
+                                        Cosechar Ahora
+                                    </a>
 
-                                @if ($cosecha->id_estado != 14)
                                     <form action="{{ route('admin.cultivos.finalize', $cosecha->id_cosecha) }}" method="POST" onsubmit="return confirm('¿Estás seguro de finalizar esta cosecha? Esto liberará el terreno para una nueva siembra.')">
                                         @csrf
                                         <button type="submit" 
@@ -260,20 +260,33 @@
                                             Finalizar Cosecha
                                         </button>
                                     </form>
-                                @endif
-                            </div>
+                                </div>
+                            @else
+                                <div class="px-4 py-2 bg-slate-100 rounded-xl text-slate-400 text-xs font-bold uppercase tracking-widest flex items-center gap-2">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                    </svg>
+                                    Opciones bloqueadas
+                                </div>
+                            @endif
                         @else
-                            <div class="px-4 py-2 bg-slate-100 rounded-xl text-slate-400 text-xs font-bold uppercase tracking-widest flex items-center gap-2">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                                </svg>
-                                Opciones bloqueadas hasta el 75%
+                            <div class="flex items-center gap-3">
+                                <span class="inline-flex items-center gap-2 px-6 py-2 bg-emerald-50 text-emerald-700 font-black rounded-xl text-sm uppercase tracking-wider border border-emerald-100 italic">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                    Ciclo Completado
+                                </span>
+                                <a href="{{ route('admin.cosechas.resumen', $cosecha->id_cosecha) }}" 
+                                   class="inline-flex items-center gap-2 px-6 py-2 bg-emerald-600 text-white font-black rounded-xl shadow-lg shadow-emerald-200 hover:bg-emerald-700 hover:-translate-y-0.5 transition-all text-sm uppercase tracking-wider">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2a2 2 0 00-2-2H5a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                                    Ver Resultados
+                                </a>
                             </div>
                         @endif
                         <div class="text-3xl font-black text-slate-800">
                             {{ number_format($porcentaje, 0) }}%
                         </div>
                     </div>
+
                 </div>
 
                 <div class="relative pt-2">
@@ -391,32 +404,71 @@
 
             <!-- Línea de Tiempo del Cultivo (Historial) -->
             <div class="bg-white rounded-[2rem] p-8 shadow-sm border border-emerald-50 relative overflow-hidden">
-                <div class="flex items-center justify-between mb-8">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-6 mb-8">
                     <div>
                         <h3 class="text-xl font-black text-slate-800">Historial de Tratamiento</h3>
                         <p class="text-sm font-bold mt-1 text-slate-500">Registro de riegos, insumos y mantenimiento</p>
                     </div>
-                    <div class="flex items-center gap-3">
-                        <a href="{{ route('admin.cosechas.export_history', $cosecha->id_cosecha) }}" class="flex items-center gap-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                            Excel
-                        </a>
-                        <div class="w-12 h-12 rounded-full bg-slate-50 flex items-center justify-center text-slate-400">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
+                    
+                    <div class="flex flex-wrap items-center gap-3">
+                        <!-- Filtros de Estado -->
+                        <div class="flex bg-slate-100 p-1 rounded-xl shadow-inner">
+                            <a href="{{ request()->fullUrlWithQuery(['status' => null, 'page' => null]) }}" 
+                               class="px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all {{ !request('status') ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-500 hover:text-slate-700' }}">
+                                Todos
+                            </a>
+                            <a href="{{ request()->fullUrlWithQuery(['status' => 'Completado', 'page' => null]) }}" 
+                               class="px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all {{ request('status') == 'Completado' ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-500 hover:text-slate-700' }}">
+                                Hechas
+                            </a>
+                            <a href="{{ request()->fullUrlWithQuery(['status' => 'Perdida', 'page' => null]) }}" 
+                               class="px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all {{ request('status') == 'Perdida' ? 'bg-white text-rose-600 shadow-sm' : 'text-slate-500 hover:text-slate-700' }}">
+                                Perdidas
+                            </a>
+                            <a href="{{ request()->fullUrlWithQuery(['status' => 'Pendiente', 'page' => null]) }}" 
+                               class="px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all {{ request('status') == 'Pendiente' ? 'bg-white text-amber-600 shadow-sm' : 'text-slate-500 hover:text-slate-700' }}">
+                                Pendientes
+                            </a>
                         </div>
+
+                        <div class="h-8 w-px bg-slate-200 hidden md:block mx-1"></div>
+
+                        @if($cosecha->id_estado != 14)
+                            <div class="flex items-center gap-2">
+                                <button onclick="openModal('modalRiego')" class="inline-flex items-center gap-2 px-4 py-2.5 bg-cyan-50 text-cyan-700 font-bold rounded-xl text-[10px] uppercase tracking-widest border border-cyan-100 hover:bg-cyan-100 transition-all">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                    Riego
+                                </button>
+                                <button onclick="openModal('modalInsumo')" class="inline-flex items-center gap-2 px-4 py-2.5 bg-purple-50 text-purple-700 font-bold rounded-xl text-[10px] uppercase tracking-widest border border-purple-100 hover:bg-purple-100 transition-all">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                    Insumo
+                                </button>
+                            </div>
+                            <div class="h-8 w-px bg-slate-200 hidden md:block mx-1"></div>
+                        @endif
+
+                        <a href="{{ route('admin.cosechas.export_history', $cosecha->id_cosecha) }}" class="flex items-center gap-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all border border-emerald-100">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                            Exportar
+                        </a>
+
                     </div>
                 </div>
 
                 @if($historial->isEmpty())
-                    <div class="text-center py-8">
-                        <p class="text-slate-500 font-medium">No hay registros de actividades para este cultivo.</p>
+                    <div class="text-center py-16 bg-slate-50/50 rounded-[2rem] border-2 border-dashed border-slate-200">
+                        <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center text-slate-300 mx-auto mb-4 shadow-sm">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0a2 2 0 01-2 2H6a2 2 0 01-2-2m16 0l-8 8-8-8"/></svg>
+                        </div>
+                        <p class="text-slate-500 font-bold">No se encontraron actividades con los filtros seleccionados.</p>
+                        @if(request('status'))
+                            <a href="{{ request()->fullUrlWithQuery(['status' => null]) }}" class="text-emerald-600 text-xs font-black uppercase mt-2 inline-block">Limpiar filtros</a>
+                        @endif
                     </div>
                 @else
-                    <div class="space-y-6 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-slate-200 before:to-transparent">
+                    <div class="space-y-6 relative mb-8 before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-slate-200 before:to-transparent">
                         @foreach($historial as $item)
-                        <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                        <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active scroll-mt-24" id="item-{{ $loop->index }}">
                             
                             <!-- Icon -->
                             <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10
@@ -478,7 +530,18 @@
                         </div>
                         @endforeach
                     </div>
+
+                    <!-- Paginación Custom -->
+                    <div class="flex items-center justify-between border-t border-slate-100 pt-6">
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                            Mostrando {{ $historial->firstItem() ?? 0 }}-{{ $historial->lastItem() ?? 0 }} de {{ $historial->total() }} registros
+                        </p>
+                        <div class="flex gap-2">
+                            {{ $historial->onEachSide(1)->links('vendor.pagination.simple-tailwind') }}
+                        </div>
+                    </div>
                 @endif
+            </div>
             </div>
 
         </div>

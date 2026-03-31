@@ -43,6 +43,7 @@ class Cosecha extends Model
     }
 
     public function getPorcentajeCrecimientoAttribute() {
+        if ($this->id_estado == 14) return 100;
         if (!$this->fecha_estimada) return 0;
         
         $inicio = \Carbon\Carbon::parse($this->fecha_siembra);
@@ -82,6 +83,7 @@ class Cosecha extends Model
     }
 
     public function getFaseActualAttribute() {
+        if ($this->id_estado == 14) return 'Finalizado';
         $porcentaje = $this->porcentaje_crecimiento;
         if ($porcentaje < 20) return 'Siembra';
         if ($porcentaje < 50) return 'Vegetativo';

@@ -131,7 +131,23 @@
                     class="w-full bg-emerald-50/50 dark:bg-emerald-900/20 border-2 border-transparent focus:border-emerald-500/30 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 dark:text-emerald-50 transition-all outline-none" placeholder="YYYY">
             </div>
 
-            <div class="flex-[2] w-full">
+            <div class="w-full lg:w-56">
+                <label class="block text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-[0.2em] mb-3 ml-1">Estado</label>
+                <div class="relative group">
+                    <select name="id_estado" class="w-full bg-emerald-50/50 dark:bg-emerald-900/20 border-2 border-transparent focus:border-emerald-500/30 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 dark:text-emerald-50 appearance-none transition-all outline-none cursor-pointer">
+                        <option value="">Todos los estados</option>
+                        <option value="1" {{ request('id_estado') == '1' ? 'selected' : '' }}>Pendiente</option>
+                        <option value="17" {{ request('id_estado') == '17' ? 'selected' : '' }}>En Proceso</option>
+                        <option value="15" {{ request('id_estado') == '15' ? 'selected' : '' }}>Realizado</option>
+                        <option value="16" {{ request('id_estado') == '16' ? 'selected' : '' }}>Perdida</option>
+                    </select>
+                    <div class="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-emerald-500">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex-[1] w-full">
                 <label class="block text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-[0.2em] mb-3 ml-1">Búsqueda rápida</label>
                 <div class="relative group">
                     <input type="text" name="search" value="{{ request('search') }}" 

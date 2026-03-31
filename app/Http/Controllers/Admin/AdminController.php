@@ -513,11 +513,13 @@ class AdminController extends Controller
         $month = $request->get('month');
         $year = $request->get('year');
         $search = $request->get('search');
+        $id_estado = $request->get('id_estado');
 
         // Helper to apply filters
-        $applyFilters = function ($query, $dateField, $searchField, $typeLabel, $hasCosecha = true) use ($month, $year, $search) {
+        $applyFilters = function ($query, $dateField, $searchField, $typeLabel, $hasCosecha = true) use ($month, $year, $search, $id_estado) {
             if ($month) $query->whereMonth($dateField, $month);
             if ($year) $query->whereYear($dateField, $year);
+            if ($id_estado) $query->where('id_estado', $id_estado);
             if ($search) {
                 $searchLower = strtolower($search);
                 $query->where(function ($q) use ($search, $typeLabel, $searchLower, $hasCosecha, $searchField) {
@@ -564,6 +566,7 @@ class AdminController extends Controller
         // Recoleccion filter logic (different date field and relation)
         if ($month) $recoleccionQuery->whereMonth('fecha_recoleccion', $month);
         if ($year) $recoleccionQuery->whereYear('fecha_recoleccion', $year);
+        if ($id_estado) $recoleccionQuery->where('id_estado', $id_estado);
         if ($search) {
             $searchLower = strtolower($search);
             $recoleccionQuery->where(function ($q) use ($search, $searchLower) {
@@ -611,22 +614,6 @@ class AdminController extends Controller
             $q->where('id_empresa', $id_empresa);
         })->with(['usuario', 'terreno']);
         
-        if ($month) $generalQuery->whereMonth('fecha_programada', $month);
-        if ($year) $generalQuery->whereYear('fecha_programada', $year);
-        if ($search) {
-            $searchLower = strtolower($search);
-            $generalQuery->where(function ($q) use ($search, $searchLower) {
-                $q->where('descripcion', 'LIKE', "%{$search}%")
-                  ->orWhereHas('usuario', function($qu) use ($search) {
-                      $qu->where('nombre', 'LIKE', "%{$search}%");
-                  });
-                
-                if (str_contains('general', $searchLower) || str_contains('labor', $searchLower) || str_contains('programada', $searchLower)) {
-                    $q->orWhereRaw('1=1');
-                }
-            });
-        }
-
         $general = $applyFilters($generalQuery, 'fecha_programada', 'descripcion', 'General', false)->get()
             ->map(function ($t) {
                 $t->tipo_referencia = 'general';
@@ -649,14 +636,17 @@ class AdminController extends Controller
             ->get();
 
         $cosechas = \App\Models\Cosecha::where('id_empresa', $id_empresa)
+            ->where('id_estado', '!=', 14) // Excluir finalizadas
             ->with(['semilla', 'terreno'])
             ->get();
+
 
         $tiposRiego = \App\Models\TipoRiego::all();
 
         $catalogoInsumos = \App\Models\Insumo::where('id_empresa', $id_empresa)->get();
 
         return view('admin.tareas.index', compact('riego', 'insumoCosecha', 'recoleccion', 'general', 'trabajadores', 'cosechas', 'terrenosLibres', 'tiposRiego', 'catalogoInsumos'));
+
     }
 
     public function exportTareas(Request $request)
@@ -667,11 +657,13 @@ class AdminController extends Controller
         $month = $request->get('month');
         $year = $request->get('year');
         $search = $request->get('search');
+        $id_estado = $request->get('id_estado');
 
         // Helper to apply filters
-        $applyFilters = function ($query, $dateField, $searchField, $typeLabel, $hasCosecha = true) use ($month, $year, $search) {
+        $applyFilters = function ($query, $dateField, $searchField, $typeLabel, $hasCosecha = true) use ($month, $year, $search, $id_estado) {
             if ($month) $query->whereMonth($dateField, $month);
             if ($year) $query->whereYear($dateField, $year);
+            if ($id_estado) $query->where('id_estado', $id_estado);
             if ($search) {
                 $searchLower = strtolower($search);
                 $query->where(function ($q) use ($search, $typeLabel, $searchLower, $hasCosecha, $searchField) {
@@ -721,6 +713,7 @@ class AdminController extends Controller
         
         if ($month) $recoleccionesQuery->whereMonth('fecha_recoleccion', $month);
         if ($year) $recoleccionesQuery->whereYear('fecha_recoleccion', $year);
+        if ($id_estado) $recoleccionesQuery->where('id_estado', $id_estado);
         if ($search) {
             $searchLower = strtolower($search);
             $recoleccionesQuery->where(function ($q) use ($search, $searchLower) {
@@ -738,6 +731,7 @@ class AdminController extends Controller
             });
         }
         $recolecciones = $recoleccionesQuery->get();
+
 
         $allTasks = collect();
 

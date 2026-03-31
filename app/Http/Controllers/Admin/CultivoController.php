@@ -11,6 +11,7 @@ use App\Models\Usuario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class CultivoController extends Controller
 {
@@ -195,13 +196,72 @@ class CultivoController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('admin.cosechas.index')->with('success', 'Cosecha finalizada y terreno liberado correctamente (Estado: Disponible). El registro histórico se mantiene en Recolección.');
+            return redirect()->route('admin.cosechas.resumen', $id)->with('success', 'Cosecha finalizada y terreno liberado correctamente. Aquí tienes un resumen de los resultados alcanzados.');
 
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Error al finalizar la cosecha: ' . $e->getMessage());
         }
     }
+
+    public function finalizationSummary($id)
+    {
+        $id_empresa = $this->getEmpresaId();
+        $cosecha = Cosecha::where('id_empresa', $id_empresa)
+            ->with(['semilla', 'terreno', 'cultivos.detalles.producto', 'cultivos.trabajador'])
+            ->findOrFail($id);
+
+        $stats = $this->calculateCosechaStats($cosecha);
+
+        return view('admin.cosechas.summary', compact('cosecha', 'stats'));
+    }
+
+    public function downloadFinalizationPDF($id)
+    {
+        $id_empresa = $this->getEmpresaId();
+        $cosecha = Cosecha::where('id_empresa', $id_empresa)
+            ->with(['semilla', 'terreno', 'cultivos.detalles.producto', 'cultivos.trabajador'])
+            ->findOrFail($id);
+
+        $stats = $this->calculateCosechaStats($cosecha);
+
+        $pdf = Pdf::loadView('admin.cosechas.pdf_summary', compact('cosecha', 'stats'));
+        
+        return $pdf->download("resumen_cosecha_{$id}.pdf");
+    }
+
+    private function calculateCosechaStats($cosecha)
+    {
+        $totalRecolectado = 0;
+        foreach ($cosecha->cultivos as $cultivo) {
+            $totalRecolectado += $cultivo->detalles->sum('cantidad');
+        }
+
+        $estimado = $cosecha->produccion_estimada > 0 ? $cosecha->produccion_estimada : 1;
+        $cumplimiento = ($totalRecolectado / $estimado) * 100;
+
+        // Tareas stats
+        $riegos = \App\Models\Riego::where('id_cosecha', $cosecha->id_cosecha)->get();
+        $insumos = \App\Models\InsumoCosecha::where('id_cosecha', $cosecha->id_cosecha)->get();
+        
+        $totalTareas = $riegos->count() + $insumos->count() + $cosecha->cultivos->count();
+        $tareasCompletadas = $riegos->where('id_estado', 15)->count() + 
+                            $insumos->where('id_estado', 15)->count() + 
+                            $cosecha->cultivos->where('id_estado', 15)->count();
+
+        $tasaExito = $totalTareas > 0 ? ($tareasCompletadas / $totalTareas) * 100 : 0;
+
+        return [
+            'total_recolectado' => $totalRecolectado,
+            'estimado' => $cosecha->produccion_estimada,
+            'cumplimiento' => $cumplimiento,
+            'total_tareas' => $totalTareas,
+            'tareas_completadas' => $tareasCompletadas,
+            'tasa_exito' => $tasaExito,
+            'dias_ciclo' => \Carbon\Carbon::parse($cosecha->fecha_siembra)->diffInDays(now())
+        ];
+    }
+
 
     public function show($id)
     {
