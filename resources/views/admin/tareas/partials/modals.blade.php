@@ -17,7 +17,7 @@
                         <label class="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Lote de Cosecha</label>
                         <select name="id_cosecha" required class="w-full bg-gray-50 border border-gray-100 rounded-2xl py-4 px-5 focus:outline-none focus:border-blue-500 transition-all font-bold text-gray-700">
                             @foreach($cosechas as $c)
-                                <option value="{{ $c->id_cosecha }}">Lote #{{ $c->id_cosecha }} - {{ $c->semilla?->nombre_semilla ?? 'N/A' }} ({{ $c->terreno?->nombre ?? 'N/A' }})</option>
+                                <option value="{{ $c->id_cosecha }}">{{ $c->terreno?->nombre ?? 'Lote #'.$c->id_cosecha }} ({{ $c->semilla?->nombre_semilla ?? 'N/A' }})</option>
                             @endforeach
                         </select>
                     </div>
@@ -78,7 +78,7 @@
                         <label class="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Lote de Cosecha</label>
                         <select name="id_cosecha" required class="w-full bg-gray-50 border border-gray-100 rounded-2xl py-4 px-5 focus:outline-none focus:border-purple-500 transition-all font-bold text-gray-700">
                             @foreach($cosechas as $c)
-                                <option value="{{ $c->id_cosecha }}">Lote #{{ $c->id_cosecha }} - {{ $c->semilla?->nombre_semilla ?? 'N/A' }}</option>
+                                <option value="{{ $c->id_cosecha }}">{{ $c->terreno?->nombre ?? 'Lote #'.$c->id_cosecha }} ({{ $c->semilla?->nombre_semilla ?? 'N/A' }})</option>
                             @endforeach
                         </select>
                     </div>

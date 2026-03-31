@@ -344,7 +344,7 @@ class CosechaController extends Controller
         elseif ($porcentaje >= 90)
             $faseActual = 'Cosecha';
 
-        $riegos = \App\Models\Riego::where('id_cosecha', $id)->get();
+        $riegos = \App\Models\Riego::with('registroTrabajo')->where('id_cosecha', $id)->get();
 
         // Calcular cumplimiento de hidratación (Barra Azul - Estado Tarea Actual)
         $ultimoRiego = \App\Models\Riego::where('id_cosecha', $id)
@@ -368,7 +368,7 @@ class CosechaController extends Controller
         $totalRiegosCiclo = $riegos->count();
         $riegosCompletados = $riegos->where('id_estado', 15)->count();
 
-        $insumos = \App\Models\InsumoCosecha::with('insumo')->where('id_cosecha', $id)->get();
+        $insumos = \App\Models\InsumoCosecha::with(['insumo', 'registroTrabajo'])->where('id_cosecha', $id)->get();
 
         $historial = collect();
 
@@ -377,6 +377,7 @@ class CosechaController extends Controller
             $r->fecha_historial = $r->fecha_programada;
             $r->titulo_historial = 'Riego';
             $r->descripcion_historial = $r->observaciones;
+            $r->observacion_trabajador = $r->registroTrabajo->observacion ?? null;
 
             if ($r->id_estado == 15) {
                 $r->estado_historial = 'Completado';
@@ -396,6 +397,7 @@ class CosechaController extends Controller
             $i->titulo_historial = 'Aplicación de Insumo';
             $cantidadLimpia = (float) $i->cantidad_usada;
             $i->descripcion_historial = ($i->insumo->Nombre ?? 'Insumo') . ' (Cant: ' . $cantidadLimpia . ')';
+            $i->observacion_trabajador = $i->registroTrabajo->observacion ?? null;
             $i->estado_historial = in_array($i->id_estado, [15]) ? 'Completado' : ($i->id_estado == 17 ? 'En Proceso' : (in_array($i->id_estado, [16, 18]) ? 'Perdida' : 'Pendiente'));
             $historial->push($i);
         }
@@ -406,6 +408,7 @@ class CosechaController extends Controller
             $c->fecha_historial = $c->fecha_recoleccion;
             $c->titulo_historial = 'RECOLECCIÓN';
             $c->descripcion_historial = $c->descripcion_recoleccion;
+            $c->observacion_trabajador = $c->registroTrabajo->observacion ?? null;
             
             if ($c->id_estado == 15) {
                 $c->estado_historial = 'Completado';
@@ -422,5 +425,71 @@ class CosechaController extends Controller
         $historial = $historial->sortByDesc('fecha_historial');
 
         return view('admin.cosechas.show', compact('cosecha', 'diasTotales', 'diasTranscurridos', 'porcentaje', 'diasRestantes', 'faseActual', 'porcentajeHidratacion', 'riegosCompletados', 'totalRiegosCiclo', 'historial'));
+    }
+
+    public function exportHistory($id)
+    {
+        $id_empresa = $this->getEmpresaId();
+        $cosecha = Cosecha::where('id_empresa', $id_empresa)->with(['terreno', 'semilla', 'cultivos.trabajador'])->findOrFail($id);
+
+        $riegos = \App\Models\Riego::with('registroTrabajo')->where('id_cosecha', $id)->get();
+        $insumos = \App\Models\InsumoCosecha::with(['insumo', 'registroTrabajo'])->where('id_cosecha', $id)->get();
+
+        $rows = collect();
+
+        foreach ($riegos as $r) {
+            $rows->push([
+                'Fecha' => $r->fecha_programada,
+                'Actividad' => 'Riego',
+                'Detalle' => $r->observaciones,
+                'Estado' => in_array($r->id_estado, [15]) ? 'Completado' : 'Otro',
+                'Obs. Trabajador' => $r->registroTrabajo->observacion ?? ''
+            ]);
+        }
+
+        foreach ($insumos as $i) {
+            $rows->push([
+                'Fecha' => $i->fecha_programada,
+                'Actividad' => 'Insumo',
+                'Detalle' => ($i->insumo->Nombre ?? 'Insumo') . ' (Cant: ' . (float)$i->cantidad_usada . ')',
+                'Estado' => in_array($i->id_estado, [15]) ? 'Completado' : 'Otro',
+                'Obs. Trabajador' => $i->registroTrabajo->observacion ?? ''
+            ]);
+        }
+
+        foreach ($cosecha->cultivos as $c) {
+            $rows->push([
+                'Fecha' => $c->fecha_recoleccion,
+                'Actividad' => 'Recolección',
+                'Detalle' => $c->descripcion_recoleccion,
+                'Estado' => in_array($c->id_estado, [15]) ? 'Completado' : 'Otro',
+                'Obs. Trabajador' => $c->registroTrabajo->observacion ?? ''
+            ]);
+        }
+
+        $rows = $rows->sortByDesc('Fecha');
+
+        $filename = "historial_cosecha_" . $id . "_" . date('Y-m-d') . ".csv";
+        $headers = [
+            "Content-type"        => "text/csv; charset=UTF-8",
+            "Content-Disposition" => "attachment; filename=$filename",
+            "Pragma"              => "no-cache",
+            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"             => "0"
+        ];
+
+        $columns = ['Fecha', 'Actividad', 'Detalle', 'Estado', 'Observación Trabajador'];
+
+        $callback = function() use($rows, $columns) {
+            $file = fopen('php://output', 'w');
+            fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF)); // BOM
+            fputcsv($file, $columns, ';');
+            foreach ($rows as $row) {
+                fputcsv($file, array_values($row), ';');
+            }
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 }

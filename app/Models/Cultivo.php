@@ -35,4 +35,9 @@ class Cultivo extends Model
     {
         return $this->hasMany(DetalleProductoCultivo::class, 'id_cultivo', 'id_cultivo');
     }
+
+    public function registroTrabajo()
+    {
+        return $this->hasOne(RegistroTrabajo::class, 'id_cultivo', 'id_cultivo');
+    }
 }

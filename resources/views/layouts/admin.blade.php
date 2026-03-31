@@ -10,7 +10,12 @@
             document.documentElement.classList.remove('dark');
         }
     </script>
-    <title>AgriManager - Admin</title>
+    @php
+        $isWorker = in_array(auth()->guard('usuario')->user()->id_tipo_usuario, [2, 3]);
+        $inicioRoute = $isWorker ? 'trabajador.dashboard' : 'admin.dashboard';
+    @endphp
+    <link rel="icon" type="image/jpeg" href="{{ asset('img/agrotech/logo.jpeg') }}">
+    <title>AgroTech</title>
     @inject('notificationService', 'App\Services\NotificationService')
     @php
         $adminNotifications = $notificationService->getNotifications();
@@ -118,9 +123,6 @@
 
         <!-- SIDEBAR -->
         @php
-            $isWorker = in_array(auth()->guard('usuario')->user()->id_tipo_usuario, [2, 3]);
-            $inicioRoute = $isWorker ? 'trabajador.dashboard' : 'admin.dashboard';
-            
             // Clases dinámicas para sincronizar colores
             $sidebarClass = $isWorker 
                 ? 'bg-gradient-to-b from-gray-900 via-emerald-950 to-gray-900 text-emerald-100 shadow-[20px_0_50px_rgba(0,0,0,0.3)]' 
@@ -139,10 +141,12 @@
 
             <!-- LOGO -->
             <div class="p-6 border-b border-emerald-700/40 shrink-0 relative">
-                <h1 class="text-2xl font-extrabold tracking-wide">
-                    <span class="text-white">Agri</span><span class="text-emerald-300">Manager</span>
+                <h1 class="text-2xl font-black text-white tracking-widest leading-none">
+                    Agri<span class="text-emerald-300">Manager</span>
                 </h1>
-                <p class="text-[10px] text-emerald-300 mt-1 opacity-80 uppercase tracking-widest">{{ $isWorker ? 'Panel del Trabajador' : 'Sistema Administrativo' }}</p>
+                <p class="text-[10px] text-emerald-300 mt-1 opacity-80 uppercase tracking-[0.2em] font-black">
+                    {{ $isWorker ? 'Portal del Trabajador' : 'Gestión de Cultivo' }}
+                </p>
             </div>
 
             <!-- NAV -->
@@ -174,6 +178,7 @@
                     </div>
                     <span class="font-medium whitespace-nowrap">Inicio</span>
                 </a>
+
 
 
 
@@ -351,7 +356,7 @@
 
             <!-- FOOTER -->
             <div class="p-4 border-t border-emerald-700/40 text-xs text-emerald-300 opacity-70 shrink-0">
-                © {{ date('Y') }} AgriManager
+                © {{ date('Y') }} AgroTech
             </div>
         </aside>
 
@@ -384,13 +389,13 @@
                             </svg>
                         </button>
 
-                        <div>
-                            <h1 class="text-xl lg:text-3xl font-extrabold tracking-tight">
-                                {{ $isWorker ? 'Panel del Trabajador' : 'Panel de Administración' }}
-                            </h1>
-                            <p class="hidden sm:block text-emerald-100 text-xs lg:text-sm mt-1 opacity-90">
-                                {{ $isWorker ? 'Gestión de tus tareas asignadas' : 'Gestión del sistema' }}
-                            </p>
+                        <div class="flex items-center gap-3">
+                            <img src="{{ asset('img/agrotech/logo.jpeg') }}" class="w-10 h-10 object-contain rounded-xl shadow-sm" alt="AgroTech Logo">
+                            <div>
+                                <h1 class="text-xl lg:text-3xl font-extrabold tracking-tight leading-none text-white">
+                                    Agro<span class="text-emerald-300">Tech</span>
+                                </h1>
+                            </div>
                         </div>
 
                     </div>
@@ -548,7 +553,7 @@
 
                     <div class="mb-8">
                         <h3 class="text-xl lg:text-2xl font-bold text-emerald-800 dark:text-emerald-300">
-                            @yield('title', 'Admin Dashboard')
+                            @yield('title', 'AgriManager')
                         </h3>
                         <div class="w-16 h-1 bg-gradient-to-r from-emerald-400 to-green-500 rounded-full mt-2"></div>
                     </div>

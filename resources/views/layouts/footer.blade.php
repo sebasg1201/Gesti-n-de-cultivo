@@ -5,13 +5,7 @@
         <!-- BRAND -->
         <div>
             <div class="flex items-center gap-3 font-bold text-xl text-white">
-                <div class="w-10 h-10 rounded-xl bg-green-500 flex items-center justify-center">
-                    <svg class="w-5 h-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M12 20V10M12 10c-4 0-7-3-7-7 4 0 7 3 7 7zm0 0c4 0 7-3 7-7-4 0-7 3-7 7z" />
-                    </svg>
-                </div>
+                <img src="{{ asset('img/agrotech/logo.jpeg') }}" class="w-10 h-10 object-contain rounded-xl shadow-sm" alt="AgroTech Logo">
                 AgroTech
             </div>
 
