@@ -4,21 +4,21 @@
 <!-- Containers reverted to standard layout -->
 <div id="reports-container" class="space-y-10 p-2">
 
-    <div class="relative flex flex-col sm:flex-row sm:justify-between sm:items-end gap-6 pb-6 border-b border-gray-100">
+    <div class="relative flex flex-col sm:flex-row sm:justify-between sm:items-end gap-6 pb-6 border-b border-gray-100 dark:border-emerald-950/20">
         <div>
-            <span class="text-xs font-bold text-green-600 uppercase tracking-widest bg-green-50 px-3 py-1 rounded-full">Analytics Real-time</span>
-            <h1 class="text-4xl font-extrabold text-green-800 tracking-tight mt-2">
+            <span class="text-xs font-bold text-green-600 dark:text-emerald-400 uppercase tracking-widest bg-green-50 dark:bg-emerald-950/30 px-3 py-1 rounded-full">Analytics Real-time</span>
+            <h1 class="text-4xl font-extrabold text-green-800 dark:text-emerald-500 tracking-tight mt-2 transition-colors">
                 Panel De <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-green-500">Reportes .</span>
             </h1>
-            <p class="text-slate-500 font-medium mt-1">
+            <p class="text-slate-500 dark:text-slate-400 font-medium mt-1">
                 Monitoreo inteligente de licencias y estados empresariales.
             </p>
         </div>
 
         <div class="flex items-center gap-4">
             <div class="hidden md:flex flex-col items-end">
-                <span class="text-[10px] font-bold text-gray-400 uppercase">Fecha de corte</span>
-                <span class="text-sm font-semibold text-slate-700 italic">{{ now()->format('d M, Y') }}</span>
+                <span class="text-[10px] font-bold text-gray-400 dark:text-slate-500 uppercase">Fecha de corte</span>
+                <span class="text-sm font-semibold text-slate-700 dark:text-emerald-50 italic transition-colors">{{ now()->format('d M, Y') }}</span>
             </div>
 
             <button id="downloadPdfBtn"
@@ -41,8 +41,8 @@ hover:from-[#22c55e] hover:via-[#16a34a] hover:to-[#15803d] hover:-translate-y-0
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
 
-        <div class="group relative overflow-hidden bg-white border border-slate-100 rounded-3xl p-7 shadow-sm transition-all duration-300 hover:shadow-2xl hover:border-red-100">
-            <div class="absolute -right-4 -top-4 w-24 h-24 bg-red-50 rounded-full transition-transform group-hover:scale-150 duration-500"></div>
+        <div class="group relative overflow-hidden bg-white dark:bg-slate-900 border border-slate-100 dark:border-emerald-950/10 rounded-3xl p-7 shadow-sm dark:shadow-none transition-all duration-300 hover:shadow-2xl dark:hover:bg-slate-800/50 hover:border-red-100 dark:hover:border-red-900/20">
+            <div class="absolute -right-4 -top-4 w-24 h-24 bg-red-50 dark:bg-red-950/20 rounded-full transition-transform group-hover:scale-150 duration-500"></div>
 
             <div class="relative flex flex-col h-full">
                 <div class="flex justify-between items-start">
@@ -54,14 +54,14 @@ hover:from-[#22c55e] hover:via-[#16a34a] hover:to-[#15803d] hover:-translate-y-0
                 </div>
 
                 <div class="mt-8">
-                    <h3 class="text-5xl font-black text-slate-800 tracking-tighter">{{ $licenciasPorVencer ?? 0 }}</h3>
-                    <p class="text-slate-400 font-bold text-sm uppercase mt-1 tracking-wide">Licencias por vencer</p>
+                    <h3 class="text-5xl font-black text-slate-800 dark:text-emerald-50 tracking-tighter transition-colors">{{ $licenciasPorVencer ?? 0 }}</h3>
+                    <p class="text-slate-400 dark:text-slate-500 font-bold text-sm uppercase mt-1 tracking-wide transition-colors">Licencias por vencer</p>
                 </div>
             </div>
         </div>
 
-        <div class="group relative overflow-hidden bg-white border border-slate-100 rounded-3xl p-7 shadow-sm transition-all duration-300 hover:shadow-2xl hover:border-emerald-100">
-            <div class="absolute -right-4 -top-4 w-24 h-24 bg-emerald-50 rounded-full transition-transform group-hover:scale-150 duration-500"></div>
+        <div class="group relative overflow-hidden bg-white dark:bg-slate-900 border border-slate-100 dark:border-emerald-950/10 rounded-3xl p-7 shadow-sm dark:shadow-none transition-all duration-300 hover:shadow-2xl dark:hover:bg-slate-800/50 hover:border-emerald-100 dark:hover:border-emerald-900/20">
+            <div class="absolute -right-4 -top-4 w-24 h-24 bg-emerald-50 dark:bg-emerald-950/20 rounded-full transition-transform group-hover:scale-150 duration-500"></div>
 
             <div class="relative flex flex-col h-full">
                 <div class="flex justify-between items-start">
@@ -73,8 +73,8 @@ hover:from-[#22c55e] hover:via-[#16a34a] hover:to-[#15803d] hover:-translate-y-0
                 </div>
 
                 <div class="mt-8">
-                    <h3 class="text-5xl font-black text-slate-800 tracking-tighter">{{ $renovadasEsteMes ?? 0 }}</h3>
-                    <p class="text-slate-400 font-bold text-sm uppercase mt-1 tracking-wide">Renovadas este mes</p>
+                    <h3 class="text-5xl font-black text-slate-800 dark:text-emerald-50 tracking-tighter transition-colors">{{ $renovadasEsteMes ?? 0 }}</h3>
+                    <p class="text-slate-400 dark:text-slate-500 font-bold text-sm uppercase mt-1 tracking-wide transition-colors">Renovadas este mes</p>
                 </div>
             </div>
         </div>
@@ -102,45 +102,45 @@ hover:from-[#22c55e] hover:via-[#16a34a] hover:to-[#15803d] hover:-translate-y-0
     </div>
 
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div class="bg-white border border-slate-100 p-4 rounded-2xl flex items-center justify-between hover:border-indigo-200 transition-colors">
+        <div class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-emerald-950/10 p-4 rounded-2xl flex items-center justify-between hover:border-indigo-200 dark:hover:border-indigo-900/30 transition-colors">
             <div>
-                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Total Empresas</p>
-                <p class="text-xl font-bold text-slate-800">{{ $totalEmpresas ?? 0 }}</p>
+                <p class="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Total Empresas</p>
+                <p class="text-xl font-bold text-slate-800 dark:text-emerald-50">{{ $totalEmpresas ?? 0 }}</p>
             </div>
-            <div class="h-8 w-1 bg-slate-100 rounded-full"></div>
+            <div class="h-8 w-1 bg-slate-100 dark:bg-slate-800 rounded-full"></div>
         </div>
 
-        <div class="bg-white border border-slate-100 p-4 rounded-2xl flex items-center justify-between hover:border-emerald-200 transition-colors">
+        <div class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-emerald-950/10 p-4 rounded-2xl flex items-center justify-between hover:border-emerald-200 dark:hover:border-emerald-900/30 transition-colors">
             <div>
                 <p class="text-[10px] font-black text-emerald-500 uppercase tracking-widest">Activas</p>
-                <p class="text-xl font-bold text-slate-800">{{ $empresasActivas ?? 0 }}</p>
+                <p class="text-xl font-bold text-slate-800 dark:text-emerald-50">{{ $empresasActivas ?? 0 }}</p>
             </div>
             <div class="h-8 w-1 bg-emerald-500/20 rounded-full"></div>
         </div>
 
-        <div class="bg-white border border-slate-100 p-4 rounded-2xl flex items-center justify-between hover:border-amber-200 transition-colors">
+        <div class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-emerald-950/10 p-4 rounded-2xl flex items-center justify-between hover:border-amber-200 dark:hover:border-amber-900/30 transition-colors">
             <div>
                 <p class="text-[10px] font-black text-amber-500 uppercase tracking-widest">Pendientes</p>
-                <p class="text-xl font-bold text-slate-800">{{ $empresasNuevas ?? 0 }}</p>
+                <p class="text-xl font-bold text-slate-800 dark:text-emerald-50">{{ $empresasNuevas ?? 0 }}</p>
             </div>
             <div class="h-8 w-1 bg-amber-500/20 rounded-full"></div>
         </div>
 
-        <div class="bg-white border border-slate-100 p-4 rounded-2xl flex items-center justify-between hover:border-red-200 transition-colors">
+        <div class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-emerald-950/10 p-4 rounded-2xl flex items-center justify-between hover:border-red-200 dark:hover:border-red-900/30 transition-colors">
             <div>
                 <p class="text-[10px] font-black text-red-500 uppercase tracking-widest">Suspendidas</p>
-                <p class="text-xl font-bold text-slate-800">{{ $empresasSuspendidas ?? 0 }}</p>
+                <p class="text-xl font-bold text-slate-800 dark:text-emerald-50">{{ $empresasSuspendidas ?? 0 }}</p>
             </div>
             <div class="h-8 w-1 bg-red-500/20 rounded-full"></div>
         </div>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div class="bg-white border border-slate-100 p-8 rounded-[2rem] shadow-sm relative overflow-hidden">
+        <div class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-emerald-950/10 p-8 rounded-[2rem] shadow-sm relative overflow-hidden transition-colors">
             <div class="flex justify-between items-center mb-6">
                 <h3 class="text-xl font-bold tracking-tight">
 
-                    <span class="text-slate-800">
+                    <span class="text-slate-800 dark:text-emerald-50 transition-colors">
                         Tendencia
                     </span>
 
@@ -149,7 +149,7 @@ hover:from-[#22c55e] hover:via-[#16a34a] hover:to-[#15803d] hover:-translate-y-0
                     </span>
 
                 </h3>
-                <select class="text-xs font-bold border-none bg-slate-50 rounded-lg focus:ring-0">
+                <select class="text-xs font-bold border-none bg-slate-50 dark:bg-slate-950 text-slate-700 dark:text-emerald-400 rounded-lg focus:ring-0 transition-colors">
                     <option>Últimos 6 meses</option>
                 </select>
             </div>
@@ -158,11 +158,11 @@ hover:from-[#22c55e] hover:via-[#16a34a] hover:to-[#15803d] hover:-translate-y-0
             </div>
         </div>
 
-        <div class="bg-white border border-slate-100 p-8 rounded-[2rem] shadow-sm">
+        <div class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-emerald-950/10 p-8 rounded-[2rem] shadow-sm transition-colors">
             <div class="flex justify-between items-center mb-6">
                 <h3 class="text-xl font-bold tracking-tight">
 
-                    <span class="text-slate-800">
+                    <span class="text-slate-800 dark:text-emerald-50 transition-colors">
                         Distribución
                     </span>
 
@@ -195,13 +195,16 @@ hover:from-[#22c55e] hover:via-[#16a34a] hover:to-[#15803d] hover:-translate-y-0
         const statusDistribution = JSON.parse(document.getElementById('status-data')?.getAttribute('data-json') || '[]');
 
         // Configuración de colores Premium
+        const isDark = document.documentElement.classList.contains('dark');
         const Colors = {
             primary: '#2ea059ff', // Indigo
             success: '#10b981', // Emerald
             warning: '#f59e0b', // Amber
             danger: '#ef4444', // Red
-            textMain: '#1e293b',
-            textMuted: '#94a3b8'
+            textMain: isDark ? '#ecfdf5' : '#1e293b',
+            textMuted: isDark ? '#64748b' : '#94a3b8',
+            grid: isDark ? 'rgba(16, 185, 129, 0.05)' : 'rgba(241, 245, 249, 1)',
+            cardBg: isDark ? '#0f172a' : '#ffffff'
         };
 
         /* =========================================
@@ -291,7 +294,7 @@ hover:from-[#22c55e] hover:via-[#16a34a] hover:to-[#15803d] hover:-translate-y-0
                         y: {
                             beginAtZero: true,
                             grid: {
-                                color: 'rgba(241, 245, 249, 1)',
+                                color: Colors.grid,
                                 drawBorder: false
                             },
                             ticks: {
@@ -337,7 +340,7 @@ hover:from-[#22c55e] hover:via-[#16a34a] hover:to-[#15803d] hover:-translate-y-0
                         ],
                         hoverOffset: 20,
                         borderWidth: 8,
-                        borderColor: '#ffffff', // Espaciado entre segmentos
+                        borderColor: Colors.cardBg, // Espaciado entre segmentos
                         borderRadius: 10, // Bordes redondeados en los segmentos
                     }]
                 },

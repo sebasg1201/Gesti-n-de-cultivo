@@ -81,7 +81,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     @forelse($categorias as $cat)
                         <div class="group bg-white dark:bg-slate-800 rounded-[2.5rem] overflow-hidden shadow-sm border border-emerald-50 dark:border-emerald-900/20 hover:shadow-xl hover:shadow-emerald-100/50 dark:hover:shadow-none transition-all duration-500 hover:-translate-y-1 cursor-pointer flex flex-col" 
-                             onclick="window.location.href='{{ route('admin.cultivos.index', ['id_semilla' => $cat->id_semilla]) }}'">
+                             onclick="window.location.href='{{ route('admin.cultivos.index', ['id_semilla' => $cat->id_semilla]) }}';">
                             
                             <!-- Imagen de la Categoría -->
                             <div class="relative h-56 overflow-hidden">
@@ -190,7 +190,7 @@
                                                     <span class="text-slate-400 dark:text-emerald-600">{{ number_format($progreso, 0) }}%</span>
                                                 </div>
                                                 <div class="h-1.5 w-full bg-slate-100 dark:bg-slate-900 rounded-full overflow-hidden">
-                                                    <div class="h-full bg-emerald-500 rounded-full shadow-[0_0_10px_rgba(16,185,129,0.3)] transition-all duration-1000" style="width: {{ $progreso }}%"></div>
+                                                    <div class="h-full bg-emerald-500 rounded-full shadow-[0_0_10px_rgba(16,185,129,0.3)] transition-all duration-1000" style="width: {{ $progreso }}%;"></div>
                                                 </div>
                                             </div>
                                         </td>

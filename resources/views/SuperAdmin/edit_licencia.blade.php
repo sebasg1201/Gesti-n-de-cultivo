@@ -1,7 +1,7 @@
 @extends('layouts.barra_lateral')
 @section('content')
 
-<div class="max-w-3xl mx-auto bg-white shadow-[0_20px_60px_rgba(0,0,0,0.07)] rounded-[3rem] p-10 border border-slate-50 relative overflow-hidden">
+<div class="max-w-3xl mx-auto bg-white dark:bg-slate-900 shadow-[0_20px_60px_rgba(0,0,0,0.07)] dark:shadow-none rounded-[3rem] p-10 border border-slate-50 dark:border-emerald-950/20 relative overflow-hidden transition-colors duration-300">
 
     {{-- Decoración abstracta de edición --}}
     <div class="absolute top-0 right-0 w-32 h-32 bg-amber-50 rounded-full -mr-16 -mt-16 opacity-60 blur-2xl"></div>
@@ -9,14 +9,14 @@
     {{-- CABECERA DEL EDITOR --}}
     <div class="relative mb-12">
         <div class="flex items-center gap-5">
-            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center text-white shadow-lg shadow-green-200 ring-4 ring-green-50">
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center text-white shadow-lg shadow-green-200 ring-4 ring-green-50 dark:ring-emerald-950/20">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5h2M12 20h9M16.5 3.5l4 4L7 21H3v-4L16.5 3.5z" />
                 </svg>
             </div>
             <div>
-                <span class="text-[10px] font-black text-green-600 uppercase tracking-[0.3em]">Modo Editor</span>
-                <h2 class="text-3xl font-black text-green-800 tracking-tighter">Editar Plan : <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-green-500">{{ $licencia->nombre_licencia }}</span></h2>
+                <span class="text-[10px] font-black text-green-600 dark:text-emerald-400 uppercase tracking-[0.3em]">Modo Editor</span>
+                <h2 class="text-3xl font-black text-green-800 dark:text-emerald-500 tracking-tighter transition-colors">Editar Plan : <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-green-500">{{ $licencia->nombre_licencia }}</span></h2>
             </div>
         </div>
     </div>
@@ -48,7 +48,7 @@
                 <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Identificador del Plan</label>
                 <div class="relative group">
                     <input type="text" name="nombre_licencia" value="{{ $licencia->nombre_licencia }}"
-                        class="w-full bg-slate-50 border-2 border-slate-50 rounded-2xl px-5 py-4 text-slate-700 font-bold focus:bg-white focus:border-amber-500 focus:ring-4 focus:ring-amber-50 outline-none transition-all shadow-sm group-hover:border-slate-200"
+                        class="w-full bg-slate-50 dark:bg-slate-950 border-2 border-slate-50 dark:border-emerald-900/10 rounded-2xl px-5 py-4 text-slate-700 dark:text-emerald-50 font-bold focus:bg-white dark:focus:bg-slate-900 focus:border-amber-500 focus:ring-4 focus:ring-amber-50 dark:focus:ring-amber-500/10 outline-none transition-all shadow-sm group-hover:border-slate-200 dark:group-hover:border-emerald-900/20"
                         placeholder="Nombre comercial" required>
                 </div>
             </div>
@@ -58,7 +58,7 @@
                 <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Periodo de Vigencia</label>
                 <div class="relative group">
                     <input type="text" name="tiempo" value="{{ $licencia->tiempo }}"
-                        class="w-full bg-slate-50 border-2 border-slate-50 rounded-2xl px-5 py-4 text-slate-700 font-bold focus:bg-white focus:border-amber-500 focus:ring-4 focus:ring-amber-50 outline-none transition-all shadow-sm group-hover:border-slate-200"
+                        class="w-full bg-slate-50 dark:bg-slate-950 border-2 border-slate-50 dark:border-emerald-900/10 rounded-2xl px-5 py-4 text-slate-700 dark:text-emerald-50 font-bold focus:bg-white dark:focus:bg-slate-900 focus:border-amber-500 focus:ring-4 focus:ring-amber-50 dark:focus:ring-amber-500/10 outline-none transition-all shadow-sm group-hover:border-slate-200 dark:group-hover:border-emerald-900/20"
                         placeholder="Ej: 365 días" required>
                 </div>
             </div>
@@ -66,9 +66,9 @@
 
         {{-- Descripción --}}
         <div class="space-y-2">
-            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Especificaciones Técnicas</label>
+            <label class="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">Especificaciones Técnicas</label>
             <textarea name="descripcion" rows="4"
-                class="w-full bg-slate-50 border-2 border-slate-50 rounded-3xl px-6 py-4 text-slate-700 font-medium focus:bg-white focus:border-amber-500 focus:ring-4 focus:ring-amber-50 outline-none transition-all shadow-sm resize-none group-hover:border-slate-200"
+                class="w-full bg-slate-50 dark:bg-slate-950 border-2 border-slate-50 dark:border-emerald-900/10 rounded-3xl px-6 py-4 text-slate-700 dark:text-emerald-50 font-medium focus:bg-white dark:focus:bg-slate-900 focus:border-amber-500 focus:ring-4 focus:ring-amber-50 dark:focus:ring-amber-500/10 outline-none transition-all shadow-sm resize-none group-hover:border-slate-200 dark:group-hover:border-emerald-900/20"
                 placeholder="¿Qué incluye este plan?">{{ $licencia->descripcion }}</textarea>
         </div>
 
@@ -80,7 +80,7 @@
                     <span class="text-green-600 font-black text-xl">$</span>
                 </div>
                 <input type="number" name="precio" value="{{ $licencia->precio }}"
-                    class="w-full bg-slate-50 border-2 border-slate-50 rounded-2xl pl-12 pr-6 py-5 text-2xl font-black text-slate-800 focus:bg-white focus:border-amber-500 focus:ring-4 focus:ring-amber-50 outline-none transition-all shadow-sm"
+                    class="w-full bg-slate-50 dark:bg-slate-950 border-2 border-slate-50 dark:border-emerald-900/10 rounded-2xl pl-12 pr-6 py-5 text-2xl font-black text-slate-800 dark:text-emerald-50 transition-colors focus:bg-white dark:focus:bg-slate-900 focus:border-amber-500 focus:ring-4 focus:ring-amber-50 dark:focus:ring-amber-500/10 outline-none transition-all shadow-sm"
                     required>
             </div>
         </div>
@@ -90,7 +90,7 @@
 
             {{-- BOTÓN VOLVER --}}
             <a href="{{ route('licencias.index') }}"
-                class="w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-4 text-slate-400 font-bold hover:text-slate-600 transition-colors uppercase text-[11px] tracking-widest">
+                class="w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-4 text-slate-400 dark:text-slate-500 font-bold hover:text-slate-600 dark:hover:text-emerald-400 transition-colors uppercase text-[11px] tracking-widest">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7" />
                 </svg>

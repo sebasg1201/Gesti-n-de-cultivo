@@ -29,7 +29,7 @@
                         <input type="text" name="nombre" id="nombre" required placeholder="Ej. Fertilizante, Abono, Fungicida..."
                             class="w-full px-4 py-3 rounded-2xl border-2 border-emerald-50 dark:border-emerald-900/20 focus:border-emerald-500 focus:ring-0 bg-emerald-50/20 dark:bg-slate-900 text-sm font-medium transition-all focus:bg-white dark:focus:bg-slate-900 text-emerald-950 dark:text-emerald-50">
                         @error('nombre')
-                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                         @enderror
                     </div>
 
@@ -77,13 +77,13 @@
                                 </td>
                                 <td class="px-6 py-4 text-center">
                                     @if($tipo->id_empresa)
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-400 transition-colors">
-                                            Personalizado
-                                        </span>
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-400 transition-colors">
+                                        Personalizado
+                                    </span>
                                     @else
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400 transition-colors">
-                                            Sistema
-                                        </span>
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400 transition-colors">
+                                        Sistema
+                                    </span>
                                     @endif
                                 </td>
                                 <td class="px-6 py-4 text-right">
@@ -104,7 +104,7 @@
                                         </form>
                                     </div>
                                     @else
-                                        <span class="text-[10px] font-bold text-gray-400 dark:text-gray-600 uppercase italic">Solo lectura</span>
+                                    <span class="text-[10px] font-bold text-gray-400 dark:text-gray-600 uppercase italic">Solo lectura</span>
                                     @endif
                                 </td>
                             </tr>
@@ -145,7 +145,7 @@
         submitBtn.classList.replace('bg-emerald-600', 'bg-amber-600');
         submitBtn.classList.replace('hover:bg-emerald-700', 'hover:bg-amber-700');
         cancelBtn.classList.remove('hidden');
-        
+
         nombreInput.focus();
     }
 

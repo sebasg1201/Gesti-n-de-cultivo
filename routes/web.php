@@ -38,6 +38,12 @@ Route::get('login', [UsuarioLoginController::class, 'showLoginForm'])->name('usu
 Route::post('login', [UsuarioLoginController::class, 'login'])->name('usuario.login.submit');
 Route::post('logout', [UsuarioLoginController::class, 'logout'])->name('usuario.logout');
 
+// 2FA Routes
+use App\Http\Controllers\Auth\TwoFactorController;
+Route::get('login/verify', [TwoFactorController::class, 'showForm'])->name('login.verify');
+Route::post('login/verify', [TwoFactorController::class, 'verify'])->name('login.verify.submit');
+Route::post('login/resend-code', [TwoFactorController::class, 'resend'])->name('login.resend');
+
 // Password Reset Routes
 Route::get('password/reset/{token}', [App\Http\Controllers\Auth\ResetPasswordController::class, 'showResetForm'])->name('password.reset');
 Route::post('password/reset', [App\Http\Controllers\Auth\ResetPasswordController::class, 'reset'])->name('password.update');
@@ -123,6 +129,12 @@ Route::middleware(['auth:usuario', 'check.license'])->group(function () {
     Route::get('/admin/tareas/buscar-trabajadores', [AdminController::class, 'buscarTrabajadores'])->name('admin.tareas.buscar_trabajadores');
     Route::get('/admin/tareas/buscar-insumos', [AdminController::class, 'buscarInsumos'])->name('admin.tareas.buscar_insumos');
     Route::get('/admin/tareas/buscar-terrenos', [AdminController::class, 'buscarTerrenos'])->name('admin.tareas.buscar_terrenos');
+
+    // Rutas de edicion de tareas (Admin)
+    Route::put('/admin/tareas/update-riego/{id}', [AdminController::class, 'updateRiego'])->name('admin.tareas.update.riego');
+    Route::put('/admin/tareas/update-insumo/{id}', [AdminController::class, 'updateInsumo'])->name('admin.tareas.update.insumo');
+    Route::put('/admin/tareas/update-general/{id}', [AdminController::class, 'updateGeneral'])->name('admin.tareas.update.general');
+    Route::put('/admin/tareas/update-recoleccion/{id}', [AdminController::class, 'updateRecoleccion'])->name('admin.tareas.update.recoleccion');
 
     // Rutas para la gestión de licencias del usuario administrador
     Route::get('/admin/licencias', [App\Http\Controllers\Admin\TipoLicenciaController::class, 'index'])->name('admin.licencias.index');

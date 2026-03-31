@@ -467,7 +467,7 @@ class AdminController extends Controller
                 $fechaEstimada = \Carbon\Carbon::parse($cosecha->fecha_estimada)->addDay();
                 $cosecha->update(['fecha_estimada' => $fechaEstimada->format('Y-m-d')]);
             }
-            
+
             // 3. Si es un insumo y se realizó (15 o 19), aplicamos su impacto específico
             if ($tipo === 'insumo' && in_array($nuevoEstado, [15, 19])) {
                 $impacto = (int) ($tarea->impacto_dias ?? 0);
@@ -528,21 +528,21 @@ class AdminController extends Controller
                 $searchLower = strtolower($search);
                 $query->where(function ($q) use ($search, $typeLabel, $searchLower, $hasCosecha, $searchField) {
                     $q->where($searchField, 'LIKE', "%{$search}%")
-                      ->orWhereHas('usuario', function($qu) use ($search) {
-                          $qu->where('nombre', 'LIKE', "%{$search}%");
-                      });
+                        ->orWhereHas('usuario', function ($qu) use ($search) {
+                            $qu->where('nombre', 'LIKE', "%{$search}%");
+                        });
 
                     if ($hasCosecha) {
-                        $q->orWhereHas('cosecha.semilla', function($qs) use ($search) {
+                        $q->orWhereHas('cosecha.semilla', function ($qs) use ($search) {
                             $qs->where('nombre_semilla', 'LIKE', "%{$search}%");
                         });
                     } else {
                         // For general phases, search in terrain name
-                        $q->orWhereHas('terreno', function($qt) use ($search) {
+                        $q->orWhereHas('terreno', function ($qt) use ($search) {
                             $qt->where('nombre', 'LIKE', "%{$search}%");
                         });
                     }
-                    
+
                     // If search matches the task type label
                     if (str_contains(strtolower($typeLabel), $searchLower)) {
                         $q->orWhereRaw('1=1');
@@ -566,7 +566,7 @@ class AdminController extends Controller
         $recoleccionQuery = \App\Models\Cultivo::whereHas('cosecha', function ($q) use ($id_empresa) {
             $q->where('id_empresa', $id_empresa);
         })->with(['trabajador', 'cosecha.semilla']);
-        
+
         // Recoleccion filter logic (different date field and relation)
         if ($month) $recoleccionQuery->whereMonth('fecha_recoleccion', $month);
         if ($year) $recoleccionQuery->whereYear('fecha_recoleccion', $year);
@@ -574,13 +574,13 @@ class AdminController extends Controller
             $searchLower = strtolower($search);
             $recoleccionQuery->where(function ($q) use ($search, $searchLower) {
                 $q->where('descripcion_recoleccion', 'LIKE', "%{$search}%")
-                  ->orWhereHas('trabajador', function($qu) use ($search) {
-                      $qu->where('nombre', 'LIKE', "%{$search}%");
-                  })
-                  ->orWhereHas('cosecha.semilla', function($qs) use ($search) {
-                      $qs->where('nombre_semilla', 'LIKE', "%{$search}%");
-                  });
-                
+                    ->orWhereHas('trabajador', function ($qu) use ($search) {
+                        $qu->where('nombre', 'LIKE', "%{$search}%");
+                    })
+                    ->orWhereHas('cosecha.semilla', function ($qs) use ($search) {
+                        $qs->where('nombre_semilla', 'LIKE', "%{$search}%");
+                    });
+
                 if (str_contains('recoleccion', $searchLower) || str_contains('recolección', $searchLower) || str_contains('cosecha', $searchLower)) {
                     $q->orWhereRaw('1=1');
                 }
@@ -616,17 +616,17 @@ class AdminController extends Controller
         $generalQuery = \App\Models\FaseProgramada::whereHas('terreno', function ($q) use ($id_empresa) {
             $q->where('id_empresa', $id_empresa);
         })->with(['usuario', 'terreno']);
-        
+
         if ($month) $generalQuery->whereMonth('fecha_programada', $month);
         if ($year) $generalQuery->whereYear('fecha_programada', $year);
         if ($search) {
             $searchLower = strtolower($search);
             $generalQuery->where(function ($q) use ($search, $searchLower) {
                 $q->where('descripcion', 'LIKE', "%{$search}%")
-                  ->orWhereHas('usuario', function($qu) use ($search) {
-                      $qu->where('nombre', 'LIKE', "%{$search}%");
-                  });
-                
+                    ->orWhereHas('usuario', function ($qu) use ($search) {
+                        $qu->where('nombre', 'LIKE', "%{$search}%");
+                    });
+
                 if (str_contains('general', $searchLower) || str_contains('labor', $searchLower) || str_contains('programada', $searchLower)) {
                     $q->orWhereRaw('1=1');
                 }
@@ -682,21 +682,21 @@ class AdminController extends Controller
                 $searchLower = strtolower($search);
                 $query->where(function ($q) use ($search, $typeLabel, $searchLower, $hasCosecha, $searchField) {
                     $q->where($searchField, 'LIKE', "%{$search}%")
-                      ->orWhereHas('usuario', function($qu) use ($search) {
-                          $qu->where('nombre', 'LIKE', "%{$search}%");
-                      });
+                        ->orWhereHas('usuario', function ($qu) use ($search) {
+                            $qu->where('nombre', 'LIKE', "%{$search}%");
+                        });
 
                     if ($hasCosecha) {
-                        $q->orWhereHas('cosecha.semilla', function($qs) use ($search) {
+                        $q->orWhereHas('cosecha.semilla', function ($qs) use ($search) {
                             $qs->where('nombre_semilla', 'LIKE', "%{$search}%");
                         });
                     } else {
                         // For general phases, search in terrain name
-                        $q->orWhereHas('terreno', function($qt) use ($search) {
+                        $q->orWhereHas('terreno', function ($qt) use ($search) {
                             $qt->where('nombre', 'LIKE', "%{$search}%");
                         });
                     }
-                    
+
                     if (str_contains(strtolower($typeLabel), $searchLower)) {
                         $q->orWhereRaw('1=1');
                     }
@@ -724,20 +724,20 @@ class AdminController extends Controller
         $recoleccionesQuery = \App\Models\Cultivo::whereHas('cosecha', function ($q) use ($id_empresa) {
             $q->where('id_empresa', $id_empresa);
         })->with(['trabajador', 'cosecha.terreno', 'cosecha.semilla']);
-        
+
         if ($month) $recoleccionesQuery->whereMonth('fecha_recoleccion', $month);
         if ($year) $recoleccionesQuery->whereYear('fecha_recoleccion', $year);
         if ($search) {
             $searchLower = strtolower($search);
             $recoleccionesQuery->where(function ($q) use ($search, $searchLower) {
                 $q->where('descripcion_recoleccion', 'LIKE', "%{$search}%")
-                  ->orWhereHas('trabajador', function($qu) use ($search) {
-                      $qu->where('nombre', 'LIKE', "%{$search}%");
-                  })
-                  ->orWhereHas('cosecha.semilla', function($qs) use ($search) {
-                      $qs->where('nombre_semilla', 'LIKE', "%{$search}%");
-                  });
-                
+                    ->orWhereHas('trabajador', function ($qu) use ($search) {
+                        $qu->where('nombre', 'LIKE', "%{$search}%");
+                    })
+                    ->orWhereHas('cosecha.semilla', function ($qs) use ($search) {
+                        $qs->where('nombre_semilla', 'LIKE', "%{$search}%");
+                    });
+
                 if (str_contains('recoleccion', $searchLower) || str_contains('recolección', $searchLower) || str_contains('cosecha', $searchLower)) {
                     $q->orWhereRaw('1=1');
                 }
@@ -808,9 +808,9 @@ class AdminController extends Controller
 
         $columns = ['Fecha', 'Tipo', 'Labor/Insumo', 'Terreno', 'Trabajador', 'Estado', 'Observaciones/Detalle'];
 
-        $callback = function() use($allTasks, $columns) {
+        $callback = function () use ($allTasks, $columns) {
             $file = fopen('php://output', 'w');
-            fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF)); // BOM
+            fprintf($file, chr(0xEF) . chr(0xBB) . chr(0xBF)); // BOM
             fputcsv($file, $columns, ';');
             foreach ($allTasks as $row) {
                 fputcsv($file, array_values($row), ';');
@@ -824,12 +824,19 @@ class AdminController extends Controller
     private function getEstadoNombre($id)
     {
         switch ($id) {
-            case 1: return 'Pendiente';
-            case 15: return 'Completado';
-            case 17: return 'En Proceso';
-            case 16: case 18: return 'Perdida';
-            case 19: return 'Retrasó';
-            default: return 'Desconocido';
+            case 1:
+                return 'Pendiente';
+            case 15:
+                return 'Completado';
+            case 17:
+                return 'En Proceso';
+            case 16:
+            case 18:
+                return 'Perdida';
+            case 19:
+                return 'Retrasó';
+            default:
+                return 'Desconocido';
         }
     }
 
@@ -1233,22 +1240,22 @@ class AdminController extends Controller
 
         $lotes = \App\Models\Cosecha::with(['terreno', 'semilla'])
             ->where('id_empresa', $usuario->id_empresa)
-            ->where(function($q) use ($query) {
-                $q->whereHas('terreno', function($qt) use ($query) {
+            ->where(function ($q) use ($query) {
+                $q->whereHas('terreno', function ($qt) use ($query) {
                     $qt->where('nombre', 'LIKE', "%{$query}%");
                 })
-                ->orWhereHas('semilla', function($qs) use ($query) {
-                    $qs->where('nombre_semilla', 'LIKE', "%{$query}%");
-                })
-                ->orWhere('id_cosecha', 'LIKE', "%{$query}%");
+                    ->orWhereHas('semilla', function ($qs) use ($query) {
+                        $qs->where('nombre_semilla', 'LIKE', "%{$query}%");
+                    })
+                    ->orWhere('id_cosecha', 'LIKE', "%{$query}%");
             })
             // Solo lotes activos (asumiendo id_estado 1 es activo, basándome en el contexto previo)
-            ->where('id_estado', 1) 
+            ->where('id_estado', 1)
             ->get()
-            ->map(function($l) {
+            ->map(function ($l) {
                 return [
                     'id' => $l->id_cosecha,
-                    'nombre' => ($l->terreno?->nombre ?? 'Lote #'.$l->id_cosecha) . " (" . ($l->semilla?->nombre_semilla ?? 'N/A') . ")",
+                    'nombre' => ($l->terreno?->nombre ?? 'Lote #' . $l->id_cosecha) . " (" . ($l->semilla?->nombre_semilla ?? 'N/A') . ")",
                     'info' => "ID: #{$l->id_cosecha} • Siembra: " . \Carbon\Carbon::parse($l->fecha_siembra)->format('d/m/Y')
                 ];
             });
@@ -1266,12 +1273,12 @@ class AdminController extends Controller
 
         $trabajadores = \App\Models\Usuario::where('id_empresa', $usuario->id_empresa)
             ->where('id_tipo_usuario', 3) // Trabajador
-            ->where(function($q) use ($query) {
+            ->where(function ($q) use ($query) {
                 $q->where('nombre', 'LIKE', "%{$query}%")
-                  ->orWhere('documento', 'LIKE', "%{$query}%");
+                    ->orWhere('documento', 'LIKE', "%{$query}%");
             })
             ->get()
-            ->map(function($t) {
+            ->map(function ($t) {
                 return [
                     'id' => $t->documento,
                     'nombre' => $t->nombre,
@@ -1291,12 +1298,12 @@ class AdminController extends Controller
         if (!$query) return response()->json([]);
 
         $insumos = \App\Models\Insumo::where('id_empresa', $usuario->id_empresa)
-            ->where(function($q) use ($query) {
+            ->where(function ($q) use ($query) {
                 $q->where('Nombre', 'LIKE', "%{$query}%")
-                  ->orWhere('ID_insumo', 'LIKE', "%{$query}%");
+                    ->orWhere('ID_insumo', 'LIKE', "%{$query}%");
             })
             ->get()
-            ->map(function($i) {
+            ->map(function ($i) {
                 return [
                     'id' => $i->ID_insumo,
                     'nombre' => $i->Nombre,
@@ -1319,11 +1326,11 @@ class AdminController extends Controller
 
         $terrenos = \App\Models\Terreno::where('id_empresa', $usuario->id_empresa)
             ->where('nombre', 'LIKE', "%{$query}%")
-            ->whereDoesntHave('cosechas', function($q) {
+            ->whereDoesntHave('cosechas', function ($q) {
                 $q->where('id_estado', 1); // 1 = Activo (según la lógica de la vista principal)
             })
             ->get()
-            ->map(function($t) {
+            ->map(function ($t) {
                 return [
                     'id' => $t->id_terreno,
                     'nombre' => $t->nombre,

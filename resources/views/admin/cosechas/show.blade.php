@@ -356,15 +356,21 @@
                     <ul class="space-y-4">
                         <li class="flex justify-between items-center border-b border-emerald-50 pb-3">
                             <span class="text-sm font-medium text-slate-500">Variedad Sembrada</span>
-                            <span class="text-sm font-bold text-slate-800">{{ $cosecha->semilla->nombre_semilla }}</span>
+                            <a href="{{ route('tipo_semillas.index') }}" class="text-sm font-bold text-slate-800 hover:text-emerald-600 hover:underline transition-all decoration-2 underline-offset-4">
+                                {{ $cosecha->semilla->nombre_semilla }}
+                            </a>
                         </li>
                         <li class="flex justify-between items-center border-b border-emerald-50 pb-3">
                             <span class="text-sm font-medium text-slate-500">Terreno Designado</span>
-                            <span class="text-sm font-bold text-slate-800">{{ $cosecha->terreno->nombre }}</span>
+                            <a href="{{ route('admin.terrenos.index') }}" class="text-sm font-bold text-slate-800 hover:text-emerald-600 hover:underline transition-all decoration-2 underline-offset-4">
+                                {{ $cosecha->terreno->nombre }}
+                            </a>
                         </li>
                         <li class="flex justify-between items-center border-b border-emerald-50 pb-3">
                             <span class="text-sm font-medium text-slate-500">Cantidad Plantada</span>
-                            <span class="text-sm font-bold text-slate-800">{{ number_format($cosecha->Cantidad, 0) }} und</span>
+                            <a href="{{ route('tipo_semillas.index') }}" class="text-sm font-bold text-slate-800 hover:text-emerald-600 hover:underline transition-all decoration-2 underline-offset-4">
+                                {{ number_format($cosecha->Cantidad, 0) }} und
+                            </a>
                         </li>
                         <li class="flex justify-between items-center border-b border-emerald-50 pb-3">
                             <span class="text-sm font-medium text-slate-500">Rendimiento Esperado</span>
