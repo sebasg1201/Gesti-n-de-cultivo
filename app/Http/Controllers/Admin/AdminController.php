@@ -327,13 +327,13 @@ class AdminController extends Controller
         $usuario = auth()->guard('usuario')->user();
 
         $request->validate([
-            // 1=Pendiente, 17=En Proceso, 15=Realizado, 16=Perdida, 18=Perdida Oculta
-            'id_estado' => 'required|integer|in:1,17,15,16,18',
-            // La foto es obligatoria solo al finalizar (id_estado=15)
-            'evidencia_foto' => ($request->id_estado == 15) ? 'required|image|max:2048' : 'nullable|image|max:2048',
+            // 1=Pendiente, 17=En Proceso, 15=Realizado, 16=Perdida, 18=Perdida Oculta, 19=Retrasó
+            'id_estado' => 'required|integer|in:1,17,15,16,18,19',
+            // La foto es obligatoria solo al finalizar (id_estado=15 o 19)
+            'evidencia_foto' => ($request->id_estado == 15 || $request->id_estado == 19) ? 'required|image|max:2048' : 'nullable|image|max:2048',
         ]);
 
-        if ($tipo === 'recoleccion' && $request->id_estado == 15) {
+        if ($tipo === 'recoleccion' && ($request->id_estado == 15 || $request->id_estado == 19)) {
             $request->validate([
                 'cantidad' => 'required|numeric|min:0.1',
                 'calidad' => 'required|string|max:50',
@@ -348,8 +348,8 @@ class AdminController extends Controller
             ->firstOrFail();
 
         // Evitar que el trabajador vuelva a un estado anterior
-        // Orden lógico: 1 (Pendiente) < 17 (En Proceso) < 15 (Realizado) / 16 (Perdida) < 18 (Perdida Oculta)
-        $ordenEstados = [1 => 1, 17 => 2, 15 => 3, 16 => 3, 18 => 4];
+        // Orden lógico: 1 (Pendiente) < 17 (En Proceso) < 15 (Realizado) / 16 (Perdida) / 19 (Retrasó) < 18 (Perdida Oculta)
+        $ordenEstados = [1 => 1, 17 => 2, 15 => 3, 16 => 3, 19 => 3, 18 => 4];
         $nuevoEstado = (int) $request->id_estado;
         $estadoActual = (int) $tarea->id_estado;
 
@@ -360,8 +360,8 @@ class AdminController extends Controller
         // Solo actualizamos id_estado en la tabla de la tarea
         $updateData = ['id_estado' => $nuevoEstado];
 
-        // Si el trabajador finaliza la tarea (15=Realizado), guardamos la evidencia en registro_trabajo
-        if ($nuevoEstado === 15) {
+        // Si el trabajador finaliza la tarea (15=Realizado o 19=Retrasó), guardamos la evidencia en registro_trabajo
+        if ($nuevoEstado === 15 || $nuevoEstado === 19) {
             // Evitar duplicados: Verificar si ya existe un registro para esta tarea específica
             $existeRegistro = \Illuminate\Support\Facades\DB::table('registro_trabajo')
                 ->where('documento_trabajador', $usuario->documento)
@@ -822,6 +822,7 @@ class AdminController extends Controller
             case 15: return 'Completado';
             case 17: return 'En Proceso';
             case 16: case 18: return 'Perdida';
+            case 19: return 'Retrasó';
             default: return 'Desconocido';
         }
     }
@@ -982,7 +983,7 @@ class AdminController extends Controller
             $nombreLugar = $fase->terreno ? $fase->terreno->nombre : 'Terreno';
 
             $color = match ((int) $fase->id_estado) {
-                15 => '#10b981',
+                15, 19 => '#10b981',
                 17 => '#f59e0b',
                 16, 18 => '#ef4444',
                 default => '#3b82f6'
@@ -1010,7 +1011,7 @@ class AdminController extends Controller
             $nombreLugar = $riego->cosecha && $riego->cosecha->terreno ? $riego->cosecha->terreno->nombre : 'Terreno';
 
             $color = match ((int) $riego->id_estado) {
-                15 => '#0ea5e9', // Mantener color del riego (azul)
+                15, 19 => '#0ea5e9', // Mantener color del riego (azul)
                 17 => '#f59e0b',
                 16, 18 => '#ef4444',
                 default => '#0ea5e9'
@@ -1039,7 +1040,7 @@ class AdminController extends Controller
             $nombreLugar = $insumo->cosecha && $insumo->cosecha->terreno ? $insumo->cosecha->terreno->nombre : 'Terreno';
 
             $color = match ((int) $insumo->id_estado) {
-                15 => '#8b5cf6', // Mantener color del insumo (morado)
+                15, 19 => '#8b5cf6', // Mantener color del insumo (morado)
                 17 => '#f59e0b',
                 16, 18 => '#ef4444',
                 default => '#8b5cf6'
@@ -1072,7 +1073,7 @@ class AdminController extends Controller
             $nombreLugar = $reco->cosecha && $reco->cosecha->terreno ? $reco->cosecha->terreno->nombre : 'Terreno';
 
             $color = match ((int) $reco->id_estado) {
-                15 => '#f97316', // Mantener color naranja
+                15, 19 => '#f97316', // Mantener color naranja
                 17 => '#f59e0b',
                 16, 18 => '#ef4444',
                 default => '#f97316'

@@ -195,7 +195,7 @@
         } else {
             dailyEvents.forEach(ev => {
                 const props = ev.extendedProps;
-                const isRealizado = (props.estado == 15);
+                const isRealizado = (props.estado == 15 || props.estado == 19);
                 const isPerdida = (props.estado == 16 || props.estado == 18);
 
                 // 1. REGISTRO GENERAL DE ASISTENCIA
@@ -261,7 +261,7 @@
                                             ${isRealizado ? 'Tu Registro' : 'Fase de Cultivo'} ${isPerdida ? '(Perdida)' : ''}
                                         </p>
                                         <p class="font-black text-${colorFase}-900 text-base leading-tight ${isPerdida ? 'line-through opacity-70' : ''}">
-                                            ${isRealizado ? 'Labor Completada' : (props.cultivo || 'Cosecha')}
+                                            ${isRealizado ? (props.estado == 19 ? 'Labor Completada (Retrasó)' : 'Labor Completada') : (props.cultivo || 'Cosecha')}
                                         </p>
                                     </div>
                                 </div>
@@ -346,7 +346,7 @@
                                             ${isRealizado ? 'Tu Registro' : (props.tipo === 'recoleccion' ? 'Recolección' : (props.tipo === 'riego' ? 'Riego' : 'Insumo'))} ${isPerdida ? '(Perdida)' : ''}
                                         </p>
                                         <p class="font-black text-${colorClass}-900 dark:text-emerald-50 text-base leading-tight ${isPerdida ? 'line-through opacity-70' : ''}">
-                                            ${isRealizado ? 'Labor Completada' : ev.title}
+                                            ${isRealizado ? (props.estado == 19 ? 'Labor Completada (Retrasó)' : 'Labor Completada') : ev.title}
                                         </p>
                                     </div>
                                 </div>

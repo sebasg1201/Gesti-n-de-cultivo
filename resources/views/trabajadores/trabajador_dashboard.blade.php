@@ -152,7 +152,7 @@
                                     'fase_id' => $fase->tipo_tarea == 'riego' ? $fase->id_riego : ($fase->tipo_tarea == 'insumo' ? $fase->id_insumo_cosecha : ($fase->tipo_tarea == 'recoleccion' ? $fase->id_cultivo : $fase->id_fase)),
                                     'tipo_tarea' => $fase->tipo_tarea,
                                     'tipo_label' => $tipoEtiqueta,
-                                    'estado' => $fase->id_estado == 1 ? 'Pendiente' : ($fase->id_estado == 17 ? 'En Proceso' : ($fase->id_estado == 15 ? 'Realizado' : ($fase->id_estado == 16 ? 'Perdida' : 'Otro'))),
+                                    'estado' => $fase->id_estado == 1 ? 'Pendiente' : ($fase->id_estado == 17 ? 'En Proceso' : ($fase->id_estado == 15 ? 'Realizado' : ($fase->id_estado == 16 ? 'Perdida' : ($fase->id_estado == 19 ? 'Retrasó' : 'Otro')))),
                                     'descripcion' => $fase->descripcion ?? 'Sin descripción',
                                     'obs_trabajador' => $fase->observacion_trabajador ?? '',
                                     'fecha' => $fase->fecha_programada ? \Carbon\Carbon::parse($fase->fecha_programada)->format('d/m/Y H:i') : 'No definida',
@@ -181,8 +181,8 @@
                                     <div class="flex justify-between items-start mb-6">
                                         <span
                                             class="px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest shadow-sm
-                                                    {{ $fase->id_estado == 1 ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800/40' : ($fase->id_estado == 17 ? 'bg-sky-100 dark:bg-sky-900/30 text-sky-700 dark:text-sky-400 border border-sky-200 dark:border-sky-800/40' : ($fase->id_estado == 16 ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800/40' : 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/40')) }}">
-                                            {{ $fase->id_estado == 1 ? 'Pendiente' : ($fase->id_estado == 17 ? 'En Proceso' : ($fase->id_estado == 16 ? 'Perdida' : 'Realizado')) }}
+                                                    {{ $fase->id_estado == 1 ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800/40' : ($fase->id_estado == 17 ? 'bg-sky-100 dark:bg-sky-900/30 text-sky-700 dark:text-sky-400 border border-sky-200 dark:border-sky-800/40' : ($fase->id_estado == 16 ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800/40' : ($fase->id_estado == 19 ? 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 border border-orange-200 dark:border-orange-800/40' : 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/40'))) }}">
+                                            {{ $fase->id_estado == 1 ? 'Pendiente' : ($fase->id_estado == 17 ? 'En Proceso' : ($fase->id_estado == 16 ? 'Perdida' : ($fase->id_estado == 19 ? 'Retrasó' : 'Realizado'))) }}
                                         </span>
 
                                         <div class="text-right">
@@ -420,6 +420,14 @@
                                     class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black py-5 px-10 rounded-[2rem] focus:outline-none transition-all cursor-pointer text-center text-lg shadow-2xl shadow-emerald-200/50">
                                     Finalizar Trabajo
                                 </button>
+
+                                <div id="optionOcultarWrap" class="hidden mt-4 text-center">
+                                    <p class="text-[10px] text-gray-400 uppercase font-black tracking-widest mb-2">¿No puedes realizarla?</p>
+                                    <button type="button" onclick="ocultarTareaPerdida()" 
+                                        class="text-xs font-bold text-red-500 hover:text-red-700 underline transition-colors cursor-pointer">
+                                        Confirmar como pérdida y ocultar
+                                    </button>
+                                </div>
                             </form>
                         </div>
                     </div>
@@ -500,6 +508,8 @@
                 const recoleccionWrap = document.getElementById('recoleccionInputsWrap');
                 const inputCantidad = document.getElementById('inputCantidad');
                 const inputCalidad = document.getElementById('inputCalidad');
+                const optionOcultarWrap = document.getElementById('optionOcultarWrap');
+                if (optionOcultarWrap) optionOcultarWrap.classList.add('hidden');
 
                 if (ds.obsTrabajador && ds.obsTrabajador.trim() !== '') {
                     obsGuardadaTexto.innerText = '"' + ds.obsTrabajador + '"';
@@ -524,14 +534,15 @@
                 const today = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
                 const isTaskDay = (taskDateRaw === today);
 
-                if (currentStatus === 15 || currentStatus === 16) {
-                    if (currentStatus === 15) {
+                if (currentStatus === 15 || currentStatus === 16 || currentStatus === 19) {
+                    if (currentStatus === 15 || currentStatus === 19) {
                         btnFinalizar.disabled = true;
-                        btnFinalizar.innerText = 'Trabajo Finalizado ✓';
-                        btnFinalizar.classList.remove('bg-emerald-600', 'hover:bg-emerald-700', 'shadow-emerald-200/50', 'bg-red-500', 'text-white');
+                        btnFinalizar.innerText = currentStatus === 15 ? 'Trabajo Finalizado ✓' : 'Realizado con Retraso ✓';
+                        btnFinalizar.classList.remove('bg-emerald-600', 'hover:bg-emerald-700', 'shadow-emerald-200/50', 'bg-red-500', 'text-white', 'bg-orange-500', 'shadow-orange-200/50');
                         btnFinalizar.classList.add('bg-gray-300', 'text-gray-500', 'cursor-not-allowed', 'shadow-none');
                         
                         obsInputWrap.classList.add('hidden');
+                        if (optionOcultarWrap) optionOcultarWrap.classList.add('hidden');
                         if (recoleccionWrap) recoleccionWrap.classList.add('hidden');
                         if(fotoWrap) fotoWrap.classList.add('hidden');
                         if(reqInput) reqInput.required = false;
@@ -539,18 +550,23 @@
                         if(inputCalidad) inputCalidad.required = false;
                     } else if (currentStatus === 16) {
                         btnFinalizar.disabled = false;
-                        btnFinalizar.innerText = 'Aceptar Tarea Perdida';
-                        btnFinalizar.classList.remove('bg-emerald-600', 'hover:bg-emerald-700', 'shadow-emerald-200/50', 'bg-gray-300', 'text-gray-500', 'cursor-not-allowed', 'shadow-none');
-                        btnFinalizar.classList.add('bg-red-500', 'hover:bg-red-600', 'text-white', 'shadow-red-200/50', 'cursor-pointer');
+                        btnFinalizar.innerText = 'Finalizar Trabajo (Retrasado)';
+                        btnFinalizar.classList.remove('bg-emerald-600', 'hover:bg-emerald-700', 'shadow-emerald-200/50', 'bg-gray-300', 'text-gray-500', 'cursor-not-allowed', 'shadow-none', 'bg-red-500');
+                        btnFinalizar.classList.add('bg-orange-500', 'hover:bg-orange-600', 'text-white', 'shadow-orange-200/50', 'cursor-pointer');
                         
-                        if(inputIdEstado) inputIdEstado.value = 18;
+                        if(inputIdEstado) inputIdEstado.value = 19;
                         
-                        obsInputWrap.classList.add('hidden');
-                        if (recoleccionWrap) recoleccionWrap.classList.add('hidden');
-                        if(fotoWrap) fotoWrap.classList.add('hidden');
-                        if(reqInput) reqInput.required = false;
-                        if(inputCantidad) inputCantidad.required = false;
-                        if(inputCalidad) inputCalidad.required = false;
+                        obsInputWrap.classList.remove('hidden');
+                        if (optionOcultarWrap) optionOcultarWrap.classList.remove('hidden');
+
+                        if (ds.tipoTarea === 'recoleccion') {
+                            if (recoleccionWrap) recoleccionWrap.classList.remove('hidden');
+                            if (inputCantidad) inputCantidad.required = true;
+                            if (inputCalidad) inputCalidad.required = true;
+                        }
+
+                        if(fotoWrap) fotoWrap.classList.remove('hidden');
+                        if(reqInput) reqInput.required = true;
                     }
                 } else if (!isTaskDay) {
                     btnFinalizar.disabled = true;
@@ -588,6 +604,7 @@
                     if(fotoWrap) fotoWrap.classList.remove('hidden');
                     if(reqInput) reqInput.required = true;
                 }
+
 
                 if (currentStatus === 1 && isTaskDay) {
                     // Bloquear el botón PRIMERO para evitar que el form se envíe durante la transición
@@ -655,6 +672,23 @@
                 modal.classList.add('hidden');
             }
             document.body.style.overflow = 'auto';
+        }
+
+        function ocultarTareaPerdida() {
+            if (confirm('¿Estás seguro de que deseas marcar esta tarea como perdida y ocultarla? Esta acción no se puede deshacer.')) {
+                const inputIdEstado = document.getElementById('inputIdEstado');
+                const reqInput = document.getElementById('evidencia_foto');
+                const inputCantidad = document.getElementById('inputCantidad');
+                const inputCalidad = document.getElementById('inputCalidad');
+                const modalForm = document.getElementById('modalFormEstado');
+
+                if (inputIdEstado) inputIdEstado.value = 18;
+                if (reqInput) reqInput.required = false;
+                if (inputCantidad) inputCantidad.required = false;
+                if (inputCalidad) inputCalidad.required = false;
+
+                modalForm.submit();
+            }
         }
     </script>
 @endsection
