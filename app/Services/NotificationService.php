@@ -24,14 +24,26 @@ class NotificationService
 
         // 1. Irrigation Alerts
         $irrigationAlerts = $this->getIrrigationAlerts($id_empresa, $workerDoc);
+        $hoy = Carbon::now();
+
         foreach ($irrigationAlerts as $alert) {
+            $nextDate = Carbon::parse($alert->next_date);
+            $diffHours = $hoy->diffInHours($nextDate, false);
+            
+            // Si es trabajador, solo mostrar si falta menos de 24h para vencer o ya venció
+            if ($isWorker && $diffHours > 24) continue;
+
+            $title = ($isWorker && $diffHours <= 24 && $diffHours > 0) 
+                ? 'Tiempo por vencer: Riego pronto' 
+                : 'Necesita Riego';
+
             $notifications[] = [
                 'type' => 'irrigation',
-                'title' => 'Necesita Riego',
+                'title' => $title,
                 'message' => "El cultivo de {$alert->semilla->nombre_semilla} en el terreno {$alert->terreno->nombre} necesita ser regado.",
-                'date' => Carbon::parse($alert->next_date),
+                'date' => $nextDate,
                 'id' => $alert->id_cosecha,
-                'url' => route('admin.tareas.index')
+                'url' => route($isWorker ? 'trabajador.dashboard' : 'admin.tareas.index')
             ];
         }
 
@@ -57,13 +69,22 @@ class NotificationService
         // 3. Insecticide Alerts
         $insecticideAlerts = $this->getInsecticideAlerts($id_empresa, $workerDoc);
         foreach ($insecticideAlerts as $alert) {
+            $nextDate = Carbon::parse($alert->next_date);
+            $diffHours = $hoy->diffInHours($nextDate, false);
+
+            if ($isWorker && $diffHours > 24) continue;
+
+            $title = ($isWorker && $diffHours <= 24 && $diffHours > 0) 
+                ? 'Tiempo por vencer: Insecticida' 
+                : 'Aplicación de Insecticida';
+
             $notifications[] = [
                 'type' => 'insecticide',
-                'title' => 'Aplicación de Insecticida',
+                'title' => $title,
                 'message' => "Es necesario aplicar insecticida al cultivo de {$alert->semilla->nombre_semilla} ({$alert->terreno->nombre}).",
-                'date' => Carbon::parse($alert->next_date),
+                'date' => $nextDate,
                 'id' => $alert->id_cosecha,
-                'url' => route('admin.tareas.index')
+                'url' => route($isWorker ? 'trabajador.dashboard' : 'admin.tareas.index')
             ];
         }
 
@@ -116,7 +137,8 @@ class NotificationService
 
             $proximaFecha = $fechaBase->addDays($frecuencia);
 
-            if ($hoy->greaterThanOrEqualTo($proximaFecha)) {
+            // Ajuste para el trabajador: mostrar si faltan 24h o ya venció
+            if ($hoy->diffInHours($proximaFecha, false) <= 24) {
                 $cosecha->next_date = $proximaFecha;
                 $alerts[] = $cosecha;
             }
@@ -157,7 +179,7 @@ class NotificationService
             $fechaBase = $ultimaAplicacion ? Carbon::parse($ultimaAplicacion->fecha_programada) : Carbon::parse($cosecha->fecha_siembra);
             $proximaFecha = $fechaBase->addDays(10);
 
-            if ($hoy->greaterThanOrEqualTo($proximaFecha)) {
+            if ($hoy->diffInHours($proximaFecha, false) <= 24) {
                 $cosecha->next_date = $proximaFecha;
                 $alerts[] = $cosecha;
             }

@@ -252,39 +252,6 @@
         <!-- Right Column (1/3 width) -->
         <div class="xl:col-span-1 flex flex-col gap-6">
             
-            <!-- Alertas -->
-            <section class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-emerald-900/20 p-5 hidden xl:block transition-all duration-300">
-                <div class="flex justify-between items-center mb-5">
-                    <h2 class="text-lg font-bold text-gray-900 dark:text-emerald-50 flex items-center gap-2">
-                        <svg class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"></path></svg>
-                        Alertas
-                    </h2>
-                    @if(count($stats['lista_alertas']) > 0)
-                        <span class="px-2 py-0.5 rounded text-xs font-bold bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800/50">{{ count($stats['lista_alertas']) }} nuevas</span>
-                    @endif
-                </div>
-                
-                <div class="space-y-4">
-                    @forelse($stats['lista_alertas'] as $alerta)
-                    <div class="border-l-4 border-red-500 pl-4 py-1 relative">
-                        <div class="flex justify-between items-start mb-1">
-                            <h3 class="text-sm font-bold text-gray-900 dark:text-emerald-100">{{ $alerta->asunto }}</h3>
-                            <span class="text-xs text-gray-400 dark:text-emerald-600">{{ $alerta->created_at->diffForHumans(null, true, true) }}</span>
-                        </div>
-                        <p class="text-xs text-gray-600 dark:text-emerald-500 mb-2 line-clamp-2" title="{{ $alerta->mensaje }}">{{ $alerta->mensaje }}</p>
-                        <a href="{{ route('admin.soporte.index') }}" class="text-xs font-bold text-red-600 dark:text-red-400 hover:text-red-700 mt-1 inline-block">Ver y Responder</a>
-                    </div>
-                    @if(!$loop->last)
-                        <hr class="border-gray-100 dark:border-emerald-900/10">
-                    @endif
-                    @empty
-                    <div class="text-center text-sm text-gray-500 dark:text-emerald-600 py-4">
-                        Todo está funcionando correctamente. No hay alertas.
-                    </div>
-                    @endforelse
-                </div>
-            </section>
-            
             <!-- Tareas de Hoy -->
             <section class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-emerald-900/20 p-5 hidden xl:block transition-all duration-300">
                 <div class="flex justify-between items-center mb-5">
