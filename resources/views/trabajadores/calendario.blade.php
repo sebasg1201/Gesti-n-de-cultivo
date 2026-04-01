@@ -21,9 +21,15 @@
         {{-- Columna Derecha: Panel de Detalles --}}
         <div class="flex-1 w-full">
             <div id="dayDetailsCard" class="bg-white dark:bg-slate-800 rounded-[2.5rem] border border-gray-100 dark:border-emerald-900/20 shadow-2xl shadow-gray-100/50 dark:shadow-none min-h-[550px] flex flex-col overflow-hidden transition-all duration-300">
-                <div class="bg-gradient-to-r from-emerald-600 to teal-700 dark:from-emerald-700 dark:to-slate-900 p-8 lg:p-10 text-white">
-                    <p class="text-xs font-black uppercase tracking-[0.2em] opacity-80 mb-2" id="detailType">Agenda del Día</p>
-                    <h2 class="text-3xl font-black tracking-tight" id="selectedDateTitle">Selecciona una fecha</h2>
+                <div class="relative overflow-hidden bg-gradient-to-r from-emerald-600 to-teal-700 dark:from-emerald-700 dark:to-slate-900 p-8 lg:p-10 text-white group">
+                    {{-- Decoración Premium --}}
+                    <div class="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-white/10 rounded-full blur-2xl group-hover:bg-white/20 transition-all duration-700"></div>
+                    <div class="absolute bottom-0 left-0 -mb-10 -ml-10 w-24 h-24 bg-emerald-400/20 rounded-full blur-xl group-hover:bg-emerald-400/30 transition-all duration-700"></div>
+                    
+                    <div class="relative">
+                        <p class="text-xs font-black uppercase tracking-[0.2em] opacity-80 mb-2" id="detailType">Agenda del Día</p>
+                        <h2 class="text-3xl font-black tracking-tight" id="selectedDateTitle">Selecciona una fecha</h2>
+                    </div>
                 </div>
 
                 <div class="p-8 lg:p-10 flex-1 flex flex-col">
