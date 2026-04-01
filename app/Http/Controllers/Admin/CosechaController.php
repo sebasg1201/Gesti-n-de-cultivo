@@ -73,7 +73,7 @@ class CosechaController extends Controller
         $year = $request->get('year');
 
         $query = Cosecha::where('id_empresa', $id_empresa)
-            ->where('id_estado', '!=', 14)
+            ->whereNotIn('id_estado', [10, 14]) // Excluir Programados (10) y Finalizados (14)
             ->with(['terreno', 'semilla']);
 
         if ($month) {
@@ -165,6 +165,7 @@ class CosechaController extends Controller
             'id_tipo_riego' => 'required|exists:tipo_riego,id_tipo_riego',
             'cantidad_sembrada' => 'required|numeric|min:1',
             'fecha_siembra' => 'required|date',
+            'fecha_inicio_riego' => 'required|date|after_or_equal:fecha_siembra',
             'frecuencia_riego_dias' => 'required|integer|min:1',
             'litros_por_riego' => 'required|numeric|min:1',
             'imagen' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
@@ -210,13 +211,12 @@ class CosechaController extends Controller
         $semilla->stock_actual -= $request->cantidad_sembrada;
         $semilla->save();
 
-        $aguaPorRiego = $request->litros_por_riego;
-
+        // 3. Crear la Cosecha en estado "Programado" (10) para Siembra
         $cosecha = Cosecha::create([
             'id_empresa' => $id_empresa,
             'id_terreno' => $request->id_terreno,
             'id_semilla' => $request->id_semilla,
-            'id_estado' => 1, // Default state
+            'id_estado' => 10, // 10 = Siembra / Programado
             'Cantidad' => $request->cantidad_sembrada,
             'fecha_siembra' => $request->fecha_siembra,
             'frecuencia_riego_dias' => $request->frecuencia_riego_dias,
@@ -224,80 +224,75 @@ class CosechaController extends Controller
             'produccion_estimada' => $request->cantidad_sembrada * $semilla->rendimiento_promedio,
             'litros_por_riego' => $request->litros_por_riego,
             'imagenes' => $imagePath,
+            // id_tipo_riego no está en la tabla cosecha, lo pasaremos en la descripción de la tarea
         ]);
 
-        $terreno->id_estado = 6; // Ocupado (ID 6)
-        $terreno->save();
+        // 4. Asignar Tarea de Siembra automáticamente
+        $id_asignado = $this->obtenerTrabajadorMenosCarga($id_empresa);
 
-        // Automated Task Generation logic
-        if ($totalDays > 0) {
-            $frecuencia = (int) $request->frecuencia_riego_dias;
-            $fecha_actual_bucle = \Carbon\Carbon::parse($request->fecha_siembra);
+        if ($id_asignado) {
+            \App\Models\FaseProgramada::create([
+                'id_terreno' => $request->id_terreno,
+                'documento_trabajador' => $id_asignado,
+                'descripcion' => 'Realizar Siembra de ' . number_format($request->cantidad_sembrada, 0) . ' de ' . $semilla->nombre_semilla . ' en lote ' . ($terreno->nombre ?? 'N/A') . ' [TIPO_RIEGO:' . $request->id_tipo_riego . '] [INICIO_RIEGO:' . $request->fecha_inicio_riego . ']',
+                'fecha_programada' => $request->fecha_siembra . ' ' . date('H:i:s'),
+                'id_estado' => 1 // Pendiente
+            ]);
 
-            // === Selección del trabajador con menos carga ===
-            // Solo se consideran TRABAJADORES (id_tipo_usuario=3) de la empresa.
-            // Primero se buscan disponibles; si no hay, se amplía a todos los trabajadores activos.
-            $queryTrabajadores = \App\Models\Usuario::where('id_empresa', $id_empresa)
-                ->where('id_tipo_usuario', 3); // 3 = trabajador
+            return redirect()->route('admin.cosechas.index')->with('success', 'Siembra programada. Se ha asignado una tarea al trabajador con la menor carga.');
+        } else {
+            // Caso borde: no hay trabajadores
+            session()->flash('warning', 'Aviso: No hay trabajadores registrados. La tarea de siembra no fue asignada.');
+            return redirect()->route('admin.cosechas.index')->with('success', 'Siembra iniciada. Registra trabajadores para asignar la tarea de siembra.');
+        }
+    }
 
-            // Prioridad 1: disponibles (id_estado_trabajador=1) y activos (id_estado=1)
+    /**
+     * Obtiene el documento del trabajador con la menor carga de tareas activas.
+     */
+    private function obtenerTrabajadorMenosCarga($id_empresa)
+    {
+        $queryTrabajadores = \App\Models\Usuario::where('id_empresa', $id_empresa)
+            ->where('id_tipo_usuario', 3); // 3 = trabajador
+
+        // Prioridad 1: disponibles (id_estado_trabajador=1) y activos (id_estado=1)
+        $trabajadores = (clone $queryTrabajadores)
+            ->where('id_estado', 1)
+            ->where('id_estado_trabajador', 1)
+            ->get();
+
+        // Prioridad 2: si no hay disponibles, buscar cualquier trabajador activo
+        if ($trabajadores->isEmpty()) {
             $trabajadores = (clone $queryTrabajadores)
                 ->where('id_estado', 1)
-                ->where('id_estado_trabajador', 1)
                 ->get();
-
-            // Prioridad 2: si no hay disponibles, buscar cualquier trabajador activo
-            if ($trabajadores->isEmpty()) {
-                $trabajadores = (clone $queryTrabajadores)
-                    ->where('id_estado', 1)
-                    ->get();
-            }
-
-            // Prioridad 3: cualquier trabajador de la empresa sin importar estado
-            if ($trabajadores->isEmpty()) {
-                $trabajadores = $queryTrabajadores->get();
-            }
-
-            $trabajadoresCount = $trabajadores->count();
-            $cargasTrabajo = [];
-
-            if ($trabajadoresCount > 0) {
-                foreach ($trabajadores as $t) {
-                    $cargasTrabajo[$t->documento] = \App\Models\Riego::where('documento_trabajador', $t->documento)
-                        ->whereIn('id_estado', [1, 17]) // 1=Pendiente, 17=En Proceso
-                        ->count();
-                }
-                // Ordenar de menor a mayor carga
-                asort($cargasTrabajo);
-                reset($cargasTrabajo);
-                $id_asignado = key($cargasTrabajo);
-            } else {
-                // No hay trabajadores en la empresa — no crear la tarea
-                session()->flash('warning', 'Aviso: No hay trabajadores registrados en la empresa. La tarea de riego no fue asignada.');
-                return redirect()->route('admin.cosechas.index')->with('success', 'Siembra iniciada. Registra trabajadores para asignar tareas de riego.');
-            }
-
-            // Al ser el riego inicial (día 0), si la fecha es hoy, ponerle la hora actual
-            $fechaProgramada = $fecha_actual_bucle->copy();
-            if ($fechaProgramada->isToday()) {
-                $fechaProgramada->setTimeFrom(\Carbon\Carbon::now());
-            }
-
-            $obs = 'Aplicar ' . $aguaPorRiego . 'L en ' . $terreno->nombre . ' al cultivo de ' . $semilla->nombre_semilla . '.';
-
-            \App\Models\Riego::create([
-                'cant_agua_apl' => $aguaPorRiego,
-                'id_tipo_riego' => $request->id_tipo_riego,
-                'id_cosecha' => $cosecha->id_cosecha,
-                'documento_trabajador' => $id_asignado,
-                'id_estado' => 1, // 1 = Pendiente
-                'fecha_programada' => $fechaProgramada->format('Y-m-d H:i:s'),
-                'observaciones' => $obs,
-            ]);
-            // Los siguientes riegos se crearán automáticamente cada X días mediante un comando programado
         }
 
-        return redirect()->route('admin.cosechas.index')->with('success', 'Siembra iniciada y tareas de riego automáticas generadas.');
+        // Prioridad 3: cualquier trabajador de la empresa sin importar estado
+        if ($trabajadores->isEmpty()) {
+            $trabajadores = $queryTrabajadores->get();
+        }
+
+        if ($trabajadores->isEmpty()) return null;
+
+        $cargasTrabajo = [];
+        foreach ($trabajadores as $t) {
+            // Contar riegos, insumos y fases pendientes
+            $cargaRiego = \App\Models\Riego::where('documento_trabajador', $t->documento)
+                ->whereIn('id_estado', [1, 17])->count();
+            
+            $cargaInsumo = \App\Models\InsumoCosecha::where('documento_trabajador', $t->documento)
+                ->whereIn('id_estado', [1, 17])->count();
+                
+            $cargaFase = \App\Models\FaseProgramada::where('documento_trabajador', $t->documento)
+                ->whereIn('id_estado', [1, 17])->count();
+
+            $cargasTrabajo[$t->documento] = $cargaRiego + $cargaInsumo + $cargaFase;
+        }
+
+        asort($cargasTrabajo);
+        reset($cargasTrabajo);
+        return key($cargasTrabajo);
     }
 
     public function show(Request $request, $id)

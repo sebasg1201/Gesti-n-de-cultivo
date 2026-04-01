@@ -36,8 +36,10 @@ class AdminController extends Controller
             ->where('estado', 'Pendiente')
             ->count();
 
-        // 3. Cosechas en Proceso
-        $cosechasEnProceso = \App\Models\Cosecha::where('id_empresa', $id_empresa)->count(); // Simplified for now
+        // 3. Cosechas en Proceso (Excluyendo Programadas y Finalizadas)
+        $cosechasEnProceso = \App\Models\Cosecha::where('id_empresa', $id_empresa)
+            ->whereNotIn('id_estado', [10, 14])
+            ->count();
 
         // 4. Progreso Tareas ULTIMOS 7 DIAS (Fases, Riegos e Insumos) - Rolling window
         $inicioSemana = \Carbon\Carbon::now()->subDays(7)->startOfDay();
@@ -426,6 +428,10 @@ class AdminController extends Controller
                     ]);
                 }
 
+                if ($tipo === 'fase') {
+                    $this->procesarActivacionSiembra($tarea, $usuario->documento);
+                }
+
                 \Illuminate\Support\Facades\DB::table('registro_trabajo')->insert($registroData);
             }
         } elseif ($nuevoEstado === 18) {
@@ -633,51 +639,40 @@ class AdminController extends Controller
             $q->where('id_empresa', $id_empresa);
         })->with(['usuario', 'terreno', 'registroTrabajo']);
 
-        if ($month) $generalQuery->whereMonth('fecha_programada', $month);
-        if ($year) $generalQuery->whereYear('fecha_programada', $year);
-        if ($search) {
-            $searchLower = strtolower($search);
-            $generalQuery->where(function ($q) use ($search, $searchLower) {
-                $q->where('descripcion', 'LIKE', "%{$search}%")
-                    ->orWhereHas('usuario', function ($qu) use ($search) {
-                        $qu->where('nombre', 'LIKE', "%{$search}%");
-                    });
-
-                if (str_contains('general', $searchLower) || str_contains('labor', $searchLower) || str_contains('programada', $searchLower)) {
-                    $q->orWhereRaw('1=1');
-                }
-            });
-        }
-
         $general = $applyFilters($generalQuery, 'fecha_programada', 'descripcion', 'General', false)->get()
             ->map(function ($t) {
                 $t->tipo_referencia = 'general';
+
+                // Si es una siembra, intentar enriquecer la descripción con la variedad
+                $descLower = strtolower($t->descripcion);
+                if (str_contains($descLower, 'siembra')) {
+                    $cosecha = \App\Models\Cosecha::where('id_terreno', $t->id_terreno)
+                        ->where('id_estado', 10) // Programada
+                        ->with('semilla')
+                        ->first();
+
+                    if ($cosecha) {
+                        $t->descripcion = "Realizar Siembra de " . ($cosecha->cantidad_semilla ?? '') . " de " . ($cosecha->semilla->nombre_semilla ?? 'Cultivo');
+                        $t->cosecha = $cosecha; // Para que el badge de variedad funcione
+                    }
+                }
                 return $t;
-            })
-            ->reject(function ($t) {
-                $desc = strtolower($t->descripcion);
-                return str_contains($desc, 'riego') || str_contains($desc, 'insumo') || str_contains($desc, 'fertilizante') || str_contains($desc, 'fumigación') || str_contains($desc, 'abono');
             });
 
         // Terrenos Libres (without active harvest)
         $terrenosLibres = \App\Models\Terreno::where('id_empresa', $id_empresa)
             ->whereDoesntHave('cosechas', function ($q) {
-                $q->where('id_estado', 1); // 1 = Activa/Pendiente? Assuming 1 is active based on previous findings
+                $q->where('id_estado', 1);
             })->get();
 
-        // Dropdown data
         $trabajadores = \App\Models\Usuario::where('id_empresa', $id_empresa)
             ->where('id_tipo_usuario', 3)
             ->get();
 
         $cosechas = \App\Models\Cosecha::where('id_empresa', $id_empresa)
-            ->where('id_estado', '!=', 14) // Excluir finalizadas
-            ->with(['semilla', 'terreno'])
-            ->get();
-
+            ->where('id_estado', '!=', 14)->with(['semilla', 'terreno'])->get();
 
         $tiposRiego = \App\Models\TipoRiego::all();
-
         $catalogoInsumos = \App\Models\Insumo::where('id_empresa', $id_empresa)->get();
 
         return view('admin.tareas.index', compact('riego', 'insumoCosecha', 'recoleccion', 'general', 'trabajadores', 'cosechas', 'terrenosLibres', 'tiposRiego', 'catalogoInsumos'));
@@ -1164,16 +1159,168 @@ class AdminController extends Controller
             $imagePath = $request->file('foto_evidencia')->store('evidencias', 'public');
         }
 
-        \App\Models\RegistroTrabajo::create([
+        $registro = \App\Models\RegistroTrabajo::create([
             'documento_trabajador' => $usuario->documento,
             'fecha_trabajada' => $request->fecha_trabajada,
             'observacion' => $request->observacion,
             'id_insumo_cosecha' => $request->id_insumo_cosecha ?? null,
+            'id_riego' => $request->id_riego ?? null,
+            'id_fase' => $request->id_fase ?? null,
+            'id_cultivo' => $request->id_cultivo ?? null,
             'id_estado' => '1',
             'foto_evidencia' => $imagePath
         ]);
 
+        // LOGICA DE ACTIVACIÓN SI ES UNA SIEMBRA
+        if ($request->id_fase) {
+            $fase = \App\Models\FaseProgramada::find($request->id_fase);
+            if ($fase) {
+                // Marcar la tarea como completada (15)
+                $fase->update(['id_estado' => 15]);
+
+                $this->procesarActivacionSiembra($fase, $usuario->documento);
+            }
+        }
+
+        // Marcar otros tipos de tareas como completadas si se proporcionan
+        if ($request->id_riego) {
+            \App\Models\Riego::where('id_riego', $request->id_riego)->update(['id_estado' => 15]);
+        }
+        if ($request->id_insumo_cosecha) {
+            \App\Models\InsumoCosecha::where('id_insumo_cosecha', $request->id_insumo_cosecha)->update(['id_estado' => 15]);
+        }
+        if ($request->id_cultivo) {
+            \App\Models\Cultivo::where('id_cultivo', $request->id_cultivo)->update(['id_estado' => 15]);
+        }
+
         return response()->json(['success' => 'Día de trabajo registrado correctamente.']);
+    }
+
+    /**
+     * Procesa la activación de una cosecha si la tarea finalizada es una siembra.
+     */
+    private function procesarActivacionSiembra($fase, $documento_trabajador)
+    {
+        // ¿Es una tarea de siembra? (Buscamos si hay una cosecha en estado 10 en ese terreno y validamos con tags o texto)
+        $cosecha = \App\Models\Cosecha::where('id_terreno', $fase->id_terreno)
+            ->where('id_estado', 10)
+            ->first();
+
+        if ($cosecha && (str_contains($fase->descripcion, '[INICIO_RIEGO:') || str_contains(strtolower($fase->descripcion), 'siembra'))) {
+            // 1. Activar Cosecha
+            $cosecha->update(['id_estado' => 1]);
+
+            // 2. Ocupar Terreno
+            $terreno = \App\Models\Terreno::find($cosecha->id_terreno);
+            if ($terreno) {
+                $terreno->update(['id_estado' => 6]);
+            }
+
+            // 3. Programar el primer riego automático (Usando fecha personalizada si existe)
+            $riegoId = 1; // Default
+            $fechaInicioRiego = null;
+
+            if (preg_match('/\[TIPO_RIEGO:(\d+)\]/', $fase->descripcion, $matches)) {
+                $riegoId = $matches[1];
+            }
+
+            if (preg_match('/\[INICIO_RIEGO:([\d-]+)\]/', $fase->descripcion, $dateMatches)) {
+                $fechaInicioRiego = $dateMatches[1];
+            }
+
+            $this->programarRiegoInicial($cosecha, $documento_trabajador, $riegoId, $fechaInicioRiego);
+        }
+    }
+
+    /**
+     * Programa el primer riego tras la siembra efectiva.
+     */
+    private function programarRiegoInicial($cosecha, $documento_trabajador, $id_tipo_riego, $fechaEspecifica = null)
+    {
+        // Si es para hoy, ponemos la hora actual para que salga de una vez. Si es futuro, 00:00 está bien.
+        if ($fechaEspecifica && \Carbon\Carbon::parse($fechaEspecifica)->isToday()) {
+            $fechaProgramada = \Carbon\Carbon::now()->addSeconds(5);
+        } else {
+            $fechaProgramada = $fechaEspecifica ? \Carbon\Carbon::parse($fechaEspecifica) : \Carbon\Carbon::now();
+        }
+        
+        $obs = 'Aplicar ' . $cosecha->litros_por_riego . 'L en ' . ($cosecha->terreno->nombre ?? 'Lote') . ' al cultivo de ' . ($cosecha->semilla->nombre_semilla ?? 'Variedad') . '.';
+
+        \App\Models\Riego::create([
+            'cant_agua_apl' => $cosecha->litros_por_riego,
+            'id_tipo_riego' => $id_tipo_riego,
+            'id_cosecha' => $cosecha->id_cosecha,
+            'documento_trabajador' => $documento_trabajador,
+            'id_estado' => 1,
+            'fecha_programada' => $fechaProgramada->format('Y-m-d H:i:s'),
+            'observaciones' => $obs,
+        ]);
+    }
+
+    public function updateRiego(Request $request, $id)
+    {
+        $riego = \App\Models\Riego::findOrFail($id);
+        $riego->update($request->all());
+
+        if ($request->id_estado == 15 || $request->id_estado == 19) {
+            $this->garantizarRegistroTrabajo($riego, 'riego', $request->observaciones);
+        }
+
+        return redirect()->back()->with('success', 'Tarea de riego actualizada.');
+    }
+
+    public function updateInsumo(Request $request, $id)
+    {
+        $insumoTask = \App\Models\InsumoCosecha::findOrFail($id);
+        $insumoTask->update($request->all());
+
+        if ($request->id_estado == 15 || $request->id_estado == 19) {
+            $this->garantizarRegistroTrabajo($insumoTask, 'insumo', $request->observaciones);
+        }
+
+        return redirect()->back()->with('success', 'Tarea de insumo actualizada.');
+    }
+
+    public function updateGeneral(Request $request, $id)
+    {
+        $fase = \App\Models\FaseProgramada::findOrFail($id);
+        $estadoAnterior = $fase->id_estado;
+        $fase->update($request->all());
+
+        if ($request->id_estado == 15 && $estadoAnterior != 15) {
+            $this->procesarActivacionSiembra($fase, $request->documento_trabajador);
+            $this->garantizarRegistroTrabajo($fase, 'fase', $request->descripcion);
+        }
+
+        return redirect()->back()->with('success', 'Labor general actualizada.');
+    }
+
+    public function updateRecoleccion(Request $request, $id)
+    {
+        $cultivo = \App\Models\Cultivo::findOrFail($id);
+        $cultivo->update($request->all());
+
+        if ($request->id_estado == 15 || $request->id_estado == 19) {
+            $this->garantizarRegistroTrabajo($cultivo, 'recoleccion', $request->descripcion_recoleccion);
+        }
+
+        return redirect()->back()->with('success', 'Tarea de recolección actualizada.');
+    }
+
+    private function garantizarRegistroTrabajo($tarea, $tipo, $obs = null)
+    {
+        $idField = $this->getTaskIdField($tipo);
+        $existe = \App\Models\RegistroTrabajo::where($idField, $tarea->$idField)->exists();
+
+        if (!$existe) {
+            \App\Models\RegistroTrabajo::create([
+                'documento_trabajador' => $tarea->documento_trabajador ?? $tarea->trabajador_documento ?? auth()->guard('usuario')->user()->documento,
+                'fecha_trabajada' => now()->toDateString(),
+                'id_estado' => '1',
+                'observacion' => $obs ?? 'Finalizado por Administrador',
+                $idField => $tarea->$idField
+            ]);
+        }
     }
 
     public function trabajadorPagos()

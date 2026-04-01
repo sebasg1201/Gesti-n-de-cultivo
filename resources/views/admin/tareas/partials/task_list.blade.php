@@ -99,7 +99,7 @@ $shadowColor = 'shadow-purple-100';
         } elseif(in_array($task->id_estado, [16, 18])) { // Perdida u Oculta
         $statusText = 'Perdida';
         $statusClass = 'bg-red-50 dark:bg-red-950/20 text-red-700 dark:text-red-400 border-red-100 dark:border-red-900/20';
-        } elseif($date->isPast()) { // Atrasada
+        } elseif($date->lt(now()->startOfDay())) { // Atrasada
         $statusText = 'Atrasada';
         $statusClass = 'bg-red-50 dark:bg-red-950/20 text-red-700 dark:text-red-400 border-red-100 dark:border-red-900/20';
         }
@@ -146,7 +146,7 @@ $shadowColor = 'shadow-purple-100';
             <div class="flex-grow space-y-3">
                 <div class="flex flex-col gap-0.5">
                     <h5 class="text-lg font-black {{ in_array($task->id_estado, [15, 19]) ? 'text-gray-400 line-through decoration-2' : (in_array($task->id_estado, [16, 18]) ? 'text-red-400 line-through decoration-2' : 'text-gray-900 dark:text-emerald-50 group-hover:text-' . $borderColor) }} transition-colors">
-                        {{ $task->descripcion }}
+                        {{ trim(preg_replace('/\[.*?\]/', '', $task->descripcion)) }}
                     </h5>
                     @if(!empty($task->sub_descripcion))
                     <p class="text-xs text-gray-400 font-medium leading-snug">
@@ -177,7 +177,11 @@ $shadowColor = 'shadow-purple-100';
                             <path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71z" />
                         </svg>
                         @if($itemType === 'general')
-                        {{ $task->terreno?->ubicacion ?? 'Ubicación General' }}
+                            @if(in_array($task->tipo_referencia, ['insumo', 'general']) && $task->cosecha && $task->cosecha->semilla)
+                                {{ $task->cosecha->semilla->nombre_semilla }}
+                            @else
+                                {{ $task->terreno?->ubicacion ?? 'Ubicación General' }}
+                            @endif
                         @else
                         {{ $task->cosecha?->semilla?->nombre_semilla ?? 'Variedad' }}
                         @endif

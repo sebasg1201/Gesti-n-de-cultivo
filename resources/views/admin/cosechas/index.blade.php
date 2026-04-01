@@ -349,9 +349,9 @@
             onclick="this.parentElement.classList.add('hidden')"></div>
 
         <div
-            class="relative mx-auto mt-10 max-w-2xl bg-white dark:bg-slate-800 rounded-[3rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300 border border-transparent dark:border-emerald-900/20">
+            class="relative mx-auto mt-10 max-w-2xl bg-white dark:bg-slate-800 rounded-[3rem] shadow-2xl animate-in zoom-in-95 duration-300 border border-transparent dark:border-emerald-900/20">
             <!-- Header Modal -->
-            <div class="p-10 bg-gradient-to-br from-emerald-900 to-emerald-950 text-white relative">
+            <div class="p-10 bg-gradient-to-br from-emerald-900 to-emerald-950 text-white relative rounded-t-[3rem]">
                 <h2 class="text-3xl font-black leading-none">Nueva Siembra</h2>
                 <p class="text-emerald-400 text-sm mt-2 font-bold uppercase tracking-widest">Registro de Ciclo Productivo
                 </p>
@@ -379,7 +379,7 @@
                                 placeholder="Buscar terreno..."
                                 class="w-full bg-emerald-50 dark:bg-slate-900 border-2 border-emerald-50 dark:border-emerald-900/20 rounded-2xl py-4 pl-10 pr-4 text-emerald-900 dark:text-emerald-50 font-bold placeholder:text-emerald-200 dark:placeholder:text-emerald-800 focus:border-emerald-500 transition-all">
                             
-                            <div id="terrenoResults" class="absolute z-[110] w-full mt-2 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-emerald-50 dark:border-emerald-900/20 hidden max-h-60 overflow-y-auto"></div>
+                            <div id="terrenoResults" class="absolute z-[110] w-full mt-2 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-emerald-50 dark:border-emerald-900/20 hidden max-h-96 overflow-y-auto"></div>
                         </div>
 
                         <!-- Feedback for selected terrain -->
@@ -400,8 +400,8 @@
                         <input type="hidden" name="id_terreno" id="hiddenIdTerreno" required>
                     </div>
 
-                    <!-- Semilla (Hidden initially) -->
-                    <div id="speciesSearchGroup" class="space-y-3 relative hidden animate-in fade-in slide-in-from-left-4 duration-500">
+                    <!-- Semilla -->
+                    <div id="speciesSearchGroup" class="space-y-3 relative animate-in fade-in slide-in-from-left-4 duration-500">
                         <label class="block text-xs font-black text-emerald-950 dark:text-emerald-50 uppercase tracking-widest ml-4 transition-colors">Especie a Sembrar</label>
                         <div id="speciesSearchContainer" class="relative group">
                             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -412,7 +412,7 @@
                                 placeholder="Buscar variedad..."
                                 class="w-full bg-emerald-50 dark:bg-slate-900 border-2 border-emerald-50 dark:border-emerald-900/20 rounded-2xl py-4 pl-10 pr-4 text-emerald-900 dark:text-emerald-50 font-bold placeholder:text-emerald-200 dark:placeholder:text-emerald-800 focus:border-emerald-500 transition-all">
                             
-                            <div id="speciesResults" class="absolute z-[110] w-full mt-2 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-emerald-50 dark:border-emerald-900/20 hidden max-h-60 overflow-y-auto"></div>
+                            <div id="speciesResults" class="absolute z-[110] w-full mt-2 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-emerald-50 dark:border-emerald-900/20 hidden max-h-96 overflow-y-auto"></div>
                         </div>
 
                         <!-- Feedback for selected species -->
@@ -433,131 +433,121 @@
                         <input type="hidden" name="id_semilla" id="hiddenIdSemilla" required>
                     </div>
 
-                    <!-- Riego -->
-                    <div class="space-y-3">
-                        <div class="flex justify-between items-center ml-4 mr-2">
-                            <label class="block text-xs font-black text-emerald-950 dark:text-emerald-50 uppercase tracking-widest transition-colors">Tipo de Riego Inicial</label>
-                            <a href="{{ route('tipo_riegos.index') }}" class="text-emerald-500 hover:text-emerald-600 transition-colors p-1" title="Gestionar Riegos">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
-                            </a>
-                        </div>
-                        <select name="id_tipo_riego" id="select-riego" required
-                            class="w-full bg-emerald-50 dark:bg-slate-900 border-2 border-emerald-50 dark:border-emerald-900/20 rounded-2xl p-4 text-emerald-900 dark:text-emerald-50 font-bold focus:border-emerald-500 transition-all">
-                            <option value="" disabled selected>Seleccione Riego</option>
-                            @foreach($riegos as $riego)
-                                <option value="{{ $riego->id_tipo_riego }}" data-impacto="{{ $riego->impacto_dias ?? 0 }}">
-                                    {{ $riego->tipo_riego }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <!-- Cantidad -->
-                    <div class="space-y-3">
-                        <div class="flex justify-between items-center ml-4 mr-2">
-                            <label class="block text-xs font-black text-emerald-950 dark:text-emerald-50 uppercase tracking-widest transition-colors">Cantidad (Semillas/Plantas)</label>
-                            <a href="{{ route('tipo_semillas.index') }}" class="text-emerald-500 hover:text-emerald-600 transition-colors p-1" title="Gestionar Semillas">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
-                            </a>
-                        </div>
-                        <input type="number" name="cantidad_sembrada" id="input-cantidad" step="0.01" required min="1"
-                            placeholder="Ej: 1000"
-                            class="w-full bg-emerald-50 dark:bg-slate-900 border-2 border-emerald-50 dark:border-emerald-900/20 rounded-2xl p-4 text-emerald-900 dark:text-emerald-50 font-bold placeholder:text-emerald-200 dark:placeholder:text-emerald-800 focus:border-emerald-500 transition-all">
-                    </div>
-
-                    <!-- Fecha -->
-                    <div class="space-y-3">
-                        <label class="block text-xs font-black text-emerald-950 dark:text-emerald-50 uppercase tracking-widest ml-4 transition-colors">Fecha de
-                            Inicio</label>
+                    <!-- Fecha de Siembra -->
+                    <div id="dateStepGroup" class="space-y-3 animate-in fade-in duration-500">
+                        <label class="block text-xs font-black text-emerald-950 dark:text-emerald-50 uppercase tracking-widest ml-4 transition-colors">Fecha Programada de Siembra</label>
                         <input type="date" name="fecha_siembra" id="input-fecha" required value="{{ date('Y-m-d') }}"
+                            onchange="checkStep1Complete()"
                             class="w-full bg-emerald-50 dark:bg-slate-900 border-2 border-emerald-50 dark:border-emerald-900/20 rounded-2xl p-4 text-emerald-900 dark:text-emerald-50 font-bold focus:border-emerald-500 transition-all">
-                    </div>
-
-                    <!-- Frecuencia de Riego -->
-                    <div class="space-y-3">
-                        <label class="block text-xs font-black text-emerald-950 dark:text-emerald-50 uppercase tracking-widest ml-4 transition-colors">Frecuencia de Riego (Días)</label>
-                        <input type="number" name="frecuencia_riego_dias" id="input-frecuencia" required min="1" max="30"
-                            placeholder="Ej: 3" value="3"
-                            class="w-full bg-emerald-50 dark:bg-slate-900 border-2 border-emerald-50 dark:border-emerald-900/20 rounded-2xl p-4 text-emerald-900 dark:text-emerald-50 font-bold placeholder:text-emerald-200 dark:placeholder:text-emerald-800 focus:border-emerald-500 transition-all">
-                    </div>
-
-                    <!-- Litros por Riego -->
-                    <div class="space-y-3">
-                        <label class="block text-xs font-black text-emerald-950 dark:text-emerald-50 uppercase tracking-widest ml-4 transition-colors">Litros por Riego</label>
-                        <input type="number" step="0.5" name="litros_por_riego" id="input-litros" required min="1"
-                            placeholder="Ej: 500" value="500"
-                            class="w-full bg-emerald-50 dark:bg-slate-900 border-2 border-emerald-50 dark:border-emerald-900/20 rounded-2xl p-4 text-emerald-900 dark:text-emerald-50 font-bold placeholder:text-emerald-200 dark:placeholder:text-emerald-800 focus:border-emerald-500 transition-all">
+                        <p class="text-[10px] text-emerald-600 font-bold ml-4">¿Cuándo se realizará la labor?</p>
                     </div>
                 </div>
 
-                <!-- Imagen -->
-                <div class="space-y-3">
-                    <label class="block text-xs font-black text-emerald-950 dark:text-emerald-50 uppercase tracking-widest ml-4 transition-colors">Fotografía del
-                        Cultivo (Opcional)</label>
-                    <div class="relative group">
-                        <input type="file" name="imagen" accept="image/*" id="input-imagen"
-                            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
-                        <div
-                            class="w-full bg-emerald-50 dark:bg-slate-900 border-2 border-dashed border-emerald-200 dark:border-emerald-900/20 rounded-3xl p-8 text-center flex flex-col items-center justify-center gap-4 group-hover:bg-emerald-100/50 dark:group-hover:bg-slate-950/50 group-hover:border-emerald-400 transition-all duration-300">
-                            <div
-                                class="w-16 h-16 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center shadow-sm text-emerald-500 group-hover:scale-110 transition-transform duration-300">
-                                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                </svg>
+                <!-- Detalles de Siembra y Riego -->
+                <div id="detailsStepGroup" class="space-y-8 animate-in slide-in-from-bottom-4 duration-700">
+                    <div class="h-px bg-emerald-100 dark:bg-emerald-900/30 my-2"></div>
+                    <p class="text-[10px] font-black text-emerald-400 uppercase tracking-widest text-center">Detalles de Cultivo y Riego Automático</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <!-- Cantidad -->
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center ml-4 mr-2">
+                                <label class="block text-xs font-black text-emerald-950 dark:text-emerald-50 uppercase tracking-widest transition-colors">Cantidad a Sembrar</label>
+                            </div>
+                            <input type="number" name="cantidad_sembrada" id="input-cantidad" step="1" required min="1"
+                                placeholder="Ej: 1000"
+                                class="w-full bg-emerald-50 dark:bg-slate-900 border-2 border-emerald-50 dark:border-emerald-900/20 rounded-2xl p-4 text-emerald-900 dark:text-emerald-50 font-bold placeholder:text-emerald-200 dark:placeholder:text-emerald-800 focus:border-emerald-500 transition-all">
+                        </div>
+
+                        <!-- Riego -->
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center ml-4 mr-2">
+                                <label class="block text-xs font-black text-emerald-950 dark:text-emerald-50 uppercase tracking-widest transition-colors">Tipo de Riego</label>
+                            </div>
+                            <select name="id_tipo_riego" id="select-riego" required
+                                class="w-full bg-emerald-50 dark:bg-slate-900 border-2 border-emerald-50 dark:border-emerald-900/20 rounded-2xl p-4 text-emerald-900 dark:text-emerald-50 font-bold focus:border-emerald-500 transition-all">
+                                <option value="" disabled selected>Seleccione Riego</option>
+                                @foreach($riegos as $riego)
+                                    <option value="{{ $riego->id_tipo_riego }}" data-impacto="{{ $riego->impacto_dias ?? 0 }}">
+                                        {{ $riego->tipo_riego }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <!-- Frecuencia -->
+                        <div class="space-y-3">
+                            <label class="block text-xs font-black text-emerald-950 dark:text-emerald-50 uppercase tracking-widest ml-4 transition-colors">Cada cuántos días regar</label>
+                            <input type="number" name="frecuencia_riego_dias" id="input-frecuencia" required min="1" max="30"
+                                placeholder="Ej: 3" value="3"
+                                class="w-full bg-emerald-50 dark:bg-slate-900 border-2 border-emerald-50 dark:border-emerald-900/20 rounded-2xl p-4 text-emerald-900 dark:text-emerald-50 font-bold focus:border-emerald-500 transition-all">
+                        </div>
+
+                        <!-- Litros -->
+                        <div class="space-y-3">
+                            <label class="block text-xs font-black text-emerald-950 dark:text-emerald-50 uppercase tracking-widest ml-4 transition-colors">Litros por Riego</label>
+                            <input type="number" step="0.5" name="litros_por_riego" id="input-litros" required min="1"
+                                placeholder="Ej: 500" value="500"
+                                class="w-full bg-emerald-50 dark:bg-slate-900 border-2 border-emerald-50 dark:border-emerald-900/20 rounded-2xl p-4 text-emerald-900 dark:text-emerald-50 font-bold focus:border-emerald-500 transition-all">
+                        </div>
+
+                        <div class="space-y-3">
+                            <label class="block text-xs font-black text-emerald-950 dark:text-emerald-50 uppercase tracking-widest ml-4 transition-colors">Inicio Riego Automático</label>
+                            <input type="date" name="fecha_inicio_riego" id="input-fecha-riego" required value="{{ date('Y-m-d') }}"
+                                class="w-full bg-emerald-50 dark:bg-slate-900 border-2 border-emerald-50 dark:border-emerald-900/20 rounded-2xl p-4 text-emerald-900 dark:text-emerald-50 font-bold focus:border-emerald-500 transition-all">
+                            <p id="error-fecha-riego" class="hidden text-[10px] text-red-500 font-bold ml-4">El riego no puede iniciar antes de la siembra</p>
+                            <p id="hint-fecha-riego" class="text-[10px] text-emerald-600 font-bold ml-4">¿Cuándo empieza el primer riego?</p>
+                        </div>
+                    </div>
+
+                    <!-- Imagen -->
+                    <div class="space-y-3 mt-8">
+                        <label class="block text-xs font-black text-emerald-950 dark:text-emerald-50 uppercase tracking-widest ml-4 transition-colors">Fotografía del Cultivo (Opcional)</label>
+                        <div class="relative group">
+                            <input type="file" name="imagen" accept="image/*" id="input-imagen"
+                                class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                            <div class="w-full bg-emerald-50 dark:bg-slate-900 border-2 border-dashed border-emerald-200 dark:border-emerald-900/20 rounded-3xl p-8 text-center flex flex-col items-center justify-center gap-4 group-hover:bg-emerald-100/50 dark:group-hover:bg-slate-950/50 group-hover:border-emerald-400 transition-all duration-300">
+                                <div class="w-16 h-16 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center shadow-sm text-emerald-500 group-hover:scale-110 transition-transform duration-300">
+                                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                                </div>
+                                <div>
+                                    <p class="font-bold text-emerald-900 dark:text-emerald-50 transition-colors">Haz clic o arrastra una imagen aquí</p>
+                                    <p class="text-xs font-medium text-emerald-500 mt-1" id="file-name-display">PNG, JPG hasta 2MB</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Previsualización -->
+                    <div id="preview-produccion" class="hidden bg-emerald-50 dark:bg-slate-900/50 rounded-3xl p-6 border-2 border-emerald-100 dark:border-emerald-900/20 grid-cols-1 md:grid-cols-2 gap-4 items-center transition-all duration-300 mt-6">
+                        <div class="flex items-center gap-4 md:border-r-2 md:border-emerald-100 dark:md:border-emerald-900/20 pr-4">
+                            <div class="w-12 h-12 bg-emerald-600 dark:bg-emerald-500 rounded-2xl flex items-center justify-center text-white shrink-0 shadow-lg shadow-emerald-200">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
                             </div>
                             <div>
-                                <p class="font-bold text-emerald-900 dark:text-emerald-50 transition-colors">Haz clic o arrastra una imagen aquí</p>
-                                <p class="text-xs font-medium text-emerald-500 mt-1" id="file-name-display">PNG, JPG hasta
-                                    2MB</p>
+                                <p class="text-[10px] font-black text-emerald-400 dark:text-emerald-700 uppercase tracking-widest">Est. Producción</p>
+                                <h4 id="valor-estimado" class="text-2xl font-black text-emerald-950 dark:text-emerald-50 leading-none">0 kg</h4>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4 md:pl-4">
+                            <div class="w-12 h-12 bg-emerald-600 dark:bg-emerald-500 rounded-2xl flex items-center justify-center text-white shrink-0 shadow-lg shadow-emerald-200">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10m-13 9h16a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v11a2 2 0 002 2z" /></svg>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-black text-emerald-400 dark:text-emerald-700 uppercase tracking-widest">Est. Cosecha</p>
+                                <h4 id="fecha-estimada-preview" class="text-xl font-black text-emerald-950 dark:text-emerald-50 leading-none">N/A</h4>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Previsualización de Producción y Fecha -->
-                <div id="preview-produccion"
-                    class="hidden bg-emerald-50 dark:bg-slate-900/50 rounded-3xl p-6 border-2 border-emerald-100 dark:border-emerald-900/20 grid-cols-1 md:grid-cols-2 gap-4 items-center transition-all duration-300">
-                    <div class="flex items-center gap-4 md:border-r-2 md:border-emerald-100 dark:md:border-emerald-900/20 pr-4">
-                        <div
-                            class="w-12 h-12 bg-emerald-600 dark:bg-emerald-500 rounded-2xl flex items-center justify-center text-white shrink-0 shadow-lg shadow-emerald-200 dark:shadow-none">
-                            <!-- Icono para produccion -->
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                            </svg>
-                        </div>
-                        <div>
-                            <p class="text-[10px] font-black text-emerald-400 dark:text-emerald-700 uppercase tracking-widest transition-colors">Est. Producción
-                            </p>
-                            <h4 id="valor-estimado" class="text-2xl font-black text-emerald-950 dark:text-emerald-50 leading-none truncate transition-colors">0 kg
-                            </h4>
-                        </div>
+                    <!-- Botón -->
+                    <div class="pt-6">
+                        <button type="submit" id="btn-submit-cosecha" disabled
+                            class="w-full bg-emerald-500 disabled:bg-gray-300 disabled:cursor-not-allowed text-white rounded-3xl py-6 font-black uppercase tracking-widest hover:bg-emerald-600 transition-all shadow-xl shadow-emerald-100 flex items-center justify-center gap-4">
+                            Confirmar Inicio de Siembra
+                        </button>
                     </div>
-                    <div class="flex items-center gap-4 md:pl-4">
-                        <div
-                            class="w-12 h-12 bg-emerald-600 dark:bg-emerald-500 rounded-2xl flex items-center justify-center text-white shrink-0 shadow-lg shadow-emerald-200 dark:shadow-none">
-                            <!-- Icono para calendario -->
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M8 7V3m8 4V3m-9 8h10m-13 9h16a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v11a2 2 0 002 2z" />
-                            </svg>
-                        </div>
-                        <div>
-                            <p class="text-[10px] font-black text-emerald-400 dark:text-emerald-700 uppercase tracking-widest transition-colors">Est. Cosecha
-                            </p>
-                            <h4 id="fecha-estimada-preview"
-                                class="text-xl font-black text-emerald-950 dark:text-emerald-50 leading-none truncate w-full transition-colors">N/A</h4>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="pt-6">
-                    <button type="submit"
-                        class="w-full bg-emerald-500 text-white rounded-3xl py-6 font-black uppercase tracking-widest hover:bg-emerald-600 transition-all shadow-xl shadow-emerald-100 flex items-center justify-center gap-4">
-                        Confirmar Inicio de Siembra
-                    </button>
-                </div>
+                </div> <!-- END detailsStepGroup -->
             </form>
         </div>
     </div>
@@ -633,6 +623,7 @@
                 // Show species search
                 document.getElementById('speciesSearchGroup').classList.remove('hidden');
                 
+                checkStep1Complete();
                 updatePreview();
             }
 
@@ -643,10 +634,13 @@
                 document.getElementById('selectedTerrenoFeedback').classList.add('hidden');
                 document.getElementById('terrenoSearchInput').value = '';
                 
-                // Hide species search and reset it
+                // Hide steps and reset
                 document.getElementById('speciesSearchGroup').classList.add('hidden');
+                document.getElementById('dateStepGroup').classList.add('hidden');
+                document.getElementById('detailsStepGroup').classList.add('hidden');
                 clearSpeciesSelection();
                 
+                checkStep1Complete();
                 updatePreview();
             }
 
@@ -731,6 +725,10 @@
                 document.getElementById('selectedSpeciesFeedback').classList.remove('hidden');
                 document.getElementById('speciesResults').classList.add('hidden');
 
+                // Show date step
+                document.getElementById('dateStepGroup').classList.remove('hidden');
+
+                checkStep1Complete();
                 updatePreview();
             }
 
@@ -738,9 +736,12 @@
                 selectedSpeciesData = null;
                 document.getElementById('hiddenIdSemilla').value = '';
                 document.getElementById('speciesSearchContainer').classList.remove('hidden');
-                document.getElementById('selectedSpeciesFeedback').classList.add('hidden');
                 document.getElementById('speciesSearchInput').value = '';
                 
+                document.getElementById('dateStepGroup').classList.add('hidden');
+                document.getElementById('detailsStepGroup').classList.add('hidden');
+
+                checkStep1Complete();
                 updatePreview();
             }
 
@@ -752,6 +753,60 @@
                 const previewDiv = document.getElementById('preview-produccion');
                 const valorEstimado = document.getElementById('valor-estimado');
                 const fechaEstimadaPreview = document.getElementById('fecha-estimada-preview');
+
+                function checkStep1Complete() {
+                    const terrainSelected = !!document.getElementById('hiddenIdTerreno').value;
+                    const speciesSelected = !!document.getElementById('hiddenIdSemilla').value;
+                    const dateSelected = !!document.getElementById('input-fecha').value;
+                    const cantidadFilled = !!document.getElementById('input-cantidad').value;
+                    const riegoSelected = !!document.getElementById('select-riego').value;
+                    const dateRiegoVal = document.getElementById('input-fecha-riego').value;
+                    const dateSiembraVal = document.getElementById('input-fecha').value;
+                    const dateRiegoSelected = !!dateRiegoVal;
+                    
+                    let dateCorrect = true;
+                    const errorMsg = document.getElementById('error-fecha-riego');
+                    const hintMsg = document.getElementById('hint-fecha-riego');
+                    const inputRiego = document.getElementById('input-fecha-riego');
+
+                    if (dateRiegoVal && dateSiembraVal) {
+                        if (new Date(dateRiegoVal) < new Date(dateSiembraVal)) {
+                            dateCorrect = false;
+                            if (errorMsg) errorMsg.classList.remove('hidden');
+                            if (hintMsg) hintMsg.classList.add('hidden');
+                            if (inputRiego) inputRiego.classList.add('border-red-500');
+                        } else {
+                            if (errorMsg) errorMsg.classList.add('hidden');
+                            if (hintMsg) hintMsg.classList.remove('hidden');
+                            if (inputRiego) inputRiego.classList.remove('border-red-500');
+                        }
+                    }
+
+                    const btnSubmit = document.getElementById('btn-submit-cosecha');
+                    
+                    if (terrainSelected && speciesSelected && dateSelected && cantidadFilled && riegoSelected && dateRiegoSelected && dateCorrect) {
+                        btnSubmit.disabled = false;
+                        btnSubmit.classList.remove('bg-gray-300', 'cursor-not-allowed');
+                        btnSubmit.classList.add('bg-emerald-500', 'hover:bg-emerald-600');
+                    } else {
+                        btnSubmit.disabled = true;
+                        btnSubmit.classList.add('bg-gray-300', 'cursor-not-allowed');
+                        btnSubmit.classList.remove('bg-emerald-500', 'hover:bg-emerald-600');
+                    }
+                }
+
+                if (selectRiego) selectRiego.addEventListener('change', () => {
+                    checkStep1Complete();
+                    updatePreview();
+                });
+                if (inputCantidad) inputCantidad.addEventListener('input', () => {
+                    checkStep1Complete();
+                    updatePreview();
+                });
+                if (inputFecha) inputFecha.addEventListener('input', () => {
+                    checkStep1Complete();
+                    updatePreview();
+                });
 
                 function updatePreview() {
                     const optionRiego = selectRiego ? selectRiego.options[selectRiego.selectedIndex] : null;
@@ -800,11 +855,22 @@
                     }
                 }
 
-                if (selectRiego) selectRiego.addEventListener('change', updatePreview);
-                if (inputCantidad) inputCantidad.addEventListener('input', updatePreview);
-                if (inputFecha) inputFecha.addEventListener('change', updatePreview);
+                if (selectRiego) selectRiego.addEventListener('change', () => { checkStep1Complete(); updatePreview(); });
+                if (inputCantidad) inputCantidad.addEventListener('input', () => { checkStep1Complete(); updatePreview(); });
+                if (inputFecha) {
+                    ['input', 'change', 'blur'].forEach(evt => {
+                        inputFecha.addEventListener(evt, () => { checkStep1Complete(); updatePreview(); });
+                    });
+                }
+                const inputFechaRiego = document.getElementById('input-fecha-riego');
+                if (inputFechaRiego) {
+                    ['input', 'change', 'blur'].forEach(evt => {
+                        inputFechaRiego.addEventListener(evt, () => { checkStep1Complete(); updatePreview(); });
+                    });
+                }
 
-                window.updatePreview = updatePreview; // Expose to global for button clicks
+                window.updatePreview = updatePreview;
+                window.checkStep1Complete = checkStep1Complete;
 
                 const inputImagen = document.getElementById('input-imagen');
                 const fileNameDisplay = document.getElementById('file-name-display');

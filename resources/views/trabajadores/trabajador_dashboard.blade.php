@@ -153,7 +153,7 @@
                                     'tipo_tarea' => $fase->tipo_tarea,
                                     'tipo_label' => $tipoEtiqueta,
                                     'estado' => $fase->id_estado == 1 ? 'Pendiente' : ($fase->id_estado == 17 ? 'En Proceso' : ($fase->id_estado == 15 ? 'Realizado' : ($fase->id_estado == 16 ? 'Perdida' : ($fase->id_estado == 19 ? 'Retrasó' : 'Otro')))),
-                                    'descripcion' => $fase->descripcion ?? 'Sin descripción',
+                                    'descripcion' => trim(preg_replace('/\[.*?\]/', '', $fase->descripcion ?? 'Sin descripción')),
                                     'obs_trabajador' => $fase->observacion_trabajador ?? '',
                                     'fecha' => $fase->fecha_programada ? \Carbon\Carbon::parse($fase->fecha_programada)->format('d/m/Y H:i') : 'No definida',
                                     'parcela' => optional($tareaTerreno)->nombre ?? 'Sin Parcela',
@@ -201,7 +201,7 @@
 
                                     <h3
                                         class="text-xl font-black text-gray-900 dark:text-emerald-100 mb-6 leading-tight flex-grow {{ $fase->id_estado == 16 ? 'line-through opacity-70 group-hover/card:text-red-700' : $hoverText }} transition-colors">
-                                        {{ $fase->descripcion }}
+                                        {{ trim(preg_replace('/\[.*?\]/', '', $fase->descripcion)) }}
                                     </h3>
 
                                     <div class="mt-auto flex items-center justify-between gap-4">

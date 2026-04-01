@@ -69,6 +69,8 @@ class Cosecha extends Model
             ->orderBy('fecha_programada', 'desc')
             ->first();
             
+        if ($this->id_estado == 10) return 0; // Programado
+        
         if(!$ultimoRiego) return 100; 
         
         if($ultimoRiego->id_estado == 15) { // Realizado

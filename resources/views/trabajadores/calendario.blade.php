@@ -21,7 +21,7 @@
         {{-- Columna Derecha: Panel de Detalles --}}
         <div class="flex-1 w-full">
             <div id="dayDetailsCard" class="bg-white dark:bg-slate-800 rounded-[2.5rem] border border-gray-100 dark:border-emerald-900/20 shadow-2xl shadow-gray-100/50 dark:shadow-none min-h-[550px] flex flex-col overflow-hidden transition-all duration-300">
-                <div class="bg-gradient-to-r from-emerald-600 to-teal-700 dark:from-emerald-700 dark:to-slate-900 p-8 lg:p-10 text-white">
+                <div class="bg-gradient-to-r from-emerald-600 to teal-700 dark:from-emerald-700 dark:to-slate-900 p-8 lg:p-10 text-white">
                     <p class="text-xs font-black uppercase tracking-[0.2em] opacity-80 mb-2" id="detailType">Agenda del Día</p>
                     <h2 class="text-3xl font-black tracking-tight" id="selectedDateTitle">Selecciona una fecha</h2>
                 </div>
@@ -36,61 +36,10 @@
                         </div>
                     </div>
 
-                    {{-- Botón de registro removido: el registro se gestiona desde la vista de Tareas --}}
+                    {{-- Registro removido de aquí: se gestiona en la vista de Dashboard principal --}}
                 </div>
             </div>
         </div>
-    </div>
-</div>
-
-{{-- Modal para Registrar Día Trabajado (Mismo de antes pero invocado desde el panel) --}}
-<div id="modalRegistro" class="fixed inset-0 z-[60] hidden">
-    <div class="fixed inset-0 bg-gray-900/60 dark:bg-black/80 backdrop-blur-sm" onclick="closeRegistroModal()"></div>
-    <div class="fixed inset-0 z-10 overflow-y-auto">
-        <div class="flex min-h-full items-center justify-center p-4">
-            <div class="relative bg-white dark:bg-slate-800 rounded-[2.5rem] p-8 lg:p-10 w-full max-w-lg shadow-2xl border border-transparent dark:border-emerald-900/30">
-                <div class="flex justify-between items-start mb-6">
-                    <h2 class="text-2xl font-black text-gray-900">Registrar Día Trabajado</h2>
-                    <button onclick="closeRegistroModal()" class="text-gray-400 hover:text-gray-600 p-2 rounded-xl hover:bg-gray-100 transition-all">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
-                </div>
-
-                <form id="formRegistro" class="space-y-6" enctype="multipart/form-data">
-                    <input type="hidden" id="fechaValor" name="fecha_trabajada">
-                    <input type="hidden" id="insumoIdValor" name="id_insumo_cosecha">
-
-                    <div id="taskLinkInfo" class="hidden bg-amber-50 border border-amber-100 p-4 rounded-2xl">
-                        <p class="text-[10px] font-black text-amber-600 uppercase tracking-widest leading-none mb-1">Vinculado a Tarea</p>
-                        <p class="text-sm font-bold text-amber-900" id="linkedTaskName"></p>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-black text-gray-400 dark:text-emerald-600 uppercase tracking-widest mb-2 ml-4">Evidencia Fotográfica</label>
-                        <div class="relative group">
-                            <input type="file" name="foto_evidencia" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
-                            <div class="w-full bg-emerald-50 dark:bg-slate-900/50 border-2 border-dashed border-emerald-200 dark:border-emerald-900/40 rounded-2xl p-6 text-center group-hover:bg-emerald-100/50 dark:group-hover:bg-emerald-900/20 transition-all">
-                                <p class="text-sm font-bold text-emerald-700 dark:text-emerald-400">Subir foto de evidencia</p>
-                                <p class="text-[10px] text-emerald-500 dark:text-emerald-600 mt-1">Opcional: PNG, JPG hasta 2MB</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-black text-gray-400 dark:text-emerald-600 uppercase tracking-widest mb-2 ml-4">Observaciones</label>
-                        <textarea name="observacion" rows="3" class="w-full bg-gray-50 dark:bg-slate-900/80 border border-gray-100 dark:border-emerald-900/20 p-4 rounded-2xl focus:border-emerald-500 transition-all focus:outline-none shadow-inner dark:text-emerald-50" placeholder="¿Qué realizaste hoy?"></textarea>
-                    </div>
-
-                    <button type="button" onclick="submitRegistro()" class="w-full bg-emerald-600 text-white font-black py-5 rounded-[1.5rem] hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-100">
-                        Confirmar Asistencia
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
 
 @push('scripts')
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
@@ -237,6 +186,8 @@
                     const colorFase = isPerdida ? 'red' : (isRealizado ? 'emerald' : (isFuturo ? 'amber' : 'emerald'));
                     const iconColor = isFuturo ? '#d97706' : '#059669';
 
+                    const descLimpia = (props.descripcion || 'Labor programada').replace(/\[.*?\]/g, '').trim();
+
                     listEl.insertAdjacentHTML('beforeend', `
                         <div class="bg-${colorFase}-50 border border-${colorFase}-100 p-6 rounded-[2rem] space-y-4 mb-4 relative overflow-hidden ${isRealizado ? 'shadow-sm shadow-emerald-100/50' : ''} animate-in fade-in duration-300">
                             {{-- Metadata Top-Right --}}
@@ -270,13 +221,13 @@
                             ${isRealizado ? `
                                 <div class="px-4 py-3 bg-white/30 rounded-2xl border border-${colorFase}-100/20">
                                     <p class="text-[9px] font-black text-${colorFase}-400 uppercase tracking-widest mb-1">Fase de Cultivo</p>
-                                    <p class="text-[11px] font-bold text-${colorFase}-800 leading-tight">${props.descripcion || 'Labor programada'}</p>
+                                    <p class="text-[11px] font-bold text-${colorFase}-800 leading-tight">${descLimpia}</p>
                                 </div>
                             ` : `
                                 <div class="bg-white/60 p-4 rounded-2xl border border-${colorFase}-100/50">
                                     <p class="text-[10px] font-black text-${colorFase}-400 uppercase tracking-widest mb-1">Actividad Programada</p>
-                                    <p class="text-sm font-bold text-${colorFase}-800 leading-tight mb-2 ${isPerdida ? 'line-through opacity-70' : ''}">${props.descripcion}</p>
-                                    <div class="pt-2 border-t border-${colorFase}-100/30">
+                                    <p class="text-sm font-bold text-${colorFase}-800 leading-tight mb-2 ${isPerdida ? 'line-through opacity-70' : ''}">${descLimpia}</p>
+                                    <div class="pt-2 border-t border-${colorFase}-100/30 flex justify-between items-center">
                                         <p class="text-[11px] text-${colorFase}-700 leading-relaxed">${props.resumen || 'Sigue las instrucciones estándar para esta fase.'}</p>
                                     </div>
                                 </div>
@@ -302,14 +253,17 @@
                 // 3. RIEGOS, INSUMOS Y OTROS
                 else {
                     const colorClass = isPerdida ? 'red' : (props.tipo === 'riego' ? 'sky' : (props.tipo === 'recoleccion' ? 'amber' : 'purple'));
-                    const canRegister = props.tipo === 'insumo' && !isPerdida && !isRealizado;
+                    const canRegister = !isPerdida && !isRealizado;
+
+                    const descLimpia = (props.descripcion || 'Labor programada').replace(/\[.*?\]/g, '').trim();
+                    const titleLimpio = (ev.title || '').replace(/\[.*?\]/g, '').trim();
 
                     if (listEl.children.length > 0) {
                         listEl.insertAdjacentHTML('beforeend', '<div class="w-full h-px bg-emerald-200 dark:bg-emerald-900/30 my-6 border-t border-dashed border-emerald-400 dark:border-emerald-800 opacity-60"></div>');
                     }
 
                     listEl.insertAdjacentHTML('beforeend', `
-                        <div class="bg-${colorClass}-50 border border-${colorClass}-100 p-6 rounded-[2rem] space-y-4 mb-4 relative overflow-hidden ${isRealizado ? `shadow-sm shadow-${colorClass}-100/50` : ''}">
+                        <div class="bg-${colorClass}-50 border border-${colorClass}-100 p-6 rounded-[2rem] space-y-4 mb-4 relative overflow-hidden ${isRealizado ? 'shadow-sm shadow-' + colorClass + '-100/50' : ''}">
                             {{-- Metadata Top-Right --}}
                             <div class="absolute top-4 right-6 text-right z-10 pointer-events-none flex flex-col gap-1.5 items-end">
                                 <span class="text-[9px] font-black uppercase text-${colorClass}-600 bg-${colorClass}-50/50 px-2.5 py-1 rounded-lg border border-gray-100 shadow-sm backdrop-blur-sm">
@@ -348,20 +302,27 @@
                                             ${isRealizado ? 'Tu Registro' : (props.tipo === 'recoleccion' ? 'Recolección' : (props.tipo === 'riego' ? 'Riego' : 'Insumo'))} ${isPerdida ? '(Perdida)' : ''}
                                         </p>
                                         <p class="font-black text-${colorClass}-900 dark:text-emerald-50 text-base leading-tight ${isPerdida ? 'line-through opacity-70' : ''}">
-                                            ${isRealizado ? (props.estado == 19 ? 'Labor Completada (Retrasó)' : 'Labor Completada') : ev.title}
+                                            ${isRealizado ? (props.estado == 19 ? 'Labor Completada (Retrasó)' : 'Labor Completada') : titleLimpio}
                                         </p>
                                     </div>
                                 </div>
                             </div>
                             
-                            ${isRealizado ? `
+                            ${!isRealizado && !isPerdida ? `
+                                <div class="bg-white/30 p-4 rounded-2xl border border-${colorClass}-100/20 flex justify-between items-center">
+                                    <div class="flex-1">
+                                        <p class="text-[9px] font-black text-${colorClass}-400 uppercase tracking-widest mb-1">Detalles de Tarea</p>
+                                        <p class="text-[11px] font-bold text-${colorClass}-800 leading-tight">${descLimpia}</p>
+                                    </div>
+                                </div>
+                            ` : (isRealizado ? `
                                 <div class="px-4 py-3 bg-white/30 rounded-2xl border border-${colorClass}-100/20">
                                     <p class="text-[9px] font-black text-${colorClass}-400 uppercase tracking-widest mb-1">
                                         ${props.tipo === 'riego' ? 'Riego' : (props.tipo === 'recoleccion' ? 'Recolección' : 'Insumo')}
                                     </p>
-                                    <p class="text-[11px] font-bold text-${colorClass}-800 leading-tight">${props.descripcion || 'Labor programada'}</p>
+                                    <p class="text-[11px] font-bold text-${colorClass}-800 leading-tight">${descLimpia}</p>
                                 </div>
-                            ` : ''}
+                            ` : '')}
                             
                             ${isRealizado && props.observacion ? `
                                 <div class="bg-white/60 p-4 rounded-2xl border border-${colorClass}-100/50">
@@ -403,17 +364,20 @@
         });
     }
 
-    function openRegistroModal(date = null, insumoId = null, taskName = '') {
+    function openRegistroModal(date = null, insumoId = null, taskName = '', riegoId = null, faseId = null, cultivoId = null) {
         const dateToUse = date || selectedDate;
         if (!dateToUse) return;
 
         document.getElementById('fechaValor').value = dateToUse;
         document.getElementById('insumoIdValor').value = insumoId || '';
+        document.getElementById('riegoIdValor').value = riegoId || '';
+        document.getElementById('faseIdValor').value = faseId || '';
+        document.getElementById('cultivoIdValor').value = cultivoId || '';
 
         const taskInfo = document.getElementById('taskLinkInfo');
         const taskNameEl = document.getElementById('linkedTaskName');
 
-        if (insumoId) {
+        if (insumoId || riegoId || faseId || cultivoId) {
             taskNameEl.innerText = taskName;
             taskInfo.classList.remove('hidden');
         } else {
@@ -428,31 +392,16 @@
         document.getElementById('modalRegistro').classList.add('hidden');
         document.body.style.overflow = 'auto';
         document.getElementById('formRegistro').reset();
+        
+        // Reset hidden values
+        document.getElementById('insumoIdValor').value = '';
+        document.getElementById('riegoIdValor').value = '';
+        document.getElementById('faseIdValor').value = '';
+        document.getElementById('cultivoIdValor').value = '';
     }
 
     function submitRegistro() {
-        const form = document.getElementById('formRegistro');
-        const formData = new FormData(form);
-
-        fetch(ROUTES.store, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    closeRegistroModal();
-                    calendar.refetchEvents().then(() => {
-                        const dateObj = new Date(selectedDate + 'T12:00:00');
-                        updateDayDetails(selectedDate, dateObj);
-                    });
-                } else {
-                    alert(data.error || 'Error al guardar');
-                }
-            });
+        // Obsoleto: registro movido a dashboard
     }
 </script>
 
