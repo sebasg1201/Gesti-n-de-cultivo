@@ -169,7 +169,7 @@
                         request()->routeIs('estados.*') ||
                         request()->routeIs('admin.terrenos.*');
 
-                    $seguimientoActive = request()->routeIs('admin.cosechas.*');
+                    $seguimientoActive = request()->routeIs('admin.cosechas.*') || request()->routeIs('admin.tareas.*');
                 @endphp
 
                 <a href="{{ route($inicioRoute) }}"
