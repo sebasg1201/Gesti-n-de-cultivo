@@ -169,7 +169,7 @@
                         request()->routeIs('estados.*') ||
                         request()->routeIs('admin.terrenos.*');
 
-                    $seguimientoActive = request()->routeIs('admin.cosechas.*');
+                    $seguimientoActive = request()->routeIs('admin.cosechas.*') || request()->routeIs('admin.tareas.*');
                 @endphp
 
                 <a href="{{ route($inicioRoute) }}"
@@ -489,7 +489,7 @@
                         <!-- Usuario -->
                         <div class="relative group">
                             <div
-                                class="flex items-center gap-3 lg:gap-4 bg-white dark:bg-slate-800 text-gray-800 dark:text-emerald-100 px-3 lg:px-5 py-2 lg:py-3 rounded-xl lg:rounded-2xl shadow-xl dark:shadow-slate-900/50 hover:scale-[1.02] transition-all duration-300 cursor-pointer border dark:border-emerald-900/30">
+                                class="flex items-center gap-3 lg:gap-4 bg-white dark:bg-slate-800 text-gray-800 dark:text-emerald-100 px-3 lg:px-5 py-2 lg:py-3 rounded-xl lg:rounded-2xl shadow-xl dark:shadow-slate-900/50 hover:scale-[1.02] transition-all duration-300 cursor-pointer border border-gray-100 dark:border-emerald-900/30">
 
                                 <div
                                     class="w-8 h-8 lg:w-11 lg:h-11 rounded-lg lg:rounded-xl bg-gradient-to-tr from-emerald-500 to-green-600 text-white flex items-center justify-center font-bold shadow-md">
@@ -512,7 +512,7 @@
                                 class="absolute right-0 top-full pt-2 w-56 opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 transition-all duration-200 origin-top-right z-50 pointer-events-none group-hover:pointer-events-auto">
                                 <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-emerald-100 dark:border-emerald-800/50">
 
-                                    <div class="p-4 border-b border-gray-500 dark:border-emerald-900/30">
+                                    <div class="p-4 border-b border-gray-100 dark:border-emerald-900/30">
                                         <p class="text-sm font-semibold text-gray-800 dark:text-emerald-50">
                                             {{ Auth::guard('usuario')->user()->nombre ?? 'Admin' }}
                                         </p>
