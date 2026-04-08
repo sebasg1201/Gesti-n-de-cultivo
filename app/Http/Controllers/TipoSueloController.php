@@ -121,13 +121,28 @@ class TipoSueloController extends Controller
 
     public function destroy($id)
     {
+        $id_empresa = $this->getEmpresaId();
         $tipoSuelo = TipoSuelo::where('id_tipo_suelo', $id)
-            ->where('id_empresa', $this->getEmpresaId())
+            ->where('id_empresa', $id_empresa)
             ->firstOrFail();
 
-        $tipoSuelo->delete();
+        // Verificar si está siendo usado en terrenos
+        $usosTerreno = \App\Models\Terreno::where('id_tipo_suelo', $id)
+            ->where('id_empresa', $id_empresa)
+            ->count();
+            
+        if ($usosTerreno > 0) {
+            return redirect()->route('tipo_suelos.index')
+                ->with('error', "No se puede eliminar el tipo de suelo. Está configurado en $usosTerreno terreno(s) de su empresa.");
+        }
 
-        return redirect()->route('tipo_suelos.index')
-            ->with('success', 'Tipo de suelo eliminado correctamente');
+        try {
+            $tipoSuelo->delete();
+            return redirect()->route('tipo_suelos.index')
+                ->with('success', 'Tipo de suelo eliminado correctamente de su configuración.');
+        } catch (\Exception $e) {
+            return redirect()->route('tipo_suelos.index')
+                ->with('error', 'No se pudo eliminar el tipo de suelo debido a registros internos asociados.');
+        }
     }
 }

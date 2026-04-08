@@ -71,9 +71,9 @@ class Cosecha extends Model
             
         if ($this->id_estado == 10) return 0; // Programado
         
-        if(!$ultimoRiego) return 100; 
+        if(!$ultimoRiego) return 0; 
         
-        if($ultimoRiego->id_estado == 15) { // Realizado
+        if($ultimoRiego->id_estado == 15 || $ultimoRiego->id_estado == 19) { // Realizado o Retraso
             return 100;
         }
         
@@ -107,6 +107,20 @@ class Cosecha extends Model
     public function insumosCosecha()
     {
         return $this->hasMany(InsumoCosecha::class, 'id_cosecha', 'id_cosecha');
+    }
+
+    public function fasesProgramadas()
+    {
+        return $this->hasMany(FaseProgramada::class, 'id_terreno', 'id_terreno');
+    }
+
+    /**
+     * Scope to filter harvests that have been started (planted) and are not finished.
+     * State 10 = Programmed/Sowing, State 14 = Finished
+     */
+    public function scopePlanted($query)
+    {
+        return $query->whereNotIn('id_estado', [10, 14]);
     }
 }
 

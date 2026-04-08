@@ -6,6 +6,8 @@ use App\Models\Cosecha;
 use App\Models\Riego;
 use App\Models\Insumo;
 use App\Models\InsumoCosecha;
+use App\Models\FaseProgramada;
+use App\Models\Cultivo;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
@@ -43,7 +45,7 @@ class NotificationService
                 'message' => "El cultivo de {$alert->semilla->nombre_semilla} en el terreno {$alert->terreno->nombre} necesita ser regado.",
                 'date' => $nextDate,
                 'id' => $alert->id_cosecha,
-                'url' => route($isWorker ? 'trabajador.dashboard' : 'admin.tareas.index')
+                'url' => route($isWorker ? 'trabajador.dashboard' : 'admin.tareas.index', $isWorker ? ['task_id' => $alert->id_cosecha, 'task_type' => 'riego'] : [])
             ];
         }
 
@@ -84,8 +86,23 @@ class NotificationService
                 'message' => "Es necesario aplicar insecticida al cultivo de {$alert->semilla->nombre_semilla} ({$alert->terreno->nombre}).",
                 'date' => $nextDate,
                 'id' => $alert->id_cosecha,
-                'url' => route($isWorker ? 'trabajador.dashboard' : 'admin.tareas.index')
+                'url' => route($isWorker ? 'trabajador.dashboard' : 'admin.tareas.index', $isWorker ? ['task_id' => $alert->id_cosecha, 'task_type' => 'insumo'] : [])
             ];
+        }
+        
+        // 4. Personal Task Alerts (Scheduled Tasks)
+        if ($isWorker) {
+            $taskAlerts = $this->getPersonalTaskAlerts($workerDoc);
+            foreach ($taskAlerts as $task) {
+                $notifications[] = [
+                    'type' => $task['type'],
+                    'title' => $task['title'],
+                    'message' => $task['message'],
+                    'date' => $task['date'],
+                    'id' => $task['id'],
+                    'url' => route('trabajador.dashboard', ['task_id' => $task['id'], 'task_type' => $task['type']])
+                ];
+            }
         }
 
         // Sort by date desc
@@ -186,5 +203,75 @@ class NotificationService
         }
 
         return $alerts;
+    }
+    
+    private function getPersonalTaskAlerts($workerDoc)
+    {
+        $alerts = [];
+        $hoy = Carbon::today();
+        
+        // Fases Programadas
+        $fases = FaseProgramada::where('documento_trabajador', $workerDoc)
+            ->whereIn('id_estado', [1, 16, 17]) // Pendiente, Perdida, En Proceso
+            ->get();
+            
+        foreach ($fases as $fase) {
+            $this->processGenericTask($fase, 'fase', $alerts, $hoy);
+        }
+        
+        // Riegos Programados
+        $riegos = Riego::where('documento_trabajador', $workerDoc)
+            ->whereIn('id_estado', [1, 16, 17])
+            ->get();
+            
+        foreach ($riegos as $riego) {
+            $this->processGenericTask($riego, 'riego', $alerts, $hoy);
+        }
+        
+        // Insumos Programados
+        $insumos = InsumoCosecha::where('documento_trabajador', $workerDoc)
+            ->whereIn('id_estado', [1, 16, 17])
+            ->get();
+            
+        foreach ($insumos as $insumo) {
+            $this->processGenericTask($insumo, 'insumo', $alerts, $hoy);
+        }
+        
+        // Recolecciones
+        $recolecciones = Cultivo::where('documento_trabajador', $workerDoc)
+            ->whereIn('id_estado', [1, 16, 17])
+            ->get();
+            
+        foreach ($recolecciones as $reco) {
+            // Mapping fecha_recoleccion to fecha_programada for standard processing
+            if ($reco->fecha_recoleccion && !$reco->fecha_programada) {
+                $reco->fecha_programada = $reco->fecha_recoleccion;
+            }
+            $this->processGenericTask($reco, 'recoleccion', $alerts, $hoy);
+        }
+        
+        return $alerts;
+    }
+    
+    private function processGenericTask($task, $type, &$alerts, $hoy)
+    {
+        if (!$task->fecha_programada) return;
+        
+        $fecha = Carbon::parse($task->fecha_programada);
+        $isToday = $fecha->isToday();
+        $isLost = ($task->id_estado == 16) || (!$isToday && $fecha->isPast() && $task->id_estado == 1);
+        
+        if ($isToday || $isLost) {
+            $title = $isLost ? '¡Tarea Perdida/Pendiente!' : 'Tarea para Hoy';
+            $desc = $task->descripcion ?? ($task->observaciones ?? 'Actividad programada');
+            
+            $alerts[] = [
+                'type' => $type,
+                'title' => $title,
+                'message' => "Tienes una tarea: " . substr($desc, 0, 50) . ($desc && strlen($desc) > 50 ? "..." : ""),
+                'date' => $fecha,
+                'id' => $task->getKey(),
+            ];
+        }
     }
 }

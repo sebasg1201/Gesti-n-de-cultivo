@@ -8,7 +8,7 @@
 
         {{-- Columna Izquierda: Calendario (Más pequeño) --}}
         <div class="w-full lg:w-[450px] flex-none">
-            <div class="bg-white dark:bg-slate-800 rounded-[2.5rem] p-6 border border-emerald-50 dark:border-emerald-900/20 shadow-2xl shadow-emerald-50/50 dark:shadow-none transition-all duration-300">
+            <div class="bg-white dark:bg-slate-800 rounded-3xl lg:rounded-[2.5rem] p-4 lg:p-6 border border-emerald-50 dark:border-emerald-900/20 shadow-2xl shadow-emerald-50/50 dark:shadow-none transition-all duration-300">
                 <div id="calendar" class="compact-calendar dark:text-emerald-50"></div>
                 <div class="mt-6 p-4 bg-emerald-50 dark:bg-slate-900/50 rounded-2xl border border-emerald-100 dark:border-emerald-900/30">
                     <p class="text-[10px] font-black text-emerald-700 dark:text-emerald-400 uppercase tracking-widest text-center">
@@ -20,8 +20,8 @@
 
         {{-- Columna Derecha: Panel de Detalles --}}
         <div class="flex-1 w-full">
-            <div id="dayDetailsCard" class="bg-white dark:bg-slate-800 rounded-[2.5rem] border border-gray-100 dark:border-emerald-900/20 shadow-2xl shadow-gray-100/50 dark:shadow-none min-h-[550px] flex flex-col overflow-hidden transition-all duration-300">
-                <div class="relative overflow-hidden bg-gradient-to-r from-emerald-600 to-teal-700 dark:from-emerald-700 dark:to-slate-900 p-8 lg:p-10 text-white group">
+            <div id="dayDetailsCard" class="bg-white dark:bg-slate-800 rounded-3xl lg:rounded-[2.5rem] border border-gray-100 dark:border-emerald-900/20 shadow-2xl shadow-gray-100/50 dark:shadow-none min-h-[450px] lg:min-h-[550px] flex flex-col overflow-hidden transition-all duration-300">
+                <div class="relative overflow-hidden bg-gradient-to-r from-emerald-600 to-teal-700 dark:from-emerald-700 dark:to-slate-900 p-6 lg:p-10 text-white group">
                     {{-- Decoración Premium --}}
                     <div class="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-white/10 rounded-full blur-2xl group-hover:bg-white/20 transition-all duration-700"></div>
                     <div class="absolute bottom-0 left-0 -mb-10 -ml-10 w-24 h-24 bg-emerald-400/20 rounded-full blur-xl group-hover:bg-emerald-400/30 transition-all duration-700"></div>
@@ -32,7 +32,7 @@
                     </div>
                 </div>
 
-                <div class="p-8 lg:p-10 flex-1 flex flex-col">
+                <div class="p-6 lg:p-10 flex-1 flex flex-col">
                     <div id="eventsList" class="space-y-4 flex-1">
                         <div class="flex flex-col items-center justify-center h-full text-center py-20 opacity-30">
                             <svg class="w-20 h-20 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -113,6 +113,7 @@
             selectable: true,
             unselectAuto: false,
             dateClick: function(info) {
+                calendar.select(info.dateStr);
                 updateDayDetails(info.dateStr, info.date);
             }
         });
@@ -503,6 +504,57 @@
 
     .compact-calendar {
         font-family: inherit;
+    }
+
+    /* ==================== CUSTOM SELECTION & TOUCH OPTIMIZATION ==================== */
+    
+    /* Highlight para el día seleccionado */
+    .fc .fc-daygrid-day.fc-day-selected {
+        background-color: rgba(16, 185, 129, 0.08) !important; /* Emerald suave */
+        position: relative;
+    }
+
+    .fc .fc-daygrid-day.fc-day-selected::after {
+        content: '';
+        position: absolute;
+        inset: 2px;
+        border: 2px solid #10b981;
+        border-radius: 0.75rem;
+        pointer-events: none;
+        z-index: 5;
+    }
+
+    /* Shadow interno para selección */
+    .fc .fc-daygrid-day.fc-day-selected .fc-daygrid-day-number {
+        color: #064e3b !important;
+        background: #ecfdf5;
+        border-radius: 6px;
+        padding: 2px 6px !important;
+    }
+
+    /* TOUCH OPTIMIZATION: Los puntos y eventos no bloquean el clic */
+    .fc-daygrid-day-events, .fc-event, .fc-daygrid-event-h-dot {
+        pointer-events: none !important;
+    }
+
+    /* Asegurar que la celda sea el target principal */
+    .fc-daygrid-day {
+        cursor: pointer !important;
+    }
+
+    /* Mejorar botones en móvil */
+    @media (max-width: 640px) {
+        .fc .fc-toolbar {
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .fc .fc-toolbar-title {
+            font-size: 0.9rem !important;
+        }
+        .fc .fc-button {
+            padding: 0.5rem 0.8rem !important;
+            font-size: 0.75rem !important;
+        }
     }
 </style>
 @endpush

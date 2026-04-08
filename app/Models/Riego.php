@@ -17,7 +17,8 @@ class Riego extends Model
         'id_cosecha',
         'documento_trabajador',
         'id_estado',
-        'fecha_programada'
+        'fecha_programada',
+        'id_salario'
     ];
 
     public function tipoRiego()

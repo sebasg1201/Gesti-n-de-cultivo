@@ -5,7 +5,7 @@
 @section('content')
 <div class="max-w-6xl mx-auto pb-20 space-y-12">
     {{-- Header de Bienvenida --}}
-    <div class="relative overflow-hidden bg-gradient-to-br from-gray-900 via-emerald-900 to-emerald-800 rounded-[3rem] p-10 lg:p-16 shadow-2xl group transition-all duration-700 hover:shadow-emerald-200/20">
+    <div class="relative overflow-hidden bg-gradient-to-br from-gray-900 via-emerald-900 to-emerald-800 rounded-3xl lg:rounded-[3rem] p-6 lg:p-16 shadow-2xl group transition-all duration-700 hover:shadow-emerald-200/20">
         <div class="absolute top-0 right-0 -mt-20 -mr-20 w-80 h-80 bg-emerald-500/10 rounded-full blur-[100px] group-hover:bg-emerald-500/20 transition-all duration-700"></div>
         <div class="absolute bottom-0 left-0 -mb-20 -ml-20 w-64 h-64 bg-teal-500/10 rounded-full blur-[80px] group-hover:bg-teal-500/20 transition-all duration-700"></div>
         
@@ -26,8 +26,8 @@
 
             {{-- Card de Resumen Rápido (Glassmorphism) --}}
             <div class="relative group/card">
-                <div class="absolute inset-0 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-[2.5rem] blur-2xl opacity-20 group-hover/card:opacity-40 transition-opacity"></div>
-                <div class="relative bg-white/10 backdrop-blur-3xl border border-white/20 rounded-[2.5rem] p-10 shadow-2xl w-full sm:min-w-[340px] text-center">
+                <div class="absolute inset-0 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-3xl lg:rounded-[2.5rem] blur-2xl opacity-20 group-hover/card:opacity-40 transition-opacity"></div>
+                <div class="relative bg-white/10 backdrop-blur-3xl border border-white/20 rounded-3xl lg:rounded-[2.5rem] p-6 lg:p-10 shadow-2xl w-full sm:min-w-[340px] text-center">
                     <p class="text-emerald-300 text-[10px] font-black uppercase tracking-[0.4em] mb-4">Total Acumulado</p>
                     <h3 class="text-5xl font-black text-white mb-2 leading-none">
                         ${{ number_format($pagos->sum('cantidad_pago'), 0, ',', '.') }}
@@ -47,7 +47,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
         {{-- Sidebar de Información --}}
         <div class="lg:col-span-4 space-y-8 animate-fade-in-up">
-            <div class="bg-white dark:bg-slate-800 rounded-[2.5rem] p-10 border border-gray-100 dark:border-emerald-900/20 shadow-xl shadow-gray-200/50 dark:shadow-none relative overflow-hidden group/info transition-all duration-300">
+            <div class="bg-white dark:bg-slate-800 rounded-3xl lg:rounded-[2.5rem] p-6 lg:p-10 border border-gray-100 dark:border-emerald-900/20 shadow-xl shadow-gray-200/50 dark:shadow-none relative overflow-hidden group/info transition-all duration-300">
                 <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-50 dark:bg-emerald-900/10 rounded-full -mr-16 -mt-16 transition-all duration-500 group-hover/info:scale-110"></div>
                 
                 <h3 class="text-xl font-black text-gray-900 dark:text-emerald-50 mb-8 flex items-center gap-4 relative">
@@ -100,7 +100,7 @@
             </div>
             
             <a href="{{ route('trabajador.soporte') }}" class="block group">
-                <div class="bg-emerald-600 rounded-[2.5rem] p-10 text-white shadow-2xl shadow-emerald-200 relative overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:shadow-emerald-300/50">
+                <div class="bg-emerald-600 rounded-3xl lg:rounded-[2.5rem] p-6 lg:p-10 text-white shadow-2xl shadow-emerald-200 relative overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:shadow-emerald-300/50">
                     <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-white/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700"></div>
                     <h4 class="text-xl font-black mb-4 relative">Soporte y Dudas</h4>
                     <p class="text-emerald-50 opacity-80 text-sm leading-relaxed mb-6 relative">Si tienes alguna duda sobre tus pagos, contacta directamente con el administrador de la empresa.</p>
@@ -115,7 +115,7 @@
 
         {{-- Listado Detallado --}}
         <div class="lg:col-span-8 animate-fade-in-up delay-150">
-            <div class="bg-white dark:bg-slate-800 rounded-[2.5rem] p-10 border border-gray-100 dark:border-emerald-900/20 shadow-xl shadow-gray-200/50 dark:shadow-none h-full transition-all duration-300">
+            <div class="bg-white dark:bg-slate-800 rounded-3xl lg:rounded-[2.5rem] p-6 lg:p-10 border border-gray-100 dark:border-emerald-900/20 shadow-xl shadow-gray-200/50 dark:shadow-none h-full transition-all duration-300">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-12">
                     <div class="flex items-center gap-5">
                         <div class="w-14 h-14 bg-gray-900 dark:bg-slate-900 rounded-[1.5rem] flex items-center justify-center text-white border border-transparent dark:border-emerald-900/30 shadow-xl shadow-gray-300 dark:shadow-none">
@@ -132,7 +132,7 @@
 
                 <div class="space-y-6">
                     @forelse($pagos as $pago)
-                        <div class="group/item relative bg-white dark:bg-slate-900/40 p-7 rounded-[2.2rem] border border-gray-100 dark:border-emerald-900/10 hover:border-emerald-300 dark:hover:border-emerald-700 transition-all duration-300 flex flex-col sm:flex-row sm:items-center justify-between gap-6 hover:shadow-2xl hover:shadow-emerald-100/30 dark:hover:shadow-none cursor-pointer payment-history-card"
+                        <div class="group/item relative bg-white dark:bg-slate-900/40 p-4 lg:p-7 rounded-2xl lg:rounded-[2.2rem] border border-gray-100 dark:border-emerald-900/10 hover:border-emerald-300 dark:hover:border-emerald-700 transition-all duration-300 flex flex-col sm:flex-row sm:items-center justify-between gap-4 lg:gap-6 hover:shadow-2xl hover:shadow-emerald-100/30 dark:hover:shadow-none cursor-pointer payment-history-card"
                              data-tipo="{{ $pago->tipoSalario ? $pago->tipoSalario->tipo_salario : 'Standard' }}"
                              data-fecha="{{ \Carbon\Carbon::parse($pago->fecha_pago)->translatedFormat('d \d\e F, Y') }}"
                              data-monto="${{ number_format($pago->cantidad_pago, 0, ',', '.') }} {{ $pago->unidad_pago }}">

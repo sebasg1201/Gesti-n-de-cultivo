@@ -17,10 +17,12 @@ class GenerarRiegos extends Command
 
     public function handle()
     {
+        $ahora = Carbon::now();
         $hoy = Carbon::today();
 
         // ====================================================
-        // 1. Riegos
+        // 1. Marcar como Perdida (Riegos, Fases, Insumos)
+        // Solo marcamos como perdida si la fecha es ANTERIOR a hoy (ayer o antes)
         $riegosPerdidos = DB::table('riego')->whereIn('id_estado', [1, 17])
             ->whereDate('fecha_programada', '<', $hoy)
             ->get();

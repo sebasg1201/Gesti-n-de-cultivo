@@ -6,22 +6,6 @@
     <div class="space-y-6">
         {{-- Las alertas de success/error ahora se manejan en el layout principal --}}
 
-        @if ($errors->any())
-            <div class="auto-dismiss bg-red-100 dark:bg-red-900/30 border-l-4 border-red-500 text-red-700 dark:text-red-400 p-4 rounded-xl shadow-sm mb-6">
-                <div class="flex items-center mb-2">
-                    <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <span class="font-bold cursor-default flex-1">Hay errores en el formulario:</span>
-                </div>
-                <ul class="list-disc ml-10 text-sm">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
 
         <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
             <!-- Add/Edit Form Column -->

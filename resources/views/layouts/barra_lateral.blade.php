@@ -14,6 +14,7 @@
         } else {
             document.documentElement.classList.remove('dark');
         }
+        window.APP_URL = "{{ url('/') }}";
     </script>
     <style>
         /* Ocultar texto de resultados en paginación solo para el panel de SuperAdmin */
@@ -577,15 +578,6 @@
             const popup = document.getElementById('welcome-notif-popup');
 
             // Auto-dismiss para alertas del sistema
-            document.querySelectorAll('.auto-dismiss').forEach(function(el) {
-                setTimeout(function() {
-                    el.style.transition = 'opacity 0.6s ease';
-                    el.style.opacity = '0';
-                    setTimeout(function() {
-                        el.remove();
-                    }, 600);
-                }, 10000);
-            });
 
             // Mostrar popup solo una vez por sesión de pestaña
             if (popup && !sessionStorage.getItem(POPUP_SESSION_KEY)) {

@@ -12,7 +12,7 @@ class EmpresaController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Empresa::with(['estado', 'licencia']);
+        $query = Empresa::with(['estado', 'licencia', 'admin']);
 
         if ($request->has('search')) {
             $search = $request->input('search');

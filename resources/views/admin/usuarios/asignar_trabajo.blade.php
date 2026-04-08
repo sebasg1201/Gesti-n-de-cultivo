@@ -44,6 +44,16 @@
                 <form id="paymentForm" action="{{ route('admin.usuarios.store_trabajo', $usuario->documento) }}" method="POST" class="space-y-5">
                     @csrf
                     <input type="hidden" name="id_salario" id="id_salario_input">
+                    <input type="hidden" name="selected_tasks" id="selected_tasks_json">
+
+                    <div id="selectionSummary" class="hidden bg-emerald-50 border border-emerald-200 p-3 rounded-xl mb-4 animate-pulse">
+                        <p class="text-xs font-bold text-emerald-800 flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.64.304 1.25.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                            </svg>
+                            <span id="selectedCountText">0 tareas seleccionadas para pagar</span>
+                        </p>
+                    </div>
 
                     <div>
                         <label for="descripcion_pago" class="block text-sm font-bold text-gray-700 mb-1">Descripción del Pago</label>
@@ -178,20 +188,71 @@
                 </div>
             @endforelse
 
+            <div class="mt-6">
+                {{ $salarios->appends(['page_actividades' => $actividades->currentPage()])->links() }}
+            </div>
+
             <hr class="border-gray-100 my-8">
 
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="text-xl font-bold text-gray-800 flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                    </svg>
-                    Actividades y Evidencias
-                </h3>
+            <div class="bg-white p-5 rounded-3xl shadow-sm border border-emerald-100 space-y-4 mb-6">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-black text-emerald-700 uppercase tracking-[0.2em]">Selección Inteligente</span>
+                    <button type="button" onclick="deselectAll()" class="text-[10px] font-bold text-gray-400 hover:text-red-500 transition-colors uppercase tracking-widest flex items-center gap-1">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                        Limpiar selección
+                    </button>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="flex flex-wrap gap-2">
+                        <button type="button" onclick="selectPeriod(7)" class="px-4 py-2 rounded-xl bg-emerald-50 text-emerald-700 text-xs font-black hover:bg-emerald-600 hover:text-white transition-all border border-emerald-100 shadow-sm">
+                            7 Días
+                        </button>
+                        <button type="button" onclick="selectPeriod(15)" class="px-4 py-2 rounded-xl bg-emerald-50 text-emerald-700 text-xs font-black hover:bg-emerald-600 hover:text-white transition-all border border-emerald-100 shadow-sm">
+                            15 Días
+                        </button>
+                        <button type="button" onclick="selectPeriod(30)" class="px-4 py-2 rounded-xl bg-emerald-50 text-emerald-700 text-xs font-black hover:bg-emerald-600 hover:text-white transition-all border border-emerald-100 shadow-sm">
+                            30 Días
+                        </button>
+                    </div>
+                    
+                    <div class="flex items-center gap-2 bg-gray-50 p-2 rounded-2xl border border-gray-100">
+                        <input type="date" id="filter_desde" class="bg-white border-0 text-[10px] font-bold rounded-lg px-2 py-1 focus:ring-0 w-full" title="Desde">
+                        <span class="text-gray-300 text-xs">→</span>
+                        <input type="date" id="filter_hasta" class="bg-white border-0 text-[10px] font-bold rounded-lg px-2 py-1 focus:ring-0 w-full" title="Hasta">
+                        <button type="button" onclick="selectCustomRange()" class="bg-emerald-600 text-white p-1.5 rounded-lg hover:bg-emerald-700 transition shadow-sm">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                        </button>
+                    </div>
+                </div>
             </div>
 
             <div class="space-y-4">
                 @forelse($actividades as $act)
-                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-all">
+                    <div class="task-card bg-white p-5 rounded-2xl shadow-sm border transition-all relative overflow-hidden group {{ $act->id_salario ? 'border-emerald-500 bg-emerald-50/20' : 'border-gray-100' }}" 
+                         data-id="{{ $act->id_fase_programada ?? $act->id_riego ?? $act->id_insumo_cosecha }}" 
+                         data-type="{{ $act->tipo_actividad }}"
+                         data-date="{{ $act->fecha_prog }}">
+                        
+                        @if($act->id_salario)
+                            <div class="absolute top-0 right-0 bg-emerald-600 text-white px-3 py-1 rounded-bl-xl text-[10px] font-black uppercase flex items-center gap-1 shadow-sm z-10">
+                                <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                                PAGADO
+                            </div>
+                        @else
+                            <div class="absolute top-4 right-4 z-10">
+                                @if($act->id_estado == 16)
+                                    <div class="w-5 h-5 rounded bg-gray-100 border border-gray-200 flex items-center justify-center cursor-not-allowed" title="No se puede pagar una tarea perdida">
+                                        <svg class="w-3 h-3 text-red-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+                                    </div>
+                                @else
+                                    <input type="checkbox" onchange="toggleTask(this)" 
+                                           class="task-checkbox w-6 h-6 rounded-lg border-emerald-200 text-emerald-600 focus:ring-emerald-500 cursor-pointer shadow-sm"
+                                           value="{{ json_encode(['id' => $act->id_fase_programada ?? $act->id_riego ?? $act->id_insumo_cosecha, 'type' => $act->tipo_actividad]) }}">
+                                @endif
+                            </div>
+                        @endif
+
                         <div class="flex flex-col md:flex-row gap-6">
                             {{-- Info de la Tarea --}}
                             <div class="flex-1">
@@ -211,7 +272,7 @@
                                     </div>
                                     <div class="flex flex-col">
                                         <span class="text-gray-400 font-bold uppercase truncate">Estado</span>
-                                        <span class="font-bold {{ $act->id_estado == 9 ? 'text-emerald-600' : 'text-orange-500' }}">
+                                        <span class="font-bold {{ $act->id_estado == 15 ? 'text-emerald-600' : ($act->id_estado == 16 ? 'text-red-500' : 'text-orange-500') }}">
                                             {{ $act->estado->nombre_estado ?? 'Pendiente' }}
                                         </span>
                                     </div>
@@ -262,6 +323,10 @@
                 @empty
                     <p class="text-center text-gray-400 text-sm py-10 italic">No hay actividades asignadas recientemente.</p>
                 @endforelse
+            </div>
+
+            <div class="mt-8">
+                {{ $actividades->appends(['page_salarios' => $salarios->currentPage()])->links() }}
             </div>
 
         </div>
@@ -345,6 +410,7 @@
     function resetPaymentForm() {
         document.getElementById('paymentForm').reset();
         document.getElementById('id_salario_input').value = '';
+        deselectAll(); // Limpiar tareas seleccionadas al resetear
         
         const submitBtn = document.querySelector('#paymentForm button[type="submit"]');
         const btnText = document.getElementById('btnSubmitText');
@@ -354,6 +420,134 @@
         submitBtn.classList.add('bg-emerald-600', 'hover:bg-emerald-700');
         submitBtn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
         resetBtn.classList.add('hidden');
+    }
+
+    // Lógica de Selección de Tareas con Persistencia
+    let selectedTasks = JSON.parse(localStorage.getItem('selected_tasks_temp') || '[]');
+
+    document.addEventListener('DOMContentLoaded', () => {
+        syncCheckboxesWithStorage();
+        updateSelectionUI();
+
+        // Validación de Formulario
+        const paymentForm = document.getElementById('paymentForm');
+        if (paymentForm) {
+            paymentForm.addEventListener('submit', function(e) {
+                if (selectedTasks.length === 0) {
+                    e.preventDefault();
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Selección requerida',
+                        text: 'Debes seleccionar al menos una tarea para poder registrar o actualizar el pago.',
+                        confirmButtonColor: '#10b981'
+                    });
+                    return false;
+                }
+                // Si todo ok, el JSON ya está en el hidden via updateSelectionUI
+                localStorage.removeItem('selected_tasks_temp'); // Limpiar al enviar exitosamente
+            });
+        }
+    });
+
+    function syncCheckboxesWithStorage() {
+        document.querySelectorAll('.task-checkbox').forEach(cb => {
+            const data = JSON.parse(cb.value);
+            const isSelected = selectedTasks.some(t => t.id == data.id && t.type == data.type);
+            if (isSelected) {
+                cb.checked = true;
+                const card = cb.closest('.task-card');
+                card.classList.add('ring-2', 'ring-emerald-500', 'border-emerald-500', 'bg-emerald-50/30');
+                card.classList.remove('border-gray-100');
+            }
+        });
+    }
+
+    function toggleTask(checkbox) {
+        const taskData = JSON.parse(checkbox.value);
+        const card = checkbox.closest('.task-card');
+
+        if (checkbox.checked) {
+            if (!selectedTasks.some(t => t.id == taskData.id && t.type == taskData.type)) {
+                selectedTasks.push(taskData);
+            }
+            card.classList.add('ring-2', 'ring-emerald-500', 'border-emerald-500', 'bg-emerald-50/30');
+            card.classList.remove('border-gray-100');
+        } else {
+            selectedTasks = selectedTasks.filter(t => t.id != taskData.id || t.type != taskData.type);
+            card.classList.remove('ring-2', 'ring-emerald-500', 'border-emerald-500', 'bg-emerald-50/30');
+            card.classList.add('border-gray-100');
+        }
+        
+        localStorage.setItem('selected_tasks_temp', JSON.stringify(selectedTasks));
+        updateSelectionUI();
+    }
+
+    function updateSelectionUI() {
+        const count = selectedTasks.length;
+        const summary = document.getElementById('selectionSummary');
+        const countText = document.getElementById('selectedCountText');
+        const jsonInput = document.getElementById('selected_tasks_json');
+
+        if (count > 0) {
+            summary.classList.remove('hidden');
+            countText.innerText = `${count} tareas seleccionadas para vincular a este pago`;
+            jsonInput.value = JSON.stringify(selectedTasks);
+        } else {
+            summary.classList.add('hidden');
+            jsonInput.value = '';
+        }
+    }
+
+    function deselectAll() {
+        document.querySelectorAll('.task-checkbox').forEach(cb => {
+            cb.checked = false;
+            const card = cb.closest('.task-card');
+            card.classList.remove('ring-2', 'ring-emerald-500', 'border-emerald-500', 'bg-emerald-50/30');
+            card.classList.add('border-gray-100');
+        });
+        selectedTasks = [];
+        localStorage.removeItem('selected_tasks_temp');
+        updateSelectionUI();
+    }
+
+    function selectPeriod(days) {
+        const now = new Date();
+        const cutoff = new Date();
+        cutoff.setDate(now.getDate() - days);
+        
+        applyFilterLogic(cutoff, now);
+    }
+
+    function selectCustomRange() {
+        const desde = document.getElementById('filter_desde').value;
+        const hasta = document.getElementById('filter_hasta').value;
+
+        if (!desde || !hasta) {
+            alert('Por favor selecciona ambas fechas para filtrar.');
+            return;
+        }
+
+        const dateDesde = new Date(desde);
+        dateDesde.setHours(0,0,0,0);
+        const dateHasta = new Date(hasta);
+        dateHasta.setHours(23,59,59,999);
+
+        applyFilterLogic(dateDesde, dateHasta);
+    }
+
+    function applyFilterLogic(start, end) {
+        document.querySelectorAll('.task-card').forEach(card => {
+            const checkbox = card.querySelector('.task-checkbox');
+            if (!checkbox) return; // Pagado o Perdida
+
+            const taskDate = new Date(card.dataset.date);
+            if (taskDate >= start && taskDate <= end) {
+                if (!checkbox.checked) {
+                    checkbox.checked = true;
+                    toggleTask(checkbox);
+                }
+            }
+        });
     }
 </script>
 @endpush

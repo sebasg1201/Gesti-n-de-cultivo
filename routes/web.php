@@ -40,6 +40,7 @@ Route::post('logout', [UsuarioLoginController::class, 'logout'])->name('usuario.
 
 // 2FA Routes
 use App\Http\Controllers\Auth\TwoFactorController;
+
 Route::get('login/verify', [TwoFactorController::class, 'showForm'])->name('login.verify');
 Route::post('login/verify', [TwoFactorController::class, 'verify'])->name('login.verify.submit');
 Route::post('login/resend-code', [TwoFactorController::class, 'resend'])->name('login.resend');
@@ -110,6 +111,7 @@ Route::middleware(['auth:usuario', 'check.license'])->group(function () {
 
     // Nueva ruta para Mis Pagos (Trabajador)
     Route::get('/trabajador/mis-pagos', [AdminController::class, 'trabajadorPagos'])->name('trabajador.pagos');
+    Route::post('/trabajador/pagos/{id}/visto', [AdminController::class, 'marcarPagoVisto'])->name('trabajador.pagos.visto');
 
     // Rutas de Soporte (Trabajador)
     Route::get('/trabajador/soporte', [AdminController::class, 'soporteTrabajador'])->name('trabajador.soporte');
@@ -117,7 +119,7 @@ Route::middleware(['auth:usuario', 'check.license'])->group(function () {
 
     // Nueva ruta para tareas categorizadas de administrador
     Route::get('/admin/tareas', [AdminController::class, 'tareasCategorizadas'])->name('admin.tareas.index');
-    
+
     // Rutas de Soporte (Admin)
     Route::get('/admin/soporte', [AdminController::class, 'adminSoporte'])->name('admin.soporte.index');
     Route::post('/admin/soporte/{id}/responder', [AdminController::class, 'responderSoporte'])->name('admin.soporte.responder');
@@ -157,19 +159,19 @@ Route::middleware(['auth:usuario', 'check.license'])->group(function () {
     Route::get('/admin/proveedores/buscar-items', [\App\Http\Controllers\ProveedorController::class, 'buscarItems'])->name('admin.proveedores.buscar_items');
     Route::resource('/admin/proveedores', \App\Http\Controllers\ProveedorController::class, ['as' => 'admin']);
     Route::resource('/admin/insumos', \App\Http\Controllers\InsumoController::class, ['as' => 'admin']);
-    
+
     // Perfil y Configuración (Admin y Trabajador)
     Route::get('/configuracion', [\App\Http\Controllers\Admin\ProfileController::class, 'index']); // Redundancia para evitar 404
     Route::get('/admin/configuracion', [\App\Http\Controllers\Admin\ProfileController::class, 'index'])->name('admin.configuracion');
     Route::post('/admin/configuracion', [\App\Http\Controllers\Admin\ProfileController::class, 'update'])->name('admin.configuracion.update');
-    
+
     // Cosechas y Cultivos
     Route::get('/admin/cosechas/export', [\App\Http\Controllers\Admin\CosechaController::class, 'exportCSV'])->name('admin.cosechas.export');
     Route::get('/admin/cosechas/buscar-terrenos', [DashboardController::class, 'buscarEmpresa']); // Redundant?
     Route::get('/admin/cosechas/{id}/export-history', [\App\Http\Controllers\Admin\CosechaController::class, 'exportHistory'])->name('admin.cosechas.export_history');
     Route::get('/admin/cosechas/buscar-terrenos', [\App\Http\Controllers\Admin\CosechaController::class, 'buscarTerrenos'])->name('admin.cosechas.buscar_terrenos');
     Route::get('/admin/cosechas/buscar-especies', [\App\Http\Controllers\Admin\CosechaController::class, 'buscarEspecies'])->name('admin.cosechas.buscar_especies');
-    
+
     // Rutas para Resumen de Finalización y PDF
     Route::get('/admin/cosechas/{id}/resumen', [\App\Http\Controllers\Admin\CultivoController::class, 'finalizationSummary'])->name('admin.cosechas.resumen');
     Route::get('/admin/cosechas/{id}/pdf', [\App\Http\Controllers\Admin\CultivoController::class, 'downloadFinalizationPDF'])->name('admin.cosechas.pdf');
@@ -204,7 +206,7 @@ Route::middleware(['auth:usuario', 'check.license'])->group(function () {
 
     Route::get('admin/terrenos/export', [\App\Http\Controllers\TerrenoController::class, 'exportCSV'])->name('admin.terrenos.export');
     Route::resource('admin/terrenos', \App\Http\Controllers\TerrenoController::class, ['as' => 'admin']);
-
 });
+
 
 Route::get('/', [HomeController::class, 'index'])->name('index_welcome');

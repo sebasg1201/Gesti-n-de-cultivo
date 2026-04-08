@@ -373,6 +373,45 @@
         // Initial load for all
         window.addEventListener('DOMContentLoaded', () => {
             ['todas', 'riego', 'insumo', 'general'].forEach(type => initPagination(type));
+
+            // Centralized Date Validation Logic
+            function setupDateValidation(inputId, errorId, btnId) {
+                const input = document.getElementById(inputId);
+                const error = document.getElementById(errorId);
+                const btn = document.getElementById(btnId);
+
+                if (!input || !error || !btn) return;
+
+                function validate() {
+                    const hoy = new Date();
+                    hoy.setHours(0, 0, 0, 0);
+
+                    const parts = input.value.split('-');
+                    if (parts.length !== 3) return;
+
+                    const selected = new Date(parts[0], parts[1] - 1, parts[2]);
+
+                    if (selected < hoy) {
+                        error.classList.remove('hidden');
+                        input.classList.add('border-rose-500', 'ring-2', 'ring-rose-100');
+                        btn.disabled = true;
+                        btn.classList.add('opacity-50', 'cursor-not-allowed');
+                    } else {
+                        error.classList.add('hidden');
+                        input.classList.remove('border-rose-500', 'ring-2', 'ring-rose-100');
+                        btn.disabled = false;
+                        btn.classList.remove('opacity-50', 'cursor-not-allowed');
+                    }
+                }
+
+                input.addEventListener('input', validate);
+                input.addEventListener('change', validate);
+                validate(); // Initial check
+            }
+
+            setupDateValidation('fecha_riego', 'error_fecha_riego', 'btn_submit_riego');
+            setupDateValidation('fecha_insumo', 'error_fecha_insumo', 'btn_submit_insumo');
+            setupDateValidation('fecha_general', 'error_fecha_general', 'btn_submit_general');
         });
 
         function openModal(id) {

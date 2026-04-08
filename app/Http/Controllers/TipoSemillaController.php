@@ -134,13 +134,32 @@ class TipoSemillaController extends Controller
 
     public function destroy($id)
     {
+        $id_empresa = $this->getEmpresaId();
         $tipoSemilla = TipoSemilla::where('id_semilla', $id)
-            ->where('id_empresa', $this->getEmpresaId())
+            ->where('id_empresa', $id_empresa)
             ->firstOrFail();
 
-        $tipoSemilla->delete();
+        // Verificar si tiene cosechas asociadas
+        $cosechasContador = $tipoSemilla->cosechas()->count();
+        if ($cosechasContador > 0) {
+            return redirect()->route('tipo_semillas.index')
+                ->with('error', "No se puede eliminar la semilla. Está vinculada a $cosechasContador lote(s) de cosecha.");
+        }
 
-        return redirect()->route('tipo_semillas.index')
-            ->with('success', 'Semilla eliminada de su catálogo correctamente.');
+        // Verificar si tiene insumos asociados (relación técnica)
+        $insumosContador = \App\Models\Insumo::where('id_tipo_semilla', $id)->count();
+        if ($insumosContador > 0) {
+            return redirect()->route('tipo_semillas.index')
+                ->with('error', "No se puede eliminar la semilla. Hay $insumosContador registro(s) en su inventario que dependen de esta variedad.");
+        }
+
+        try {
+            $tipoSemilla->delete();
+            return redirect()->route('tipo_semillas.index')
+                ->with('success', 'Semilla eliminada de su catálogo correctamente.');
+        } catch (\Exception $e) {
+            return redirect()->route('tipo_semillas.index')
+                ->with('error', 'No se pudo eliminar la semilla debido a una restricción de base de datos.');
+        }
     }
 }

@@ -253,42 +253,80 @@
     <!-- MODAL: CREAR/EDITAR PROVEEDOR -->
     <div id="modalProveedor"
         class="hidden fixed inset-0 bg-emerald-950/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-        <div class="bg-white dark:bg-slate-800 rounded-[2rem] shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-300 border border-emerald-900/20">
-            <div class="bg-emerald-600 p-8 text-white">
-                <h3 class="text-2xl font-black tracking-tight" id="modalProvTitle">Nuevo Proveedor</h3>
-                <p class="text-emerald-100 text-xs mt-1">Ingrese los datos básicos del remitente.</p>
+        <div class="bg-white dark:bg-slate-800 rounded-[2.5rem] shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-300 border border-emerald-900/20">
+            <div class="bg-emerald-600 p-8 text-white relative">
+                <div class="absolute -right-6 -top-6 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
+                <div class="relative z-10">
+                    <h3 class="text-2xl font-black tracking-tight" id="modalProvTitle">Nuevo Proveedor</h3>
+                    <p class="text-emerald-100 text-xs mt-1 font-medium italic">Gestione su red de confianza.</p>
+                </div>
             </div>
             <form id="formProveedor" method="POST" action="{{ route('admin.proveedores.store') }}" class="p-8 space-y-6">
                 @csrf
                 <div id="provMethod"></div>
-                <div>
-                    <label class="block text-xs font-bold text-emerald-700 uppercase tracking-wider mb-2">Nombre de la
-                        Empresa / Persona</label>
-                    <input type="text" name="nombre" id="inProvNombre" required
-                        class="w-full px-4 py-3 rounded-2xl border-emerald-100 focus:border-emerald-500 focus:ring-emerald-500 bg-emerald-50/30 text-sm">
+                
+                <div class="space-y-2">
+                    <label class="block text-[10px] font-black text-emerald-700 dark:text-emerald-400 uppercase tracking-widest ml-1">Proveedor / Razón Social</label>
+                    <div class="relative group">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-emerald-400 group-focus-within:text-emerald-600 transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                        </div>
+                        <input type="text" name="nombre" id="inProvNombre" required value="{{ old('nombre') }}"
+                            placeholder="Ej: AgroIndustrias S.A."
+                            class="w-full bg-emerald-50/30 dark:bg-slate-900 border-2 border-emerald-50 dark:border-emerald-900/20 rounded-2xl py-3 pl-11 pr-4 focus:outline-none focus:border-emerald-500 transition-all font-bold text-sm text-emerald-950 dark:text-emerald-50">
+                    </div>
+                    @error('nombre')
+                        <p class="text-[10px] text-rose-500 font-bold ml-4 mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
-                <div>
-                    <label class="block text-xs font-bold text-emerald-700 uppercase tracking-wider mb-2">Categoría (Ej:
-                        Semillas, Químicos)</label>
-                    <input type="text" name="producto" id="inProvProducto"
-                        class="w-full px-4 py-3 rounded-2xl border-emerald-100 focus:border-emerald-500 focus:ring-emerald-500 bg-emerald-50/30 text-sm">
+
+                <div class="space-y-2">
+                    <label class="block text-[10px] font-black text-emerald-700 dark:text-emerald-400 uppercase tracking-widest ml-1">Especialidad / Categoría</label>
+                    <div class="relative group">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-emerald-400 group-focus-within:text-emerald-600 transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
+                        </div>
+                        <input type="text" name="producto" id="inProvProducto" value="{{ old('producto') }}"
+                            placeholder="Ej: Semillas y Fertilizantes"
+                            class="w-full bg-emerald-50/30 dark:bg-slate-900 border-2 border-emerald-50 dark:border-emerald-900/20 rounded-2xl py-3 pl-11 pr-4 focus:outline-none focus:border-emerald-500 transition-all font-bold text-sm text-emerald-950 dark:text-emerald-50">
+                    </div>
+                    @error('producto')
+                        <p class="text-[10px] text-rose-500 font-bold ml-4 mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
-                <div>
-                    <label class="block text-xs font-bold text-emerald-700 uppercase tracking-wider mb-2">Contacto
-                        (Teléfono/Correo)</label>
-                    <input type="text" name="contacto" id="inProvContacto"
-                        class="w-full px-4 py-3 rounded-2xl border-emerald-100 focus:border-emerald-500 focus:ring-emerald-500 bg-emerald-50/30 text-sm">
+
+                <div class="space-y-2">
+                    <label class="block text-[10px] font-black text-emerald-700 dark:text-emerald-400 uppercase tracking-widest ml-1">Contacto Directo (WhatsApp/Tel)</label>
+                    <div class="relative group">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-emerald-400 group-focus-within:text-emerald-600 transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
+                        </div>
+                        <input type="text" name="contacto" id="inProvContacto" value="{{ old('contacto') }}"
+                            placeholder="Ej: +57 300 000 0000"
+                            class="w-full bg-emerald-50/30 dark:bg-slate-900 border-2 border-emerald-50 dark:border-emerald-900/20 rounded-2xl py-3 pl-11 pr-4 focus:outline-none focus:border-emerald-500 transition-all font-bold text-sm text-emerald-950 dark:text-emerald-50">
+                    </div>
+                    @error('contacto')
+                        <p class="text-[10px] text-rose-500 font-bold ml-4 mt-1 italic">{{ $message }}</p>
+                    @enderror
                 </div>
-                <div class="flex gap-3 pt-4">
+
+                <div class="flex gap-4 pt-4">
                     <button type="button" onclick="closeModal('modalProveedor')"
-                        class="px-6 py-4 bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold rounded-2xl transition-all">Cancelar</button>
+                        class="px-8 py-4 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 font-black text-xs uppercase tracking-widest rounded-2xl transition-all">Cancelar</button>
                     <button type="submit"
-                        class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 rounded-2xl shadow-lg shadow-emerald-200 transition-all">Guardar
-                        Proveedor</button>
+                        class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs uppercase tracking-widest py-4 rounded-2xl shadow-lg shadow-emerald-200 dark:shadow-none transition-all transform hover:-translate-y-0.5 active:translate-y-0">Guardar Proveedor</button>
                 </div>
             </form>
         </div>
     </div>
+
+    @if($errors->has('nombre') || $errors->has('producto') || $errors->has('contacto'))
+        <script>
+            window.addEventListener('DOMContentLoaded', () => {
+                openModal('modalProveedor');
+            });
+        </script>
+    @endif
 
     <!-- MODAL: REGISTRAR ENTRADA -->
     <div id="modalEntrada"
@@ -461,8 +499,8 @@
                                         ${icon}
                                     </div>
                                     <div>
-                                        <p class="text-xs font-bold text-gray-900">${item.nombre}</p>
-                                        <p class="text-[9px] text-gray-400 uppercase font-black">${item.tipo}</p>
+                                        <p class="text-xs font-bold text-gray-900">${item.nombre || 'Sin nombre'}</p>
+                                        <p class="text-[9px] text-gray-400 uppercase font-black">${item.tipo || 'General'}</p>
                                     </div>
                                 </div>
                                 <svg class="w-4 h-4 text-emerald-200 opacity-0 group-hover:opacity-100 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -574,7 +612,7 @@
                 const listContainer = document.getElementById('historyList');
                 listContainer.innerHTML = '<div class="text-center py-10 opacity-30 italic text-sm">Cargando historial...</div>';
 
-                fetch(`/admin/proveedores/${id}/historial`)
+                fetch(`${window.APP_URL}/admin/proveedores/${id}/historial`)
                     .then(res => res.json())
                     .then(data => {
                         listContainer.innerHTML = '';
@@ -607,7 +645,8 @@
 
                         if (data.length > 3) {
                             const moreBtn = document.createElement('a');
-                            moreBtn.href = `/admin/proveedores/entradas-dashboard?proveedor=${id}`;
+                            const dashboardRoute = "{{ route('admin.proveedores.entradas_dashboard', ['proveedor' => ':id']) }}";
+                            moreBtn.href = dashboardRoute.replace(':id', id);
                             moreBtn.className = "block w-full text-center py-4 text-xs font-black text-emerald-600 uppercase tracking-widest border-2 border-emerald-100 rounded-2xl hover:bg-emerald-50 transition-all mt-4 mb-8";
                             moreBtn.innerHTML = `Ver historial completo`;
                             listContainer.appendChild(moreBtn);
@@ -618,7 +657,11 @@
             function openEntradaModal(prov) {
                 currentProveedor = prov;
                 document.getElementById('entradaProvName').innerText = prov.nombre;
-                document.getElementById('formEntrada').action = `/admin/proveedores/${prov.id_proveedor}/entradas`;
+                
+                // Generar la URL usando la ruta de Laravel de forma segura
+                const routeTemplate = "{{ route('admin.proveedores.entradas.store', ['id' => ':id']) }}";
+                document.getElementById('formEntrada').action = routeTemplate.replace(':id', prov.id_proveedor);
+                
                 openModal('modalEntrada');
             }
 
@@ -634,7 +677,8 @@
                 document.getElementById('inProvContacto').value = prov.contacto || '';
 
                 const form = document.getElementById('formProveedor');
-                form.action = `/admin/proveedores/${prov.id_proveedor}`;
+                const updateRoute = "{{ route('admin.proveedores.update', ['proveedore' => ':id']) }}";
+                form.action = updateRoute.replace(':id', prov.id_proveedor);
 
                 // Add _method PUT for Laravel spoofing
                 if (!form.querySelector('input[name="_method"]')) {

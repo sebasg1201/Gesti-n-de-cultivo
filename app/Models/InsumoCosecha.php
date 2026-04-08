@@ -18,6 +18,7 @@ class InsumoCosecha extends Model
         'id_insumo',
         'documento_trabajador',
         'id_estado',
+        'id_salario',
         'cantidad_usada',
         'impacto_dias',
         'observaciones',

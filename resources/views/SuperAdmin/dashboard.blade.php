@@ -503,7 +503,7 @@
             debounceTimer = setTimeout(() => {
                 spinner.classList.remove('hidden');
 
-                fetch(`/empresa/buscar/${nit}`)
+                fetch(`${window.APP_URL}/empresa/buscar/${nit}`)
                     .then(res => res.json())
                     .then(data => {
                         spinner.classList.add('hidden');

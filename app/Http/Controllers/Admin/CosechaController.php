@@ -100,8 +100,12 @@ class CosechaController extends Controller
         $terrenos = Terreno::with('tipoSuelo')->where('id_empresa', $id_empresa)->where('id_estado', 7)->get(); // 7 = Disponible
         $semillas = TipoSemilla::where('id_empresa', $id_empresa)->get();
         $riegos = TipoRiego::where('id_empresa', $id_empresa)->get();
+        $cantidadTrabajadores = \App\Models\Usuario::where('id_empresa', $id_empresa)
+            ->where('id_tipo_usuario', 3)
+            ->whereIn('id_estado', [1, 3])
+            ->count();
 
-        return view('admin.cosechas.index', compact('cosechas', 'terrenos', 'semillas', 'riegos'));
+        return view('admin.cosechas.index', compact('cosechas', 'terrenos', 'semillas', 'riegos', 'cantidadTrabajadores'));
     }
 
     public function exportCSV(Request $request)
@@ -170,6 +174,18 @@ class CosechaController extends Controller
             'litros_por_riego' => 'required|numeric|min:1',
             'imagen' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
+ 
+        // 0. Validación Preventiva: Trabajadores Existentes
+        $trabajadorCount = \App\Models\Usuario::where('id_empresa', $id_empresa)
+            ->where('id_tipo_usuario', 3)
+            ->whereIn('id_estado', [1, 3])
+            ->count();
+ 
+        if ($trabajadorCount === 0) {
+            return redirect()->back()
+                ->with('error', 'Error crítico: No hay trabajadores activos registrados en el sistema. Es obligatoria la existencia de al menos un trabajador para asignar las tareas de siembra y riego automáticamente.')
+                ->withInput();
+        }
 
         $semilla = TipoSemilla::findOrFail($request->id_semilla);
         $terreno = Terreno::with('tipoSuelo')->findOrFail($request->id_terreno);
@@ -255,16 +271,16 @@ class CosechaController extends Controller
         $queryTrabajadores = \App\Models\Usuario::where('id_empresa', $id_empresa)
             ->where('id_tipo_usuario', 3); // 3 = trabajador
 
-        // Prioridad 1: disponibles (id_estado_trabajador=1) y activos (id_estado=1)
+        // Prioridad 1: disponibles (id_estado_trabajador=1) y activos (1=Pendiente, 3=Activa)
         $trabajadores = (clone $queryTrabajadores)
-            ->where('id_estado', 1)
+            ->whereIn('id_estado', [1, 3])
             ->where('id_estado_trabajador', 1)
             ->get();
 
         // Prioridad 2: si no hay disponibles, buscar cualquier trabajador activo
         if ($trabajadores->isEmpty()) {
             $trabajadores = (clone $queryTrabajadores)
-                ->where('id_estado', 1)
+                ->whereIn('id_estado', [1, 3])
                 ->get();
         }
 
@@ -351,9 +367,9 @@ class CosechaController extends Controller
 
         $porcentajeHidratacion = 0;
         if (!$ultimoRiego) {
-            $porcentajeHidratacion = 100;
+            $porcentajeHidratacion = 0;
         } else {
-            if ($ultimoRiego->id_estado == 15) {
+            if ($ultimoRiego->id_estado == 15 || $ultimoRiego->id_estado == 19) {
                 $porcentajeHidratacion = 100;
             } elseif ($ultimoRiego->id_estado == 17) {
                 $porcentajeHidratacion = 50;
@@ -378,7 +394,7 @@ class CosechaController extends Controller
             $r->id_estado_real = $r->id_estado;
 
 
-            if ($r->id_estado == 15) {
+            if ($r->id_estado == 15 || $r->id_estado == 19) {
                 $r->estado_historial = 'Completado';
             } elseif ($r->id_estado == 16 || $r->id_estado == 18) {
                 $r->estado_historial = 'Perdida';
@@ -401,7 +417,7 @@ class CosechaController extends Controller
             $i->observacion_trabajador = $i->registroTrabajo->observacion ?? null;
             $i->id_estado_real = $i->id_estado;
 
-            $i->estado_historial = in_array($i->id_estado, [15]) ? 'Completado' : ($i->id_estado == 19 ? 'Retraso' : ($i->id_estado == 17 ? 'En Proceso' : (in_array($i->id_estado, [16, 18]) ? 'Perdida' : 'Pendiente')));
+            $i->estado_historial = in_array($i->id_estado, [15, 19]) ? 'Completado' : ($i->id_estado == 17 ? 'En Proceso' : (in_array($i->id_estado, [16, 18]) ? 'Perdida' : 'Pendiente'));
             $historial->push($i);
         }
 
@@ -419,7 +435,7 @@ class CosechaController extends Controller
             $c->observacion_trabajador = $c->registroTrabajo->observacion ?? null;
             $c->id_estado_real = $c->id_estado;
 
-            if ($c->id_estado == 15) {
+            if ($c->id_estado == 15 || $c->id_estado == 19) {
                 $c->estado_historial = 'Completado';
             } elseif ($c->id_estado == 19) {
                 $c->estado_historial = 'Retraso';
@@ -476,7 +492,8 @@ class CosechaController extends Controller
             'porcentajeHidratacion' => $porcentajeHidratacion,
             'riegosCompletados' => $riegosCompletados,
             'totalRiegosCiclo' => $totalRiegosCiclo,
-            'historial' => $paginatedHistorial
+            'historial' => $paginatedHistorial,
+            'ultimoRiego' => $ultimoRiego
         ]);
     }
 

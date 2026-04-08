@@ -19,8 +19,9 @@ class Salario extends Model
         'cantidad_pago',
         'unidad_pago',
         'fecha_pago',
+        'id_tipo_salario',
         'estado',
-        'id_tipo_salario'
+        'visto_trabajador'
     ];
 
     public function usuario()

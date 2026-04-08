@@ -271,9 +271,10 @@
                                         @endif
                                         @endif
 
-                                        {{-- Detalles (JSON corregido) --}}
-                                        <button type="button" data-empresa="{{ json_encode($empresa) }}"
-                                            onclick="openModal(JSON.parse(this.getAttribute('data-empresa')))"
+                                        {{-- Detalles (RESTAURADO) --}}
+                                        <button type="button" 
+                                            data-empresa-json="{{ json_encode($empresa) }}"
+                                            onclick="verDetallesEmpresa(this)"
                                             class="p-2 text-green-600 dark:text-emerald-400 hover:bg-green-100 dark:hover:bg-emerald-500/10 rounded-lg transition-colors cursor-pointer"
                                             title="Ver Detalles">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -628,74 +629,119 @@
 
                 {{-- DETAILS GRID --}}
                 <div class="px-6 py-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
-
-                    <div class="bg-gray-50 dark:bg-slate-950 rounded-xl p-4 flex items-start gap-3">
-                        <div class="mt-0.5 p-2 bg-green-100 dark:bg-emerald-950 rounded-lg">
+                    {{-- Representante --}}
+                    <div class="bg-gray-50/80 dark:bg-emerald-950/10 rounded-xl p-3 flex items-start gap-3 border border-gray-100 dark:border-emerald-500/10">
+                        <div class="mt-0.5 p-2 bg-white dark:bg-slate-900 rounded-lg shadow-sm">
                             <svg class="w-4 h-4 text-green-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                             </svg>
                         </div>
                         <div>
-                            <p class="text-xs text-gray-400 dark:text-slate-500 font-medium">Representante</p>
-                            <p class="text-sm font-semibold text-gray-800 dark:text-emerald-50" id="modal-representante"></p>
+                            <p class="text-[10px] text-gray-500 font-bold uppercase tracking-tight">Representante Legal</p>
+                            <p class="text-sm font-bold text-gray-800 dark:text-emerald-50" id="modal-representante"></p>
                         </div>
                     </div>
 
-                    <div class="bg-gray-50 rounded-xl p-4 flex items-start gap-3">
-                        <div class="mt-0.5 p-2 bg-green-100 rounded-lg">
-                            <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                    {{-- Teléfono --}}
+                    <div class="bg-gray-50/80 dark:bg-emerald-950/10 rounded-xl p-3 flex items-start gap-3 border border-gray-100 dark:border-emerald-500/10">
+                        <div class="mt-0.5 p-2 bg-white dark:bg-slate-900 rounded-lg shadow-sm">
+                            <svg class="w-4 h-4 text-green-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                             </svg>
                         </div>
                         <div>
-                            <p class="text-xs text-gray-400 font-medium">Teléfono</p>
-                            <p class="text-sm font-semibold text-gray-800" id="modal-telefono"></p>
+                            <p class="text-[10px] text-gray-500 font-bold uppercase tracking-tight">Teléfono</p>
+                            <p class="text-sm font-bold text-gray-800 dark:text-emerald-50" id="modal-telefono"></p>
                         </div>
                     </div>
 
-                    <div class="bg-gray-50 rounded-xl p-4 flex items-start gap-3">
-                        <div class="mt-0.5 p-2 bg-green-100 rounded-lg">
-                            <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    {{-- Correo --}}
+                    <div class="bg-gray-50/80 dark:bg-emerald-950/10 rounded-xl p-3 flex items-start gap-3 border border-gray-100 dark:border-emerald-500/10">
+                        <div class="mt-0.5 p-2 bg-white dark:bg-slate-900 rounded-lg shadow-sm">
+                            <svg class="w-4 h-4 text-green-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                             </svg>
                         </div>
                         <div>
-                            <p class="text-xs text-gray-400 font-medium">Correo</p>
-                            <p class="text-sm font-semibold text-gray-800 break-all" id="modal-correo"></p>
+                            <p class="text-[10px] text-gray-500 font-bold uppercase tracking-tight">Correo Electrónico</p>
+                            <p class="text-sm font-bold text-gray-800 dark:text-emerald-50 break-all" id="modal-correo"></p>
                         </div>
                     </div>
 
-                    <div class="bg-gray-50 rounded-xl p-4 flex items-start gap-3">
-                        <div class="mt-0.5 p-2 bg-green-100 rounded-lg">
-                            <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    {{-- Dirección --}}
+                    <div class="bg-gray-50/80 dark:bg-emerald-950/10 rounded-xl p-3 flex items-start gap-3 border border-gray-100 dark:border-emerald-500/10">
+                        <div class="mt-0.5 p-2 bg-white dark:bg-slate-900 rounded-lg shadow-sm">
+                            <svg class="w-4 h-4 text-green-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                             </svg>
                         </div>
                         <div>
-                            <p class="text-xs text-gray-400 font-medium">Dirección</p>
-                            <p class="text-sm font-semibold text-gray-800" id="modal-direccion"></p>
+                            <p class="text-[10px] text-gray-500 font-bold uppercase tracking-tight">Dirección</p>
+                            <p class="text-sm font-bold text-gray-800 dark:text-emerald-50" id="modal-direccion"></p>
                         </div>
                     </div>
 
-                    <div class="sm:col-span-2 bg-gray-50 rounded-xl p-4 flex items-start gap-3">
-                        <div class="mt-0.5 p-2 bg-green-100 rounded-lg">
-                            <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    {{-- Fecha Registro --}}
+                    <div class="sm:col-span-2 bg-gray-50/80 dark:bg-emerald-950/10 rounded-xl p-3 flex items-start gap-3 border border-gray-100 dark:border-emerald-500/10">
+                        <div class="mt-0.5 p-2 bg-white dark:bg-slate-900 rounded-lg shadow-sm">
+                            <svg class="w-4 h-4 text-green-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                             </svg>
                         </div>
                         <div>
-                            <p class="text-xs text-gray-400 font-medium">Fecha de Registro</p>
-                            <p class="text-sm font-semibold text-gray-800" id="modal-fecha"></p>
+                            <p class="text-[10px] text-gray-500 font-bold uppercase tracking-tight">Fecha de Registro</p>
+                            <p class="text-sm font-bold text-gray-800 dark:text-emerald-50" id="modal-fecha"></p>
                         </div>
                     </div>
+                </div>
 
+                {{-- ADMIN DETAILS SECTION --}}
+                <div id="modal-admin-section" class="px-6 pb-6 hidden">
+                    <div class="pt-4 border-t border-gray-100 dark:border-emerald-950/20">
+                        <h4 class="text-xs font-black text-emerald-600 dark:text-emerald-500 uppercase tracking-widest mb-4 flex items-center gap-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                            Administrador del Sistema
+                        </h4>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="bg-emerald-50/50 dark:bg-emerald-950/20 rounded-xl p-4 flex items-start gap-3 border border-emerald-100 dark:border-emerald-500/10">
+                                <div class="mt-0.5 p-2 bg-white dark:bg-slate-900 rounded-lg shadow-sm">
+                                    <svg class="w-4 h-4 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-[10px] text-emerald-600/70 dark:text-emerald-500/70 font-bold uppercase tracking-tight">Nombre</p>
+                                    <p class="text-sm font-bold text-gray-800 dark:text-emerald-50" id="modal-admin-nombre"></p>
+                                </div>
+                            </div>
+
+                            <div class="bg-emerald-50/50 dark:bg-emerald-950/20 rounded-xl p-4 flex items-start gap-3 border border-emerald-100 dark:border-emerald-500/10">
+                                <div class="mt-0.5 p-2 bg-white dark:bg-slate-900 rounded-lg shadow-sm">
+                                    <svg class="w-4 h-4 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-[10px] text-emerald-600/70 dark:text-emerald-500/70 font-bold uppercase tracking-tight">Teléfono</p>
+                                    <p class="text-sm font-bold text-gray-800 dark:text-emerald-50" id="modal-admin-telefono"></p>
+                                </div>
+                            </div>
+
+                            <div class="sm:col-span-2 bg-emerald-50/50 dark:bg-emerald-950/20 rounded-xl p-4 flex items-start gap-3 border border-emerald-100 dark:border-emerald-500/10">
+                                <div class="mt-0.5 p-2 bg-white dark:bg-slate-900 rounded-lg shadow-sm">
+                                    <svg class="w-4 h-4 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-[10px] text-emerald-600/70 dark:text-emerald-500/70 font-bold uppercase tracking-tight">Correo Electrónico</p>
+                                    <p class="text-sm font-bold text-gray-800 dark:text-emerald-50 break-all" id="modal-admin-correo"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 {{-- FOOTER --}}
@@ -727,7 +773,7 @@
                 debounceTimer = setTimeout(() => {
                     document.getElementById('inlineNitSpinner').classList.remove('hidden');
 
-                    fetch(`/empresa/buscar/${nit}`)
+                    fetch(`${window.APP_URL}/empresa/buscar/${nit}`)
                         .then(res => res.json())
                         .then(data => {
                             document.getElementById('inlineNitSpinner').classList.add('hidden');
@@ -850,12 +896,13 @@
         // ===== END INLINE ADMIN FORM LOGIC =====
 
         function openModal(empresa) {
-            document.getElementById('modal-nombre').innerText = empresa.nombre_empresa;
-            document.getElementById('modal-nit').innerText = empresa.id_empresa;
-            document.getElementById('modal-representante').innerText = empresa.nombre_repre_legal || '-';
-            document.getElementById('modal-telefono').innerText = empresa.telefono || '-';
-            document.getElementById('modal-correo').innerText = empresa.correo || '-';
-            document.getElementById('modal-direccion').innerText = empresa.direccion || '-';
+            document.getElementById('modal-nombre').innerText = empresa.nombre_empresa || 'N/A';
+            document.getElementById('modal-nit').innerText = empresa.id_empresa || 'N/A';
+            document.getElementById('modal-representante').innerText = empresa.nombre_repre_legal || 'N/A';
+            document.getElementById('modal-telefono').innerText = empresa.telefono || 'N/A';
+            document.getElementById('modal-correo').innerText = empresa.correo || 'N/A';
+            document.getElementById('modal-direccion').innerText = empresa.direccion || 'N/A';
+            document.getElementById('modal-fecha').innerText = moment(empresa.fecha_creacion).format('D [de] MMMM [de] YYYY') || 'N/A';
 
             // Avatar
             document.getElementById('modal-avatar').innerText = (empresa.nombre_empresa || '?').substring(0, 2).toUpperCase();
@@ -1403,7 +1450,97 @@
 </div>
 
 <script>
-    // --- MODAL FUNCTIONS ---
+    // --- FUNCION MAESTRA VER DETALLES ---
+    window.verDetallesEmpresa = function(btn) {
+        // alert("Iniciando Ver Detalles..."); // <--- ESTO DEBE SALIR SI SUBISTE BIEN EL ARCHIVO
+        try {
+            var rawData = btn.getAttribute('data-empresa-json');
+            if (!rawData) {
+                alert("Error: No se encontraron datos en el botón");
+                return;
+            }
+            
+            var empresa = JSON.parse(rawData);
+            if (!empresa) return;
+
+            // Llenar campos básicos
+            var ids = ['modal-nombre', 'modal-nit', 'modal-representante', 'modal-telefono', 'modal-correo', 'modal-direccion'];
+            var data = [empresa.nombre_empresa, empresa.id_empresa, empresa.nombre_repre_legal, empresa.telefono, empresa.correo, empresa.direccion];
+            
+            for (var i = 0; i < ids.length; i++) {
+                var el = document.getElementById(ids[i]);
+                if (el) el.innerText = data[i] || 'N/A';
+            }
+
+            // Fecha
+            var fEl = document.getElementById('modal-fecha');
+            if (fEl) {
+                if (empresa.fecha_creacion) {
+                    if (typeof moment !== 'undefined') {
+                        fEl.innerText = moment(empresa.fecha_creacion).format('D [de] MMMM [de] YYYY');
+                    } else {
+                        var d = new Date(empresa.fecha_creacion);
+                        fEl.innerText = d.toLocaleDateString();
+                    }
+                } else {
+                    fEl.innerText = 'N/A';
+                }
+            }
+
+            // Avatar
+            var av = document.getElementById('modal-avatar');
+            if (av) av.innerText = (empresa.nombre_empresa || '??').substring(0, 2).toUpperCase();
+
+            // Estado
+            var estC = document.getElementById('modal-estado');
+            if (estC) {
+                var txt = 'Pendiente', cl = 'text-amber-700 bg-amber-100 border-amber-200';
+                if (empresa.estado) {
+                    txt = empresa.estado.nombre_estado;
+                    var sid = parseInt(empresa.estado.id_estado);
+                    if (sid === 3) cl = 'text-green-700 bg-green-100 border-green-200';
+                    else if (sid === 2) cl = 'text-rose-700 bg-rose-100 border-rose-200';
+                }
+                estC.innerHTML = '<span class="px-3 py-1 rounded-full text-xs font-bold border ' + cl + '">' + txt + '</span>';
+            }
+
+            // Administrador (LOGICA NUEVA)
+            var admS = document.getElementById('modal-admin-section');
+            if (admS) {
+                if (empresa.admin) {
+                    admS.classList.remove('hidden');
+                    if (document.getElementById('modal-admin-nombre')) document.getElementById('modal-admin-nombre').innerText = empresa.admin.nombre || 'N/A';
+                    if (document.getElementById('modal-admin-correo')) document.getElementById('modal-admin-correo').innerText = empresa.admin.correo || 'N/A';
+                    if (document.getElementById('modal-admin-telefono')) document.getElementById('modal-admin-telefono').innerText = empresa.admin.telefono || 'N/A';
+                } else {
+                    admS.classList.add('hidden');
+                }
+            }
+
+            // ABRIR
+            var m = document.getElementById('detailsModal');
+            if (m) {
+                m.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            } else {
+                alert("Error crítico: No existe detailsModal en el HTML");
+            }
+
+        } catch (err) {
+            alert("Error al procesar modal: " + err.message);
+            console.error(err);
+        }
+    };
+
+    window.closeModal = function() {
+        var m = document.getElementById('detailsModal');
+        if (m) {
+            m.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+    };
+
+    // --- OTHER MODAL FUNCTIONS ---
     function openCreateModal() {
         document.getElementById('createModal').classList.remove('hidden');
         document.body.style.overflow = 'hidden'; // Prevent background scrolling
@@ -1492,7 +1629,7 @@
     const adminEmpresaConAdmin = document.getElementById('inlineEmpresaConAdmin');
     const adminEmpresaNombreEl = document.getElementById('inlineEmpresaNombre');
     const adminEmpresaNitEl = document.getElementById('inlineEmpresaNit');
-    const btnCrearAdmin = document.getElementById('btnCrearAdminInline');
+    const btnCrearAdmin = document.getElementById('id_btn_admin');
     const adminSpinner = document.getElementById('inlineNitSpinner');
 
     const inlineNombreInput = document.getElementById('inline_admin_nombre');
@@ -1513,6 +1650,8 @@
             if (adminEmpresaInactiva) adminEmpresaInactiva.classList.add('hidden');
             if (adminEmpresaConAdmin) adminEmpresaConAdmin.classList.add('hidden');
             adminIdEmpresaHidden.value = '';
+            // Disparamos evento para que el validador global detecte el cambio de estado
+            adminIdEmpresaHidden.dispatchEvent(new Event('input'));
 
             lockAdminFields();
             if (btnCrearAdmin) {
@@ -1525,7 +1664,7 @@
             adminDebounceTimer = setTimeout(() => {
                 adminSpinner.classList.remove('hidden');
 
-                fetch(`/empresa/buscar/${nit}`)
+                fetch(`${window.APP_URL}/empresa/buscar/${nit}`)
                     .then(res => res.json())
                     .then(data => {
                         adminSpinner.classList.add('hidden');
@@ -1542,10 +1681,13 @@
 
                         if (data.tiene_admin) {
                             if (adminEmpresaConAdmin) adminEmpresaConAdmin.classList.remove('hidden');
+                            adminIdEmpresaHidden.value = ''; // Aseguramos que esté vacío
+                            adminIdEmpresaHidden.dispatchEvent(new Event('input'));
                             return;
                         }
 
                         adminIdEmpresaHidden.value = data.id_empresa;
+                        adminIdEmpresaHidden.dispatchEvent(new Event('input'));
                         adminEmpresaNombreEl.textContent = data.nombre_empresa;
                         adminEmpresaNitEl.textContent = 'NIT: ' + data.id_empresa;
                         adminEmpresaInfo.classList.remove('hidden');
@@ -1593,6 +1735,9 @@
         if (contrasenaHidden) contrasenaHidden.value = pwd;
         if (contrasenaDisplay) contrasenaDisplay.value = pwd;
         if (inlineImagenInput) inlineImagenInput.disabled = false;
+
+        // Trigger validation manual
+        if (inlineDocumentoInput) inlineDocumentoInput.dispatchEvent(new Event('input'));
     }
 
     function generatePassword() {
@@ -1637,6 +1782,7 @@
             }, 2000);
         });
     }
+
 
     function openEditModal(empresa) {
         document.getElementById('edit_nombre').value = empresa.nombre_empresa || '';

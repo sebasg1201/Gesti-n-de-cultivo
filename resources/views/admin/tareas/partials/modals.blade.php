@@ -97,7 +97,8 @@
                 </div>
                 <div class="space-y-2">
                     <label class="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Fecha Programada</label>
-                    <input type="date" name="fecha_programada" value="{{ date('Y-m-d') }}" min="{{ date('Y-m-d') }}" required class="w-full bg-gray-50 border border-gray-100 rounded-2xl py-4 px-5 focus:outline-none focus:border-blue-500 transition-all font-bold text-gray-700">
+                    <input type="date" name="fecha_programada" id="fecha_riego" value="{{ date('Y-m-d') }}" min="{{ date('Y-m-d') }}" required class="w-full bg-gray-50 border border-gray-100 rounded-2xl py-4 px-5 focus:outline-none focus:border-blue-500 transition-all font-bold text-gray-700">
+                    <p id="error_fecha_riego" class="text-[10px] text-rose-500 font-bold ml-4 mt-2 hidden">La fecha no puede ser anterior a hoy.</p>
                 </div>
                 <div class="space-y-2">
                     <label class="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Observaciones</label>
@@ -106,7 +107,7 @@
                 
                 <div class="pt-4 flex gap-3">
                     <button type="button" onclick="closeModal('modalRiego')" class="flex-1 py-4 rounded-2xl font-bold bg-gray-100 text-gray-600 hover:bg-gray-200 transition-all">Cancelar</button>
-                    <button type="submit" class="flex-1 py-4 rounded-2xl font-bold bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-lg shadow-blue-200">Asignar Tarea</button>
+                    <button type="submit" id="btn_submit_riego" class="flex-1 py-4 rounded-2xl font-bold bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-lg shadow-blue-200">Asignar Tarea</button>
                 </div>
             </form>
         </div>
@@ -227,7 +228,8 @@
                 </div>
                 <div class="space-y-2">
                     <label class="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Fecha Programada</label>
-                    <input type="date" name="fecha_programada" value="{{ date('Y-m-d') }}" min="{{ date('Y-m-d') }}" required class="w-full bg-gray-50 border border-gray-100 rounded-2xl py-4 px-5 focus:outline-none focus:border-purple-500 transition-all font-bold text-gray-700">
+                    <input type="date" name="fecha_programada" id="fecha_insumo" value="{{ date('Y-m-d') }}" min="{{ date('Y-m-d') }}" required class="w-full bg-gray-50 border border-gray-100 rounded-2xl py-4 px-5 focus:outline-none focus:border-purple-500 transition-all font-bold text-gray-700">
+                    <p id="error_fecha_insumo" class="text-[10px] text-rose-500 font-bold ml-4 mt-2 hidden">La fecha no puede ser anterior a hoy.</p>
                 </div>
                 <div class="space-y-2">
                     <label class="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Observaciones / Instrucciones</label>
@@ -236,7 +238,7 @@
                 
                 <div class="pt-4 flex gap-3">
                     <button type="button" onclick="closeModal('modalInsumo')" class="flex-1 py-4 rounded-2xl font-bold bg-gray-100 text-gray-600 hover:bg-gray-200 transition-all">Cancelar</button>
-                    <button type="submit" class="flex-1 py-4 rounded-2xl font-bold bg-purple-600 text-white hover:bg-purple-700 transition-all shadow-lg shadow-purple-200">Guardar Asignación</button>
+                    <button type="submit" id="btn_submit_insumo" class="flex-1 py-4 rounded-2xl font-bold bg-purple-600 text-white hover:bg-purple-700 transition-all shadow-lg shadow-purple-200">Guardar Asignación</button>
                 </div>
             </form>
         </div>
@@ -327,12 +329,13 @@
                 </div>
                 <div class="space-y-2">
                     <label class="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Fecha Programada</label>
-                    <input type="date" name="fecha_programada" value="{{ date('Y-m-d') }}" min="{{ date('Y-m-d') }}" required class="w-full bg-gray-50 border border-gray-100 rounded-2xl py-4 px-5 focus:outline-none focus:border-emerald-500 transition-all font-bold text-gray-700">
+                    <input type="date" name="fecha_programada" id="fecha_general" value="{{ date('Y-m-d') }}" min="{{ date('Y-m-d') }}" required class="w-full bg-gray-50 border border-gray-100 rounded-2xl py-4 px-5 focus:outline-none focus:border-emerald-500 transition-all font-bold text-gray-700">
+                    <p id="error_fecha_general" class="text-[10px] text-rose-500 font-bold ml-4 mt-2 hidden">La fecha no puede ser anterior a hoy.</p>
                 </div>
                 
                 <div class="pt-4 flex gap-3">
                     <button type="button" onclick="closeModal('modalGeneral')" class="flex-1 py-4 rounded-2xl font-bold bg-gray-100 text-gray-600 hover:bg-gray-200 transition-all">Cancelar</button>
-                    <button type="submit" class="flex-1 py-4 rounded-2xl font-bold bg-emerald-600 text-white hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-200">Programar Fase</button>
+                    <button type="submit" id="btn_submit_general" class="flex-1 py-4 rounded-2xl font-bold bg-emerald-600 text-white hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-200">Programar Fase</button>
                 </div>
             </form>
         </div>

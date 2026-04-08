@@ -119,9 +119,20 @@ class TipoRiegoController extends Controller
             ->where('id_empresa', $this->getEmpresaId())
             ->firstOrFail();
 
-        $tipoRiego->delete();
+        // Verificar si está siendo usado en tareas de riego
+        $usoContador = $tipoRiego->riegos()->count();
+        if ($usoContador > 0) {
+            return redirect()->route('tipo_riegos.index')
+                ->with('error', "No se puede eliminar el sistema de riego. Está asignado a $usoContador tarea(s) de riego activas o históricas.");
+        }
 
-        return redirect()->route('tipo_riegos.index')
-            ->with('success', 'Sistema de riego eliminado correctamente.');
+        try {
+            $tipoRiego->delete();
+            return redirect()->route('tipo_riegos.index')
+                ->with('success', 'Sistema de riego eliminado correctamente.');
+        } catch (\Exception $e) {
+            return redirect()->route('tipo_riegos.index')
+                ->with('error', 'No se pudo eliminar el sistema debido a un error de base de datos.');
+        }
     }
 }

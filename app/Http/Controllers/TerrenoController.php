@@ -206,9 +206,10 @@ class TerrenoController extends Controller
             ->firstOrFail();
 
         // Verificar si tiene cosechas asociadas
-        if ($terreno->cosechas()->count() > 0) {
+        $cosechasContador = $terreno->cosechas()->count();
+        if ($cosechasContador > 0) {
             return redirect()->route('admin.terrenos.index')
-                ->with('error', 'No se puede eliminar el terreno porque tiene cosechas asociadas. Por favor, elimine las cosechas primero.');
+                ->with('error', "No se puede eliminar el terreno. Tiene $cosechasContador lote(s) de cosecha vinculados que dependen de este espacio.");
         }
 
         try {

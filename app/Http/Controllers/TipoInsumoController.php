@@ -79,15 +79,20 @@ class TipoInsumoController extends Controller
             ->where('id_empresa', $this->getEmpresaId())
             ->firstOrFail();
 
-        // Check if there are catalog items using this type
-        if ($tipoInsumo->catalogos()->count() > 0) {
+        // Verificar si hay elementos en el catálogo global vinculados a este tipo
+        $contadorCatalogos = $tipoInsumo->catalogos()->count();
+        if ($contadorCatalogos > 0) {
             return redirect()->route('tipo_insumos.index')
-                ->with('error', 'No se puede eliminar porque tiene insumos en el catálogo asociados.');
+                ->with('error', "No se puede eliminar la categoría. Existen $contadorCatalogos producto(s) en el catálogo global registrados bajo este tipo.");
         }
 
-        $tipoInsumo->delete();
-
-        return redirect()->route('tipo_insumos.index')
-            ->with('success', 'Tipo de insumo eliminado correctamente.');
+        try {
+            $tipoInsumo->delete();
+            return redirect()->route('tipo_insumos.index')
+                ->with('success', 'Categoría de insumo eliminada correctamente.');
+        } catch (\Exception $e) {
+            return redirect()->route('tipo_insumos.index')
+                ->with('error', 'No se pudo eliminar la categoría debido a una restricción de registros asociados.');
+        }
     }
 }

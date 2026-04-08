@@ -193,13 +193,32 @@ class InsumoController extends Controller
 
     public function destroy($id)
     {
+        $id_empresa = $this->getEmpresaId();
         $insumo = Insumo::where('ID_insumo', $id)
-            ->where('id_empresa', $this->getEmpresaId())
+            ->where('id_empresa', $id_empresa)
             ->firstOrFail();
 
-        $insumo->delete();
+        // Verificar historial de entradas (facturas o ingresos de stock)
+        $entradasContador = \App\Models\EntradaInsumo::where('id_insumo', $id)->count();
+        if ($entradasContador > 0) {
+            return redirect()->route('insumos.index')
+                ->with('error', "No se puede eliminar el insumo. Tiene $entradasContador registro(s) de entrada de stock asociados.");
+        }
 
-        return redirect()->route('insumos.index')
-            ->with('success', 'Insumo eliminado de su inventario correctamente.');
+        // Verificar historial de aplicaciones (uso en el campo)
+        $aplicacionesContador = \App\Models\InsumoCosecha::where('id_insumo', $id)->count();
+        if ($aplicacionesContador > 0) {
+            return redirect()->route('insumos.index')
+                ->with('error', "No se puede eliminar el insumo. Ha sido aplicado en $aplicacionesContador lote(s) de cultivo/cosecha.");
+        }
+
+        try {
+            $insumo->delete();
+            return redirect()->route('insumos.index')
+                ->with('success', 'Insumo eliminado de su inventario correctamente.');
+        } catch (\Exception $e) {
+            return redirect()->route('insumos.index')
+                ->with('error', 'No se pudo eliminar el insumo debido a una relación activa en su base de datos.');
+        }
     }
 }

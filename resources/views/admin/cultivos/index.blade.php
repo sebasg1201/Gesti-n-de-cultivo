@@ -69,12 +69,6 @@
                 </div>
             </div>
 
-            @if(session('success'))
-                <div class="bg-emerald-100 border-l-4 border-emerald-500 text-emerald-700 p-4 rounded-lg shadow-sm animate-fade-in-down" role="alert">
-                    <p class="font-bold">¡Éxito!</p>
-                    <p>{{ session('success') }}</p>
-                </div>
-            @endif
 
             @if(!isset($semillaSeleccionada))
                 <!-- VISTA A: CATEGORÍAS (VARIEDADES) - TARJETAS CON IMAGEN -->

@@ -41,4 +41,9 @@ class Empresa extends Model
     {
         return $this->hasOne(VentaLicencias::class, 'id_empresa', 'id_empresa')->latest('fecha_inicio');
     }
+
+    public function admin()
+    {
+        return $this->hasOne(Usuario::class, 'id_empresa', 'id_empresa')->where('id_tipo_usuario', 2);
+    }
 }

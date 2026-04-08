@@ -9,6 +9,7 @@ use App\Models\TipoSemilla;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 class ProveedorController extends Controller
 {
@@ -43,7 +44,14 @@ class ProveedorController extends Controller
         $request->validate([
             'nombre' => 'required|string|max:100',
             'producto' => 'nullable|string|max:100',
-            'contacto' => 'nullable|string|max:50',
+            'contacto' => [
+                'nullable',
+                'string',
+                'max:50',
+                Rule::unique('proveedor', 'contacto')->where('id_empresa', $id_empresa)
+            ],
+        ], [
+            'contacto.unique' => 'Este número de contacto ya está registrado para otro proveedor en su empresa.'
         ]);
 
         Proveedor::create([
@@ -91,7 +99,13 @@ class ProveedorController extends Controller
     public function storeEntrada(Request $request, $id)
     {
         $id_empresa = $this->getEmpresaId();
-        $proveedor = Proveedor::where('id_proveedor', $id)->where('id_empresa', $id_empresa)->firstOrFail();
+        
+        try {
+            $proveedor = Proveedor::where('id_proveedor', $id)->where('id_empresa', $id_empresa)->firstOrFail();
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            \Illuminate\Support\Facades\Log::error("Proveedor no encontrado ID: $id para empresa ID: $id_empresa");
+            return redirect()->route('admin.proveedores.index')->with('error', 'El proveedor no pertenece a su empresa o no existe.');
+        }
 
         $request->validate([
             'tipo_item' => 'required|in:insumo,semilla',
@@ -109,7 +123,6 @@ class ProveedorController extends Controller
             if ($request->tipo_item === 'insumo') {
                 $id_insumo = $request->id_item;
                 $item = Insumo::where('ID_insumo', $id_insumo)->where('id_empresa', $id_empresa)->firstOrFail();
-                // El stock_actual se actualiza ahora mediante el trigger trg_entrada_insumo de la BD
                 if ($request->filled('fecha_vencimiento')) {
                     $item->Fecha_vencimiento = $request->fecha_vencimiento;
                 }
@@ -117,7 +130,6 @@ class ProveedorController extends Controller
             } else {
                 $id_semilla = $request->id_item;
                 $item = TipoSemilla::where('id_semilla', $id_semilla)->where('id_empresa', $id_empresa)->firstOrFail();
-                // El stock_actual se actualiza ahora mediante el trigger trg_entrada_insumo de la BD
                 $item->save();
             }
 
@@ -133,9 +145,14 @@ class ProveedorController extends Controller
 
             DB::commit();
             return redirect()->route('admin.proveedores.index')->with('success', 'Entrada de inventario registrada y stock actualizado.');
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            DB::rollBack();
+            \Illuminate\Support\Facades\Log::error("Item no encontrado Tipo: {$request->tipo_item}, ID: {$request->id_item} para empresa: $id_empresa");
+            return redirect()->back()->withInput()->with('error', 'El producto seleccionado no pertenece a su empresa o no existe.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Error al procesar la entrada: ' . $e->getMessage());
+            \Illuminate\Support\Facades\Log::error("Error en storeEntrada: " . $e->getMessage());
+            return redirect()->back()->withInput()->with('error', 'Error al procesar la entrada: ' . $e->getMessage());
         }
     }
 
@@ -159,7 +176,16 @@ class ProveedorController extends Controller
         $request->validate([
             'nombre' => 'required|string|max:100',
             'producto' => 'nullable|string|max:100',
-            'contacto' => 'nullable|string|max:50',
+            'contacto' => [
+                'nullable',
+                'string',
+                'max:50',
+                Rule::unique('proveedor', 'contacto')
+                    ->where('id_empresa', $id_empresa)
+                    ->ignore($id, 'id_proveedor')
+            ],
+        ], [
+            'contacto.unique' => 'Este número de contacto ya está registrado para otro proveedor en su empresa.'
         ]);
 
         $proveedor->update([
@@ -317,7 +343,17 @@ class ProveedorController extends Controller
         $id_empresa = $this->getEmpresaId();
         $proveedor = Proveedor::where('id_proveedor', $id)->where('id_empresa', $id_empresa)->firstOrFail();
 
-        $proveedor->delete();
-        return redirect()->route('admin.proveedores.index')->with('success', 'Proveedor eliminado.');
+        // Verificar si tiene registros asociados en entrada_insumo
+        $registrosAsociados = $proveedor->entradas()->count();
+        if ($registrosAsociados > 0) {
+            return redirect()->route('admin.proveedores.index')->with('error', "No se puede eliminar el proveedor. Tiene $registrosAsociados registro(s) de entrada de inventario asociados (historial).");
+        }
+
+        try {
+            $proveedor->delete();
+            return redirect()->route('admin.proveedores.index')->with('success', 'Proveedor eliminado correctamente.');
+        } catch (\Exception $e) {
+            return redirect()->route('admin.proveedores.index')->with('error', 'No se pudo eliminar el proveedor debido a un error de base de datos.');
+        }
     }
 }

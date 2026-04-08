@@ -215,7 +215,7 @@
         }
 
         timer = setTimeout(() => {
-            fetch(`/tipo_riegos/catalog?q=${q}`)
+            fetch(`${window.APP_URL}/tipo_riegos/catalog?q=${q}`)
                 .then(res => res.json())
                 .then(data => {
                     searchResults.innerHTML = '';

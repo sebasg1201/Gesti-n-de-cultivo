@@ -1,7 +1,9 @@
 <!DOCTYPE html>
-<html lang="es" class="text-[85%]">
+<html lang="es">
+
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script>
         // Inmediatamente aplicar el tema para evitar destellos blancos
         if (localStorage.getItem('theme') === 'dark') {
@@ -9,17 +11,18 @@
         } else {
             document.documentElement.classList.remove('dark');
         }
+        window.APP_URL = "{{ url('/') }}";
     </script>
     @php
-        $isWorker = in_array(auth()->guard('usuario')->user()->id_tipo_usuario, [2, 3]);
-        $inicioRoute = $isWorker ? 'trabajador.dashboard' : 'admin.dashboard';
+    $isWorker = in_array(auth()->guard('usuario')->user()->id_tipo_usuario, [2, 3]);
+    $inicioRoute = $isWorker ? 'trabajador.dashboard' : 'admin.dashboard';
     @endphp
     <link rel="icon" type="image/jpeg" href="{{ asset('img/agrotech/logo.jpeg') }}">
     <title>AgroTech</title>
     @inject('notificationService', 'App\Services\NotificationService')
     @php
-        $adminNotifications = $notificationService->getNotifications();
-        $notifCount = count($adminNotifications);
+    $adminNotifications = $notificationService->getNotifications();
+    $notifCount = count($adminNotifications);
     @endphp
 
 
@@ -77,11 +80,20 @@
             background: rgba(255, 255, 255, 0.2);
             border-radius: 10px;
         }
+
         /* Animación para desaparecer alertas */
         @keyframes fadeOut {
-            from { opacity: 1; transform: translateY(0); }
-            to { opacity: 0; transform: translateY(-10px); }
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            to {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
         }
+
         .animate-fadeOut {
             animation: fadeOut 0.5s ease-out forwards;
         }
@@ -102,38 +114,68 @@
             cursor: pointer;
             transition: transform 0.2s;
         }
-        .toast-card:hover { transform: scale(1.02); }
-        .toast-card.hide { animation: slideOutRight 0.4s ease-in forwards; }
+
+        .toast-card:hover {
+            transform: scale(1.02);
+        }
+
+        .toast-card.hide {
+            animation: slideOutRight 0.4s ease-in forwards;
+        }
 
         @keyframes slideInRight {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-        @keyframes slideOutRight {
-            from { transform: translateX(0); opacity: 1; }
-            to { transform: translateX(100%); opacity: 0; }
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
         }
 
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+
+        @keyframes progress {
+            from {
+                transform: scaleX(1);
+            }
+
+            to {
+                transform: scaleX(0);
+            }
+        }
     </style>
 </head>
 
-<body class="bg-gradient-to-br from-emerald-50 via-white to-green-100 dark:from-slate-950 dark:via-slate-900 dark:to-emerald-950 min-h-screen text-gray-800 dark:text-emerald-50 transition-colors duration-300">
+<body class="bg-gradient-to-br from-emerald-50 via-white to-green-100 dark:from-slate-950 dark:via-slate-900 dark:to-emerald-950 min-h-screen text-gray-800 dark:text-emerald-50 transition-colors duration-300 overflow-x-hidden">
 
     <div class="flex min-h-screen">
 
         <!-- SIDEBAR -->
         @php
-            // Clases dinámicas para sincronizar colores
-            $sidebarClass = $isWorker 
-                ? 'bg-gradient-to-b from-gray-900 via-emerald-950 to-gray-900 text-emerald-100 shadow-[20px_0_50px_rgba(0,0,0,0.3)]' 
-                : 'bg-gradient-to-b from-emerald-900 via-emerald-800 to-emerald-900 text-emerald-100 shadow-2xl transition-all duration-300';
-                
-            $navbarClass = $isWorker
-                ? 'bg-gradient-to-r from-gray-900 via-emerald-950 to-gray-900'
-                : 'bg-gradient-to-r from-emerald-600 via-green-500 to-emerald-600 dark:from-emerald-900 dark:via-slate-900 dark:to-emerald-900 opacity-90';
+        // Clases dinámicas para sincronizar colores
+        $sidebarClass = $isWorker
+        ? 'bg-gradient-to-b from-gray-900 via-emerald-950 to-gray-900 text-emerald-100 shadow-[20px_0_50px_rgba(0,0,0,0.3)]'
+        : 'bg-gradient-to-b from-emerald-900 via-emerald-800 to-emerald-900 text-emerald-100 shadow-2xl transition-all duration-300';
+
+        $navbarClass = $isWorker
+        ? 'bg-gradient-to-r from-gray-900 via-emerald-950 to-gray-900'
+        : 'bg-gradient-to-r from-emerald-600 via-green-500 to-emerald-600 dark:from-emerald-900 dark:via-slate-900 dark:to-emerald-900 opacity-90';
         @endphp
         <aside id="sidebar" class="z-50 {{ $sidebarClass }} flex flex-col overflow-hidden shrink-0 relative transition-all duration-500">
-            
+
             {{-- Elementos Decorativos de Fondo --}}
             <div class="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-emerald-500/10 to-transparent pointer-events-none"></div>
             <div class="absolute -left-20 top-40 w-40 h-40 bg-emerald-400/10 rounded-full blur-[80px] pointer-events-none"></div>
@@ -153,23 +195,23 @@
             <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto custom-scrollbar">
 
                 @php
-                    function active($pattern)
-                    {
-                        return request()->routeIs($pattern)
-                            ? 'bg-white/10 text-white shadow-lg border border-white/10'
-                            : 'hover:bg-white/10 hover:text-white';
-                    }
+                function active($pattern)
+                {
+                return request()->routeIs($pattern)
+                ? 'bg-white/10 text-white shadow-lg border border-white/10'
+                : 'hover:bg-white/10 hover:text-white';
+                }
 
-                    $gestionActive = request()->routeIs('tipo_cosechas.*') ||
-                        request()->routeIs('tipo_riegos.*') ||
-                        request()->routeIs('tipo_semillas.*') ||
-                        request()->routeIs('tipo_insumos.*') ||
-                        request()->routeIs('tipo_suelos.*') ||
-                        request()->routeIs('insumos.*') ||
-                        request()->routeIs('estados.*') ||
-                        request()->routeIs('admin.terrenos.*');
+                $gestionActive = request()->routeIs('tipo_cosechas.*') ||
+                request()->routeIs('tipo_riegos.*') ||
+                request()->routeIs('tipo_semillas.*') ||
+                request()->routeIs('tipo_insumos.*') ||
+                request()->routeIs('tipo_suelos.*') ||
+                request()->routeIs('insumos.*') ||
+                request()->routeIs('estados.*') ||
+                request()->routeIs('admin.terrenos.*');
 
-                    $seguimientoActive = request()->routeIs('admin.cosechas.*');
+                $seguimientoActive = request()->routeIs('admin.cosechas.*');
                 @endphp
 
                 <a href="{{ route($inicioRoute) }}"
@@ -183,166 +225,166 @@
 
 
                 @if(auth()->guard('usuario')->user()->id_tipo_usuario != 3)
-                    <!-- ACORDEÓN GESTIÓN Y CONTROL -->
-                    <div class="space-y-1">
-                        <button onclick="toggleAccordion('gestion-menu')"
-                            class="w-full group flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 {{ $gestionActive ? 'bg-white/5 text-white' : 'hover:bg-white/10 hover:text-white' }}">
-                            <div class="flex items-center gap-3">
-                                <div
-                                    class="w-1.5 h-6 bg-emerald-300 rounded-full {{ $gestionActive ? 'opacity-100' : 'opacity-0' }} group-hover:opacity-100 transition-all">
-                                </div>
-                                <span class="font-medium whitespace-nowrap dark:text-emerald-50">Gestión y Control</span>
+                <!-- ACORDEÓN GESTIÓN Y CONTROL -->
+                <div class="space-y-1">
+                    <button onclick="toggleAccordion('gestion-menu')"
+                        class="w-full group flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 {{ $gestionActive ? 'bg-white/5 text-white' : 'hover:bg-white/10 hover:text-white' }}">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="w-1.5 h-6 bg-emerald-300 rounded-full {{ $gestionActive ? 'opacity-100' : 'opacity-0' }} group-hover:opacity-100 transition-all">
                             </div>
-                            <svg id="arrow-gestion-menu" xmlns="http://www.w3.org/2000/svg"
-                                class="w-4 h-4 transition-transform duration-200 shrink-0 {{ $gestionActive ? 'rotate-180' : '' }}"
-                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                            </svg>
-                        </button>
-
-                        <div id="gestion-menu"
-                            class="{{ $gestionActive ? 'block' : 'hidden' }} pl-4 space-y-1 overflow-hidden transition-all duration-300">
-
-
-
-                            <a href="{{ route('tipo_riegos.index') }}"
-                                class="group flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-200 {{ active('tipo_riegos.*') }}">
-                                <div class="w-1 h-1 bg-emerald-400 rounded-full shrink-0"></div>
-                                <span class="whitespace-nowrap font-medium">Tipos de Riego</span>
-                            </a>
-
-                            <a href="{{ route('tipo_semillas.index') }}"
-                                class="group flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-200 {{ active('tipo_semillas.*') }}">
-                                <div class="w-1 h-1 bg-emerald-400 rounded-full shrink-0"></div>
-                                <span class="whitespace-nowrap font-medium">Tipos de Semilla</span>
-                            </a>
-
-                            <a href="{{ route('tipo_insumos.index') }}"
-                                class="group flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-200 {{ active('tipo_insumos.*') }}">
-                                <div class="w-1 h-1 bg-emerald-400 rounded-full shrink-0"></div>
-                                <span class="whitespace-nowrap font-medium">Tipos de Insumo</span>
-                            </a>
-
-                            <a href="{{ route('tipo_suelos.index') }}"
-                                class="group flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-300 {{ active('tipo_suelos.*') }}">
-                                <div class="w-1 h-1 bg-emerald-400 rounded-full shrink-0 shadow-[0_0_5px_rgba(52,211,153,0.5)]"></div>
-                                <span class="whitespace-nowrap font-medium">Tipos de Suelo</span>
-                            </a>
-
-                            <a href="{{ route('insumos.index') }}"
-                                class="group flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-200 {{ active('insumos.*') }}">
-                                <div class="w-1 h-1 bg-emerald-400 rounded-full shrink-0"></div>
-                                <span class="whitespace-nowrap font-medium">Inventario de Suministros</span>
-                            </a>
-
-
-
-                            <a href="{{ route('estados.index') }}"
-                                class="group flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-200 {{ active('estados.*') }}">
-                                <div class="w-1 h-1 bg-emerald-400 rounded-full shrink-0"></div>
-                                <span class="whitespace-nowrap dark:text-emerald-100">Estados</span>
-                            </a>
-
-
-
-                            <a href="{{ route('admin.terrenos.index') }}"
-                                class="group flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-200 {{ active('admin.terrenos.*') }}">
-                                <div class="w-1 h-1 bg-emerald-400 rounded-full shrink-0"></div>
-                                <span class="whitespace-nowrap dark:text-emerald-100">Gestión de Terrenos</span>
-                            </a>
+                            <span class="font-medium whitespace-nowrap dark:text-emerald-50">Gestión y Control</span>
                         </div>
-                    </div>
+                        <svg id="arrow-gestion-menu" xmlns="http://www.w3.org/2000/svg"
+                            class="w-4 h-4 transition-transform duration-200 shrink-0 {{ $gestionActive ? 'rotate-180' : '' }}"
+                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
 
-                    <!-- ACORDEÓN SEGUIMIENTO DE CULTIVOS -->
-                    <div class="space-y-1">
-                        <button onclick="toggleAccordion('seguimiento-menu')"
-                            class="w-full group flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 {{ $seguimientoActive ? 'bg-white/5 text-white' : 'hover:bg-white/10 hover:text-white' }}">
-                            <div class="flex items-center gap-3">
-                                <div
-                                    class="w-1.5 h-6 bg-emerald-300 rounded-full {{ $seguimientoActive ? 'opacity-100' : 'opacity-0' }} group-hover:opacity-100 transition-all">
-                                </div>
-                                <span class="font-medium whitespace-nowrap">Cosechas</span>
+                    <div id="gestion-menu"
+                        class="{{ $gestionActive ? 'block' : 'hidden' }} pl-4 space-y-1 overflow-hidden transition-all duration-300">
+
+
+
+                        <a href="{{ route('tipo_riegos.index') }}"
+                            class="group flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-200 {{ active('tipo_riegos.*') }}">
+                            <div class="w-1 h-1 bg-emerald-400 rounded-full shrink-0"></div>
+                            <span class="whitespace-nowrap font-medium">Tipos de Riego</span>
+                        </a>
+
+                        <a href="{{ route('tipo_semillas.index') }}"
+                            class="group flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-200 {{ active('tipo_semillas.*') }}">
+                            <div class="w-1 h-1 bg-emerald-400 rounded-full shrink-0"></div>
+                            <span class="whitespace-nowrap font-medium">Tipos de Semilla</span>
+                        </a>
+
+                        <a href="{{ route('tipo_insumos.index') }}"
+                            class="group flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-200 {{ active('tipo_insumos.*') }}">
+                            <div class="w-1 h-1 bg-emerald-400 rounded-full shrink-0"></div>
+                            <span class="whitespace-nowrap font-medium">Tipos de Insumo</span>
+                        </a>
+
+                        <a href="{{ route('tipo_suelos.index') }}"
+                            class="group flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-300 {{ active('tipo_suelos.*') }}">
+                            <div class="w-1 h-1 bg-emerald-400 rounded-full shrink-0 shadow-[0_0_5px_rgba(52,211,153,0.5)]"></div>
+                            <span class="whitespace-nowrap font-medium">Tipos de Suelo</span>
+                        </a>
+
+                        <a href="{{ route('insumos.index') }}"
+                            class="group flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-200 {{ active('insumos.*') }}">
+                            <div class="w-1 h-1 bg-emerald-400 rounded-full shrink-0"></div>
+                            <span class="whitespace-nowrap font-medium">Inventario de Suministros</span>
+                        </a>
+
+
+
+                        <a href="{{ route('estados.index') }}"
+                            class="group flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-200 {{ active('estados.*') }}">
+                            <div class="w-1 h-1 bg-emerald-400 rounded-full shrink-0"></div>
+                            <span class="whitespace-nowrap dark:text-emerald-100">Estados</span>
+                        </a>
+
+
+
+                        <a href="{{ route('admin.terrenos.index') }}"
+                            class="group flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-200 {{ active('admin.terrenos.*') }}">
+                            <div class="w-1 h-1 bg-emerald-400 rounded-full shrink-0"></div>
+                            <span class="whitespace-nowrap dark:text-emerald-100">Gestión de Terrenos</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- ACORDEÓN SEGUIMIENTO DE CULTIVOS -->
+                <div class="space-y-1">
+                    <button onclick="toggleAccordion('seguimiento-menu')"
+                        class="w-full group flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 {{ $seguimientoActive ? 'bg-white/5 text-white' : 'hover:bg-white/10 hover:text-white' }}">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="w-1.5 h-6 bg-emerald-300 rounded-full {{ $seguimientoActive ? 'opacity-100' : 'opacity-0' }} group-hover:opacity-100 transition-all">
                             </div>
-                            <svg id="arrow-seguimiento-menu" xmlns="http://www.w3.org/2000/svg"
-                                class="w-4 h-4 transition-transform duration-200 shrink-0 {{ $seguimientoActive ? 'rotate-180' : '' }}"
-                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                            </svg>
-                        </button>
-
-                        <div id="seguimiento-menu"
-                            class="{{ $seguimientoActive ? 'block' : 'hidden' }} pl-4 space-y-1 overflow-hidden transition-all duration-300">
-                            <a href="{{ route('admin.cosechas.index') }}"
-                                class="group flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-200 {{ active('admin.cosechas.*') }}">
-                                <div class="w-1 h-1 bg-emerald-400 rounded-full shrink-0"></div>
-                                <span class="whitespace-nowrap dark:text-emerald-100">Control de Cosechas</span>
-                            </a>
-                            <a href="{{ route('admin.tareas.index') }}"
-                                class="group flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-200 {{ active('admin.tareas.index') }}">
-                                <div class="w-1 h-1 bg-emerald-400 rounded-full shrink-0"></div>
-                                <span class="whitespace-nowrap dark:text-emerald-100">Gestión de Tareas</span>
-                            </a>
+                            <span class="font-medium whitespace-nowrap">Cosechas</span>
                         </div>
+                        <svg id="arrow-seguimiento-menu" xmlns="http://www.w3.org/2000/svg"
+                            class="w-4 h-4 transition-transform duration-200 shrink-0 {{ $seguimientoActive ? 'rotate-180' : '' }}"
+                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+
+                    <div id="seguimiento-menu"
+                        class="{{ $seguimientoActive ? 'block' : 'hidden' }} pl-4 space-y-1 overflow-hidden transition-all duration-300">
+                        <a href="{{ route('admin.cosechas.index') }}"
+                            class="group flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-200 {{ active('admin.cosechas.*') }}">
+                            <div class="w-1 h-1 bg-emerald-400 rounded-full shrink-0"></div>
+                            <span class="whitespace-nowrap dark:text-emerald-100">Control de Cosechas</span>
+                        </a>
+                        <a href="{{ route('admin.tareas.index') }}"
+                            class="group flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-all duration-200 {{ active('admin.tareas.index') }}">
+                            <div class="w-1 h-1 bg-emerald-400 rounded-full shrink-0"></div>
+                            <span class="whitespace-nowrap dark:text-emerald-100">Gestión de Tareas</span>
+                        </a>
                     </div>
+                </div>
 
-                    <a href="{{ route('admin.usuarios.index') }}"
-                        class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 relative {{ active('admin.usuarios.*') }}">
-                        <div class="w-1.5 h-6 bg-emerald-300 rounded-full {{ request()->routeIs('admin.usuarios.*') ? 'opacity-100' : 'opacity-0' }} group-hover:opacity-100 transition-all">
-                        </div>
-                        <span class="font-medium whitespace-nowrap">Personal</span>
-                    </a>
+                <a href="{{ route('admin.usuarios.index') }}"
+                    class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 relative {{ active('admin.usuarios.*') }}">
+                    <div class="w-1.5 h-6 bg-emerald-300 rounded-full {{ request()->routeIs('admin.usuarios.*') ? 'opacity-100' : 'opacity-0' }} group-hover:opacity-100 transition-all">
+                    </div>
+                    <span class="font-medium whitespace-nowrap">Personal</span>
+                </a>
 
-                    <a href="{{ route('admin.cultivos.index') }}"
-                        class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 relative {{ active('admin.cultivos.*') }}">
-                        <div class="w-1 h-5 bg-emerald-400 rounded-full {{ request()->routeIs('admin.cultivos.*') ? 'opacity-100' : 'opacity-0' }} group-hover:opacity-100 transition-all shadow-[0_0_10px_rgba(52,211,153,0.8)]">
-                        </div>
-                        <span class="font-bold whitespace-nowrap tracking-tight">Cultivos</span>
-                    </a>
+                <a href="{{ route('admin.cultivos.index') }}"
+                    class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 relative {{ active('admin.cultivos.*') }}">
+                    <div class="w-1 h-5 bg-emerald-400 rounded-full {{ request()->routeIs('admin.cultivos.*') ? 'opacity-100' : 'opacity-0' }} group-hover:opacity-100 transition-all shadow-[0_0_10px_rgba(52,211,153,0.8)]">
+                    </div>
+                    <span class="font-bold whitespace-nowrap tracking-tight">Cultivos</span>
+                </a>
 
-                    <a href="{{ route('admin.proveedores.index') }}"
-                        class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 relative {{ active('admin.proveedores.*') }}">
-                        <div class="w-1.5 h-6 bg-emerald-300 rounded-full {{ request()->routeIs('admin.proveedores.*') ? 'opacity-100' : 'opacity-0' }} group-hover:opacity-100 transition-all">
-                        </div>
-                        <span class="font-medium whitespace-nowrap">Proveedores</span>
-                    </a>
+                <a href="{{ route('admin.proveedores.index') }}"
+                    class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 relative {{ active('admin.proveedores.*') }}">
+                    <div class="w-1.5 h-6 bg-emerald-300 rounded-full {{ request()->routeIs('admin.proveedores.*') ? 'opacity-100' : 'opacity-0' }} group-hover:opacity-100 transition-all">
+                    </div>
+                    <span class="font-medium whitespace-nowrap">Proveedores</span>
+                </a>
 
-                    <a href="{{ route('admin.licencias.index') }}"
-                        class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 relative {{ active('admin.licencias.*') }}">
-                        <div class="w-1.5 h-6 bg-emerald-300 rounded-full {{ request()->routeIs('admin.licencias.*') ? 'opacity-100' : 'opacity-0' }} group-hover:opacity-100 transition-all">
-                        </div>
-                        <span class="font-medium whitespace-nowrap">Mi Plan de Licencia</span>
-                    </a>
+                <a href="{{ route('admin.licencias.index') }}"
+                    class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 relative {{ active('admin.licencias.*') }}">
+                    <div class="w-1.5 h-6 bg-emerald-300 rounded-full {{ request()->routeIs('admin.licencias.*') ? 'opacity-100' : 'opacity-0' }} group-hover:opacity-100 transition-all">
+                    </div>
+                    <span class="font-medium whitespace-nowrap">Mi Plan de Licencia</span>
+                </a>
 
-                    {{-- Soporte para Admin --}}
-                    <a href="{{ route('admin.soporte.index') }}"
-                        class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 relative {{ active('admin.soporte.*') }}">
-                        <div class="w-1.5 h-6 bg-emerald-300 rounded-full {{ request()->routeIs('admin.soporte.*') ? 'opacity-100' : 'opacity-0' }} group-hover:opacity-100 transition-all">
-                        </div>
-                        <span class="font-medium whitespace-nowrap">Bandeja de Soporte</span>
-                    </a>
+                {{-- Soporte para Admin --}}
+                <a href="{{ route('admin.soporte.index') }}"
+                    class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 relative {{ active('admin.soporte.*') }}">
+                    <div class="w-1.5 h-6 bg-emerald-300 rounded-full {{ request()->routeIs('admin.soporte.*') ? 'opacity-100' : 'opacity-0' }} group-hover:opacity-100 transition-all">
+                    </div>
+                    <span class="font-medium whitespace-nowrap">Bandeja de Soporte</span>
+                </a>
                 @endif
 
                 @if(auth()->guard('usuario')->user()->id_tipo_usuario == 3)
-                    <a href="{{ route('trabajador.calendario') }}"
-                        class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 relative {{ active('trabajador.calendario') }}">
-                        <div class="w-1 h-5 bg-emerald-400 rounded-full {{ request()->routeIs('trabajador.calendario') ? 'opacity-100' : 'opacity-0' }} group-hover:opacity-100 transition-all shadow-[0_0_10px_rgba(52,211,153,0.8)]">
-                        </div>
-                        <span class="font-bold whitespace-nowrap tracking-tight">Mi Calendario</span>
-                    </a>
+                <a href="{{ route('trabajador.calendario') }}"
+                    class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 relative {{ active('trabajador.calendario') }}">
+                    <div class="w-1 h-5 bg-emerald-400 rounded-full {{ request()->routeIs('trabajador.calendario') ? 'opacity-100' : 'opacity-0' }} group-hover:opacity-100 transition-all shadow-[0_0_10px_rgba(52,211,153,0.8)]">
+                    </div>
+                    <span class="font-bold whitespace-nowrap tracking-tight">Mi Calendario</span>
+                </a>
 
-                    <a href="{{ route('trabajador.pagos') }}"
-                        class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 relative {{ active('trabajador.pagos') }}">
-                        <div class="w-1 h-5 bg-emerald-400 rounded-full {{ request()->routeIs('trabajador.pagos') ? 'opacity-100' : 'opacity-0' }} group-hover:opacity-100 transition-all shadow-[0_0_10px_rgba(52,211,153,0.8)]">
-                        </div>
-                        <span class="font-bold whitespace-nowrap tracking-tight">Mis Pagos</span>
-                    </a>
+                <a href="{{ route('trabajador.pagos') }}"
+                    class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 relative {{ active('trabajador.pagos') }}">
+                    <div class="w-1 h-5 bg-emerald-400 rounded-full {{ request()->routeIs('trabajador.pagos') ? 'opacity-100' : 'opacity-0' }} group-hover:opacity-100 transition-all shadow-[0_0_10px_rgba(52,211,153,0.8)]">
+                    </div>
+                    <span class="font-bold whitespace-nowrap tracking-tight">Mis Pagos</span>
+                </a>
 
-                    <a href="{{ route('trabajador.soporte') }}"
-                        class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 relative {{ active('trabajador.soporte') }}">
-                        <div class="w-1 h-5 bg-emerald-400 rounded-full {{ request()->routeIs('trabajador.soporte') ? 'opacity-100' : 'opacity-0' }} group-hover:opacity-100 transition-all shadow-[0_0_10px_rgba(52,211,153,0.8)]">
-                        </div>
-                        <span class="font-bold whitespace-nowrap tracking-tight">Soporte y Dudas</span>
-                    </a>
+                <a href="{{ route('trabajador.soporte') }}"
+                    class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 relative {{ active('trabajador.soporte') }}">
+                    <div class="w-1 h-5 bg-emerald-400 rounded-full {{ request()->routeIs('trabajador.soporte') ? 'opacity-100' : 'opacity-0' }} group-hover:opacity-100 transition-all shadow-[0_0_10px_rgba(52,211,153,0.8)]">
+                    </div>
+                    <span class="font-bold whitespace-nowrap tracking-tight">Soporte y Dudas</span>
+                </a>
                 @endif
 
                 <a href="{{ route('admin.configuracion') }}"
@@ -375,7 +417,7 @@
                     class="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.25),transparent_60%)]">
                 </div>
 
-                <div class="relative px-6 lg:px-12 py-6 lg:py-8 flex justify-between items-center text-white">
+                <div class="relative px-4 lg:px-12 py-4 lg:py-8 flex justify-between items-center text-white">
 
                     <!-- IZQUIERDA -->
                     <div class="flex items-center gap-4 lg:gap-8">
@@ -415,8 +457,12 @@
 
                         <!-- Theme Toggle Header -->
                         <button id="theme-toggle-header" type="button" class="hidden md:flex p-2.5 lg:p-3 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-md transition-all duration-200 cursor-pointer focus:outline-none border border-white/20 shadow-lg" title="Cambiar Tema">
-                            <svg class="w-5 h-5 lg:w-6 lg:h-6 text-white hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-                            <svg class="w-5 h-5 lg:w-6 lg:h-6 text-white block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+                            <svg class="w-5 h-5 lg:w-6 lg:h-6 text-white hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                            </svg>
+                            <svg class="w-5 h-5 lg:w-6 lg:h-6 text-white block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                            </svg>
                         </button>
 
                         <!-- Notificaciones -->
@@ -429,10 +475,10 @@
                                         d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                                 </svg>
                                 @if($notifCount > 0)
-                                    <span id="notif-badge"
-                                        class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-4 h-4 lg:w-5 lg:h-5 rounded-full flex items-center justify-center shadow-lg border-2 border-white/30 transition-all duration-300">
-                                        {{ $notifCount }}
-                                    </span>
+                                <span id="notif-badge"
+                                    class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-4 h-4 lg:w-5 lg:h-5 rounded-full flex items-center justify-center shadow-lg border-2 border-white/30 transition-all duration-300">
+                                    {{ $notifCount }}
+                                </span>
                                 @endif
                             </button>
 
@@ -440,7 +486,7 @@
                             <div id="notif-panel"
                                 class="hidden absolute right-0 mt-3 w-80 bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-emerald-100 dark:border-emerald-900/50 z-[100] overflow-hidden">
 
-                                
+
                                 <div class="px-5 py-4 bg-gradient-to-r from-emerald-600 to-green-500 flex items-center justify-between">
                                     <span class="text-white font-bold text-sm">Alertas del Sistema</span>
                                     <span class="bg-white/20 text-white text-[10px] font-semibold px-2 py-0.5 rounded-full">
@@ -450,46 +496,54 @@
 
                                 <div class="max-h-80 overflow-y-auto divide-y divide-gray-100">
                                     @forelse($adminNotifications as $notif)
-                                        <a href="{{ $notif['url'] }}" class="flex items-start gap-3 px-4 py-3.5 hover:bg-emerald-50 transition-colors duration-150 decoration-none group">
-                                            <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm mt-0.5 
+                                    <a href="{{ $notif['url'] }}" class="flex items-start gap-3 px-4 py-3.5 hover:bg-emerald-50 transition-colors duration-150 decoration-none group">
+                                        <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm mt-0.5 
                                                 {{ $notif['type'] == 'irrigation' ? 'bg-blue-100 text-blue-600' : ($notif['type'] == 'stock' ? 'bg-amber-100 text-amber-600' : 'bg-red-100 text-red-600') }}">
-                                                @if($notif['type'] == 'irrigation')
-                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4a2 2 0 012-2m16 0h-2M4 13H6m10-4V7a1 1 0 00-1-1H9a1 1 0 00-1 1v2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                                @elseif($notif['type'] == 'stock')
-                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                                @else
-                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                                @endif
-                                            </div>
-                                            <div class="flex-1 min-w-0">
-                                                <p class="text-sm font-semibold text-gray-800 group-hover:text-emerald-700 transition-colors">{{ $notif['title'] }}</p>
-                                                <p class="text-xs text-gray-500 mt-0.5 leading-relaxed">{{ $notif['message'] }}</p>
-                                                <p class="text-[10px] text-emerald-600 font-medium mt-1 uppercase tracking-wider">
-                                                    {{ $notif['date']->diffForHumans() }}
-                                                </p>
-                                            </div>
-                                        </a>
-                                    @empty
-                                        <div class="py-10 text-center">
-                                            <svg class="w-10 h-10 mx-auto text-gray-200 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4a2 2 0 012-2m16 0h-2M4 13H6m10-4V7a1 1 0 00-1-1H9a1 1 0 00-1 1v2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                            <p class="text-sm text-gray-400">No hay alertas pendientes</p>
+                                            @if($notif['type'] == 'irrigation')
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4a2 2 0 012-2m16 0h-2M4 13H6m10-4V7a1 1 0 00-1-1H9a1 1 0 00-1 1v2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                            </svg>
+                                            @elseif($notif['type'] == 'stock')
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                            </svg>
+                                            @else
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                            </svg>
+                                            @endif
                                         </div>
+                                        <div class="flex-1 min-w-0">
+                                            <p class="text-sm font-semibold text-gray-800 group-hover:text-emerald-700 transition-colors">{{ $notif['title'] }}</p>
+                                            <p class="text-xs text-gray-500 mt-0.5 leading-relaxed">{{ $notif['message'] }}</p>
+                                            <p class="text-[10px] text-emerald-600 font-medium mt-1 uppercase tracking-wider">
+                                                {{ $notif['date']->diffForHumans() }}
+                                            </p>
+                                        </div>
+                                    </a>
+                                    @empty
+                                    <div class="py-10 text-center">
+                                        <svg class="w-10 h-10 mx-auto text-gray-200 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4a2 2 0 012-2m16 0h-2M4 13H6m10-4V7a1 1 0 00-1-1H9a1 1 0 00-1 1v2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                        </svg>
+                                        <p class="text-sm text-gray-400">No hay alertas pendientes</p>
+                                    </div>
                                     @endforelse
                                 </div>
 
                                 @if($notifCount > 0)
-                                    <div class="p-3 bg-gray-50 border-t border-gray-100 text-center">
-                                        <p class="text-[10px] text-gray-400 font-medium italic">Mantén tus cultivos al día</p>
-                                    </div>
+                                <div class="p-3 bg-gray-50 border-t border-gray-100 text-center">
+                                    <p class="text-[10px] text-gray-400 font-medium italic">Mantén tus cultivos al día</p>
+                                </div>
                                 @endif
                             </div>
                         </div>
 
 
                         <!-- Usuario -->
-                        <div class="relative group">
-                            <div
-                                class="flex items-center gap-3 lg:gap-4 bg-white dark:bg-slate-800 text-gray-800 dark:text-emerald-100 px-3 lg:px-5 py-2 lg:py-3 rounded-xl lg:rounded-2xl shadow-xl dark:shadow-slate-900/50 hover:scale-[1.02] transition-all duration-300 cursor-pointer border border-gray-100 dark:border-emerald-900/30">
+                        <div class="relative" id="user-menu-wrapper">
+                            <div onclick="toggleUserMenu()"
+                                class="flex items-center gap-2 lg:gap-4 bg-white dark:bg-slate-800 text-gray-800 dark:text-emerald-100 px-2 lg:px-5 py-2 lg:py-3 rounded-xl lg:rounded-2xl shadow-xl dark:shadow-slate-900/50 hover:scale-[1.02] transition-all duration-300 cursor-pointer border border-gray-100 dark:border-emerald-900/30">
 
                                 <div
                                     class="w-8 h-8 lg:w-11 lg:h-11 rounded-lg lg:rounded-xl bg-gradient-to-tr from-emerald-500 to-green-600 text-white flex items-center justify-center font-bold shadow-md">
@@ -508,8 +562,8 @@
                             </div>
 
                             <!-- Dropdown -->
-                            <div
-                                class="absolute right-0 top-full pt-2 w-56 opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 transition-all duration-200 origin-top-right z-50 pointer-events-none group-hover:pointer-events-auto">
+                            <div id="user-dropdown"
+                                class="hidden absolute right-0 top-full pt-2 w-56 transition-all duration-200 origin-top-right z-[100]">
                                 <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-emerald-100 dark:border-emerald-800/50">
 
                                     <div class="p-4 border-b border-gray-100 dark:border-emerald-900/30">
@@ -559,17 +613,80 @@
                     </div>
 
                     @if(session('success'))
-                        <div class="auto-dismiss mb-6 p-4 bg-emerald-100 border border-emerald-200 text-emerald-800 rounded-2xl flex items-center gap-3 shadow-sm animate-fade-in-down">
-                            <svg class="h-5 w-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                            <span class="font-bold text-sm">{{ session('success') }}</span>
+                    <div class="auto-dismiss fixed right-8 z-[9999] animate-in slide-in-from-right-10 duration-500" style="top: 150px !important;">
+                        <div class="text-white px-6 py-4 rounded-2xl shadow-2xl shadow-emerald-900/20 flex items-center gap-4 min-w-[320px] max-w-md relative overflow-hidden group border border-white/20"
+                            style="background-color: #10b981 !important; color: #ffffff !important;">
+                            <div class="absolute bottom-0 left-0 h-1 bg-white/30 w-full">
+                                <div class="h-full bg-white origin-left" id="progress-success" style="animation: progress 5s linear forwards"></div>
+                            </div>
+                            <div class="bg-white/20 p-2 rounded-xl">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                                </svg>
+                            </div>
+                            <div class="flex-1">
+                                <p class="font-bold text-sm tracking-tight leading-snug">{{ session('success') }}</p>
+                            </div>
+                            <button onclick="this.closest('.auto-dismiss').remove()" class="ml-4 opacity-70 hover:opacity-100 transition-opacity">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
                         </div>
+                    </div>
                     @endif
 
                     @if(session('error'))
-                        <div class="auto-dismiss mb-6 p-4 bg-red-100 border border-red-200 text-red-800 rounded-2xl flex items-center gap-3 shadow-sm animate-shake">
-                            <svg class="h-5 w-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                            <span class="font-bold text-sm">{{ session('error') }}</span>
+                    <div class="auto-dismiss fixed right-8 z-[9999] animate-in slide-in-from-right-10 duration-500" style="top: 150px !important;">
+                        <div class="text-white px-6 py-4 rounded-2xl shadow-2xl shadow-rose-900/20 flex items-center gap-4 min-w-[320px] max-w-md relative overflow-hidden group border border-white/20"
+                            style="background-color: #f43f5e !important; color: #ffffff !important;">
+                            <div class="absolute bottom-0 left-0 h-1 bg-white/30 w-full">
+                                <div class="h-full bg-white origin-left" id="progress-error" style="animation: progress 5s linear forwards"></div>
+                            </div>
+                            <div class="bg-white/20 p-2 rounded-xl">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                </svg>
+                            </div>
+                            <div class="flex-1">
+                                <p class="font-bold text-sm tracking-tight leading-snug">{{ session('error') }}</p>
+                            </div>
+                            <button onclick="this.closest('.auto-dismiss').remove()" class="ml-4 opacity-70 hover:opacity-100 transition-opacity">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
                         </div>
+                    </div>
+                    @endif
+
+                    @if ($errors->any())
+                    <div class="auto-dismiss fixed right-8 z-[9999] animate-in slide-in-from-right-10 duration-500" style="top: 150px !important;">
+                        <div class="text-white px-6 py-4 rounded-2xl shadow-2xl shadow-rose-900/20 flex items-center gap-4 min-w-[320px] max-w-md relative overflow-hidden group border border-white/20"
+                            style="background-color: #f43f5e !important; color: #ffffff !important;">
+                            <div class="absolute bottom-0 left-0 h-1 bg-white/30 w-full">
+                                <div class="h-full bg-white origin-left" id="progress-error-all" style="animation: progress 8s linear forwards"></div>
+                            </div>
+                            <div class="bg-white/20 p-2 rounded-xl">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                </svg>
+                            </div>
+                            <div class="flex-1">
+                                <p class="font-bold text-sm tracking-tight leading-none mb-1">Hay errores:</p>
+                                <ul class="text-[10px] list-disc list-inside opacity-90">
+                                    @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                            <button onclick="this.closest('.auto-dismiss').remove()" class="ml-4 opacity-70 hover:opacity-100 transition-opacity">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
                     @endif
 
                     @yield('content')
@@ -632,24 +749,14 @@
             }
         }
 
-        // Auto-dismiss alerts
-        document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(function() {
-                const alerts = document.querySelectorAll('.auto-dismiss');
-                alerts.forEach(function(alert) {
-                    alert.classList.add('fadeOut');
-                    setTimeout(() => alert.remove(), 500);
-                });
-            }, 5000);
-        });
 
         /* ==================== NOTIFICACIONES ==================== */
         let notifPanelOpen = false;
 
         function toggleNotifPanel() {
             const panel = document.getElementById('notif-panel');
-            if(!panel) return;
-            
+            if (!panel) return;
+
             notifPanelOpen = !notifPanelOpen;
             if (notifPanelOpen) {
                 panel.classList.remove('hidden');
@@ -667,7 +774,7 @@
             }
         }
 
-        document.addEventListener('click', function (e) {
+        document.addEventListener('click', function(e) {
             const wrapper = document.getElementById('notif-wrapper');
             if (wrapper && !wrapper.contains(e.target) && notifPanelOpen) {
                 toggleNotifPanel();
@@ -677,7 +784,7 @@
         /* ==================== TOASTS ==================== */
         function showToast(notif) {
             const container = document.getElementById('toast-container');
-            if(!container) return;
+            if (!container) return;
 
             const toast = document.createElement('div');
             toast.className = 'toast-card';
@@ -718,9 +825,9 @@
                 });
             }
 
-            const notifications = {!! json_encode($adminNotifications) !!};
+            const notifications = @json($adminNotifications);
             const shownToasts = JSON.parse(sessionStorage.getItem('shownToasts') || '[]');
-            
+
             let shownCount = 0;
             notifications.forEach(n => {
                 const notifId = n.type + '-' + n.id;
@@ -732,6 +839,47 @@
             });
             sessionStorage.setItem('shownToasts', JSON.stringify(shownToasts));
         });
+
+        /* ==================== USER MENU ==================== */
+        function toggleUserMenu() {
+            const dropdown = document.getElementById('user-dropdown');
+            if (dropdown) {
+                dropdown.classList.toggle('hidden');
+                dropdown.classList.toggle('animate-in');
+                dropdown.classList.toggle('fade-in');
+                dropdown.classList.toggle('slide-in-from-top-2');
+            }
+        }
+
+        // Cerrar menú al hacer clic fuera
+        document.addEventListener('click', function(e) {
+            const wrapper = document.getElementById('user-menu-wrapper');
+            const dropdown = document.getElementById('user-dropdown');
+            if (wrapper && !wrapper.contains(e.target) && !dropdown.classList.contains('hidden')) {
+                dropdown.classList.add('hidden');
+            }
+        });
+
+        /* ==================== AUTO-DISMISS FLASH MESSAGES ==================== */
+        function setupAutoDismiss() {
+            document.querySelectorAll('.auto-dismiss').forEach(function(el) {
+                // Solo si no tiene ya el temporizador activo
+                if (!el.dataset.hasTimer) {
+                    el.dataset.hasTimer = "true";
+                    setTimeout(() => {
+                        el.style.transition = 'all 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
+                        el.style.opacity = '0';
+                        el.style.transform = 'translateX(100px)';
+                        setTimeout(() => el.remove(), 800);
+                    }, 5000);
+                }
+            });
+        }
+
+        // Ejecutar inmediatamente y al cargar
+        setupAutoDismiss();
+        document.addEventListener('DOMContentLoaded', setupAutoDismiss);
+        window.addEventListener('load', setupAutoDismiss);
     </script>
 
 

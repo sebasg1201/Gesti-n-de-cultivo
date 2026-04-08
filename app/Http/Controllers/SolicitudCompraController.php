@@ -28,7 +28,7 @@ class SolicitudCompraController extends Controller
 
         $solicitudes = $query->orderBy('fecha_solicitud', 'desc')->paginate(3);
 
-        return view('superadmin.solicitudes', compact('solicitudes'));
+        return view('SuperAdmin.solicitudes', compact('solicitudes'));
     }
 
     public function markAsSeen($id)
@@ -113,15 +113,20 @@ class SolicitudCompraController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'id_empresa' => 'required|string|max:20',
+            'id_empresa' => 'required|string|max:20|unique:empresa,id_empresa',
             'nombre_empresa' => 'required|string|max:200',
             'nombre_repre_legal' => 'required|string|max:150',
-            'cedula_repre' => 'required|numeric|digits_between:8,11',
-            'telefono' => 'required|numeric|digits_between:8,11',
-            'correo' => 'required|email|max:150',
+            'cedula_repre' => 'required|numeric|digits_between:8,11|unique:empresa,cedula_repre',
+            'telefono' => 'required|numeric|digits_between:10,12|unique:empresa,telefono',
+            'correo' => 'required|email|max:150|unique:empresa,correo',
             'direccion' => 'required|string|max:200',
             'comprobante_pago' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'licencia_id' => 'required|exists:tipo_licencia,id_tipo_licencia',
+        ], [
+            'id_empresa.unique' => 'Este NIT ya se encuentra registrado o tiene una solicitud pendiente.',
+            'correo.unique' => 'Este correo electrónico ya se encuentra registrado.',
+            'cedula_repre.unique' => 'Esta cédula ya se encuentra registrada.',
+            'telefono.unique' => 'Este número de teléfono ya se encuentra registrado.',
         ]);
 
         // 1. Manejo del Archivo (Comprobante)

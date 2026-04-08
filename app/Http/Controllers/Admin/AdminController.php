@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Artisan;
 
 class AdminController extends Controller
 {
@@ -241,6 +242,13 @@ class AdminController extends Controller
 
     public function trabajadorInicio()
     {
+        // Forzar sincronización de riegos al entrar desde el móvil
+        try {
+            Artisan::call('app:generar-riegos');
+        } catch (\Exception $e) {
+            Log::error("Error sincronizando riegos (Trabajador): " . $e->getMessage());
+        }
+
         $usuario = auth()->guard('usuario')->user();
 
         // 1. Fase Programada (General Tasks)
@@ -331,8 +339,8 @@ class AdminController extends Controller
         $request->validate([
             // 1=Pendiente, 17=En Proceso, 15=Realizado, 16=Perdida, 18=Perdida Oculta, 19=Retrasó
             'id_estado' => 'required|integer|in:1,17,15,16,18,19',
-            // La foto es obligatoria solo al finalizar (id_estado=15 o 19)
-            'evidencia_foto' => ($request->id_estado == 15 || $request->id_estado == 19) ? 'required|image|max:2048' : 'nullable|image|max:2048',
+            // Aumentamos el límite a 10MB (10240 KB) para cámaras modernas de alta resolución
+            'evidencia_foto' => ($request->id_estado == 15 || $request->id_estado == 19) ? 'required|image|max:10240' : 'nullable|image|max:10240',
         ]);
 
         if ($tipo === 'recoleccion' && ($request->id_estado == 15 || $request->id_estado == 19)) {
@@ -519,6 +527,13 @@ class AdminController extends Controller
 
     public function tareasCategorizadas(Request $request)
     {
+        // Forzar sincronización de riegos al ver la tabla de tareas
+        try {
+            Artisan::call('app:generar-riegos');
+        } catch (\Exception $e) {
+            Log::error("Error sincronizando riegos (Admin): " . $e->getMessage());
+        }
+
         $usuario = auth()->guard('usuario')->user();
         $id_empresa = $usuario->id_empresa;
 
@@ -865,7 +880,7 @@ class AdminController extends Controller
                 'documento_trabajador' => 'required|exists:usuario,documento',
                 'id_tipo_riego' => 'required|exists:tipo_riego,id_tipo_riego',
                 'cant_agua_apl' => 'required|numeric',
-                'fecha_programada' => 'required|date',
+                'fecha_programada' => 'required|date|after_or_equal:today',
                 'observaciones' => 'nullable|string'
             ]);
 
@@ -894,7 +909,7 @@ class AdminController extends Controller
                 'documento_trabajador' => 'required|exists:usuario,documento',
                 'id_insumo' => 'required|exists:insumo,ID_insumo',
                 'cantidad_usada' => 'required|numeric',
-                'fecha_programada' => 'required|date',
+                'fecha_programada' => 'required|date|after_or_equal:today',
                 'observaciones' => 'nullable|string'
             ]);
 
@@ -933,7 +948,7 @@ class AdminController extends Controller
                 'descripcion' => 'required|string|max:255',
                 'id_terreno' => 'required|exists:terreno,id_terreno',
                 'documento_trabajador' => 'required|exists:usuario,documento',
-                'fecha_programada' => 'required|date'
+                'fecha_programada' => 'required|date|after_or_equal:today'
             ]);
 
             \App\Models\FaseProgramada::create([
@@ -1019,14 +1034,15 @@ class AdminController extends Controller
                 default => '#3b82f6'
             };
 
+            $descLimpia = trim(explode('[', $fase->descripcion)[0]);
             $eventos[] = [
                 'id' => $fase->id_fase,
-                'title' => strtoupper($fase->descripcion) . " - " . $nombreLugar,
+                'title' => strtoupper($descLimpia) . " - " . $nombreLugar,
                 'start' => $fase->fecha_programada,
                 'color' => $color,
                 'extendedProps' => [
                     'tipo' => 'fase',
-                    'descripcion' => $fase->descripcion,
+                    'descripcion' => $descLimpia,
                     'cultivo' => $nombreLugar,
                     'estado' => $fase->id_estado,
                     'foto_url' => isset($fotoFase[$fase->id_fase]) && $fotoFase[$fase->id_fase] ? asset('uploads/' . $fotoFase[$fase->id_fase]) : null,
@@ -1038,7 +1054,7 @@ class AdminController extends Controller
         // 2. Riego
         $riegos = \App\Models\Riego::with(['cosecha.terreno', 'cosecha.semilla'])->where('documento_trabajador', $usuario->documento)->get();
         foreach ($riegos as $riego) {
-            $nombreLugar = $riego->cosecha && $riego->cosecha->terreno ? $riego->cosecha->terreno->nombre : 'Terreno';
+            $nombreLugar = $riego->cosecha && $riego->cosecha->terreno ? ' - ' . $riego->cosecha->terreno->nombre : '';
 
             $color = match ((int) $riego->id_estado) {
                 15, 19 => '#0ea5e9', // Mantener color del riego (azul)
@@ -1049,14 +1065,14 @@ class AdminController extends Controller
 
             $eventos[] = [
                 'id' => 'riego_' . $riego->id_riego,
-                'title' => 'RIEGO - ' . $nombreLugar,
+                'title' => 'RIEGO' . $nombreLugar,
                 'start' => $riego->fecha_programada,
                 'color' => $color,
                 'extendedProps' => [
                     'tipo' => 'riego',
                     'descripcion' => $riego->observaciones,
                     'estado' => $riego->id_estado,
-                    'parcela' => $riego->cosecha?->terreno?->nombre,
+                    'parcela' => $riego->cosecha?->terreno?->nombre ?? 'N/A',
                     'variedad' => $riego->cosecha?->semilla?->nombre_semilla,
                     'foto_url' => isset($fotoRiego[$riego->id_riego]) && $fotoRiego[$riego->id_riego] ? asset('uploads/' . $fotoRiego[$riego->id_riego]) : null,
                     'observacion' => $obsRiego[$riego->id_riego] ?? $riego->observaciones
@@ -1067,7 +1083,7 @@ class AdminController extends Controller
         // 3. Insumos
         $insumos = \App\Models\InsumoCosecha::with(['insumo', 'cosecha.terreno', 'cosecha.semilla'])->where('documento_trabajador', $usuario->documento)->get();
         foreach ($insumos as $insumo) {
-            $nombreLugar = $insumo->cosecha && $insumo->cosecha->terreno ? $insumo->cosecha->terreno->nombre : 'Terreno';
+            $nombreLugar = $insumo->cosecha && $insumo->cosecha->terreno ? ' - ' . $insumo->cosecha->terreno->nombre : '';
 
             $color = match ((int) $insumo->id_estado) {
                 15, 19 => '#8b5cf6', // Mantener color del insumo (morado)
@@ -1082,7 +1098,7 @@ class AdminController extends Controller
 
             $eventos[] = [
                 'id' => 'insumo_' . $insumo->id_insumo_cosecha,
-                'title' => 'INSUMO - ' . $nombreLugar,
+                'title' => 'INSUMO' . $nombreLugar,
                 'start' => $insumo->fecha_programada,
                 'color' => $color,
                 'extendedProps' => [
@@ -1207,8 +1223,20 @@ class AdminController extends Controller
             ->first();
 
         if ($cosecha && (str_contains($fase->descripcion, '[INICIO_RIEGO:') || str_contains(strtolower($fase->descripcion), 'siembra'))) {
-            // 1. Activar Cosecha
-            $cosecha->update(['id_estado' => 1]);
+            // 1. Activar Cosecha (Reiniciando fechas para que el ciclo de vida sea exacto desde el día real de siembra)
+            $fechaActual = \Carbon\Carbon::now();
+            $oldSiembra = \Carbon\Carbon::parse($cosecha->fecha_siembra);
+            $oldEstimada = \Carbon\Carbon::parse($cosecha->fecha_estimada);
+            $duracionPlanificada = $oldSiembra->diffInDays($oldEstimada);
+
+            // Mantener la duración planeada pero empezando hoy
+            $newEstimada = $fechaActual->copy()->addDays($duracionPlanificada);
+
+            $cosecha->update([
+                'id_estado' => 1,
+                'fecha_siembra' => $fechaActual->format('Y-m-d'),
+                'fecha_estimada' => $newEstimada->format('Y-m-d')
+            ]);
 
             // 2. Ocupar Terreno
             $terreno = \App\Models\Terreno::find($cosecha->id_terreno);
@@ -1287,7 +1315,7 @@ class AdminController extends Controller
         $estadoAnterior = $fase->id_estado;
         $fase->update($request->all());
 
-        if ($request->id_estado == 15 && $estadoAnterior != 15) {
+        if (($request->id_estado == 15 || $request->id_estado == 19) && $estadoAnterior != 15 && $estadoAnterior != 19) {
             $this->procesarActivacionSiembra($fase, $request->documento_trabajador);
             $this->garantizarRegistroTrabajo($fase, 'fase', $request->descripcion);
         }

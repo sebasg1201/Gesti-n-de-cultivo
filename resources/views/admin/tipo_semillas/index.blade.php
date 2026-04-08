@@ -271,7 +271,7 @@
         }
 
         debounceTimer = setTimeout(() => {
-            fetch(`/tipo_semillas/catalog?q=${query}`)
+            fetch(`${window.APP_URL}/tipo_semillas/catalog?q=${query}`)
                 .then(res => res.json())
                 .then(data => {
                     searchResults.innerHTML = '';

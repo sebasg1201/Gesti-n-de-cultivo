@@ -45,10 +45,14 @@ document.addEventListener('DOMContentLoaded', () => {
             ['input', 'change', 'blur'].forEach(event => {
                 input.addEventListener(event, () => {
                     const isValidLocal = validateField(input, true);
-                    if (isValidLocal) {
+                    
+                    // Solo activamos validación asíncrona si:
+                    // 1. El formato local es válido
+                    // 2. No tiene el atributo data-no-async="true"
+                    if (isValidLocal && input.dataset.noAsync !== 'true') {
                         triggerAsyncValidation(input, checkFormValidity);
                     } else {
-                        // Reset asíncrono si el formato local falla
+                        // Reset asíncrono si el formato local falla o si no debe validarse asíncronamente
                         input.dataset.asyncValid = 'true';
                         input.dataset.asyncChecking = 'false';
                     }
@@ -75,15 +79,10 @@ document.addEventListener('DOMContentLoaded', () => {
 let debounceTimers = {};
 
 const triggerAsyncValidation = (input, onComplete) => {
-    // Si el campo tiene data-no-async="true", no hacemos la petición al servidor (por ejemplo, al buscar empresa ya existe en DB pero no queremos que arroje "Ya registrado")
-    if (input.dataset.noAsync === 'true') {
-        input.dataset.asyncValid = 'true';
-        updateUI(input, true, '');
-        if (onComplete) onComplete();
-        return;
-    }
-
+    const baseUrl = window.APP_URL || '';
     const type = getFieldType(input);
+    const value = input.value.trim();
+
     const fieldMapping = {
         'nit': 'id_empresa',
         'nombre_empresa': 'nombre_empresa',
@@ -93,60 +92,45 @@ const triggerAsyncValidation = (input, onComplete) => {
     };
 
     const fieldName = fieldMapping[type];
-    if (!fieldName) return;
-
-    const value = input.value.trim();
-    if (value.length < 3) return; // Mínimo de caracteres para disparar búsqueda asíncrona
-
-    const table = input.dataset.table || 'empresas';
+    if (!fieldName || value.length < 5) return; 
 
     if (debounceTimers[fieldName]) clearTimeout(debounceTimers[fieldName]);
     debounceTimers[fieldName] = setTimeout(async () => {
-        await checkUniquenessFromServer(input, fieldName, value, table);
-        if (onComplete) onComplete();
-    }, 500);
-};
+        input.dataset.asyncChecking = 'true';
+        updateUI(input, 'checking', 'Verificando...');
 
-const checkUniquenessFromServer = async (input, field, value, table) => {
-    input.dataset.asyncChecking = 'true';
-    updateUI(input, 'checking', 'Verificando disponibilidad...');
+        try {
+            const token = document.querySelector('meta[name="csrf-token"]')?.content;
+            const response = await fetch(`${baseUrl.replace(/\/+$/, '')}/validar-unicidad`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': token,
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ field: fieldName, value, table: input.dataset.table || 'empresas' })
+            });
 
-    try {
-        const token = document.querySelector('meta[name="csrf-token"]')?.content;
-        const response = await fetch('/validar-unicidad', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': token,
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify({ field, value, table })
-        });
+            if (!response.ok) throw new Error('Network error');
 
-        if (!response.ok) {
-            throw new Error(`Server error: ${response.status}`);
-        }
+            const data = await response.json();
+            input.dataset.asyncChecking = 'false';
 
-        const data = await response.json();
-        input.dataset.asyncChecking = 'false';
-
-        if (data.exists) {
-            input.dataset.asyncValid = 'false';
-            updateUI(input, false, data.message);
-        } else {
-            input.dataset.asyncValid = 'true';
+            if (data.exists) {
+                input.dataset.asyncValid = 'false';
+                updateUI(input, false, data.message);
+            } else {
+                input.dataset.asyncValid = 'true';
+                updateUI(input, true, '');
+            }
+        } catch (error) {
+            console.error('Validation error:', error);
+            input.dataset.asyncChecking = 'false';
+            input.dataset.asyncValid = 'true'; // Asumimos válido si el servidor falla
             updateUI(input, true, '');
         }
-    } catch (error) {
-        console.error('Error validando:', error);
-        input.dataset.asyncChecking = 'false';
-
-        // En caso de error técnico (419, 500), no marcamos como verde ni rojo 
-        // para no dar falsa sensación de seguridad ni bloquear al usuario.
-        // Lo dejamos en estado neutral o permitimos si es vital.
-        input.dataset.asyncValid = 'true';
-        updateUI(input, null, '');
-    }
+        if (onComplete) onComplete();
+    }, 600);
 };
 
 /* -----------------------------------------------------------------------
@@ -154,7 +138,11 @@ const checkUniquenessFromServer = async (input, field, value, table) => {
 ----------------------------------------------------------------------- */
 
 function shouldSkip(input) {
-    return input.type === 'hidden' || input.readOnly;
+    if (input.readOnly) return true;
+    // No omitimos campos requeridos aunque estén ocultos o deshabilitados, 
+    // para que bloqueen el botón de enviar.
+    if (input.hasAttribute('required')) return false;
+    return input.type === 'hidden' || input.disabled;
 }
 
 /**
@@ -713,6 +701,7 @@ function updateUI(input, isValid, errorMessage) {
  * contenedor padre del input para evitar conflictos en modales.
  */
 function showErrorMsg(input, message, colorClass = 'text-red-500') {
+    if (input.type === 'hidden') return;
     const errorId = 'v-err-' + (input.id || input.name || Math.random().toString(36).slice(2));
     let errorEl = document.getElementById(errorId);
 

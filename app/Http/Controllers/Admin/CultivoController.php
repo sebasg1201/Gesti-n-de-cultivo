@@ -33,10 +33,11 @@ class CultivoController extends Controller
             
             $query = Cosecha::where('id_empresa', $id_empresa)
                 ->where('id_semilla', $id_semilla)
+                ->planted()
                 ->with(['semilla', 'terreno']);
 
             if ($month) {
-                $query->whereMonth('fecha_siembra', $month); // Opcionalmente filtrar por fecha de siembra aquí también
+                $query->whereMonth('fecha_siembra', $month); 
             }
             if ($year) {
                 $query->whereYear('fecha_siembra', $year);
@@ -53,10 +54,10 @@ class CultivoController extends Controller
 
         $categorias = \App\Models\TipoSemilla::where('id_empresa', $id_empresa)
             ->whereHas('cosechas', function($q) use ($id_empresa) {
-                $q->where('id_empresa', $id_empresa);
+                $q->where('id_empresa', $id_empresa)->planted();
             })
             ->withCount(['cosechas' => function($q) use ($id_empresa) {
-                $q->where('id_empresa', $id_empresa);
+                $q->where('id_empresa', $id_empresa)->planted();
             }])
             ->get()
             ->map(function($cat) {
@@ -155,7 +156,7 @@ class CultivoController extends Controller
         $request->validate([
             'id_cosecha' => 'required|exists:cosecha,id_cosecha',
             'documento_trabajador' => 'required|exists:usuario,documento',
-            'fecha_recoleccion' => 'required|date',
+            'fecha_recoleccion' => 'required|date|after_or_equal:today',
             'observaciones' => 'nullable|string'
         ]);
 

@@ -7,7 +7,7 @@
 <div class="max-w-4xl mx-auto space-y-8">
     
     <!-- Hero Section -->
-    <div class="bg-gradient-to-br from-emerald-600 to-emerald-800 rounded-3xl p-8 text-white shadow-xl relative overflow-hidden">
+    <div class="bg-gradient-to-br from-emerald-600 to-emerald-800 rounded-2xl lg:rounded-3xl p-6 lg:p-8 text-white shadow-xl relative overflow-hidden">
         <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-20 -mt-20 blur-3xl"></div>
         <div class="relative z-10 flex flex-col md:flex-row items-center gap-6">
             <div class="w-20 h-20 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-md shadow-inner">
@@ -26,7 +26,7 @@
         
         <!-- Formulario de Envío -->
         <div class="lg:col-span-1">
-            <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-xl border border-emerald-50 dark:border-emerald-900/20 p-6 sticky top-8 transition-colors duration-300">
+            <div class="bg-white dark:bg-slate-800 rounded-2xl lg:rounded-3xl shadow-xl border border-emerald-50 dark:border-emerald-900/20 p-5 lg:p-6 sticky top-8 transition-colors duration-300">
                 <h3 class="text-xl font-bold text-gray-800 dark:text-emerald-50 mb-6 flex items-center gap-2">
                     <span class="w-8 h-8 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-lg flex items-center justify-center">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">

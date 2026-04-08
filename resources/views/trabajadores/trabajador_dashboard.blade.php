@@ -5,29 +5,8 @@
 @section('content')
     <div class="max-w-6xl mx-auto space-y-8 pb-20">
 
-        @if (session('success'))
-            <div id="notification-alert"
-                class="fixed top-24 right-8 z-[100] transform transition-all duration-500 translate-x-0">
-                <div
-                    class="bg-emerald-500 text-white px-6 py-4 rounded-2xl shadow-2xl shadow-emerald-200/50 flex items-center gap-4 border border-emerald-400/20 backdrop-blur-md">
-                    <div class="bg-white/20 p-2 rounded-xl">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
-                        </svg>
-                    </div>
-                    <p class="font-bold">{{ session('success') }}</p>
-                    <button onclick="closeNotification()" class="ml-4 opacity-70 hover:opacity-100 transition-opacity">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
-        @endif
-
         <div
-            class="relative overflow-hidden bg-gradient-to-br from-emerald-600 to-teal-700 rounded-[2.5rem] p-8 lg:p-12 shadow-2xl shadow-emerald-200/50 group">
+            class="relative overflow-hidden bg-gradient-to-br from-emerald-600 to-teal-700 rounded-3xl lg:rounded-[2.5rem] p-6 lg:p-12 shadow-2xl shadow-emerald-200/50 group">
             <div
                 class="absolute top-0 right-0 -mt-20 -mr-20 w-64 h-64 bg-white/10 rounded-full blur-3xl group-hover:bg-white/20 transition-all duration-700">
             </div>
@@ -42,23 +21,50 @@
                         <span class="w-2 h-2 bg-emerald-300 rounded-full animate-pulse"></span>
                         Sesión Activa
                     </span>
-                    <h2 class="text-3xl md:text-5xl font-black text-white tracking-tight">¡Hola,
+                    @php
+                        $allTasks = $tareas->flatten();
+                        $lostTasks = $allTasks->filter(function($t) {
+                            $fecha = \Carbon\Carbon::parse($t->fecha_programada);
+                            return $t->id_estado == 16 || ($t->id_estado == 1 && $fecha->isPast() && !$fecha->isToday());
+                        });
+                        $lostCount = $lostTasks->count();
+                        
+                        $todayTasks = $allTasks->filter(function($t) {
+                            return \Carbon\Carbon::parse($t->fecha_programada)->isToday() && in_array($t->id_estado, [1, 17]);
+                        });
+                        $todayCount = $todayTasks->count();
+                    @endphp
+                    <h2 class="text-2xl md:text-5xl font-black text-white tracking-tight">¡Hola,
                         {{ explode(' ', auth()->guard('usuario')->user()->nombre)[0] }}!</h2>
                     <p class="text-emerald-50 text-lg opacity-90 max-w-md">Lleva el control de tu productividad. Tienes
-                        <span class="font-black underline decoration-emerald-300">{{ $tareas->flatten()->count() }}</span>
+                        <span class="font-black underline decoration-emerald-300">{{ $allTasks->count() }}</span>
                         acciones programadas hoy.</p>
                 </div>
+                
+                <style>
+                    @keyframes task-pulse {
+                        0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+                        50% { transform: scale(1.05); box-shadow: 0 0 30px 15px rgba(16, 185, 129, 0.3); border-color: #10b981; }
+                        100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+                    }
+                    .highlight-task {
+                        animation: task-pulse 2s ease-in-out infinite;
+                        z-index: 50;
+                        position: relative;
+                        border: 2px solid #10b981 !important;
+                    }
+                </style>
                 <div class="flex gap-4">
                     <div
-                        class="bg-white/10 backdrop-blur-md p-6 rounded-[2rem] border border-white/10 text-center flex-1 md:flex-none md:min-w-[140px]">
+                        class="bg-white/10 backdrop-blur-md p-4 lg:p-6 rounded-2xl lg:rounded-[2rem] border border-white/10 text-center flex-1 md:flex-none md:min-w-[140px]">
                         <p class="text-white/60 text-[10px] font-black uppercase mb-1">Pendientes</p>
-                        <p class="text-3xl font-black text-white">{{ $tareas->flatten()->where('id_estado', 1)->count() }}
+                        <p class="text-2xl lg:text-3xl font-black text-white">{{ $allTasks->where('id_estado', 1)->count() }}
                         </p>
                     </div>
                     <div
-                        class="bg-white/10 backdrop-blur-md p-6 rounded-[2rem] border border-white/10 text-center flex-1 md:flex-none md:min-w-[140px]">
+                        class="bg-white/10 backdrop-blur-md p-4 lg:p-6 rounded-2xl lg:rounded-[2rem] border border-white/10 text-center flex-1 md:flex-none md:min-w-[140px]">
                         <p class="text-white/60 text-[10px] font-black uppercase mb-1">En Proceso</p>
-                        <p class="text-3xl font-black text-white">{{ $tareas->flatten()->where('id_estado', 17)->count() }}
+                        <p class="text-2xl lg:text-3xl font-black text-white">{{ $tareas->flatten()->where('id_estado', 17)->count() }}
                         </p>
                     </div>
                 </div>
@@ -90,9 +96,9 @@
 
                 <div class="space-y-8">
                     {{-- Harvest Header --}}
-                    <div class="flex items-center gap-6 px-4">
+                    <div class="flex items-center gap-3 lg:gap-6 px-2 lg:px-4">
                         <h3
-                            class="flex-none flex items-center gap-4 bg-white dark:bg-slate-800 px-6 py-3 rounded-2xl shadow-xl shadow-gray-100/50 dark:shadow-none border border-gray-50 dark:border-emerald-900/20 transition-all duration-300">
+                            class="flex-none flex items-center gap-3 lg:gap-4 bg-white dark:bg-slate-800 px-4 py-2 lg:px-6 lg:py-3 rounded-xl lg:rounded-2xl shadow-xl shadow-gray-100/50 dark:shadow-none border border-gray-50 dark:border-emerald-900/20 transition-all duration-300">
                             <div
                                 class="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-emerald-200 dark:shadow-none">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
@@ -104,7 +110,7 @@
                             <div>
                                 <p class="text-[10px] font-black text-gray-400 dark:text-emerald-500 uppercase tracking-widest leading-none mb-1">
                                     {{ $cosecha ? 'Gestión de Cultivo' : 'Área de Trabajo' }}</p>
-                                <span class="text-xl font-black text-gray-900 dark:text-emerald-50 leading-none">
+                                <span class="text-base lg:text-xl font-black text-gray-900 dark:text-emerald-50 leading-tight">
                                     @if($cosecha)
                                         {{ $parcelaNombre }} <span class="text-emerald-600">|</span> {{ $semillaNombre }}
                                     @else
@@ -115,12 +121,12 @@
                         </h3>
                         <div class="h-px flex-1 bg-gradient-to-r from-gray-200 dark:from-emerald-900/40 to-transparent"></div>
                         <div
-                            class="flex-none px-4 py-2 bg-emerald-50 dark:bg-emerald-950/40 rounded-xl text-emerald-700 dark:text-emerald-400 font-black text-[10px] uppercase tracking-widest border border-emerald-100 dark:border-emerald-900/20">
+                            class="hidden md:block flex-none px-4 py-2 bg-emerald-50 dark:bg-emerald-950/40 rounded-xl text-emerald-700 dark:text-emerald-400 font-black text-[10px] uppercase tracking-widest border border-emerald-100 dark:border-emerald-900/20">
                             {{ $parcelaNombre }}
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
                         @foreach($grupoTareas as $fase)
                             @php
                                 $tareaCosecha = $fase->tipo_tarea === 'fase' ? null : $fase->cosecha;
@@ -168,9 +174,9 @@
                                     'instrucciones' => $fase->sub_descripcion ?? $fase->observaciones ?? $fase->descripcion_recoleccion ?? null
                                 ];
                             @endphp
-                            <div
-                                class="group/card bg-white dark:bg-slate-800 rounded-[2.5rem] p-1 border border-gray-100 dark:border-emerald-900/20 shadow-xl shadow-gray-100/50 dark:shadow-none hover:shadow-2xl hover:{{ $shadowColor }} hover:-translate-y-2 transition-all duration-500">
-                                <div class="bg-gray-50/50 dark:bg-slate-900/50 rounded-[2.2rem] p-7 h-full flex flex-col relative overflow-hidden">
+                            <div id="task-{{ $details['tipo_tarea'] }}-{{ $details['fase_id'] }}"
+                                class="group/card bg-white dark:bg-slate-800 rounded-3xl lg:rounded-[2.5rem] p-1 border border-gray-100 dark:border-emerald-900/20 shadow-xl shadow-gray-100/50 dark:shadow-none hover:shadow-2xl hover:{{ $shadowColor }} hover:-translate-y-2 transition-all duration-500">
+                                <div class="bg-gray-50/50 dark:bg-slate-900/50 rounded-[1.8rem] lg:rounded-[2.2rem] p-5 lg:p-7 h-full flex flex-col relative overflow-hidden">
                                     {{-- Left Accent Border --}}
                                     <div class="absolute left-0 top-0 bottom-0 w-3 {{ $barColor }} opacity-80 group-hover/card:opacity-100 transition-opacity"></div>
                                     {{-- Background Pattern --}}
@@ -179,10 +185,14 @@
                                     </div>
 
                                     <div class="flex justify-between items-start mb-6">
+                                        @php
+                                            $faseFecha = \Carbon\Carbon::parse($fase->fecha_programada);
+                                            $isReallyLost = $fase->id_estado == 16 || ($fase->id_estado == 1 && $faseFecha->isPast() && !$faseFecha->isToday());
+                                        @endphp
                                         <span
                                             class="px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest shadow-sm
-                                                    {{ $fase->id_estado == 1 ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800/40' : ($fase->id_estado == 17 ? 'bg-sky-100 dark:bg-sky-900/30 text-sky-700 dark:text-sky-400 border border-sky-200 dark:border-sky-800/40' : ($fase->id_estado == 16 ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800/40' : ($fase->id_estado == 19 ? 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 border border-orange-200 dark:border-orange-800/40' : 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/40'))) }}">
-                                            {{ $fase->id_estado == 1 ? 'Pendiente' : ($fase->id_estado == 17 ? 'En Proceso' : ($fase->id_estado == 16 ? 'Perdida' : ($fase->id_estado == 19 ? 'Retrasó' : 'Realizado'))) }}
+                                                    {{ $isReallyLost ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800/40' : ($fase->id_estado == 1 ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800/40' : ($fase->id_estado == 17 ? 'bg-sky-100 dark:bg-sky-900/30 text-sky-700 dark:text-sky-400 border border-sky-200 dark:border-sky-800/40' : ($fase->id_estado == 19 ? 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 border border-orange-200 dark:border-orange-800/40' : 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/40'))) }}">
+                                            {{ $isReallyLost ? 'Perdida' : ($fase->id_estado == 1 ? 'Pendiente' : ($fase->id_estado == 17 ? 'En Proceso' : ($fase->id_estado == 19 ? 'Retrasó' : 'Realizado'))) }}
                                         </span>
 
                                         <div class="text-right">
@@ -221,8 +231,8 @@
                                             data-fecha-raw="{{ \Carbon\Carbon::parse($fase->fecha_programada)->format('Y-m-d') }}"
                                             data-update-url="{{ route('trabajador.tareas.estado', ['id' => $details['fase_id'], 'tipo' => $fase->tipo_tarea]) }}"
                                             onclick="showTaskDetails(this)"
-                                            class="flex-1 bg-white dark:bg-slate-900 hover:bg-emerald-600 dark:hover:bg-emerald-600 text-gray-900 dark:text-emerald-100 hover:text-white font-black py-4 px-6 rounded-2xl transition-all duration-300 border border-gray-100 dark:border-emerald-900/40 hover:border-emerald-600 text-xs uppercase tracking-widest shadow-sm hover:shadow-xl hover:shadow-emerald-200">
-                                            Detalles de Tarea
+                                            class="flex-1 bg-white dark:bg-slate-900 hover:bg-emerald-600 dark:hover:bg-emerald-600 text-gray-900 dark:text-emerald-100 hover:text-white font-black py-3 px-4 lg:py-4 lg:px-6 rounded-xl lg:rounded-2xl transition-all duration-300 border border-gray-100 dark:border-emerald-900/40 hover:border-emerald-600 text-[10px] lg:text-xs uppercase tracking-widest shadow-sm hover:shadow-xl hover:shadow-emerald-200">
+                                            Detalles
                                         </button>
 
                                         <a href="{{ route('trabajador.calendario', ['date' => \Carbon\Carbon::parse($fase->fecha_programada)->format('Y-m-d')]) }}"
@@ -265,7 +275,7 @@
         <div class="fixed inset-0 z-10 overflow-y-auto">
             <div class="flex min-h-full items-center justify-center p-4">
                 <div
-                    class="relative bg-white rounded-[3rem] p-8 lg:p-12 w-full max-w-2xl shadow-2xl transform transition-all overflow-hidden">
+                    class="relative bg-white rounded-3xl lg:rounded-[3rem] p-6 lg:p-12 w-full max-w-2xl shadow-2xl transform transition-all overflow-hidden">
                     {{-- Modal Header --}}
                     <div class="flex justify-between items-start mb-10">
                         <div class="flex items-center gap-6">
@@ -408,12 +418,18 @@
 
                                 <div class="mb-6 text-left" id="evidenciaFotoWrap">
                                     <label for="evidencia_foto"
-                                        class="block text-[10px] font-black text-emerald-600 uppercase tracking-widest ml-1 mb-2">Evidencia
-                                        Fotográfica Requerida</label>
-                                    <input type="file" name="evidencia_foto" id="evidencia_foto" accept="image/*"
-                                        class="w-full text-sm text-gray-500 file:mr-4 file:py-3 file:px-6 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 transition-all border border-gray-200 rounded-xl p-2 bg-white">
-                                    <p class="text-[9px] text-gray-400 mt-2 ml-1">Debe adjuntar una foto del trabajo
-                                        realizado (&lt; 2MB).</p>
+                                        class="flex items-center gap-2 text-[10px] font-black text-emerald-600 uppercase tracking-widest ml-1 mb-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        </svg>
+                                        Evidencia Fotográfica Requerida
+                                    </label>
+                                    <div class="relative group/photo">
+                                        <input type="file" name="evidencia_foto" id="evidencia_foto" accept="image/*" capture="environment"
+                                            class="w-full text-sm text-gray-500 file:mr-4 file:py-3 file:px-6 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-emerald-600 file:text-white hover:file:bg-emerald-700 transition-all border-2 border-dashed border-gray-200 group-hover/photo:border-emerald-300 rounded-2xl p-3 bg-gray-50/50 cursor-pointer shadow-sm">
+                                    </div>
+                                    <p class="text-[9px] text-gray-400 mt-2 ml-1 italic font-medium">Pulsa para tomar la foto con tu cámara directamente.</p>
                                 </div>
 
                                 <button type="submit" id="btnFinalizarTarea"
@@ -454,6 +470,45 @@
                 setTimeout(() => alert.remove(), 600);
             }
         }
+
+        function closeErrorNotification() {
+            const alert = document.getElementById('error-alert');
+            if (alert) {
+                alert.classList.add('translate-x-[150%]');
+                setTimeout(() => alert.remove(), 600);
+            }
+        }
+
+        // --- Notificaciones de Pago Recibido ---
+        @if(isset($pagosNoVistos) && $pagosNoVistos->count() > 0)
+            document.addEventListener('DOMContentLoaded', () => {
+                @foreach($pagosNoVistos as $index => $pago)
+                    setTimeout(() => {
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'success',
+                            title: '¡Pago Recibido!',
+                            html: `<p class="text-xs font-bold text-emerald-800">Se ha registrado un pago de <b>$${{ number_format($pago->cantidad_pago, 0, ',', '.') }} {{ $pago->unidad_pago }}</b></p><p class="text-[10px] text-gray-500">{{ $pago->descripcion_pago }}</p>`,
+                            showConfirmButton: false,
+                            timer: 6000,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                // Marcar como visto vía AJAX para que desaparezca tras este aviso
+                                fetch('{{ route("trabajador.pagos.visto", $pago->id_salario) }}', {
+                                    method: 'POST',
+                                    headers: {
+                                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                        'Content-Type': 'application/json',
+                                        'Accept': 'application/json'
+                                    }
+                                });
+                            }
+                        });
+                    }, {{ $index * 1000 }}); // Escalonar si hay varios
+                @endforeach
+            });
+        @endif
 
         function showTaskDetails(btn) {
             try {
@@ -500,7 +555,6 @@
                     iconSvg.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />';
                 }
 
-                // Mostrar/ocultar observación del trabajador ya guardada
                 const obsGuardadaWrap = document.getElementById('obsGuardadaWrap');
                 const obsGuardadaTexto = document.getElementById('obsGuardadaTexto');
                 const obsInputWrap = document.getElementById('obsInputWrap');
@@ -520,140 +574,137 @@
                 if (obsTextarea) obsTextarea.value = '';
 
                 const modalForm = document.getElementById('modalFormEstado');
-            const btnFinalizar = document.getElementById('btnFinalizarTarea');
-            if (modalForm && ds.updateUrl) {
-                modalForm.action = ds.updateUrl;
-                const currentStatus = parseInt(ds.idEstado || '1');
+                const btnFinalizar = document.getElementById('btnFinalizarTarea');
+                if (modalForm && ds.updateUrl) {
+                    modalForm.action = ds.updateUrl;
 
-                const inputIdEstado = document.getElementById('inputIdEstado');
-                const reqInput = document.getElementById('evidencia_foto');
-                const fotoWrap = document.getElementById('evidenciaFotoWrap');
+                    const inputIdEstado = document.getElementById('inputIdEstado');
+                    const reqInput = document.getElementById('evidencia_foto');
+                    const fotoWrap = document.getElementById('evidenciaFotoWrap');
 
-                const taskDateRaw = ds.fechaRaw;
-                const now = new Date();
-                const today = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
-                const isTaskDay = (taskDateRaw === today);
+                    const taskDateRaw = ds.fechaRaw;
+                    const now = new Date();
+                    const today = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+                    const isTaskDay = (taskDateRaw === today);
+                    const isPastDue = (!isTaskDay && new Date(taskDateRaw) < now);
+                    const currentStatus = parseInt(ds.idEstado || '1');
+                    const isReallyLost = (currentStatus === 16) || (currentStatus === 1 && isPastDue);
 
-                if (currentStatus === 15 || currentStatus === 16 || currentStatus === 19) {
-                    if (currentStatus === 15 || currentStatus === 19) {
+                    if (currentStatus === 15 || currentStatus === 19 || isReallyLost) {
+                        if (currentStatus === 15 || currentStatus === 19) {
+                            btnFinalizar.disabled = true;
+                            btnFinalizar.innerText = currentStatus === 15 ? 'Trabajo Finalizado ✓' : 'Realizado con Retraso ✓';
+                            btnFinalizar.classList.remove('bg-emerald-600', 'hover:bg-emerald-700', 'shadow-emerald-200/50', 'bg-red-500', 'text-white', 'bg-orange-500', 'shadow-orange-200/50');
+                            btnFinalizar.classList.add('bg-gray-300', 'text-gray-500', 'cursor-not-allowed', 'shadow-none');
+                            
+                            obsInputWrap.classList.add('hidden');
+                            if (recoleccionWrap) recoleccionWrap.classList.add('hidden');
+                            if(fotoWrap) fotoWrap.classList.add('hidden');
+                            if(reqInput) reqInput.required = false;
+                            if(inputCantidad) inputCantidad.required = false;
+                            if(inputCalidad) inputCalidad.required = false;
+                        } else if (isReallyLost) {
+                            btnFinalizar.disabled = false;
+                            btnFinalizar.innerText = 'Finalizar Trabajo (Retrasado)';
+                            btnFinalizar.classList.remove('bg-emerald-600', 'hover:bg-emerald-700', 'shadow-emerald-200/50', 'bg-gray-300', 'text-gray-500', 'cursor-not-allowed', 'shadow-none', 'bg-red-500');
+                            btnFinalizar.classList.add('bg-orange-500', 'hover:bg-orange-600', 'text-white', 'shadow-orange-200/50', 'cursor-pointer');
+                            
+                            if(inputIdEstado) inputIdEstado.value = 19;
+                            
+                            obsInputWrap.classList.remove('hidden');
+                            if (optionOcultarWrap) optionOcultarWrap.classList.remove('hidden');
+    
+                            if (ds.tipoTarea === 'recoleccion') {
+                                if (recoleccionWrap) recoleccionWrap.classList.remove('hidden');
+                                if (inputCantidad) inputCantidad.required = true;
+                                if (inputCalidad) inputCalidad.required = true;
+                            } else {
+                                if (recoleccionWrap) recoleccionWrap.classList.add('hidden');
+                                if (inputCantidad) inputCantidad.required = false;
+                                if (inputCalidad) inputCalidad.required = false;
+                            }
+    
+                            if(fotoWrap) fotoWrap.classList.remove('hidden');
+                            if(reqInput) reqInput.required = true;
+                        }
+                    } else if (!isTaskDay) {
                         btnFinalizar.disabled = true;
-                        btnFinalizar.innerText = currentStatus === 15 ? 'Trabajo Finalizado ✓' : 'Realizado con Retraso ✓';
-                        btnFinalizar.classList.remove('bg-emerald-600', 'hover:bg-emerald-700', 'shadow-emerald-200/50', 'bg-red-500', 'text-white', 'bg-orange-500', 'shadow-orange-200/50');
-                        btnFinalizar.classList.add('bg-gray-300', 'text-gray-500', 'cursor-not-allowed', 'shadow-none');
+                        btnFinalizar.innerText = 'Tarea para el ' + ds.fecha;
+                        btnFinalizar.classList.remove('bg-emerald-600', 'hover:bg-emerald-700', 'shadow-emerald-200/50', 'bg-red-500', 'hover:bg-red-600', 'text-white');
+                        btnFinalizar.classList.add('bg-gray-200', 'text-gray-400', 'cursor-not-allowed', 'shadow-none', 'border-gray-200');
                         
                         obsInputWrap.classList.add('hidden');
-                        if (optionOcultarWrap) optionOcultarWrap.classList.add('hidden');
                         if (recoleccionWrap) recoleccionWrap.classList.add('hidden');
                         if(fotoWrap) fotoWrap.classList.add('hidden');
                         if(reqInput) reqInput.required = false;
                         if(inputCantidad) inputCantidad.required = false;
                         if(inputCalidad) inputCalidad.required = false;
-                    } else if (currentStatus === 16) {
+                    } else {
                         btnFinalizar.disabled = false;
-                        btnFinalizar.innerText = 'Finalizar Trabajo (Retrasado)';
-                        btnFinalizar.classList.remove('bg-emerald-600', 'hover:bg-emerald-700', 'shadow-emerald-200/50', 'bg-gray-300', 'text-gray-500', 'cursor-not-allowed', 'shadow-none', 'bg-red-500');
-                        btnFinalizar.classList.add('bg-orange-500', 'hover:bg-orange-600', 'text-white', 'shadow-orange-200/50', 'cursor-pointer');
+                        btnFinalizar.innerText = 'Finalizar Trabajo';
+                        btnFinalizar.classList.remove('bg-gray-300', 'text-gray-500', 'cursor-not-allowed', 'shadow-none', 'bg-red-500', 'hover:bg-red-600', 'bg-gray-200', 'text-gray-400');
+                        btnFinalizar.classList.add('bg-emerald-600', 'hover:bg-emerald-700', 'text-white', 'shadow-emerald-200/50');
                         
-                        if(inputIdEstado) inputIdEstado.value = 19;
+                        if(inputIdEstado) inputIdEstado.value = 15;
                         
                         obsInputWrap.classList.remove('hidden');
-                        if (optionOcultarWrap) optionOcultarWrap.classList.remove('hidden');
-
                         if (ds.tipoTarea === 'recoleccion') {
                             if (recoleccionWrap) recoleccionWrap.classList.remove('hidden');
                             if (inputCantidad) inputCantidad.required = true;
                             if (inputCalidad) inputCalidad.required = true;
+                        } else {
+                            if (recoleccionWrap) recoleccionWrap.classList.add('hidden');
+                            if (inputCantidad) inputCantidad.required = false;
+                            if (inputCalidad) inputCalidad.required = false;
                         }
 
                         if(fotoWrap) fotoWrap.classList.remove('hidden');
                         if(reqInput) reqInput.required = true;
                     }
-                } else if (!isTaskDay) {
-                    btnFinalizar.disabled = true;
-                    btnFinalizar.innerText = 'Tarea para el ' + ds.fecha;
-                    btnFinalizar.classList.remove('bg-emerald-600', 'hover:bg-emerald-700', 'shadow-emerald-200/50', 'bg-red-500', 'hover:bg-red-600', 'text-white');
-                    btnFinalizar.classList.add('bg-gray-200', 'text-gray-400', 'cursor-not-allowed', 'shadow-none', 'border-gray-200');
-                    
-                    obsInputWrap.classList.add('hidden');
-                    if (recoleccionWrap) recoleccionWrap.classList.add('hidden');
-                    if(fotoWrap) fotoWrap.classList.add('hidden');
-                    if(reqInput) reqInput.required = false;
-                    if(inputCantidad) inputCantidad.required = false;
-                    if(inputCalidad) inputCalidad.required = false;
-                } else {
-                    btnFinalizar.disabled = false;
-                    btnFinalizar.innerText = 'Finalizar Trabajo';
-                    btnFinalizar.classList.remove('bg-gray-300', 'text-gray-500', 'cursor-not-allowed', 'shadow-none', 'bg-red-500', 'hover:bg-red-600', 'bg-gray-200', 'text-gray-400');
-                    btnFinalizar.classList.add('bg-emerald-600', 'hover:bg-emerald-700', 'text-white', 'shadow-emerald-200/50');
-                    
-                    if(inputIdEstado) inputIdEstado.value = 15;
-                    
-                    // Mostrar inputs
-                    obsInputWrap.classList.remove('hidden');
 
-                    if (ds.tipoTarea === 'recoleccion') {
-                        if (recoleccionWrap) recoleccionWrap.classList.remove('hidden');
-                        if (inputCantidad) inputCantidad.required = true;
-                        if (inputCalidad) inputCalidad.required = true;
-                    } else {
+                    if (currentStatus === 1 && isTaskDay) {
+                        btnFinalizar.disabled = true;
+                        btnFinalizar.innerText = 'Procesando...';
+                        obsInputWrap.classList.add('hidden');
                         if (recoleccionWrap) recoleccionWrap.classList.add('hidden');
-                        if (inputCantidad) inputCantidad.required = false;
-                        if (inputCalidad) inputCalidad.required = false;
-                    }
+                        document.getElementById('evidencia_foto').closest('div').classList.add('hidden');
 
-                    if(fotoWrap) fotoWrap.classList.remove('hidden');
-                    if(reqInput) reqInput.required = true;
-                }
+                        const csrfToken = document.querySelector('input[name="_token"]').value;
+                        const formData = new FormData();
+                        formData.append('_token', csrfToken);
+                        formData.append('id_estado', 17);
 
-
-                if (currentStatus === 1 && isTaskDay) {
-                    // Bloquear el botón PRIMERO para evitar que el form se envíe durante la transición
-                    btnFinalizar.disabled = true;
-                    btnFinalizar.innerText = 'Procesando...';
-                    obsInputWrap.classList.add('hidden');
-                    if (recoleccionWrap) recoleccionWrap.classList.add('hidden');
-                    document.getElementById('evidencia_foto').closest('div').classList.add('hidden');
-
-                    // Pasar automáticamente a "En Proceso" (id=17) al abrir los detalles
-                    const csrfToken = document.querySelector('input[name="_token"]').value;
-                    const formData = new FormData();
-                    formData.append('_token', csrfToken);
-                    formData.append('id_estado', 17);
-
-                    fetch(ds.updateUrl, {
-                        method: 'POST',
-                        body: formData,
-                        headers: { 'X-Requested-With': 'XMLHttpRequest' }
-                    }).then(response => {
-                        if (response.ok) {
-                            btn.dataset.idEstado = '17';
-                            btn.dataset.estado = 'En Proceso';
-
-                            const cardTag = btn.closest('.group\\/card').querySelector('span.rounded-full');
-                            if (cardTag) {
-                                cardTag.innerText = 'En Proceso';
-                                cardTag.className = 'px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest shadow-sm bg-sky-100 text-sky-700 border border-sky-200';
+                        fetch(ds.updateUrl, {
+                            method: 'POST',
+                            body: formData,
+                            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                        }).then(response => {
+                            if (response.ok) {
+                                btn.dataset.idEstado = '17';
+                                btn.dataset.estado = 'En Proceso';
+                                const cardTag = btn.closest('.group\\/card').querySelector('span.rounded-full');
+                                if (cardTag) {
+                                    cardTag.innerText = 'En Proceso';
+                                    cardTag.className = 'px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest shadow-sm bg-sky-100 text-sky-700 border border-sky-200';
+                                }
                             }
-                        }
-                        // Reactivar el botón y mostrar inputs después de completar la transición
-                        btnFinalizar.disabled = false;
-                        btnFinalizar.innerText = 'Finalizar Trabajo';
-                        btnFinalizar.classList.remove('bg-gray-300', 'text-gray-500', 'cursor-not-allowed', 'shadow-none');
-                        btnFinalizar.classList.add('bg-emerald-600', 'hover:bg-emerald-700', 'text-white', 'shadow-emerald-200/50');
-                        obsInputWrap.classList.remove('hidden');
-                        if (ds.tipoTarea === 'recoleccion' && recoleccionWrap) recoleccionWrap.classList.remove('hidden');
-                        document.getElementById('evidencia_foto').closest('div').classList.remove('hidden');
-                    }).catch(e => {
-                        console.error(e);
-                        // En caso de error, reactivar el botón de todos modos
-                        btnFinalizar.disabled = false;
-                        btnFinalizar.innerText = 'Finalizar Trabajo';
-                        obsInputWrap.classList.remove('hidden');
-                        if (ds.tipoTarea === 'recoleccion' && recoleccionWrap) recoleccionWrap.classList.remove('hidden');
-                        document.getElementById('evidencia_foto').closest('div').classList.remove('hidden');
-                    });
+                            btnFinalizar.disabled = false;
+                            btnFinalizar.innerText = 'Finalizar Trabajo';
+                            btnFinalizar.classList.remove('bg-gray-300', 'text-gray-500', 'cursor-not-allowed', 'shadow-none');
+                            btnFinalizar.classList.add('bg-emerald-600', 'hover:bg-emerald-700', 'text-white', 'shadow-emerald-200/50');
+                            obsInputWrap.classList.remove('hidden');
+                            if (ds.tipoTarea === 'recoleccion' && recoleccionWrap) recoleccionWrap.classList.remove('hidden');
+                            document.getElementById('evidencia_foto').closest('div').classList.remove('hidden');
+                        }).catch(e => {
+                            console.error(e);
+                            btnFinalizar.disabled = false;
+                            btnFinalizar.innerText = 'Finalizar Trabajo';
+                            obsInputWrap.classList.remove('hidden');
+                            if (ds.tipoTarea === 'recoleccion' && recoleccionWrap) recoleccionWrap.classList.remove('hidden');
+                            document.getElementById('evidencia_foto').closest('div').classList.remove('hidden');
+                        });
+                    }
                 }
-            }
 
                 const modal = document.getElementById('modalTarea');
                 if (modal) {
@@ -661,7 +712,6 @@
                 }
                 document.body.style.overflow = 'hidden';
             } catch (e) {
-                alert("JS ERROR DETECTED: " + e.message + "\n\nStack:\n" + e.stack);
                 console.error(e);
             }
         }
@@ -690,5 +740,41 @@
                 modalForm.submit();
             }
         }
+
+        /* ==================== REDIRECCIÓN DESDE NOTIFICACIÓN ==================== */
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const taskId = urlParams.get('task_id');
+            const taskType = urlParams.get('task_type');
+
+            if (taskId && taskType) {
+                setTimeout(() => {
+                    const taskCard = document.getElementById(`task-${taskType}-${taskId}`);
+                    if (taskCard) {
+                        // Scroll suave
+                        taskCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                        // Aplicar animación profesional
+                        taskCard.classList.add('highlight-task');
+
+                        // Abrir modal automáticamente tras un ligero delay visual
+                        setTimeout(() => {
+                            const detailBtn = taskCard.querySelector('button[onclick="showTaskDetails(this)"]');
+                            if (detailBtn) {
+                                detailBtn.click();
+                                // Quitamos la animación tras abrir para no saturar
+                                setTimeout(() => taskCard.classList.remove('highlight-task'), 2000);
+                            }
+                        }, 1500);
+
+                        // Limpiar URL sin recargar la página
+                        const url = new URL(window.location);
+                        url.searchParams.delete('task_id');
+                        url.searchParams.delete('task_type');
+                        window.history.replaceState({}, '', url);
+                    }
+                }, 500); // Pequeño delay para asegurar que el scroll sea fluido
+            }
+        });
     </script>
 @endsection

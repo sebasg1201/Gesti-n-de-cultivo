@@ -362,6 +362,20 @@
                     </svg>
                 </button>
             </div>
+ 
+            @if(($cantidadTrabajadores ?? 0) === 0)
+            <div class="px-10 pt-8">
+                <div class="bg-rose-50 dark:bg-rose-950/30 border-2 border-rose-100 dark:border-rose-900/20 rounded-3xl p-6 flex flex-col items-center text-center gap-4 animate-pulse">
+                    <div class="w-12 h-12 bg-rose-100 dark:bg-rose-900/50 rounded-2xl flex items-center justify-center text-rose-600 dark:text-rose-400">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                    </div>
+                    <div>
+                        <h4 class="text-rose-900 dark:text-rose-100 font-black uppercase tracking-tighter">Sin Trabajadores Activos</h4>
+                        <p class="text-xs text-rose-600 dark:text-rose-400 font-bold mt-1">No puedes iniciar una siembra sin personal asignado para las tareas automáticas.</p>
+                    </div>
+                </div>
+            </div>
+            @endif
 
             <form action="{{ route('admin.cosechas.store') }}" method="POST" enctype="multipart/form-data"
                 class="p-10 space-y-8">
@@ -401,7 +415,7 @@
                     </div>
 
                     <!-- Semilla -->
-                    <div id="speciesSearchGroup" class="space-y-3 relative animate-in fade-in slide-in-from-left-4 duration-500">
+                    <div id="speciesSearchGroup" class="space-y-3 relative duration-500">
                         <label class="block text-xs font-black text-emerald-950 dark:text-emerald-50 uppercase tracking-widest ml-4 transition-colors">Especie a Sembrar</label>
                         <div id="speciesSearchContainer" class="relative group">
                             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -434,7 +448,7 @@
                     </div>
 
                     <!-- Fecha de Siembra -->
-                    <div id="dateStepGroup" class="space-y-3 animate-in fade-in duration-500">
+                    <div id="dateStepGroup" class="space-y-3 duration-500">
                         <label class="block text-xs font-black text-emerald-950 dark:text-emerald-50 uppercase tracking-widest ml-4 transition-colors">Fecha Programada de Siembra</label>
                         <input type="date" name="fecha_siembra" id="input-fecha" required value="{{ date('Y-m-d') }}"
                             onchange="checkStep1Complete()"
@@ -444,7 +458,7 @@
                 </div>
 
                 <!-- Detalles de Siembra y Riego -->
-                <div id="detailsStepGroup" class="space-y-8 animate-in slide-in-from-bottom-4 duration-700">
+                <div id="detailsStepGroup" class="space-y-8 duration-700">
                     <div class="h-px bg-emerald-100 dark:bg-emerald-900/30 my-2"></div>
                     <p class="text-[10px] font-black text-emerald-400 uppercase tracking-widest text-center">Detalles de Cultivo y Riego Automático</p>
                     
@@ -455,8 +469,15 @@
                                 <label class="block text-xs font-black text-emerald-950 dark:text-emerald-50 uppercase tracking-widest transition-colors">Cantidad a Sembrar</label>
                             </div>
                             <input type="number" name="cantidad_sembrada" id="input-cantidad" step="1" required min="1"
+                                oninput="validateManualQuantity(); updatePreview();"
                                 placeholder="Ej: 1000"
                                 class="w-full bg-emerald-50 dark:bg-slate-900 border-2 border-emerald-50 dark:border-emerald-900/20 rounded-2xl p-4 text-emerald-900 dark:text-emerald-50 font-bold placeholder:text-emerald-200 dark:placeholder:text-emerald-800 focus:border-emerald-500 transition-all">
+                            
+                            <div id="cantidad-feedback" class="mt-2 ml-4 flex flex-col gap-1 hidden">
+                                <p id="sugerencia-texto" class="text-[9px] font-black uppercase text-emerald-600 transition-colors"></p>
+                                <p id="stock-alerta" class="text-[9px] font-black uppercase text-rose-500 hidden transition-all animate-pulse"></p>
+                                <p id="capacidad-alerta" class="text-[9px] font-black uppercase text-rose-500 hidden transition-all animate-pulse"></p>
+                            </div>
                         </div>
 
                         <!-- Riego -->
@@ -542,9 +563,13 @@
 
                     <!-- Botón -->
                     <div class="pt-6">
-                        <button type="submit" id="btn-submit-cosecha" disabled
+                        <button type="submit" id="btn-submit-cosecha" {{ ($cantidadTrabajadores ?? 0) === 0 ? 'disabled' : '' }}
                             class="w-full bg-emerald-500 disabled:bg-gray-300 disabled:cursor-not-allowed text-white rounded-3xl py-6 font-black uppercase tracking-widest hover:bg-emerald-600 transition-all shadow-xl shadow-emerald-100 flex items-center justify-center gap-4">
-                            Confirmar Inicio de Siembra
+                            @if(($cantidadTrabajadores ?? 0) === 0)
+                                Registro Bloqueado
+                            @else
+                                Confirmar Inicio de Siembra
+                            @endif
                         </button>
                     </div>
                 </div> <!-- END detailsStepGroup -->
@@ -620,9 +645,10 @@
                 document.getElementById('selectedTerrenoFeedback').classList.remove('hidden');
                 document.getElementById('terrenoResults').classList.add('hidden');
 
-                // Show species search
-                document.getElementById('speciesSearchGroup').classList.remove('hidden');
+                // Show species search (already visible)
+                // document.getElementById('speciesSearchGroup').classList.remove('hidden');
                 
+                autoCalculateQuantity();
                 checkStep1Complete();
                 updatePreview();
             }
@@ -634,10 +660,10 @@
                 document.getElementById('selectedTerrenoFeedback').classList.add('hidden');
                 document.getElementById('terrenoSearchInput').value = '';
                 
-                // Hide steps and reset
-                document.getElementById('speciesSearchGroup').classList.add('hidden');
-                document.getElementById('dateStepGroup').classList.add('hidden');
-                document.getElementById('detailsStepGroup').classList.add('hidden');
+                // Keep steps visible
+                // document.getElementById('speciesSearchGroup').classList.add('hidden');
+                // document.getElementById('dateStepGroup').classList.add('hidden');
+                // document.getElementById('detailsStepGroup').classList.add('hidden');
                 clearSpeciesSelection();
                 
                 checkStep1Complete();
@@ -725,9 +751,10 @@
                 document.getElementById('selectedSpeciesFeedback').classList.remove('hidden');
                 document.getElementById('speciesResults').classList.add('hidden');
 
-                // Show date step
-                document.getElementById('dateStepGroup').classList.remove('hidden');
+                // Show date step (already visible)
+                // document.getElementById('dateStepGroup').classList.remove('hidden');
 
+                autoCalculateQuantity();
                 checkStep1Complete();
                 updatePreview();
             }
@@ -736,16 +763,156 @@
                 selectedSpeciesData = null;
                 document.getElementById('hiddenIdSemilla').value = '';
                 document.getElementById('speciesSearchContainer').classList.remove('hidden');
+                document.getElementById('selectedSpeciesFeedback').classList.add('hidden');
                 document.getElementById('speciesSearchInput').value = '';
                 
-                document.getElementById('dateStepGroup').classList.add('hidden');
-                document.getElementById('detailsStepGroup').classList.add('hidden');
+                // Keep steps visible
+                // document.getElementById('dateStepGroup').classList.add('hidden');
+                // document.getElementById('detailsStepGroup').classList.add('hidden');
+                
+                document.getElementById('cantidad-feedback').classList.add('hidden');
 
+                autoCalculateQuantity();
                 checkStep1Complete();
                 updatePreview();
             }
 
-            document.addEventListener('DOMContentLoaded', function () {
+            function validateManualQuantity() {
+                if (!selectedSpeciesData || !selectedTerrenoData) return;
+                
+                const inputCant = document.getElementById('input-cantidad');
+                if (!inputCant) return;
+
+                const val = parseFloat(inputCant.value) || 0;
+                const stock = parseFloat(selectedSpeciesData.stock);
+                const area = parseFloat(selectedTerrenoData.area);
+                const espacio = parseFloat(selectedSpeciesData.espacio) || 0.5;
+                const capacidadMax = Math.floor(area / espacio);
+
+                const stockAlerta = document.getElementById('stock-alerta');
+                const capacidadAlerta = document.getElementById('capacidad-alerta');
+                const feedbackDiv = document.getElementById('cantidad-feedback');
+
+                let hasError = false;
+
+                // Validation 1: Stock
+                if (val > stock) {
+                    if (stockAlerta) {
+                        stockAlerta.innerText = `¡Stock insuficiente! Tienes ${stock} disponibles`;
+                        stockAlerta.classList.remove('hidden');
+                    }
+                    hasError = true;
+                } else {
+                    if (stockAlerta) stockAlerta.classList.add('hidden');
+                }
+
+                // Validation 2: Capacity
+                if (val > capacidadMax) {
+                    if (capacidadAlerta) {
+                        capacidadAlerta.innerText = `¡Excede capacidad! El terreno solo soporta ${capacidadMax} plantas`;
+                        capacidadAlerta.classList.remove('hidden');
+                    }
+                    hasError = true;
+                } else {
+                    if (capacidadAlerta) capacidadAlerta.classList.add('hidden');
+                }
+
+                if (hasError) {
+                    if (feedbackDiv) feedbackDiv.classList.remove('hidden');
+                    inputCant.classList.add('border-rose-500', 'text-rose-600');
+                    inputCant.classList.remove('text-emerald-900', 'dark:text-emerald-50');
+                } else {
+                    inputCant.classList.remove('border-rose-500', 'text-rose-600');
+                    inputCant.classList.add('text-emerald-900', 'dark:text-emerald-50');
+                }
+                
+                checkStep1Complete();
+            }
+
+            function autoCalculateQuantity() {
+                const feedbackDiv = document.getElementById('cantidad-feedback');
+                if (!selectedTerrenoData || !selectedSpeciesData) {
+                    if (feedbackDiv) feedbackDiv.classList.add('hidden');
+                    return;
+                }
+
+                const area = parseFloat(selectedTerrenoData.area);
+                const espacio = parseFloat(selectedSpeciesData.espacio) || 0.5;
+                const stock = parseFloat(selectedSpeciesData.stock);
+
+                // Capacidad Sugerida
+                const sugerido = Math.floor(area / espacio);
+                const inputCant = document.getElementById('input-cantidad');
+                if (!inputCant) return;
+                
+                inputCant.value = sugerido;
+
+                const sugerenciaTexto = document.getElementById('sugerencia-texto');
+                if (sugerenciaTexto) sugerenciaTexto.innerText = `Óptimo p. densidad: ${sugerido} plantas en ${area}m²`;
+
+                validateManualQuantity();
+            }
+
+            function checkStep1Complete() {
+                const terrainSelected = !!document.getElementById('hiddenIdTerreno').value;
+                const speciesSelected = !!document.getElementById('hiddenIdSemilla').value;
+                const dateSelected = !!document.getElementById('input-fecha').value;
+                const inputCant = document.getElementById('input-cantidad');
+                if (!inputCant) return;
+
+                const cantidadVal = parseFloat(inputCant.value);
+                const cantidadFilled = !isNaN(cantidadVal) && cantidadVal > 0;
+                const riegoSelected = !!document.getElementById('select-riego').value;
+                const dateRiegoVal = document.getElementById('input-fecha-riego').value;
+                const dateSiembraVal = document.getElementById('input-fecha').value;
+                const dateRiegoSelected = !!dateRiegoVal;
+                
+                // Stock and Capacity check
+                let quantityOk = true;
+                if (selectedSpeciesData && selectedTerrenoData) {
+                    const stockVal = parseFloat(selectedSpeciesData.stock);
+                    const areaVal = parseFloat(selectedTerrenoData.area);
+                    const espacioVal = parseFloat(selectedSpeciesData.espacio) || 0.5;
+                    const maxCap = Math.floor(areaVal / espacioVal);
+
+                    if (cantidadVal > stockVal || cantidadVal > maxCap) {
+                        quantityOk = false;
+                    }
+                }
+
+                let dateCorrect = true;
+                const errorMsg = document.getElementById('error-fecha-riego');
+                const hintMsg = document.getElementById('hint-fecha-riego');
+                const inputRiego = document.getElementById('input-fecha-riego');
+
+                if (dateRiegoVal && dateSiembraVal) {
+                    if (new Date(dateRiegoVal) < new Date(dateSiembraVal)) {
+                        dateCorrect = false;
+                        if (errorMsg) errorMsg.classList.remove('hidden');
+                        if (hintMsg) hintMsg.classList.add('hidden');
+                        if (inputRiego) inputRiego.classList.add('border-red-500');
+                    } else {
+                        if (errorMsg) errorMsg.classList.add('hidden');
+                        if (hintMsg) hintMsg.classList.remove('hidden');
+                        if (inputRiego) inputRiego.classList.remove('border-red-500');
+                    }
+                }
+
+                const btnSubmit = document.getElementById('btn-submit-cosecha');
+                if (!btnSubmit) return;
+                
+                if (terrainSelected && speciesSelected && dateSelected && cantidadFilled && riegoSelected && dateRiegoSelected && dateCorrect && quantityOk) {
+                    btnSubmit.disabled = false;
+                    btnSubmit.classList.remove('bg-gray-300', 'cursor-not-allowed');
+                    btnSubmit.classList.add('bg-emerald-500', 'hover:bg-emerald-600');
+                } else {
+                    btnSubmit.disabled = true;
+                    btnSubmit.classList.add('bg-gray-300', 'cursor-not-allowed');
+                    btnSubmit.classList.remove('bg-emerald-500', 'hover:bg-emerald-600');
+                }
+            }
+
+            function updatePreview() {
                 const selectRiego = document.getElementById('select-riego');
                 const inputCantidad = document.getElementById('input-cantidad');
                 const inputFecha = document.getElementById('input-fecha');
@@ -754,123 +921,71 @@
                 const valorEstimado = document.getElementById('valor-estimado');
                 const fechaEstimadaPreview = document.getElementById('fecha-estimada-preview');
 
-                function checkStep1Complete() {
-                    const terrainSelected = !!document.getElementById('hiddenIdTerreno').value;
-                    const speciesSelected = !!document.getElementById('hiddenIdSemilla').value;
-                    const dateSelected = !!document.getElementById('input-fecha').value;
-                    const cantidadFilled = !!document.getElementById('input-cantidad').value;
-                    const riegoSelected = !!document.getElementById('select-riego').value;
-                    const dateRiegoVal = document.getElementById('input-fecha-riego').value;
-                    const dateSiembraVal = document.getElementById('input-fecha').value;
-                    const dateRiegoSelected = !!dateRiegoVal;
-                    
-                    let dateCorrect = true;
-                    const errorMsg = document.getElementById('error-fecha-riego');
-                    const hintMsg = document.getElementById('hint-fecha-riego');
-                    const inputRiego = document.getElementById('input-fecha-riego');
+                if (!selectRiego || !inputCantidad || !inputFecha || !previewDiv) return;
 
-                    if (dateRiegoVal && dateSiembraVal) {
-                        if (new Date(dateRiegoVal) < new Date(dateSiembraVal)) {
-                            dateCorrect = false;
-                            if (errorMsg) errorMsg.classList.remove('hidden');
-                            if (hintMsg) hintMsg.classList.add('hidden');
-                            if (inputRiego) inputRiego.classList.add('border-red-500');
-                        } else {
-                            if (errorMsg) errorMsg.classList.add('hidden');
-                            if (hintMsg) hintMsg.classList.remove('hidden');
-                            if (inputRiego) inputRiego.classList.remove('border-red-500');
-                        }
-                    }
+                const optionRiego = selectRiego.options[selectRiego.selectedIndex];
+                const yieldValue = selectedSpeciesData ? parseFloat(selectedSpeciesData.yield) : 0;
+                const cantidad = parseFloat(inputCantidad.value) || 0;
 
-                    const btnSubmit = document.getElementById('btn-submit-cosecha');
-                    
-                    if (terrainSelected && speciesSelected && dateSelected && cantidadFilled && riegoSelected && dateRiegoSelected && dateCorrect) {
-                        btnSubmit.disabled = false;
-                        btnSubmit.classList.remove('bg-gray-300', 'cursor-not-allowed');
-                        btnSubmit.classList.add('bg-emerald-500', 'hover:bg-emerald-600');
-                    } else {
-                        btnSubmit.disabled = true;
-                        btnSubmit.classList.add('bg-gray-300', 'cursor-not-allowed');
-                        btnSubmit.classList.remove('bg-emerald-500', 'hover:bg-emerald-600');
-                    }
+                let showPreview = false;
+
+                if (yieldValue > 0 && cantidad > 0) {
+                    const estimado = (yieldValue * cantidad).toLocaleString(undefined, {
+                        minimumFractionDigits: 1,
+                        maximumFractionDigits: 1
+                    });
+                    valorEstimado.textContent = `${estimado} kg`;
+                    showPreview = true;
+                } else {
+                    valorEstimado.textContent = `0 kg`;
                 }
+
+                if (selectedSpeciesData && selectedTerrenoData && optionRiego && inputFecha.value && !optionRiego.disabled) {
+                    const baseDias = parseInt(selectedSpeciesData.base_dias || 0);
+                    const impactoSuelo = parseInt(selectedTerrenoData.impacto || 0);
+                    const impactoRiego = parseInt(optionRiego.getAttribute('data-impacto') || 0);
+                    const totalDias = baseDias + impactoSuelo + impactoRiego;
+                    const fechaInicio = new Date(inputFecha.value);
+                    fechaInicio.setDate(fechaInicio.getDate() + totalDias);
+                    const opcionesFecha = { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' };
+                    fechaEstimadaPreview.textContent = fechaInicio.toLocaleDateString('es-ES', opcionesFecha);
+                    showPreview = true;
+                } else {
+                    fechaEstimadaPreview.textContent = `N/A`;
+                }
+
+                if (showPreview) {
+                    previewDiv.classList.remove('hidden');
+                    previewDiv.classList.add('grid');
+                } else {
+                    previewDiv.classList.add('hidden');
+                    previewDiv.classList.remove('grid');
+                }
+            }
+
+            document.addEventListener('DOMContentLoaded', function () {
+                const selectRiego = document.getElementById('select-riego');
+                const inputCantidad = document.getElementById('input-cantidad');
+                const inputFecha = document.getElementById('input-fecha');
+                const inputFechaRiego = document.getElementById('input-fecha-riego');
 
                 if (selectRiego) selectRiego.addEventListener('change', () => {
                     checkStep1Complete();
                     updatePreview();
                 });
                 if (inputCantidad) inputCantidad.addEventListener('input', () => {
-                    checkStep1Complete();
+                    validateManualQuantity();
                     updatePreview();
                 });
                 if (inputFecha) inputFecha.addEventListener('input', () => {
                     checkStep1Complete();
                     updatePreview();
                 });
-
-                function updatePreview() {
-                    const optionRiego = selectRiego ? selectRiego.options[selectRiego.selectedIndex] : null;
-
-                    const yieldValue = selectedSpeciesData ? parseFloat(selectedSpeciesData.yield) : 0;
-                    const cantidad = parseFloat(inputCantidad.value) || 0;
-
-                    let showPreview = false;
-
-                    // Update Production
-                    if (yieldValue > 0 && cantidad > 0) {
-                        const estimado = (yieldValue * cantidad).toLocaleString(undefined, {
-                            minimumFractionDigits: 1,
-                            maximumFractionDigits: 1
-                        });
-                        valorEstimado.textContent = `${estimado} kg`;
-                        showPreview = true;
-                    } else {
-                        valorEstimado.textContent = `0 kg`;
-                    }
-
-                    // Update Date
-                    if (selectedSpeciesData && selectedTerrenoData && optionRiego && inputFecha.value && !optionRiego.disabled) {
-                        const baseDias = parseInt(selectedSpeciesData.base_dias || 0);
-                        const impactoSuelo = parseInt(selectedTerrenoData.impacto || 0);
-                        const impactoRiego = parseInt(optionRiego.getAttribute('data-impacto') || 0);
-
-                        const totalDias = baseDias + impactoSuelo + impactoRiego;
-
-                        const fechaInicio = new Date(inputFecha.value);
-                        fechaInicio.setDate(fechaInicio.getDate() + totalDias);
-
-                        const opcionesFecha = { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' };
-                        fechaEstimadaPreview.textContent = fechaInicio.toLocaleDateString('es-ES', opcionesFecha);
-                        showPreview = true;
-                    } else {
-                        fechaEstimadaPreview.textContent = `N/A`;
-                    }
-
-                    if (showPreview) {
-                        previewDiv.classList.remove('hidden');
-                        previewDiv.classList.add('grid');
-                    } else {
-                        previewDiv.classList.add('hidden');
-                        previewDiv.classList.remove('grid');
-                    }
-                }
-
-                if (selectRiego) selectRiego.addEventListener('change', () => { checkStep1Complete(); updatePreview(); });
-                if (inputCantidad) inputCantidad.addEventListener('input', () => { checkStep1Complete(); updatePreview(); });
-                if (inputFecha) {
-                    ['input', 'change', 'blur'].forEach(evt => {
-                        inputFecha.addEventListener(evt, () => { checkStep1Complete(); updatePreview(); });
-                    });
-                }
-                const inputFechaRiego = document.getElementById('input-fecha-riego');
                 if (inputFechaRiego) {
                     ['input', 'change', 'blur'].forEach(evt => {
                         inputFechaRiego.addEventListener(evt, () => { checkStep1Complete(); updatePreview(); });
                     });
                 }
-
-                window.updatePreview = updatePreview;
-                window.checkStep1Complete = checkStep1Complete;
 
                 const inputImagen = document.getElementById('input-imagen');
                 const fileNameDisplay = document.getElementById('file-name-display');

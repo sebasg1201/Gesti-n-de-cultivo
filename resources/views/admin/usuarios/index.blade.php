@@ -3,6 +3,21 @@
 @section('title', 'Gestión de Personal')
 
 @section('content')
+<style>
+    @keyframes highlight-worker {
+        0% { background-color: transparent; }
+        20% { background-color: rgba(16, 185, 129, 0.15); box-shadow: inset 0 0 20px rgba(16, 185, 129, 0.1); }
+        80% { background-color: rgba(16, 185, 129, 0.15); box-shadow: inset 0 0 20px rgba(16, 185, 129, 0.1); }
+        100% { background-color: transparent; }
+    }
+    .highlight-worker-row {
+        animation: highlight-worker 3s ease-in-out;
+        border-left: 4px solid #10b981 !important;
+        position: relative;
+        z-index: 10;
+    }
+</style>
+
 <div class="max-w-6xl mx-auto space-y-8">
 
     {{-- HEADER --}}
@@ -41,7 +56,7 @@
                 </thead>
                 <tbody class="divide-y divide-gray-100 dark:divide-emerald-900/10 text-gray-700 dark:text-emerald-100">
                     @forelse($usuarios as $user)
-                        <tr class="hover:bg-emerald-50/50 dark:hover:bg-slate-900 transition-colors">
+                        <tr id="worker-{{ $user->documento }}" class="hover:bg-emerald-50/50 dark:hover:bg-slate-900 transition-colors">
                             <td class="py-4 px-6 font-medium text-gray-900 dark:text-emerald-50">{{ $user->documento }}</td>
                             <td class="py-4 px-6">
                                 <div class="flex items-center gap-3">
@@ -127,3 +142,35 @@
 
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const workerId = urlParams.get('worker_id');
+        
+        if (workerId) {
+            // Esperar un momento a que las transiciones iniciales terminen
+            setTimeout(() => {
+                const row = document.getElementById('worker-' + workerId);
+                if (row) {
+                    // Scroll suave a la fila
+                    row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    
+                    // Añadir clase de resaltado
+                    row.classList.add('highlight-worker-row');
+                    
+                    // Quitar clase después de la animación
+                    setTimeout(() => {
+                        row.classList.remove('highlight-worker-row');
+                    }, 3050);
+                    
+                    // Limpiar la URL sin recargar la página
+                    const newUrl = window.location.pathname;
+                    window.history.replaceState({}, document.title, newUrl);
+                }
+            }, 300);
+        }
+    });
+</script>
+@endpush

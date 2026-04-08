@@ -18,7 +18,8 @@ class FaseProgramada extends Model
         'fecha_programada',
         'id_estado',
         'id_terreno',
-        'documento_trabajador'
+        'documento_trabajador',
+        'id_salario'
     ];
 
     public function terreno()

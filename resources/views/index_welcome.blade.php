@@ -22,15 +22,15 @@
         </div>
     @endif
 
-    <section id="index" class="max-w-7xl mx-auto px-6 py-20 grid md:grid-cols-2 gap-12 items-center">
+    <section id="index" class="max-w-7xl mx-auto px-6 py-12 md:py-20 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
         {{-- TEXTO --}}
         <div>
             <span class="text-green-500 font-semibold uppercase text-sm">
                 Transformación digital
             </span>
 
-            <h1 class="mt-4 text-5xl font-extrabold text-gray-900 leading-tight">
-                El Futuro de tu <br>
+            <h1 class="mt-4 text-5xl md:text-5xl font-extrabold text-gray-900 leading-tight">
+                El Futuro de tu <br class="hidden md:block">
                 Finca, <span class="text-green-500">Hoy</span>
             </h1>
 
@@ -104,7 +104,7 @@
                 Diseñamos herramientas modernas para cada etapa de tu proceso productivo.
             </p>
 
-            <div class="mt-14 grid gap-6 md:grid-cols-4 text-left">
+            <div class="mt-14 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 text-left">
                 {{-- CARD 1 --}}
                 <div
                     class="bg-white border border-gray-200 rounded-2xl p-8 hover:shadow-md transition hover:shadow-lg hover:-translate-y-0.5">
@@ -185,7 +185,7 @@
             </div>
         </div>
     </section>
-    <section id="beneficios" class="max-w-7xl mx-auto px-6 py-20 grid md:grid-cols-2 gap-12 items-center">
+    <section id="beneficios" class="max-w-7xl mx-auto px-6 py-20 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
 
         {{-- IMAGEN --}}
         <div class="relative w-full">
@@ -194,7 +194,7 @@
 
             {{-- Info flotante --}}
             <div
-                class="absolute bottom-6 left-6 w-136 bg-white/95 backdrop-blur
+                class="absolute bottom-6 left-6 right-6 md:right-auto md:w-80 bg-white/95 backdrop-blur
                             rounded-xl shadow-lg px-5 py-4 flex items-center gap-4 hover:scale-105 transition-transform duration-300">
 
                 {{-- Icono --}}
@@ -216,7 +216,7 @@
 
         {{-- TEXTO --}}
         <div>
-            <h2 class="text-4xl font-bold text-gray-900 leading-tight">
+            <h2 class="text-2xl md:text-4xl font-bold text-gray-900 leading-tight">
                 Diseñado para <br>
                 <span class="text-green-600">Maximizar tu Rentabilidad</span>
             </h2>
@@ -275,7 +275,7 @@
                 Transparencia total, sin costos ocultos.
             </p>
 
-            <div class="mt-16 grid gap-8 md:grid-cols-3 text-left">
+            <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
 
                 @foreach($licencias as $licencia)
 

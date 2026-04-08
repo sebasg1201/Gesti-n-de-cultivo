@@ -104,9 +104,11 @@
                             <label
                                 class="block text-[10px] font-black text-emerald-900 uppercase tracking-widest mb-2">Fecha
                                 Programada</label>
-                            <input type="date" name="fecha_recoleccion"
+                            <input type="date" name="fecha_recoleccion" id="fecha_recoleccion"
                                 value="{{ old('fecha_recoleccion', date('Y-m-d')) }}"
+                                min="{{ date('Y-m-d') }}"
                                 class="w-full px-4 py-3 bg-white border border-emerald-100 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all font-medium text-slate-700">
+                            <p id="error-fecha" class="text-[10px] text-rose-500 font-bold ml-4 mt-2 hidden">La fecha no puede ser anterior a hoy.</p>
                         </div>
                     </div>
                 </div>
@@ -136,7 +138,7 @@
                         class="flex-1 bg-white border-2 border-slate-100 text-slate-500 font-bold py-4 rounded-2xl hover:bg-slate-50 transition-all text-center">
                         Cancelar
                     </a>
-                    <button type="submit"
+                    <button type="submit" id="btn-submit"
                         class="flex-[2] bg-emerald-600 text-white font-black py-4 rounded-2xl shadow-lg shadow-emerald-200 hover:bg-emerald-700 hover:-translate-y-1 transition-all">
                         Asignar Tarea de Recolección
                     </button>
@@ -144,4 +146,45 @@
             </form>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputFecha = document.getElementById('fecha_recoleccion');
+            const errorMsg = document.getElementById('error-fecha');
+            const btnSubmit = document.getElementById('btn-submit');
+
+            if (!inputFecha || !errorMsg || !btnSubmit) return;
+
+            function validarFecha() {
+                const hoy = new Date();
+                hoy.setHours(0, 0, 0, 0);
+                
+                // Formato YYYY-MM-DD
+                const parts = inputFecha.value.split('-');
+                if (parts.length !== 3) return;
+                
+                const fechaSeleccionada = new Date(parts[0], parts[1] - 1, parts[2]);
+                
+                if (fechaSeleccionada < hoy) {
+                    errorMsg.classList.remove('hidden');
+                    inputFecha.classList.add('border-rose-500', 'ring-2', 'ring-rose-100');
+                    btnSubmit.disabled = true;
+                    btnSubmit.classList.add('opacity-50', 'cursor-not-allowed');
+                } else {
+                    errorMsg.classList.add('hidden');
+                    inputFecha.classList.remove('border-rose-500', 'ring-2', 'ring-rose-100');
+                    btnSubmit.disabled = false;
+                    btnSubmit.classList.remove('opacity-50', 'cursor-not-allowed');
+                }
+            }
+
+            inputFecha.addEventListener('input', validarFecha);
+            inputFecha.addEventListener('change', validarFecha);
+            
+            // Validar al cargar (por si hay old input)
+            if (inputFecha.value) {
+                validarFecha();
+            }
+        });
+    </script>
 @endsection
